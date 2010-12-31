@@ -420,6 +420,14 @@ struct forward_list
     dbref *data;
 };
 
+typedef struct attr_permission_list ATTRPERM;
+struct attr_permission_list
+{
+    UTF8    *wildcard;
+    int      flags;
+    struct attr_permission_list *next;
+};
+
 #define MAX_ITEXT 100
 
 typedef struct statedata STATEDATA;
@@ -503,7 +511,9 @@ struct statedata
     OLSTK   *olist;             /* Stack of object lists for nested searches */
     mux_subnets access_list;    /* Access/suspect attributes for subnets */
 
-#if defined(HAVE_STUB_SLAVE)
+    ATTRPERM *attrperm_list;    /* Wildcarded attribute permissions list */
+
+#if defined(STUB_SLAVE)
     mux_ISlaveControl *pISlaveControl;  // Management interface for StubSlave process.
     CResultsSet *pResultsSet;           // ResultsSet from @query.
     int iRow;                           // Current Row.
