@@ -23,7 +23,7 @@
 #ifdef FIRANMUX
 #define LBUF_SIZE   24000   // Large
 #else
-#define LBUF_SIZE   8000    // Large
+#define LBUF_SIZE   64000    // Large
 #endif
 #define GBUF_SIZE   1024    // Generic
 #define MBUF_SIZE   400     // Medium
