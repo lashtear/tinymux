@@ -5548,7 +5548,7 @@ size_t GetLineTrunc(UTF8 *Buffer, size_t nBuffer, FILE *fp)
 // If we were searching megabytes of data instead of 8KB at most, then
 // the full Boyer-Moore would make more sense.
 //
-#define BMH_LARGE 32767
+#define BMH_LARGE (LBUF_SIZE*4)
 void BMH_Prepare(BMH_State *bmhs, size_t nPat, const UTF8 *pPat)
 {
     if (nPat <= 0)
