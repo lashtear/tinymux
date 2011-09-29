@@ -1058,25 +1058,15 @@ static void announce_connect(dbref player, DESC *d)
     int key = MSG_INV;
     if (  loc != NOTHING
        && !(  Hidden(player)
-           && Can_Hide(player)))
+           && Can_Hide(player))
+       && !Blind(loc))
     {
         key |= (MSG_NBR | MSG_NBR_EXITS | MSG_LOC | MSG_FWDLIST);
     }
 
     dbref temp = mudstate.curr_enactor;
     mudstate.curr_enactor = player;
-#ifdef REALITY_LVLS
-    if (NOTHING == loc)
-    {
-        notify_check(player, player, buf, key);
-    }
-    else
-    {
-        notify_except_rlevel(loc, player, player, buf, 0);
-    }
-#else
     notify_check(player, player, buf, key);
-#endif // REALITY_LVLS
     atr_pget_str_LEN(buf, player, A_ACONNECT, &aowner, &aflags, &nLen);
     CLinearTimeAbsolute lta;
     dbref zone, obj;
@@ -1206,22 +1196,12 @@ void announce_disconnect(dbref player, DESC *d, const UTF8 *reason)
         key = MSG_INV;
         if (  loc != NOTHING
            && !(  Hidden(player)
-               && Can_Hide(player)))
+               && Can_Hide(player))
+           && !Blind(loc))
         {
             key |= (MSG_NBR | MSG_NBR_EXITS | MSG_LOC | MSG_FWDLIST);
         }
-#ifdef REALITY_LVLS
-        if (NOTHING == loc)
-        {
-            notify_check(player, player, buf, key);
-        }
-        else
-        {
-            notify_except_rlevel(loc, player, player, buf, 0);
-        }
-#else
         notify_check(player, player, buf, key);
-#endif // REALITY_LVLS
 
         if (mudconf.have_mailer)
         {
@@ -1354,22 +1334,12 @@ void announce_disconnect(dbref player, DESC *d, const UTF8 *reason)
         key = MSG_INV;
         if (  loc != NOTHING
            && !(  Hidden(player)
-               && Can_Hide(player)))
+               && Can_Hide(player))
+           && !Blind(loc))
         {
             key |= (MSG_NBR | MSG_NBR_EXITS | MSG_LOC | MSG_FWDLIST);
         }
-#ifdef REALITY_LVLS
-        if (NOTHING == loc)
-        {
-            notify_check(player, player, mbuf, key);
-        }
-        else
-        {
-            notify_except_rlevel(loc, player, player, mbuf, 0);
-        }
-#else
         notify_check(player, player, mbuf, key);
-#endif // REALITY_LVLS
         raw_broadcast(MONITOR, T("GAME: %s has partially disconnected."),
             Moniker(player));
         free_mbuf(mbuf);
