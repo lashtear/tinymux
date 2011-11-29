@@ -1815,29 +1815,102 @@ FUNCTION(fun_log)
     UNUSED_PARAMETER(cargs);
     UNUSED_PARAMETER(ncargs);
 
-    double val;
+    typedef enum
+    {
+#ifdef HAVE_LOG2
+        kBinary,
+#endif
+        kNatural,
+        kCommon,
+        kOther
+    } logarithm_base;
 
-    val = mux_atof(fargs[0]);
+    logarithm_base kBase;
+
+    double val = mux_atof(fargs[0]);
+
+    double base;
+    if (2 == nfargs)
+    {
+        int nDigits;
+        if (  is_integer(fargs[1], &nDigits)
+           && nDigits <= 2)
+        {
+            int iBase = mux_atol(fargs[1]);
+            if (10 == iBase)
+            {
+                kBase = kCommon;
+            }
+#ifdef HAVE_LOG2
+            else if (2 == iBase)
+            {
+                kBase = kBinary;
+            }
+#endif
+            else
+            {
+                kBase = kOther;
+                base = mux_atof(fargs[1]);
+            }
+        }
+        else if (  'e' == fargs[1][0] 
+                && '\0' == fargs[1][1])
+        {
+            kBase = kNatural;
+        }
+        else
+        {
+            kBase = kOther;
+            base = mux_atof(fargs[1]);
+        }
+    }
+    else
+    {
+        kBase = kCommon;
+    }
+
+    if (  kOther == kBase
+       && base <= 1)
+    {
+        safe_str(T("#-1 BASE OUT OF RANGE"), buff, bufc);
+        return;
+    }
+
 #ifndef HAVE_IEEE_FP_SNAN
     if (val < 0.0)
     {
         safe_str(T("Ind"), buff, bufc);
+        return;
     }
-    else if (val == 0.0)
+    else if (0.0 == val)
     {
         safe_str(T("-Inf"), buff, bufc);
+        return;
     }
     else
+#endif
     {
         mux_FPRestore();
-        val = log10(val);
+        if (kCommon == kBase)
+        {
+            val = log10(val);
+        }
+        else if (kNatural == kBase)
+        {
+            val = log(val);
+        }
+#ifdef HAVE_LOG2
+        else if (kBinary == kBase)
+        {
+            val = log2(val);
+        }
+#endif
+        else
+        {
+            val = log(val)/log(base);
+        }
         mux_FPSet();
     }
-#else
-    mux_FPRestore();
-    val = log10(val);
-    mux_FPSet();
-#endif
     fval(buff, bufc, val);
 }
 

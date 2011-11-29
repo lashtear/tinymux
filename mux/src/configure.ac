@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.62)
+AC_PREREQ([2.68])
 AC_INIT([TinyMUX],[2.10],[tinymux@googlegroups.com])
 AC_CONFIG_SRCDIR([game.cpp])
 AC_CONFIG_HEADER([autoconf.h])
@@ -372,7 +372,6 @@ fi
 #
 AC_TYPE_OFF_T
 AC_TYPE_PID_T
-AC_TYPE_SIGNAL
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
@@ -418,7 +417,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
 AC_FUNC_VPRINTF
 AC_FUNC_FORK
 AC_CHECK_FUNCS(crypt getdtablesize gethostbyaddr gethostbyname getpagesize getrusage gettimeofday)
-AC_CHECK_FUNCS(localtime_r nanosleep select setitimer setrlimit socket srandom tzset usleep)
+AC_CHECK_FUNCS(localtime_r nanosleep select setitimer setrlimit socket srandom tzset usleep log2)
 AC_CHECK_FUNCS(epoll_create epoll_ctl epoll_wait kqueue kevent)
 AS_MESSAGE([checking for pread and pwrite...])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
