@@ -181,17 +181,34 @@ void T6H_LOCKEXP::Write(FILE *fp)
         break;
 
     case T6H_LOCKEXP::le_attr:
-        m_le[0]->Write(fp);
-        fprintf(fp, ":");
-        m_le[1]->Write(fp);
-
-        // The code in 2.6 an earlier does not always emit a NL.  It's really
-        // a beneign typo, but we reproduce it to make regression testing
-        // easier.
-        //
-        if (m_le[0]->m_op != T6H_LOCKEXP::le_text)
         {
-            fprintf(fp, "\n");
+            bool fText = (m_le[0]->m_op == T6H_LOCKEXP::le_text);
+            bool fWildcard = false;
+            if (fText)
+            {
+                char ch = m_le[0]->m_p[0][0];
+                if ('+' == ch || '=' == ch)
+                {
+                    fWildcard = true;
+                }
+            }
+
+            if (fWildcard) fprintf(fp, "(");
+
+            m_le[0]->Write(fp);
+            fprintf(fp, ":");
+            m_le[1]->Write(fp);
+
+            // The legacy behavior (from TinyMUX 1.6) not always emit a NL.
+            // It's really a beneign typo, but we reproduce it to make
+            // regression testing easier.
+            //
+            if (!fText)
+            {
+                fprintf(fp, "\n");
+            }
+
+            if (fWildcard) fprintf(fp, ")");
         }
         break;
 
@@ -920,7 +937,7 @@ void T6H_ATTRINFO::EncodeDecode(int dbObjOwner)
             size_t n = strlen(buffer);
             sprintf(buffer + n, "%s", m_pValueUnencoded);
 
-            delete m_pAllocated;
+            free(m_pAllocated);
             m_pAllocated = StringClone(buffer);
 
             m_pValueEncoded = m_pAllocated;

@@ -177,17 +177,34 @@ void T5X_LOCKEXP::Write(FILE *fp)
         break;
 
     case T5X_LOCKEXP::le_attr:
-        m_le[0]->Write(fp);
-        fprintf(fp, ":");
-        m_le[1]->Write(fp);
-
-        // The code in 2.6 an earlier does not always emit a NL.  It's really
-        // a beneign typo, but we reproduce it to make regression testing
-        // easier.
-        //
-        if (m_le[0]->m_op != T5X_LOCKEXP::le_text)
         {
-            fprintf(fp, "\n");
+            bool fText = (m_le[0]->m_op == T5X_LOCKEXP::le_text);
+            bool fWildcard = false;
+            if (fText)
+            {
+                char ch = m_le[0]->m_p[0][0];
+                if ('+' == ch || '=' == ch)
+                {
+                    fWildcard = true;
+                }
+            }
+
+            if (fWildcard) fprintf(fp, "(");
+
+            m_le[0]->Write(fp);
+            fprintf(fp, ":");
+            m_le[1]->Write(fp);
+
+            // The code in 2.6 and earlier does not always emit a NL.  It's really
+            // a beneign typo, but we reproduce it to make regression testing
+            // easier.
+            //
+            if (!fText)
+            {
+                fprintf(fp, "\n");
+            }
+
+            if (fWildcard) fprintf(fp, ")");
         }
         break;
 
@@ -989,7 +1006,7 @@ void T5X_ATTRINFO::EncodeDecode(int dbObjOwner)
             size_t n = strlen(buffer);
             sprintf(buffer + n, "%s", m_pValueUnencoded);
 
-            delete m_pAllocated;
+            free(m_pAllocated);
             m_pAllocated = StringClone(buffer);
 
             m_pValueEncoded = m_pAllocated;
@@ -4995,26 +5012,33 @@ bool T5X_GAME::Upgrade3()
 
     // Upgrade attribute names.
     //
+    map<int, T5X_ATTRNAMEINFO *, lti> new_mAttrNames;
+    m_mAttrNums.clear();
     for (map<int, T5X_ATTRNAMEINFO *, lti>::iterator it =  m_mAttrNames.begin(); it != m_mAttrNames.end(); ++it)
     {
-        m_mAttrNums.erase(it->second->m_pNameEncoded);
-        it->second->ConvertToUTF8();
-        map<char *, T5X_ATTRNAMEINFO *, ltstr>::iterator itNum = m_mAttrNums.find(it->second->m_pNameUnencoded);
+        T5X_ATTRNAMEINFO *pani = it->second;
+        it->second = NULL;
+        pani->ConvertToUTF8();
+        new_mAttrNames[pani->m_iNum] = pani;
+
+        map<char *, T5X_ATTRNAMEINFO *, ltstr>::iterator itNum = m_mAttrNums.find(pani->m_pNameUnencoded);
         if (itNum != m_mAttrNums.end())
         {
             fprintf(stderr, "WARNING: Duplicate attribute name %s(%d) conflicts with %s(%d)\n",
-                it->second->m_pNameUnencoded, it->second->m_iNum, itNum->second->m_pNameUnencoded, itNum->second->m_iNum);
+                pani->m_pNameUnencoded, pani->m_iNum, itNum->second->m_pNameUnencoded, itNum->second->m_iNum);
         }
         else
         {
-            m_mAttrNums[it->second->m_pNameUnencoded] = it->second;
+            m_mAttrNums[pani->m_pNameUnencoded] = pani;
         }
     }
+    m_mAttrNames = new_mAttrNames;
 
     // Upgrade objects.
     //
     for (map<int, T5X_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
     {
+        it->second->UpgradeDefaultLock();
         it->second->ConvertToUTF8();
     }
     return true;
@@ -5080,8 +5104,16 @@ void T5X_OBJECTINFO::ConvertToUTF8()
 
 void T5X_ATTRINFO::ConvertToUTF8()
 {
-    char *p = (char *)::ConvertToUTF8(m_pValueUnencoded);
-    SetNumOwnerFlagsAndValue(m_iNum, m_dbOwner, m_iFlags, StringClone(p));
+    if (kEncode == m_kState)
+    {
+        char *p = (char *)::ConvertToUTF8(m_pValueUnencoded);
+        SetNumOwnerFlagsAndValue(m_iNum, m_dbOwner, m_iFlags, StringClone(p));
+    }
+    else
+    {
+        char *p = (char *)::ConvertToUTF8(m_pValueEncoded);
+        SetNumAndValue(m_iNum, StringClone(p));
+    }
 }
 
 bool T5X_GAME::Upgrade2()
