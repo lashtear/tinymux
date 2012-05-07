@@ -1,9 +1,10 @@
 TinyMUX 2.10: CHANGES
-Last Update: December 2011
+Last Update: March 2012
 
 Major changes that may affect performance and require softcode tweaks:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  -- Removed dbpuller tool. Use Omega flatfile tool instead.
+ -- guest_site configuration option is renamed to noguest_site.
 
 
 Feature Additions:
@@ -13,6 +14,7 @@ Feature Additions:
  -- Add 24-bit color support.  That is, the database and string
     functions can represent 24-bit color.
  -- Support for MXP/HTML-style tags representing 24-bit color.
+ -- IPv6 support.
  -- Add password_methods configuration option.
  -- Add default_charset configuration option (Issue 575).
  -- Add ATAN2().
@@ -78,8 +80,13 @@ Bug Fixes:
  -- Avoid operation outside the domain of modulus.
  -- Using @mail is clearer than check.my.mail.
  -- Re-write ANSI SUBSTITUTIONS to document %X (upper-case).
- -- Don't returned a dbref for a @reference if the dbref is not
-    garbage.
+ -- Don't returned a dbref for a @reference if the dbref is garbage.
+ -- Fixes to site list handling.
+ -- Fix crashbug in TruncateToBuffer.
+ -- Fix memory leaks from recent code.
+ -- Fix tr() so transformations don't accumulate.
+ -- Fix mail-loading bug from TinyMUX 1.6.
+ -- Make older code valgrind-friendly and AppVerifier-friendly.
 
 
 Performance Enhancements:
@@ -104,3 +111,5 @@ Miscellaneous:
  -- Dark Purple is #800080.
  -- Typo. Should be hiding instead of hidding (Issue 654).
  -- Remove IDENT query. Everyone blocks it these days.
+ -- Windows 2000 is now the oldest supported version.  Note: The
+    pre-built binaries haven't supported pre-Win2k for some time.

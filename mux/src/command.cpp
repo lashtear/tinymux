@@ -264,15 +264,15 @@ static NAMETAB halt_sw[] =
 
 static NAMETAB hook_sw[] =
 {
-    {T("after"),           3,     CA_GOD,  HOOK_AFTER},
-    {T("before"),          3,     CA_GOD,  HOOK_BEFORE},
-    {T("clear"),           3,     CA_GOD,  HOOK_CLEAR|SW_MULTIPLE},
-    {T("fail"),            1,     CA_GOD,  HOOK_AFAIL},
-    {T("ignore"),          3,     CA_GOD,  HOOK_IGNORE},
-    {T("igswitch"),        3,     CA_GOD,  HOOK_IGSWITCH},
-    {T("list"),            3,     CA_GOD,  HOOK_LIST},
-    {T("permit"),          3,     CA_GOD,  HOOK_PERMIT},
-    {T("args"),            3,     CA_GOD,  HOOK_ARGS},
+    {T("after"),           3,     CA_GOD,  CEF_HOOK_AFTER},
+    {T("before"),          3,     CA_GOD,  CEF_HOOK_BEFORE},
+    {T("clear"),           3,     CA_GOD,  CEF_HOOK_CLEAR|SW_MULTIPLE},
+    {T("fail"),            1,     CA_GOD,  CEF_HOOK_AFAIL},
+    {T("ignore"),          3,     CA_GOD,  CEF_HOOK_IGNORE},
+    {T("igswitch"),        3,     CA_GOD,  CEF_HOOK_IGSWITCH},
+    {T("list"),            3,     CA_GOD,  CEF_HOOK_LIST},
+    {T("permit"),          3,     CA_GOD,  CEF_HOOK_PERMIT},
+    {T("args"),            3,     CA_GOD,  CEF_HOOK_ARGS},
     {(UTF8 *)NULL,         0,          0,  0}
 };
 
@@ -680,7 +680,7 @@ static CMDENT_ONE_ARG command_table_one_arg[] =
     {T("-"),             NULL,       CA_NO_GUEST|CA_NO_SLAVE|CF_DARK,  0,  CS_ONE_ARG|CS_LEADIN,   0, do_postpend},
     {T("~"),             NULL,       CA_NO_GUEST|CA_NO_SLAVE|CF_DARK,  0,  CS_ONE_ARG|CS_LEADIN,   0, do_prepend},
     {T("#"),             NULL,       CA_NO_SLAVE|CA_GBL_INTERP|CF_DARK, 0, CS_ONE_ARG|CS_INTERP|CS_CMDARG, 0, do_force_prefixed},
-    {(UTF8 *)NULL,            NULL,       0,                          0,    0,                  0, NULL}
+    {(UTF8 *)NULL,       NULL,       0,                          0,    0,                  0, NULL}
 };
 
 static CMDENT_TWO_ARG command_table_two_arg[] =
@@ -771,7 +771,7 @@ static CMDENT_TWO_ARG_ARGV command_table_two_arg_argv[] =
     {T("@switch"),     switch_sw,  CA_GBL_INTERP,                        0,  CS_TWO_ARG|CS_ARGV|CS_CMDARG|CS_NOINTERP|CS_STRIP_AROUND, 0, do_switch},
     {T("@trigger"),    trig_sw,    CA_GBL_INTERP,                        0,  CS_TWO_ARG|CS_ARGV,             0, do_trigger},
     {T("@verb"),       verb_sw,    CA_GBL_INTERP|CA_NO_SLAVE,            0,  CS_TWO_ARG|CS_ARGV|CS_INTERP|CS_STRIP_AROUND, 0, do_verb},
-    {(UTF8 *)NULL,          NULL,       0,                                    0,  0,              0, NULL}
+    {(UTF8 *)NULL,     NULL,       0,                                    0,  0,                              0, NULL}
 };
 
 static CMDENT *goto_cmdp;
@@ -874,7 +874,7 @@ void init_cmdtab(void)
             }
             cp2a->extra = ap->number;
             cp2a->callseq = CS_TWO_ARG;
-            cp2a->hookmask = 0;
+            cp2a->flags = CEF_ALLOC;
             cp2a->handler = do_setattr;
             hashaddLEN(cp2a->cmdname, nBuffer, cp2a, &mudstate.command_htab);
         }
@@ -898,6 +898,69 @@ void init_cmdtab(void)
 
 static CMDENT *g_prefix_cmds[256];
 
+void clear_prefix_cmds()
+{
+    for (int i = 0; i < 256; i++)
+    {
+        g_prefix_cmds[i] = NULL;
+    }
+}
+
+#ifdef SELFCHECK
+void finish_cmdtab()
+{
+    clear_prefix_cmds();
+    goto_cmdp = NULL;
+
+    // First pass is to get rid of aliases.
+    //
+    CHashTable ht;
+    CMDENT *cmdp;
+    for (cmdp = (CMDENT *)hash_firstentry(&mudstate.command_htab);
+         cmdp != NULL;
+         cmdp = (CMDENT *)hash_nextentry(&mudstate.command_htab))
+    {
+        if (0 == (cmdp->flags & CEF_VISITED))
+        {
+            cmdp->flags |= CEF_VISITED;
+            hashaddLEN(cmdp->cmdname, strlen((char *)cmdp->cmdname), cmdp, &ht);
+        }
+    }
+    hashflush(&mudstate.command_htab);
+
+    // Second pass is to free unique CMDENTs and related things.
+    //
+    for (cmdp = (CMDENT *)hash_firstentry(&ht);
+         cmdp != NULL;
+         cmdp = (CMDENT *)hash_nextentry(&ht))
+    {
+        if (cmdp->callseq & CS_ADDED)
+        {
+            ADDENT *nextp = cmdp->addent;
+            while (NULL != nextp)
+            {
+                ADDENT *add = nextp;
+                nextp = nextp->next;
+
+                MEMFREE(add->name);
+                add->name = NULL;
+                MEMFREE(add);
+                add = NULL;
+            }
+            cmdp->addent = NULL;
+        }
+
+        if (cmdp->flags & CEF_ALLOC)
+        {
+            MEMFREE(cmdp->cmdname);
+            cmdp->cmdname = NULL;
+            delete cmdp;
+            cmdp = NULL;
+        }
+    }
+}
+#endif
+
 /*! \brief Fills in the table of single-character prefix commands.
  *
  * Command entries for known prefix commands (<code>" : ; \ # & - ~</code>)
@@ -908,10 +971,7 @@ static CMDENT *g_prefix_cmds[256];
  */
 void cache_prefix_cmds(void)
 {
-    for (int i = 0; i < 256; i++)
-    {
-        g_prefix_cmds[i] = NULL;
-    }
+    clear_prefix_cmds();
 
 #define SET_PREFIX_CMD(s) g_prefix_cmds[(unsigned char)(s)[0]] = \
         (CMDENT *) hashfindLEN((char *)(s), 1, &mudstate.command_htab)
@@ -1048,22 +1108,22 @@ static UTF8 *hook_name(const UTF8 *pCommand, int key)
     const char *keylet;
     switch (key)
     {
-    case HOOK_AFAIL:
+    case CEF_HOOK_AFAIL:
         keylet = "AF";
         break;
-    case HOOK_AFTER:
+    case CEF_HOOK_AFTER:
         keylet = "A";
         break;
-    case HOOK_BEFORE:
+    case CEF_HOOK_BEFORE:
         keylet = "B";
         break;
-    case HOOK_IGNORE:
+    case CEF_HOOK_IGNORE:
         keylet = "I";
         break;
-    case HOOK_PERMIT:
+    case CEF_HOOK_PERMIT:
         keylet = "P";
         break;
-    case HOOK_ARGS:
+    case CEF_HOOK_ARGS:
         keylet = "R";
         break;
     default:
@@ -1128,7 +1188,7 @@ static bool process_hook(dbref executor, CMDENT *cmdp, int key, bool save_flg)
 
 void process_hook_args(dbref executor, CMDENT *cmdp, UTF8* arg1, UTF8* arg2, UTF8* args[], int nargs, UTF8* sw)
 {
-    ATTR *hk_attr = atr_str(hook_name(cmdp->cmdname, HOOK_ARGS));
+    ATTR *hk_attr = atr_str(hook_name(cmdp->cmdname, CEF_HOOK_ARGS));
     if (hk_attr)
     {
         dbref aowner;
@@ -1327,10 +1387,10 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
     // 'Before' hooks.
     // @hook idea from TinyMUSH 3, code from RhostMUSH. Ported by Jake Nelson.
     //
-    if (  (cmdp->hookmask & HOOK_BEFORE)
+    if (  (cmdp->flags & CEF_HOOK_BEFORE)
        && bGoodHookObj)
     {
-        process_hook(executor, cmdp, HOOK_BEFORE, false);
+        process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
     }
 
     // We are allowed to run the command.  Now, call the handler using
@@ -1385,7 +1445,7 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
         //
         if (cmdp->callseq & CS_UNPARSE)
         {
-            // Add HOOK_ARGS before uncommenting
+            // Add CEF_HOOK_ARGS before uncommenting
             (*(((CMDENT_ONE_ARG *)cmdp)->handler))(executor, unp_command);
             break;
         }
@@ -1539,8 +1599,10 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
         }
         else
         {
-            if ((cmdp->hookmask & HOOK_ARGS) && bGoodHookObj)
+            if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
+            {
                 process_hook_args(executor, cmdp, buf1, NULL, NULL, 0, sw);
+            }
             (*(((CMDENT_ONE_ARG *)cmdp)->handler))(executor, caller,
                 enactor, eval, key, buf1, cargs, ncargs);
         }
@@ -1592,8 +1654,10 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
                 eval|interp|EV_STRIP_LS|EV_STRIP_TS, args, MAX_ARG, cargs,
                 ncargs, &nargs);
 
-            if ((cmdp->hookmask & HOOK_ARGS) && bGoodHookObj)
+            if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
+            {
                 process_hook_args(executor, cmdp, buf1, NULL, args, nargs, sw);
+            }
             (*(((CMDENT_TWO_ARG_ARGV *)cmdp)->handler))(executor, caller,
                 enactor, eval, key, buf1, args, nargs, cargs, ncargs);
 
@@ -1624,8 +1688,10 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
                 buf2 = parse_to(&arg, '\0', eval|interp|EV_STRIP_LS|EV_STRIP_TS|EV_TOP);
             }
 
-            if ((cmdp->hookmask & HOOK_ARGS) && bGoodHookObj)
+            if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
+            {
                 process_hook_args(executor, cmdp, nargs2>=1?buf1:NULL, nargs2>=2?buf2:NULL, NULL, 0, sw);
+            }
             (*(((CMDENT_TWO_ARG *)cmdp)->handler))(executor, caller,
                 enactor, eval, key, nargs2, buf1, buf2, cargs, ncargs);
 
@@ -1646,10 +1712,10 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
     // 'After' hooks.
     // @hook idea from TinyMUSH 3, code from RhostMUSH. Ported by Jake Nelson.
     //
-    if (  (cmdp->hookmask & HOOK_AFTER)
-        && bGoodHookObj)
+    if (  (cmdp->flags & CEF_HOOK_AFTER)
+       && bGoodHookObj)
     {
-        process_hook(executor, cmdp, HOOK_AFTER, false);
+        process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
     }
 }
 
@@ -1888,16 +1954,16 @@ UTF8 *process_command
         }
 
         hval = 0;
-        if (  cmdp->hookmask & (HOOK_IGNORE|HOOK_PERMIT)
+        if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
            && bGoodHookObj)
         {
-            if (  cmdp->hookmask & HOOK_IGNORE
-               && !process_hook(executor, cmdp, HOOK_IGNORE, true))
+            if (  (cmdp->flags & CEF_HOOK_IGNORE)
+               && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
             {
                 hval = 2;
             }
-            else if (  cmdp->hookmask & HOOK_PERMIT
-                    && !process_hook(executor, cmdp, HOOK_PERMIT, true))
+            else if (  (cmdp->flags & CEF_HOOK_PERMIT)
+                    && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
             {
                 hval = 1;
             }
@@ -1909,10 +1975,10 @@ UTF8 *process_command
             if (  cval == 1
                || hval == 1)
             {
-                if (  cmdp->hookmask & HOOK_AFAIL
+                if (  (cmdp->flags & CEF_HOOK_AFAIL)
                    && bGoodHookObj)
                 {
-                    process_hook(executor, cmdp, HOOK_AFAIL, false);
+                    process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
                 }
                 else
                 {
@@ -2029,16 +2095,16 @@ UTF8 *process_command
         }
 
         hval = 0;
-        if (  goto_cmdp->hookmask & (HOOK_IGNORE|HOOK_PERMIT)
+        if (  (goto_cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
            && bGoodHookObj)
         {
-            if (  goto_cmdp->hookmask & HOOK_IGNORE
-               && !process_hook(executor, goto_cmdp, HOOK_IGNORE, true))
+            if (  (goto_cmdp->flags & CEF_HOOK_IGNORE)
+               && !process_hook(executor, goto_cmdp, CEF_HOOK_IGNORE, true))
             {
                 hval = 2;
             }
-            else if (  goto_cmdp->hookmask & HOOK_PERMIT
-                    && !process_hook(executor, goto_cmdp, HOOK_PERMIT, true))
+            else if (  (goto_cmdp->flags & CEF_HOOK_PERMIT)
+                    && !process_hook(executor, goto_cmdp, CEF_HOOK_PERMIT, true))
             {
                 hval = 1;
             }
@@ -2068,10 +2134,10 @@ UTF8 *process_command
                 if (  1 == cval
                    || 1 == hval)
                 {
-                    if (  goto_cmdp->hookmask & HOOK_AFAIL
+                    if (  (goto_cmdp->flags & CEF_HOOK_AFAIL)
                        && bGoodHookObj)
                     {
-                        process_hook(executor, goto_cmdp, HOOK_AFAIL, false);
+                        process_hook(executor, goto_cmdp, CEF_HOOK_AFAIL, false);
                     }
                     else
                     {
@@ -2081,10 +2147,10 @@ UTF8 *process_command
                     return preserve_cmd;
                 }
 
-                if (  (goto_cmdp->hookmask & HOOK_BEFORE)
+                if (  (goto_cmdp->flags & CEF_HOOK_BEFORE)
                    && bGoodHookObj)
                 {
-                    process_hook(executor, goto_cmdp, HOOK_BEFORE, false);
+                    process_hook(executor, goto_cmdp, CEF_HOOK_BEFORE, false);
                 }
 
                 if (!bMaster)
@@ -2096,10 +2162,10 @@ UTF8 *process_command
                     move_exit(executor, exit, true, NULL, 0);
                 }
 
-                if (  (goto_cmdp->hookmask & HOOK_AFTER)
+                if (  (goto_cmdp->flags & CEF_HOOK_AFTER)
                     && bGoodHookObj)
                 {
-                    process_hook(executor, goto_cmdp, HOOK_AFTER, false);
+                    process_hook(executor, goto_cmdp, CEF_HOOK_AFTER, false);
                 }
                 mudstate.debug_cmd = cmdsave;
                 return preserve_cmd;
@@ -2177,16 +2243,16 @@ UTF8 *process_command
         }
 
         hval = 0;
-        if (  cmdp->hookmask & (HOOK_IGNORE|HOOK_PERMIT)
+        if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
            && bGoodHookObj)
         {
-            if (  cmdp->hookmask & HOOK_IGNORE
-               && !process_hook(executor, cmdp, HOOK_IGNORE, true))
+            if (  (cmdp->flags & CEF_HOOK_IGNORE)
+               && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
             {
                 hval = 2;
             }
-            else if (  cmdp->hookmask & HOOK_PERMIT
-                    && !process_hook(executor, cmdp, HOOK_PERMIT, true))
+            else if (  (cmdp->flags & CEF_HOOK_PERMIT)
+                    && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
             {
                 hval = 1;
             }
@@ -2194,11 +2260,11 @@ UTF8 *process_command
 
         // If the command contains a switch, but the command doesn't support
         // any switches or the command contains one that isn't supported,
-        // HOOK_IGSWITCH will allow us to treat the entire command as if it
+        // CEF_HOOK_IGSWITCH will allow us to treat the entire command as if it
         // weren't a built-in command.
         //
         int flagvalue;
-        if (  (cmdp->hookmask & HOOK_IGSWITCH)
+        if (  (cmdp->flags & CEF_HOOK_IGSWITCH)
            && pSlash)
         {
             if (cmdp->switches)
@@ -2244,10 +2310,10 @@ UTF8 *process_command
             if (  cval == 1
                || hval == 1)
             {
-                if (  cmdp->hookmask & HOOK_AFAIL
+                if (  (cmdp->flags & CEF_HOOK_AFAIL)
                    && bGoodHookObj)
                 {
-                    process_hook(executor, cmdp, HOOK_AFAIL, false);
+                    process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
                 }
                 else
                 {
@@ -2342,16 +2408,16 @@ UTF8 *process_command
                 cmdp = (CMDENT *)hashfindLEN("leave", strlen("leave"), &mudstate.command_htab);
 
                 hval = 0;
-                if (  cmdp->hookmask & (HOOK_IGNORE|HOOK_PERMIT)
+                if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
                    && bGoodHookObj)
                 {
-                    if (  cmdp->hookmask & HOOK_IGNORE
-                       && !process_hook(executor, cmdp, HOOK_IGNORE, true))
+                    if (  (cmdp->flags & CEF_HOOK_IGNORE)
+                       && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
                     {
                         hval = 2;
                     }
-                    else if (  cmdp->hookmask & HOOK_PERMIT
-                            && !process_hook(executor, cmdp, HOOK_PERMIT, true))
+                    else if (  (cmdp->flags & CEF_HOOK_PERMIT)
+                            && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
                     {
                         hval = 1;
                     }
@@ -2363,10 +2429,10 @@ UTF8 *process_command
                     if (  cval == 1
                        || hval == 1)
                     {
-                        if (  cmdp->hookmask & HOOK_AFAIL
+                        if (  (cmdp->flags & CEF_HOOK_AFAIL)
                            && bGoodHookObj)
                         {
-                            process_hook(executor, cmdp, HOOK_AFAIL, false);
+                            process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
                         }
                         else
                         {
@@ -2376,18 +2442,18 @@ UTF8 *process_command
                         return preserve_cmd;
                     }
 
-                    if (  (cmdp->hookmask & HOOK_BEFORE)
+                    if (  (cmdp->flags & CEF_HOOK_BEFORE)
                        && bGoodHookObj)
                     {
-                        process_hook(executor, cmdp, HOOK_BEFORE, false);
+                        process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
                     }
 
                     do_leave(executor, caller, executor, 0, 0);
 
-                    if (  (cmdp->hookmask & HOOK_AFTER)
+                    if (  (cmdp->flags & CEF_HOOK_AFTER)
                         && bGoodHookObj)
                     {
-                        process_hook(executor, cmdp, HOOK_AFTER, false);
+                        process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
                     }
 
                     mudstate.debug_cmd = cmdsave;
@@ -2433,16 +2499,16 @@ UTF8 *process_command
                     cmdp = (CMDENT *)hashfindLEN("enter", strlen("enter"), &mudstate.command_htab);
 
                     hval = 0;
-                    if (  cmdp->hookmask & (HOOK_IGNORE|HOOK_PERMIT)
+                    if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
                        && bGoodHookObj)
                     {
-                        if (  cmdp->hookmask & HOOK_IGNORE
-                           && !process_hook(executor, cmdp, HOOK_IGNORE, true))
+                        if (  (cmdp->flags & CEF_HOOK_IGNORE)
+                           && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
                         {
                             hval = 2;
                         }
-                        else if (  cmdp->hookmask & HOOK_PERMIT
-                                && !process_hook(executor, cmdp, HOOK_PERMIT, true))
+                        else if (  (cmdp->flags & CEF_HOOK_PERMIT)
+                                && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
                         {
                             hval = 1;
                         }
@@ -2454,10 +2520,10 @@ UTF8 *process_command
                         if (  cval == 1
                            || hval == 1)
                         {
-                            if (  cmdp->hookmask & HOOK_AFAIL
+                            if (  (cmdp->flags & CEF_HOOK_AFAIL)
                                && bGoodHookObj)
                             {
-                               process_hook(executor, cmdp, HOOK_AFAIL, false);
+                                process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
                             }
                             else
                             {
@@ -2467,18 +2533,18 @@ UTF8 *process_command
                             return preserve_cmd;
                         }
 
-                        if (  (cmdp->hookmask & HOOK_BEFORE)
+                        if (  (cmdp->flags & CEF_HOOK_BEFORE)
                            && bGoodHookObj)
                         {
-                            process_hook(executor, cmdp, HOOK_BEFORE, false);
+                            process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
                         }
 
                         do_enter_internal(executor, exit, false);
 
-                        if (  (cmdp->hookmask & HOOK_AFTER)
+                        if (  (cmdp->flags & CEF_HOOK_AFTER)
                             && bGoodHookObj)
                         {
-                            process_hook(executor, cmdp, HOOK_AFTER, false);
+                            process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
                         }
                         mudstate.debug_cmd = cmdsave;
                         return preserve_cmd;
@@ -3130,7 +3196,15 @@ CF_HAND(cf_cmd_alias)
         {
             // Create the new command table entry.
             //
-            cmd2 = (CMDENT *)MEMALLOC(sizeof(CMDENT));
+            cmd2 = NULL;
+            try
+            {
+                cmd2 = new CMDENT;
+            }
+            catch (...)
+            {
+                ; // Nothing.
+            }
             ISOUTOFMEMORY(cmd2);
             cmd2->cmdname = StringClone(alias);
             cmd2->switches = cmdp->switches;
@@ -3142,6 +3216,7 @@ CF_HAND(cf_cmd_alias)
             }
             cmd2->callseq = cmdp->callseq;
             cmd2->handler = cmdp->handler;
+            cmd2->flags = CEF_ALLOC;
 
             hashaddLEN(cmd2->cmdname, strlen((char *)cmd2->cmdname), cmd2, (CHashTable *) vp);
         }
@@ -4497,26 +4572,26 @@ void do_moniker(dbref executor, dbref caller, dbref enactor, int eval, int key,
 //
 static void show_hook(UTF8 *bf, UTF8 *bfptr, int key)
 {
-    if (key & HOOK_BEFORE)
+    if (key & CEF_HOOK_BEFORE)
         safe_str(T("before "), bf, &bfptr);
-    if (key & HOOK_AFTER)
+    if (key & CEF_HOOK_AFTER)
         safe_str(T("after "), bf, &bfptr);
-    if (key & HOOK_PERMIT)
+    if (key & CEF_HOOK_PERMIT)
         safe_str(T("permit "), bf, &bfptr);
-    if (key & HOOK_IGNORE)
+    if (key & CEF_HOOK_IGNORE)
         safe_str(T("ignore "), bf, &bfptr);
-    if (key & HOOK_IGSWITCH)
+    if (key & CEF_HOOK_IGSWITCH)
         safe_str(T("igswitch "), bf, &bfptr);
-    if (key & HOOK_AFAIL)
+    if (key & CEF_HOOK_AFAIL)
         safe_str(T("afail "), bf, &bfptr);
-    if (key & HOOK_ARGS)
+    if (key & CEF_HOOK_ARGS)
         safe_str(T("args "), bf, &bfptr);
     *bfptr = '\0';
 }
 
 static void hook_loop(dbref executor, CMDENT *cmdp, UTF8 *s_ptr, UTF8 *s_ptrbuff)
 {
-    show_hook(s_ptrbuff, s_ptr, cmdp->hookmask);
+    show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
     const UTF8 *pFmt = T("%-32.32s | %s");
     const UTF8 *pCmd = cmdp->cmdname;
     if (  pCmd[0] != '\0'
@@ -4575,9 +4650,9 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
     CMDENT *cmdp = (CMDENT *)NULL;
 
     if (  (  key
-          && !(key & HOOK_LIST))
+          && !(key & CEF_HOOK_LIST))
        || (  (  !key
-             || (key & HOOK_LIST))
+             || (key & CEF_HOOK_LIST))
           && *name))
     {
         cmdp = (CMDENT *)hashfindLEN(name, strlen((char *)name), &mudstate.command_htab);
@@ -4587,17 +4662,17 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
             return;
         }
     }
-    if (  (key & HOOK_CLEAR)
-       && (key & HOOK_LIST))
+    if (  (key & CEF_HOOK_CLEAR)
+       && (key & CEF_HOOK_LIST))
     {
         notify(executor, T("@hook: Incompatible switches."));
         return;
     }
 
-    if (key & HOOK_CLEAR)
+    if (key & CEF_HOOK_CLEAR)
     {
         negate = true;
-        key = key & ~HOOK_CLEAR;
+        key = key & ~CEF_HOOK_CLEAR;
         key = key & ~SW_MULTIPLE;
     }
     else
@@ -4605,20 +4680,21 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
         negate = false;
     }
 
-    if (key & (HOOK_BEFORE|HOOK_AFTER|HOOK_PERMIT|HOOK_IGNORE|HOOK_IGSWITCH|HOOK_AFAIL|HOOK_ARGS))
+    if (key & (CEF_HOOK_BEFORE|CEF_HOOK_AFTER|CEF_HOOK_PERMIT|CEF_HOOK_IGNORE|CEF_HOOK_IGSWITCH|CEF_HOOK_AFAIL|CEF_HOOK_ARGS))
     {
         if (negate)
         {
-            cmdp->hookmask = cmdp->hookmask & ~key;
+            cmdp->flags = cmdp->flags & ~key;
         }
         else
         {
-            cmdp->hookmask = cmdp->hookmask | key;
+            cmdp->flags = cmdp->flags | key;
         }
-        if (cmdp->hookmask)
+
+        if (cmdp->flags)
         {
             s_ptr = s_ptrbuff = alloc_lbuf("@hook");
-            show_hook(s_ptrbuff, s_ptr, cmdp->hookmask);
+            show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
             notify(executor, tprintf(T("@hook: New mask for \xE2\x80\x98%s\xE2\x80\x99 -> %s"), cmdp->cmdname, s_ptrbuff));
             free_lbuf(s_ptrbuff);
         }
@@ -4627,15 +4703,16 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
             notify(executor, tprintf(T("@hook: New mask for \xE2\x80\x98%s\xE2\x80\x99 is empty."), cmdp->cmdname));
         }
     }
-    if (  (key & HOOK_LIST)
+
+    if (  (key & CEF_HOOK_LIST)
        || !key)
     {
         if (cmdp)
         {
-            if (cmdp->hookmask)
+            if (cmdp->flags)
             {
                 s_ptr = s_ptrbuff = alloc_lbuf("@hook");
-                show_hook(s_ptrbuff, s_ptr, cmdp->hookmask);
+                show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
                 notify(executor, tprintf(T("@hook: Mask for hashed command \xE2\x80\x98%s\xE2\x80\x99 -> %s"), cmdp->cmdname, s_ptrbuff));
                 free_lbuf(s_ptrbuff);
             }
@@ -4661,7 +4738,7 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
                 {
                     s_ptrbuff[0] = '\0';
                     s_ptr = s_ptrbuff;
-                    if (cmdp2->hookmask)
+                    if (0 != HOOKMASK(cmdp2->flags))
                     {
                         found = true;
                         hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
@@ -4674,7 +4751,7 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
                 {
                     s_ptrbuff[0] = '\0';
                     s_ptr = s_ptrbuff;
-                    if (cmdp2->hookmask)
+                    if (0 != HOOKMASK(cmdp2->flags))
                     {
                         found = true;
                         hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
@@ -4687,7 +4764,7 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
                 {
                     s_ptrbuff[0] = '\0';
                     s_ptr = s_ptrbuff;
-                    if (cmdp2->hookmask)
+                    if (0 != HOOKMASK(cmdp2->flags))
                     {
                         found = true;
                         hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
@@ -4700,7 +4777,7 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
                 {
                     s_ptrbuff[0] = '\0';
                     s_ptr = s_ptrbuff;
-                    if (cmdp2->hookmask)
+                    if (0 != HOOKMASK(cmdp2->flags))
                     {
                         found = true;
                         hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
@@ -4740,10 +4817,10 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
                 size_t ncbuff = p - cbuff;
                 cmdp = (CMDENT *)hashfindLEN(cbuff, ncbuff, &mudstate.command_htab);
                 if (  cmdp
-                   && cmdp->hookmask)
+                   && 0 != HOOKMASK(cmdp->flags))
                 {
                     found = true;
-                    show_hook(s_ptrbuff, s_ptr, cmdp->hookmask);
+                    show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
                     notify(executor, tprintf(T("%-32.32s | %s"), cmdp->cmdname, s_ptrbuff));
                 }
             }

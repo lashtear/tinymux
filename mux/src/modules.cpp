@@ -12,11 +12,12 @@
 #include "autoconf.h"
 #include "config.h"
 #include "externs.h"
+#include "interface.h"
 
 #if defined(TINYMUX_MODULES)
 
 #define NUM_CLASSES 4
-static CLASS_INFO netmux_classes[NUM_CLASSES] =
+static MUX_CLASS_INFO netmux_classes[NUM_CLASSES] =
 {
     { CID_Log                },
     { CID_ServerEventsSource },

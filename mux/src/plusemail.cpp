@@ -18,10 +18,8 @@
 #include "autoconf.h"
 #include "config.h"
 #include "externs.h"
-
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif // HAVE_NETDB_H
+#include "interface.h"
+#include "mathutil.h"
 
 #include "_build.h"
 
@@ -436,31 +434,38 @@ static int mod_email_sock_readline(SOCKET sock, UTF8 *buffer, int maxlen)
 //
 static int mod_email_sock_open(const UTF8 *conhostname, u_short port, SOCKET *sock)
 {
-#ifdef HAVE_GETHOSTBYNAME
-    struct hostent *conhost = gethostbyname((char *)conhostname);
-    if (NULL == conhost)
+    int cc = -1;
+
+    // Let getaddrinfo() fill out the sockaddr structure for us.
+    //
+    MUX_ADDRINFO hints;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family   = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_ADDRCONFIG;
+
+    UTF8 sPort[SBUF_SIZE];
+    mux_ltoa(port, sPort);
+
+    MUX_ADDRINFO *servinfo;
+    if (0 == mux_getaddrinfo(conhostname, sPort, &hints, &servinfo))
     {
-        return -1;
+        for (MUX_ADDRINFO *p = servinfo; NULL != p; p = p->ai_next)
+        {
+            cc = -2;
+            SOCKET mysock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+            if (0 == connect(mysock, p->ai_addr, p->ai_addrlen))
+            {
+                *sock = mysock;
+                cc = 0;
+                break;
+            }
+            SOCKET_CLOSE(mysock);
+        }
+        mux_freeaddrinfo(servinfo);
     }
-
-    struct sockaddr_in name;
-    name.sin_port = htons(port);
-    name.sin_family = AF_INET;
-    memcpy((char *)&name.sin_addr, (char *)conhost->h_addr, conhost->h_length);
-    SOCKET mysock = socket(AF_INET, SOCK_STREAM, 0);
-    int addr_len = sizeof(name);
-
-    if (connect(mysock, (struct sockaddr *)&name, addr_len) == -1)
-    {
-        return -2;
-    }
-
-    *sock = mysock;
-
-    return 0;
-#else
-    return -1;
-#endif // HAVE_GETHOSTBYNAME
+    return cc;
 }
 
 static int mod_email_sock_close(SOCKET sock)

@@ -2836,19 +2836,19 @@ UTF8 *convert_to_html(const UTF8 *pString)
                             case kIntense:
                                 csPrev &= ~CS_INTENSE;
                                 break;
-                            
+
                             case kUnderline:
                                 csPrev &= ~CS_UNDERLINE;
                                 break;
-                            
+
                             case kBlink:
                                 csPrev &= ~CS_BLINK;
                                 break;
-                            
+
                             case kInverse:
                                 csPrev &= ~CS_INVERSE;
                                 break;
-                            
+
                             case kColor:
                                 csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
                                 break;
@@ -2880,19 +2880,19 @@ UTF8 *convert_to_html(const UTF8 *pString)
                     case kIntense:
                         csPrev |= CS_INTENSE;
                         break;
-                    
+
                     case kUnderline:
                         csPrev |= CS_UNDERLINE;
                         break;
-                    
+
                     case kBlink:
                         csPrev |= CS_BLINK;
                         break;
-                    
+
                     case kInverse:
                         csPrev |= CS_INVERSE;
                         break;
-                    
+
                     case kColor:
                         csPrev &= ~(CS_FOREGROUND|CS_BACKGROUND);
                         csPrev |= (CS_FOREGROUND|CS_BACKGROUND) & csNext;;
@@ -4575,7 +4575,7 @@ size_t TruncateToBuffer
             }
             else
             {
-                size_t n = strlen((char *)pTextRun);
+                size_t n = strlen((char *)p);
                 nTextRun += n;
                 p += n;
                 break;
@@ -6882,19 +6882,19 @@ void mux_string::export_TextHtml
                             case kIntense:
                                 csPrev &= ~CS_INTENSE;
                                 break;
-                            
+
                             case kUnderline:
                                 csPrev &= ~CS_UNDERLINE;
                                 break;
-                            
+
                             case kBlink:
                                 csPrev &= ~CS_BLINK;
                                 break;
-                            
+
                             case kInverse:
                                 csPrev &= ~CS_INVERSE;
                                 break;
-                            
+
                             case kColor:
                                 csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
                                 break;
@@ -6919,19 +6919,19 @@ void mux_string::export_TextHtml
                     case kIntense:
                         csPrev |= CS_INTENSE;
                         break;
-                    
+
                     case kUnderline:
                         csPrev |= CS_UNDERLINE;
                         break;
-                    
+
                     case kBlink:
                         csPrev |= CS_BLINK;
                         break;
-                    
+
                     case kInverse:
                         csPrev |= CS_INVERSE;
                         break;
-                    
+
                     case kColor:
                         csPrev &= ~(CS_FOREGROUND|CS_BACKGROUND);
                         csPrev |= (CS_FOREGROUND|CS_BACKGROUND) & csNext;;
@@ -6954,19 +6954,19 @@ void mux_string::export_TextHtml
         case kIntense:
             csPrev &= ~CS_INTENSE;
             break;
-        
+
         case kUnderline:
             csPrev &= ~CS_UNDERLINE;
             break;
-        
+
         case kBlink:
             csPrev &= ~CS_BLINK;
             break;
-        
+
         case kInverse:
             csPrev &= ~CS_INVERSE;
             break;
-        
+
         case kColor:
             csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
             break;
@@ -7878,7 +7878,7 @@ void mux_string::transform
     {
         // This is the more general case.  We use a hash table for mapping.
         //
-        hashreset(&mudstate.scratch_htab);
+        hashflush(&mudstate.scratch_htab);
 
         mux_cursor iFromSet, iToSet;
         sFromSet.cursor_start(iFromSet);
@@ -7908,7 +7908,7 @@ void mux_string::transform
                     && i.m_point < nStart+nLen);
         }
 
-        hashreset(&mudstate.scratch_htab);
+        hashflush(&mudstate.scratch_htab);
     }
 }
 

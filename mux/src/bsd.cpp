@@ -16,10 +16,6 @@
 #include <sys/ioctl.h>
 #endif // HAVE_SYS_IOCTL_H
 
-#ifdef UNIX_SSL
-#include <openssl/ssl.h>
-#endif
-
 #include <signal.h>
 
 #include "attrs.h"
@@ -52,8 +48,10 @@ DESC *descriptor_list = NULL;
 
 static void TelnetSetup(DESC *d);
 static void SiteMonSend(SOCKET, const UTF8 *, DESC *, const UTF8 *);
-static DESC *initializesock(SOCKET, struct sockaddr_in *);
+static DESC *initializesock(SOCKET, MUX_SOCKADDR *msa);
+#if defined(UNIX_NETWORKING)
 static DESC *new_connection(PortInfo *Port, int *piError);
+#endif
 static bool process_input(DESC *);
 static int make_nonblocking(SOCKET s);
 
@@ -66,24 +64,24 @@ pid_t game_pid;
 // by Stephen Dennis <brazilofmux@gmail.com>.
 //
 HANDLE hGameProcess = INVALID_HANDLE_VALUE;
-FCANCELIO *fpCancelIo = NULL;
-FGETPROCESSTIMES *fpGetProcessTimes = NULL;
+FGETNAMEINFO *fpGetNameInfo = NULL;
+FGETADDRINFO *fpGetAddrInfo = NULL;
+FFREEADDRINFO *fpFreeAddrInfo = NULL;
 HANDLE CompletionPort;    // IOs are queued up on this port
-bool  bUseCompletionPorts = true;
 static OVERLAPPED lpo_aborted; // special to indicate a player has finished TCP IOs
 static OVERLAPPED lpo_aborted_final; // Finally free the descriptor.
 static OVERLAPPED lpo_shutdown; // special to indicate a player should do a shutdown
 static OVERLAPPED lpo_welcome; // special to indicate a player has -just- connected.
 static OVERLAPPED lpo_wakeup;  // special to indicate that the loop should wakeup and return.
 CRITICAL_SECTION csDescriptorList;      // for thread synchronization
-static DWORD WINAPI MUDListenThread(LPVOID pVoid);
+static DWORD WINAPI MUXListenThread(LPVOID pVoid);
 static void ProcessWindowsTCP(DWORD dwTimeout);  // handle NT-style IOs
 static bool bDescriptorListInit = false;
+HWND g_hWnd = NULL;
 
 typedef struct
 {
-    int                port_in;
-    struct sockaddr_in sa_in;
+    MUX_SOCKADDR  msa;
 } SLAVE_REQUEST;
 
 static HANDLE hSlaveRequestStackSemaphore;
@@ -93,8 +91,8 @@ static int iSlaveRequest = 0;
 #define MAX_STRING 514
 typedef struct
 {
-    UTF8 host[MAX_STRING];
-    UTF8 token[MAX_STRING];
+    UTF8 host_address[MAX_STRING];
+    UTF8 host_name[MAX_STRING];
 } SLAVE_RESULT;
 
 static HANDLE hSlaveResultStackSemaphore;
@@ -108,15 +106,16 @@ typedef struct tagSlaveThreadsInfo
     unsigned iDoing;
     DWORD    iError;
     DWORD    hThreadId;
+    HANDLE   hThread;
 } SLAVETHREADINFO;
 static SLAVETHREADINFO SlaveThreadInfo[NUM_SLAVE_THREADS];
 static HANDLE hSlaveThreadsSemaphore;
+static bool fSlaveBooted = false;
+static bool fSlaveShutdown = false;
 
 static DWORD WINAPI SlaveProc(LPVOID lpParameter)
 {
     SLAVE_REQUEST req;
-    unsigned long addr;
-    struct hostent *hp;
     size_t iSlave = reinterpret_cast<size_t>(lpParameter);
 
     if (NUM_SLAVE_THREADS <= iSlave)
@@ -127,6 +126,11 @@ static DWORD WINAPI SlaveProc(LPVOID lpParameter)
     SlaveThreadInfo[iSlave].iDoing = __LINE__;
     for (;;)
     {
+        if (fSlaveShutdown)
+        {
+            return 1;
+        }
+
         // Go to sleep until there's something useful to do.
         //
         SlaveThreadInfo[iSlave].iDoing = __LINE__;
@@ -155,6 +159,11 @@ static DWORD WINAPI SlaveProc(LPVOID lpParameter)
         SlaveThreadInfo[iSlave].iDoing = __LINE__;
         for (;;)
         {
+            if (fSlaveShutdown)
+            {
+                return 1;
+            }
+
             // Go take the request off the stack, but not if it takes more
             // than 5 seconds to do it. Go back to sleep if we time out. The
             // request can wait: either another thread will pick it up, or
@@ -193,23 +202,16 @@ static DWORD WINAPI SlaveProc(LPVOID lpParameter)
             // Ok, we have complete control of this address, now, so let's
             // do the reverse-DNS thing.
             //
+            UTF8 host_address[MAX_STRING];
+            UTF8 host_name[MAX_STRING];
 
-#ifdef HAVE_GETHOSTBYADDR
-            addr = req.sa_in.sin_addr.S_un.S_addr;
-            hp = gethostbyaddr((char *)&addr, sizeof(addr), AF_INET);
-            if (  NULL != hp
-               && strlen(hp->h_name) < MAX_STRING)
+            if (  0 == mux_getnameinfo(&req.msa, host_address, sizeof(host_address), NULL, 0, NI_NUMERICHOST|NI_NUMERICSERV)
+               && 0 == mux_getnameinfo(&req.msa, host_name, sizeof(host_name), NULL, 0, NI_NUMERICSERV))
             {
-                SlaveThreadInfo[iSlave].iDoing = __LINE__;
-
-                UTF8 host[MAX_STRING];
-                UTF8 token[MAX_STRING];
-
-                // We have a host name.
-                //
-                mux_strncpy(host, (UTF8 *)inet_ntoa(req.sa_in.sin_addr), sizeof(host)-1);
-                mux_strncpy(token, (UTF8 *)hp->h_name, sizeof(token)-1);
-
+                if (fSlaveShutdown)
+                {
+                    return 1;
+                }
                 SlaveThreadInfo[iSlave].iDoing = __LINE__;
                 if (WAIT_OBJECT_0 == WaitForSingleObject(hSlaveResultStackSemaphore, INFINITE))
                 {
@@ -217,8 +219,8 @@ static DWORD WINAPI SlaveProc(LPVOID lpParameter)
                     if (iSlaveResult < SLAVE_RESULT_STACK_SIZE)
                     {
                         SlaveThreadInfo[iSlave].iDoing = __LINE__;
-                        mux_strncpy(SlaveResults[iSlaveResult].host, host, sizeof(SlaveResults[iSlaveResult].host)-1);
-                        mux_strncpy(SlaveResults[iSlaveResult].token, token, sizeof(SlaveResults[iSlaveResult].token)-1);
+                        mux_strncpy(SlaveResults[iSlaveResult].host_address, host_address, sizeof(SlaveResults[iSlaveResult].host_address)-1);
+                        mux_strncpy(SlaveResults[iSlaveResult].host_name, host_name, sizeof(SlaveResults[iSlaveResult].host_name)-1);
                         iSlaveResult++;
                     }
                     else
@@ -241,14 +243,12 @@ static DWORD WINAPI SlaveProc(LPVOID lpParameter)
                     return 1;
                 }
             }
-#endif // HAVE_GETHOSTBYADDR
         }
     }
     //SlaveThreadInfo[iSlave].iDoing = __LINE__;
     //return 1;
 }
 
-static bool bSlaveBooted = false;
 void boot_slave(dbref executor, dbref caller, dbref enactor, int eval, int key)
 {
     UNUSED_PARAMETER(executor);
@@ -257,7 +257,7 @@ void boot_slave(dbref executor, dbref caller, dbref enactor, int eval, int key)
     UNUSED_PARAMETER(eval);
     UNUSED_PARAMETER(key);
 
-    if (bSlaveBooted)
+    if (fSlaveBooted || fSlaveShutdown)
     {
         return;
     }
@@ -270,18 +270,31 @@ void boot_slave(dbref executor, dbref caller, dbref enactor, int eval, int key)
     {
         SlaveThreadInfo[iSlave].iDoing = 0;
         SlaveThreadInfo[iSlave].iError = 0;
-        CreateThread(NULL, 0, SlaveProc, reinterpret_cast<LPVOID>(iSlave), 0,
+        SlaveThreadInfo[iSlave].hThread = CreateThread(NULL, 0, SlaveProc, reinterpret_cast<LPVOID>(iSlave), 0,
             &SlaveThreadInfo[iSlave].hThreadId);
         DebugTotalThreads++;
     }
-    bSlaveBooted = true;
+    fSlaveBooted = true;
 }
 
+void shutdown_slave()
+{
+    size_t iSlave;
+    fSlaveShutdown = true;
+    for (iSlave = 0; iSlave < NUM_SLAVE_THREADS*2; iSlave++)
+    {
+        ReleaseSemaphore(hSlaveThreadsSemaphore, 1, NULL);
+    }
+    for (iSlave = 0; iSlave < NUM_SLAVE_THREADS; iSlave++)
+    {
+        WaitForSingleObject(SlaveThreadInfo[iSlave].hThread, INFINITE);
+    }
+}
 
 static int get_slave_result(void)
 {
-    UTF8 host[MAX_STRING];
-    UTF8 token[MAX_STRING];
+    UTF8 host_address[MAX_STRING];
+    UTF8 host_name[MAX_STRING];
 
     // Go take the result off the stack, but not if it takes more
     // than 5 seconds to do it. Skip it if we time out.
@@ -299,8 +312,8 @@ static int get_slave_result(void)
         return 1;
     }
     iSlaveResult--;
-    mux_strncpy(host, SlaveResults[iSlaveResult].host, sizeof(host)-1);
-    mux_strncpy(token, SlaveResults[iSlaveResult].token, sizeof(token)-1);
+    mux_strncpy(host_address, SlaveResults[iSlaveResult].host_address, sizeof(host_address)-1);
+    mux_strncpy(host_name, SlaveResults[iSlaveResult].host_name, sizeof(host_name)-1);
     ReleaseSemaphore(hSlaveResultStackSemaphore, 1, NULL);
 
     // At this point, we have a host name on our own stack.
@@ -312,12 +325,12 @@ static int get_slave_result(void)
 
     for (DESC *d = descriptor_list; d; d = d->next)
     {
-        if (strcmp((char *)d->addr, (char *)host))
+        if (strcmp((char *)d->addr, (char *)host_address))
         {
             continue;
         }
 
-        mux_strncpy(d->addr, token, sizeof(d->addr)-1);
+        mux_strncpy(d->addr, host_name, sizeof(d->addr)-1);
         if (d->player != 0)
         {
             if (d->username[0])
@@ -328,7 +341,7 @@ static int get_slave_result(void)
             {
                 atr_add_raw(d->player, A_LASTSITE, d->addr);
             }
-            atr_add_raw(d->player, A_LASTIP, (UTF8 *)inet_ntoa((d->address).sin_addr));
+            atr_add_raw(d->player, A_LASTIP, host_address);
         }
     }
 
@@ -773,10 +786,10 @@ static int get_slave_result(void)
     }
     buf[len] = '\0';
 
-    UTF8 *token = alloc_lbuf("slave_token");
-    UTF8 *host = alloc_lbuf("slave_host");
+    UTF8 *host_name = alloc_lbuf("slave_host_name");
+    UTF8 *host_address = alloc_lbuf("slave_host_address");
     UTF8 *p;
-    if (sscanf((char *)buf, "%s %s", host, token) != 2)
+    if (sscanf((char *)buf, "%s %s", host_address, host_name) != 2)
     {
         goto Done;
     }
@@ -790,12 +803,12 @@ static int get_slave_result(void)
     {
         for (d = descriptor_list; d; d = d->next)
         {
-            if (strcmp((char *)d->addr, (char *)host) != 0)
+            if (strcmp((char *)d->addr, (char *)host_address) != 0)
             {
                 continue;
             }
 
-            strncpy((char *)d->addr, (char *)token, 50);
+            strncpy((char *)d->addr, (char *)host_name, 50);
             d->addr[50] = '\0';
             if (d->player != 0)
             {
@@ -808,15 +821,15 @@ static int get_slave_result(void)
                 {
                     atr_add_raw(d->player, A_LASTSITE, d->addr);
                 }
-                atr_add_raw(d->player, A_LASTIP, (UTF8 *)inet_ntoa((d->address).sin_addr));
+                atr_add_raw(d->player, A_LASTIP, host_address);
             }
         }
     }
 
 Done:
     free_lbuf(buf);
-    free_lbuf(token);
-    free_lbuf(host);
+    free_lbuf(host_name);
+    free_lbuf(host_address);
     return 0;
 }
 
@@ -977,163 +990,79 @@ int mux_socket_read(DESC *d, char *buffer, size_t nBytes, int flags)
 }
 
 
-static void make_socket(PortInfo *Port, const UTF8 *ip_address)
+bool make_socket(SOCKET *ps, MUX_ADDRINFO *ai)
 {
-    SOCKET s;
-    struct sockaddr_in server;
-    int opt = 1;
-    Port->socket = INVALID_SOCKET;
-
-#if defined(WINDOWS_NETWORKING)
-
-    // If we are running Windows NT we must create a completion port,
-    // and start up a listening thread for new connections
+    // Create a TCP/IP stream socket
     //
-    if (bUseCompletionPorts)
-    {
-        int nRet;
-
-        // create initial IO completion port, so threads have something to wait on
-        //
-        CompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 1);
-
-        if (!CompletionPort)
-        {
-            Log.tinyprintf(T("Error %ld on CreateIoCompletionPort" ENDLINE),  GetLastError());
-            return;
-        }
-
-        // Initialize the critical section
-        //
-        if (!bDescriptorListInit)
-        {
-            InitializeCriticalSection(&csDescriptorList);
-            bDescriptorListInit = true;
-        }
-
-        // Create a TCP/IP stream socket
-        //
-        s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-        if (IS_INVALID_SOCKET(s))
-        {
-            log_perror(T("NET"), T("FAIL"), NULL, T("creating master socket"));
-            return;
-        }
-
-        DebugTotalSockets++;
-        if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
-        {
-            log_perror(T("NET"), T("FAIL"), NULL, T("setsockopt"));
-        }
-
-        // Fill in the the address structure
-        //
-        server.sin_port = htons((unsigned short)(Port->port));
-        server.sin_family = AF_INET;
-        in_addr_t ulNetBits;
-        if (MakeCanonicalIPv4(ip_address, &ulNetBits))
-        {
-            server.sin_addr.s_addr = ulNetBits;
-        }
-        else
-        {
-            server.sin_addr.s_addr = INADDR_ANY;
-        }
-
-        // bind our name to the socket
-        //
-        nRet = bind(s, (LPSOCKADDR) &server, sizeof server);
-
-        if (IS_SOCKET_ERROR(nRet))
-        {
-            Log.tinyprintf(T("Error %ld on bind" ENDLINE), SOCKET_LAST_ERROR);
-            if (0 == SOCKET_CLOSE(s))
-            {
-                DebugTotalSockets--;
-            }
-            s = INVALID_SOCKET;
-            return;
-        }
-
-        // Set the socket to listen
-        //
-        nRet = listen(s, SOMAXCONN);
-
-        if (nRet)
-        {
-            Log.tinyprintf(T("Error %ld on listen" ENDLINE), SOCKET_LAST_ERROR);
-            if (0 == SOCKET_CLOSE(s))
-            {
-                DebugTotalSockets--;
-            }
-            s = INVALID_SOCKET;
-            return;
-        }
-
-        // Create the MUD listening thread
-        //
-        HANDLE hThread = CreateThread(NULL, 0, MUDListenThread, (LPVOID)Port, 0, NULL);
-        if (NULL == hThread)
-        {
-            log_perror(T("NET"), T("FAIL"), T("CreateThread"), T("setsockopt"));
-            if (0 == SOCKET_CLOSE(s))
-            {
-                DebugTotalSockets--;
-            }
-            s = INVALID_SOCKET;
-            return;
-        }
-
-        Port->socket = s;
-        Log.tinyprintf(T("Listening (NT-style) on port %d" ENDLINE), Port->port);
-        return;
-    }
-#endif // WINDOWS_NETWORKING
-
-    s = socket(AF_INET, SOCK_STREAM, 0);
+    SOCKET s = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
     if (IS_INVALID_SOCKET(s))
     {
-        log_perror(T("NET"), T("FAIL"), NULL, T("creating master socket"));
-        return;
+        log_perror(T("NET"), T("FAIL"), NULL, T("creating socket"));
+        return false;
     }
-
     DebugTotalSockets++;
+
+    int opt = 1;
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
     {
-        log_perror(T("NET"), T("FAIL"), NULL, T("setsockopt"));
+        log_perror(T("NET"), T("FAIL"), NULL, T("SO_REUSEADDR"));
     }
 
-    in_addr_t ulNetBits;
-    server.sin_family = AF_INET;
-    if (MakeCanonicalIPv4(ip_address, &ulNetBits))
+#if defined(HAVE_SOCKADDR_IN6)
+    if (AF_INET6 == ai->ai_family)
     {
-        server.sin_addr.s_addr = ulNetBits;
+        opt = 1;
+        if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY, (char *)&opt, sizeof(opt)) < 0)
+        {
+            log_perror(T("NET"), T("FAIL"), NULL, T("IPV6_V6ONLY"));
+        }
     }
-    else
-    {
-        server.sin_addr.s_addr = INADDR_ANY;
-    }
-    server.sin_port = htons((unsigned short)(Port->port));
+#endif
 
-    int cc  = bind(s, (struct sockaddr *)&server, sizeof(server));
-    if (IS_SOCKET_ERROR(cc))
+    // bind our name to the socket
+    //
+    int nRet = bind(s, ai->ai_addr, ai->ai_addrlen);
+    if (IS_SOCKET_ERROR(nRet))
     {
-        log_perror(T("NET"), T("FAIL"), NULL, T("bind"));
+        Log.tinyprintf(T("Error %ld on bind" ENDLINE), SOCKET_LAST_ERROR);
         if (0 == SOCKET_CLOSE(s))
         {
             DebugTotalSockets--;
         }
-        s = INVALID_SOCKET;
-        return;
+        return false;
     }
 
-    listen(s, SOMAXCONN);
-    Port->socket = s;
-#ifdef UNIX_SSL
-    Log.tinyprintf(T("Listening on port %d (%s)" ENDLINE), Port->port, Port->fSSL ? "SSL" : "plaintext");
-#else
-    Log.tinyprintf(T("Listening on port %d" ENDLINE), Port->port);
+    // Set the socket to listen
+    //
+    nRet = listen(s, SOMAXCONN);
+
+    if (nRet)
+    {
+        Log.tinyprintf(T("Error %ld on listen" ENDLINE), SOCKET_LAST_ERROR);
+        if (0 == SOCKET_CLOSE(s))
+        {
+            DebugTotalSockets--;
+        }
+        return false;
+    }
+    *ps = s;
+
+#if defined(WINDOWS_NETWORKING)
+
+    // Create the listening thread.
+    //
+    HANDLE hThread = CreateThread(NULL, 0, MUXListenThread, (LPVOID)ps, 0, NULL);
+    if (NULL == hThread)
+    {
+        log_perror(T("NET"), T("FAIL"), T("CreateThread"), T("setsockopt"));
+        if (0 == SOCKET_CLOSE(s))
+        {
+            DebugTotalSockets--;
+        }
+        return false;
+    }
 #endif
+    return true;
 }
 
 #if defined(UNIX_NETWORKING)
@@ -1150,138 +1079,181 @@ bool ValidSocket(SOCKET s)
 
 #endif // UNIX_NETWORKING
 
+void PortInfoClose(int *pnPorts, PortInfo aPorts[], int i)
+{
+    if (0 == SOCKET_CLOSE(aPorts[i].socket))
+    {
+        DebugTotalSockets--;
+        (*pnPorts)--;
+        int k = *pnPorts;
+        if (i != k)
+        {
+            aPorts[i] = aPorts[k];
+        }
+        aPorts[k].socket = INVALID_SOCKET;
+        aPorts[k].fMatched = false;
+    }
+}
+
+void PortInfoOpen(int *pnPorts, PortInfo aPorts[], MUX_ADDRINFO *ai, bool fSSL)
+{
+    int k = *pnPorts;
+    if (  k < MAX_LISTEN_PORTS
+       && make_socket(&aPorts[k].socket, ai)
+       && !IS_INVALID_SOCKET(aPorts[k].socket)
+#if defined(UNIX_NETWORKING)
+       && ValidSocket(aPorts[k].socket)
+#endif // UNIX_NETWORKING
+       )
+    {
+#if defined(UNIX_NETWORKING_SELECT)
+        if (maxd <= aPorts[k].socket)
+        {
+            maxd = aPorts[k].socket + 1;
+        }
+#endif // UNIX_NETWORKING_SELECT
+        socklen_t len = aPorts[k].msa.maxaddrlen();
+        getsockname(aPorts[k].socket, aPorts[k].msa.sa(), &len);
+        aPorts[k].fMatched = true;
+#ifdef UNIX_SSL
+        aPorts[k].fSSL = fSSL;
+#else
+        UNUSED_PARAMETER(fSSL);
+#endif
+        (*pnPorts)++;
+    }
+}
+
+void PortInfoOpenClose(int *pnPorts, PortInfo aPorts[], IntArray *pia, const UTF8 *ip_address, bool fSSL)
+{
+    MUX_ADDRINFO hints;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_PASSIVE;
+
+    UTF8 sPort[20];
+    for (int j = 0; j < pia->n; j++)
+    {
+        unsigned short usPort = pia->pi[j];
+        UTF8 *bufc = sPort;
+        safe_ltoa(usPort, sPort, &bufc);
+        *bufc = '\0';
+
+        MUX_ADDRINFO *servinfo;
+        if (0 == mux_getaddrinfo(ip_address, sPort, &hints, &servinfo))
+        {
+            for (MUX_ADDRINFO *ai = servinfo; NULL != ai; ai = ai->ai_next)
+            {
+                int n = 0;
+                for (int i = 0; i < *pnPorts; i++)
+                {
+                    mux_sockaddr msa(ai->ai_addr);
+                    if (aPorts[i].msa == msa)
+                    {
+                        if (0 == n)
+                        {
+                            aPorts[i].fMatched = true;
+                        }
+                        else
+                        {
+                            // We do not need more than one socket for this address.
+                            //
+                            PortInfoClose(pnPorts, aPorts, i);
+                        }
+                        n++;
+                    }
+                }
+
+                if (0 == n)
+                {
+                    PortInfoOpen(pnPorts, aPorts, ai, fSSL);
+                }
+            }
+            mux_freeaddrinfo(servinfo);
+        }
+    }
+}
+
 void SetupPorts(int *pnPorts, PortInfo aPorts[], IntArray *pia, IntArray *piaSSL, const UTF8 *ip_address)
 {
-    // Any existing open port which does not appear in the requested set
-    // should be closed.
+#if !defined(UNIX_SSL)
+    UNUSED_PARAMETER(piaSSL);
+#endif
+
+#if defined(WINDOWS_NETWORKING)
+    // If we are running Windows NT we must create a completion port,
+    // and start up a listening thread for new connections.  Create
+    // initial IO completion port, so threads have something to wait on
     //
-    int i, j, k;
-    bool bFound;
-    for (i = 0; i < *pnPorts; i++)
+    CompletionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 1);
+
+    if (!CompletionPort)
     {
-        bFound = false;
-        for (j = 0; j < pia->n; j++)
-        {
-            if (aPorts[i].port == pia->pi[j])
-            {
-                bFound = true;
-                break;
-            }
-        }
-
-#ifdef UNIX_SSL
-        if (!bFound && piaSSL && ssl_ctx)
-        {
-            for (j = 0; j < piaSSL->n; j++)
-            {
-                if (aPorts[i].port == piaSSL->pi[j])
-                {
-                    bFound = true;
-                    break;
-                }
-            }
-        }
-#else
-        UNUSED_PARAMETER(piaSSL);
-#endif
-
-
-        if (!bFound)
-        {
-            if (0 == SOCKET_CLOSE(aPorts[i].socket))
-            {
-                DebugTotalSockets--;
-                (*pnPorts)--;
-                k = *pnPorts;
-                if (i != k)
-                {
-                    aPorts[i] = aPorts[k];
-                }
-                aPorts[k].port = 0;
-                aPorts[k].socket = INVALID_SOCKET;
-            }
-        }
+        Log.tinyprintf(T("Error %ld on CreateIoCompletionPort" ENDLINE),  GetLastError());
+        return;
     }
 
-    // Any requested port which does not appear in the existing open set
-    // of ports should be opened.
+    // Initialize the critical section
     //
-    for (j = 0; j < pia->n; j++)
+    if (!bDescriptorListInit)
     {
-        bFound = false;
-        for (i = 0; i < *pnPorts; i++)
-        {
-            if (aPorts[i].port == pia->pi[j])
-            {
-                bFound = true;
-                break;
-            }
-        }
-
-        if (!bFound)
-        {
-            k = *pnPorts;
-            aPorts[k].port = pia->pi[j];
-#ifdef UNIX_SSL
-            aPorts[k].fSSL = false;
-#endif
-            make_socket(aPorts+k, ip_address);
-            if (  !IS_INVALID_SOCKET(aPorts[k].socket)
-#if defined(UNIX_NETWORKING)
-               && ValidSocket(aPorts[k].socket)
-#endif // UNIX_NETWORKING
-               )
-            {
-#if defined(UNIX_NETWORKING_SELECT)
-                if (maxd <= aPorts[k].socket)
-                {
-                    maxd = aPorts[k].socket + 1;
-                }
-#endif // UNIX_NETWORKING_SELECT
-                (*pnPorts)++;
-            }
-        }
-    }
-
-#ifdef UNIX_SSL
-    if (piaSSL && ssl_ctx)
-    {
-        for (j = 0; j < piaSSL->n; j++)
-        {
-            bFound = false;
-            for (i = 0; i < *pnPorts; i++)
-            {
-                if (aPorts[i].port == piaSSL->pi[j])
-                {
-                    bFound = true;
-                    break;
-                }
-            }
-
-            if (!bFound)
-            {
-                k = *pnPorts;
-                aPorts[k].port = piaSSL->pi[j];
-                aPorts[k].fSSL = true;
-                make_socket(aPorts+k, ip_address);
-                if (  !IS_INVALID_SOCKET(aPorts[k].socket)
-#if defined(UNIX_NETWORKING)
-                   && ValidSocket(aPorts[k].socket)
-#endif // UNIX_NETWORKING
-                   )
-                {
-#if defined(UNIX_NETWORKING_SELECT)
-                    if (maxd <= aPorts[k].socket)
-                    {
-                        maxd = aPorts[k].socket + 1;
-                    }
-#endif // UNIX_NETWORKING_SELECT
-                    (*pnPorts)++;
-                }
-            }
-        }
+        InitializeCriticalSection(&csDescriptorList);
+        bDescriptorListInit = true;
     }
 #endif
+
+    for (int i = 0; i < *pnPorts; i++)
+    {
+        aPorts[i].fMatched = false;
+    }
+
+    UTF8 *sAddress = NULL;
+    UTF8 *sp = NULL;
+
+    // If ip_address is NULL, we pass NULL to mux_getaddrinfo() once. Otherwise, we pass each address (separated by space
+    // delimiter).
+    //
+    MUX_STRTOK_STATE tts;
+    if (NULL != ip_address)
+    {
+        sAddress = StringClone(ip_address);
+        mux_strtok_src(&tts, sAddress);
+        mux_strtok_ctl(&tts, T(" \t"));
+        sp = mux_strtok_parse(&tts);
+    }
+
+    do
+    {
+        PortInfoOpenClose(pnPorts, aPorts, pia, sp, false);
+#if defined(UNIX_SSL)
+        if (piaSSL && ssl_ctx)
+        {
+            PortInfoOpenClose(pnPorts, aPorts, piaSSL, sp, true);
+        }
+#endif
+
+        if (NULL != ip_address)
+        {
+            sp = mux_strtok_parse(&tts);
+        }
+
+    } while (NULL != sp);
+
+    if (NULL != sAddress)
+    {
+        MEMFREE(sAddress);
+        sAddress = NULL;
+    }
+
+    for (int i = 0; i < *pnPorts; i++)
+    {
+        if (!aPorts[i].fMatched)
+        {
+            PortInfoClose(pnPorts, aPorts, i);
+        }
+    }
 
     // If we were asked to listen on at least one port, but we aren't
     // listening to at least one port, we should bring the game down.
@@ -1302,190 +1274,6 @@ void SetupPorts(int *pnPorts, PortInfo aPorts[], IntArray *pia, IntArray *piaSSL
 
 #if defined(WINDOWS_NETWORKING)
 
-// Private version of FD_ISSET:
-//
-// The following routine is only used on Win9x. Ordinarily, FD_ISSET
-// maps to a __WSAFDIsSet call, however, the Intel compiler encounters
-// an internal error at link time when some of the higher-order
-// optimizations are requested (-Qipo). Including this function is a
-// workaround.
-//
-inline bool FD_ISSET_priv(SOCKET fd, fd_set *set)
-{
-    unsigned int i;
-    for (i = 0; i < set->fd_count; i++)
-    {
-        if (set->fd_array[i] == fd)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-inline void FD_ZERO_priv(fd_set *set)
-{
-    set->fd_count = 0;
-}
-
-inline void FD_SET_priv(SOCKET fd, fd_set *set)
-{
-    if (set->fd_count < FD_SETSIZE)
-    {
-        set->fd_array[set->fd_count++] = fd;
-    }
-}
-
-#define CheckInput(x)   FD_ISSET_priv(x, &input_set)
-#define CheckOutput(x)  FD_ISSET_priv(x, &output_set)
-
-void shovechars9x(int nPorts, PortInfo aPorts[])
-{
-    fd_set input_set, output_set;
-    int found;
-    DESC *d, *dnext, *newd;
-
-    mudstate.debug_cmd = T("< shovechars9x >");
-
-    CLinearTimeAbsolute ltaLastSlice;
-    ltaLastSlice.GetUTC();
-
-    while (!mudstate.shutdown_flag)
-    {
-        CLinearTimeAbsolute ltaCurrent;
-        ltaCurrent.GetUTC();
-        update_quotas(ltaLastSlice, ltaCurrent);
-
-        // Before processing a possible QUIT command, be sure to give the slave
-        // a chance to report it's findings.
-        //
-        if (iSlaveResult) get_slave_result();
-
-        // Check the scheduler. Run a little ahead into the future so that
-        // we tend to sleep longer.
-        //
-        scheduler.RunTasks(ltaCurrent);
-        CLinearTimeAbsolute ltaWakeUp;
-        if (!scheduler.WhenNext(&ltaWakeUp))
-        {
-            CLinearTimeDelta ltd = time_30m;
-            ltaWakeUp = ltaCurrent + ltd;
-        }
-        else if (ltaWakeUp < ltaCurrent)
-        {
-            ltaWakeUp = ltaCurrent;
-        }
-
-        if (mudstate.shutdown_flag)
-        {
-            break;
-        }
-
-        FD_ZERO_priv(&input_set);
-        FD_ZERO_priv(&output_set);
-
-        // Listen for new connections.
-        //
-        int i;
-        for (i = 0; i < nPorts; i++)
-        {
-            FD_SET_priv(aPorts[i].socket, &input_set);
-        }
-
-        // Mark sockets that we want to test for change in status.
-        //
-        DESC_ITER_ALL(d)
-        {
-            if (!d->input_head)
-            {
-                FD_SET_priv(d->descriptor, &input_set);
-            }
-            if (d->output_head)
-            {
-                FD_SET_priv(d->descriptor, &output_set);
-            }
-        }
-
-        // Wait for something to happen
-        //
-        struct timeval timeout;
-        CLinearTimeDelta ltdTimeout = ltaWakeUp - ltaCurrent;
-        ltdTimeout.ReturnTimeValueStruct(&timeout);
-        found = select(0, &input_set, &output_set, (fd_set *) NULL, &timeout);
-
-        switch (found)
-        {
-        case SOCKET_ERROR:
-            {
-                STARTLOG(LOG_NET, "NET", "CONN");
-                log_text(T("shovechars: Socket error."));
-                ENDLOG;
-            }
-
-        case 0:
-            continue;
-        }
-
-        // Check for new connection requests.
-        //
-        for (i = 0; i < nPorts; i++)
-        {
-            if (CheckInput(aPorts[i].socket))
-            {
-                int iSocketError;
-                newd = new_connection(aPorts+i, &iSocketError);
-                if (!newd)
-                {
-                    if (  iSocketError
-                       && iSocketError != SOCKET_EINTR)
-                    {
-                        log_perror(T("NET"), T("FAIL"), NULL, T("new_connection"));
-                    }
-                }
-            }
-        }
-
-        // Check for activity on user sockets
-        //
-        DESC_SAFEITER_ALL(d, dnext)
-        {
-            // Process input from sockets with pending input
-            //
-            if (CheckInput(d->descriptor))
-            {
-                // Undo autodark
-                //
-                if (d->flags & DS_AUTODARK)
-                {
-                    // Clear the DS_AUTODARK on every related session.
-                    //
-                    DESC *d1;
-                    DESC_ITER_PLAYER(d->player, d1)
-                    {
-                        d1->flags &= ~DS_AUTODARK;
-                    }
-                    db[d->player].fs.word[FLAG_WORD1] &= ~DARK;
-                }
-
-                // Process received data
-                //
-                if (!process_input(d))
-                {
-                    shutdownsock(d, R_SOCKDIED);
-                    continue;
-                }
-            }
-
-            // Process output for sockets with pending output
-            //
-            if (CheckOutput(d->descriptor))
-            {
-                process_output(d, true);
-            }
-        }
-    }
-}
-
 static LRESULT WINAPI mux_WindowProc
 (
     HWND   hWin,
@@ -1499,7 +1287,7 @@ static LRESULT WINAPI mux_WindowProc
     case WM_CLOSE:
         mudstate.shutdown_flag = true;
         PostQueuedCompletionStatus(CompletionPort, 0, 0, &lpo_wakeup);
-        return 0;
+        break;
 
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -1530,11 +1318,11 @@ static DWORD WINAPI ListenForCloseProc(LPVOID lpParameter)
 
     RegisterClass(&wc);
 
-    HWND hWnd = CreateWindow(szApp, szApp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
+    g_hWnd = CreateWindow(szApp, szApp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, 0, NULL);
 
-    ShowWindow(hWnd, SW_HIDE);
-    UpdateWindow(hWnd);
+    ShowWindow(g_hWnd, SW_HIDE);
+    UpdateWindow(g_hWnd);
 
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0))
@@ -1546,14 +1334,14 @@ static DWORD WINAPI ListenForCloseProc(LPVOID lpParameter)
     return 1;
 }
 
-void shovecharsNT(int nPorts, PortInfo aPorts[])
+void shovechars(int nPorts, PortInfo aPorts[])
 {
     UNUSED_PARAMETER(nPorts);
     UNUSED_PARAMETER(aPorts);
 
     mudstate.debug_cmd = T("< shovecharsNT >");
 
-    CreateThread(NULL, 0, ListenForCloseProc, NULL, 0, NULL);
+    HANDLE hCloseProc = CreateThread(NULL, 0, ListenForCloseProc, NULL, 0, NULL);
 
     CLinearTimeAbsolute ltaLastSlice;
     ltaLastSlice.GetUTC();
@@ -1614,18 +1402,22 @@ void shovecharsNT(int nPorts, PortInfo aPorts[])
         unsigned int iTimeout = ltdTimeOut.ReturnMilliseconds();
         ProcessWindowsTCP(iTimeout);
     }
+
+    if (IsWindow(g_hWnd))
+    {
+        PostMessage(g_hWnd, WM_CLOSE, 0, 0);
+        WaitForSingleObject(hCloseProc, INFINITE);
+    }
 }
 
-#endif // WINDOWS_NETWORKING
-
-#if defined(UNIX_NETWORKING)
+#elif defined(UNIX_NETWORKING)
 
 #if defined(UNIX_NETWORKING_SELECT)
 
 #define CheckInput(x)     FD_ISSET(x, &input_set)
 #define CheckOutput(x)    FD_ISSET(x, &output_set)
 
-void shovechars_select(int nPorts, PortInfo aPorts[])
+void shovechars(int nPorts, PortInfo aPorts[])
 {
     fd_set input_set, output_set;
     int found;
@@ -1979,12 +1771,10 @@ extern "C" MUX_RESULT DCL_API pipepump(void)
 }
 #endif // HAVE_WORKINGFORK && STUB_SLAVE
 
-#endif // UNIX_NETWORKING
-
 DESC *new_connection(PortInfo *Port, int *piSocketError)
 {
     DESC *d;
-    struct sockaddr_in addr;
+    mux_sockaddr addr;
 #ifdef SOCKLEN_T_DCL
     socklen_t addr_len;
 #else // SOCKLEN_T_DCL
@@ -1996,9 +1786,9 @@ DESC *new_connection(PortInfo *Port, int *piSocketError)
 
     const UTF8 *cmdsave = mudstate.debug_cmd;
     mudstate.debug_cmd = T("< new_connection >");
-    addr_len = sizeof(struct sockaddr);
+    addr_len = addr.maxaddrlen();
 
-    SOCKET newsock = accept(Port->socket, (struct sockaddr *)&addr, &addr_len);
+    SOCKET newsock = accept(Port->socket, addr.sa(), &addr_len);
 
     if (IS_INVALID_SOCKET(newsock))
     {
@@ -2008,11 +1798,11 @@ DESC *new_connection(PortInfo *Port, int *piSocketError)
     }
 
     UTF8 *pBuffM2 = alloc_mbuf("new_connection.address");
-    mux_strncpy(pBuffM2, (UTF8 *)inet_ntoa(addr.sin_addr), MBUF_SIZE-1);
-    unsigned short usPort = ntohs(addr.sin_port);
+    addr.ntop(pBuffM2, MBUF_SIZE);
+    unsigned short usPort = addr.Port();
 
     DebugTotalSockets++;
-    if (site_check(addr.sin_addr, mudstate.access_list) == H_FORBIDDEN)
+    if (mudstate.access_list.isForbid(&addr))
     {
         STARTLOG(LOG_NET | LOG_SECURITY, "NET", "SITE");
         UTF8 *pBuffM1  = alloc_mbuf("new_connection.LOG.badsite");
@@ -2038,40 +1828,6 @@ DESC *new_connection(PortInfo *Port, int *piSocketError)
     }
     else
     {
-#if defined(WINDOWS_NETWORKING)
-        // Make slave request
-        //
-        // Go take control of the stack, but don't bother if it takes
-        // longer than 5 seconds to do it.
-        //
-        if (  bSlaveBooted
-           && WAIT_OBJECT_0 == WaitForSingleObject(hSlaveRequestStackSemaphore, 5000))
-        {
-            // We have control of the stack. Skip the request if the stack is full.
-            //
-            if (iSlaveRequest < SLAVE_REQUEST_STACK_SIZE)
-            {
-                // There is room on the stack, so make the request.
-                //
-                SlaveRequests[iSlaveRequest].sa_in = addr;
-                SlaveRequests[iSlaveRequest].port_in = Port->port;
-                iSlaveRequest++;
-                ReleaseSemaphore(hSlaveRequestStackSemaphore, 1, NULL);
-
-                // Wake up a single slave thread. Event automatically resets itself.
-                //
-                ReleaseSemaphore(hSlaveThreadsSemaphore, 1, NULL);
-            }
-            else
-            {
-                // No room on the stack, so skip it.
-                //
-                ReleaseSemaphore(hSlaveRequestStackSemaphore, 1, NULL);
-            }
-        }
-#endif // WINDOWS_NETWORKING
-
-#if defined(UNIX_NETWORKING)
 #if defined(HAVE_WORKING_FORK)
         // Make slave request
         //
@@ -2093,7 +1849,6 @@ DESC *new_connection(PortInfo *Port, int *piSocketError)
             free_lbuf(pBuffL1);
         }
 #endif // HAVE_WORKING_FORK
-#endif // UNIX_NETWORKING
 
         STARTLOG(LOG_NET, "NET", "CONN");
         UTF8 *pBuffM3 = alloc_mbuf("new_connection.LOG.open");
@@ -2155,6 +1910,8 @@ DESC *new_connection(PortInfo *Port, int *piSocketError)
     return d;
 }
 
+#endif // UNIX_NETWORKING
+
 // Disconnect reasons that get written to the logfile
 //
 static const UTF8 *disc_reasons[] =
@@ -2195,8 +1952,8 @@ void shutdownsock(DESC *d, int reason)
     int i, num;
     DESC *dtemp;
 
-    if (  (reason == R_LOGOUT)
-       && (site_check((d->address).sin_addr, mudstate.access_list) == H_FORBIDDEN))
+    if (  R_LOGOUT == reason
+       && mudstate.access_list.isForbid(&d->address))
     {
         reason = R_QUIT;
     }
@@ -2371,9 +2128,6 @@ void shutdownsock(DESC *d, int reason)
         d->doing[0] = '\0';
         d->quota = mudconf.cmd_quota_max;
         d->last_time = d->connected_at;
-        int AccessFlag = site_check((d->address).sin_addr, mudstate.access_list);
-        int SuspectFlag = site_check((d->address).sin_addr, mudstate.suspect_list);
-        d->host_info = AccessFlag | SuspectFlag;
         d->input_tot = d->input_size;
         d->output_tot = 0;
         d->encoding = d->negotiated_encoding;
@@ -2387,41 +2141,38 @@ void shutdownsock(DESC *d, int reason)
         scheduler.CancelTask(Task_ProcessCommand, d, 0);
 
 #if defined(WINDOWS_NETWORKING)
-        if (bUseCompletionPorts)
+        // Don't close down the socket twice.
+        //
+        if (!d->bConnectionShutdown)
         {
-            // Don't close down the socket twice.
+            // Make sure we don't try to initiate or process any
+            // outstanding IOs
             //
-            if (!d->bConnectionShutdown)
+            d->bConnectionShutdown = true;
+
+            // Protect removing the descriptor from our linked list from
+            // any interference from the listening thread.
+            //
+            EnterCriticalSection(&csDescriptorList);
+            *d->prev = d->next;
+            if (d->next)
             {
-                // Make sure we don't try to initiate or process any
-                // outstanding IOs
-                //
-                d->bConnectionShutdown = true;
-
-                // Protect removing the descriptor from our linked list from
-                // any interference from the listening thread.
-                //
-                EnterCriticalSection(&csDescriptorList);
-                *d->prev = d->next;
-                if (d->next)
-                {
-                    d->next->prev = d->prev;
-                }
-                LeaveCriticalSection(&csDescriptorList);
-
-                // This descriptor may hang around awhile, clear out the links.
-                //
-                d->next = 0;
-                d->prev = 0;
-
-                // Close the connection in 5 seconds.
-                //
-                scheduler.DeferTask(ltaNow + time_5s,
-                    PRIORITY_SYSTEM, Task_DeferredClose, d, 0);
+                d->next->prev = d->prev;
             }
-            return;
+            LeaveCriticalSection(&csDescriptorList);
+
+            // This descriptor may hang around awhile, clear out the links.
+            //
+            d->next = 0;
+            d->prev = 0;
+
+            // Close the connection in 5 seconds.
+            //
+            scheduler.DeferTask(ltaNow + time_5s,
+                PRIORITY_SYSTEM, Task_DeferredClose, d, 0);
         }
-#endif // WINDOWS_NETWORKING
+    }
+#elif defined(UNIX_NETWORKING)
 
 #ifdef UNIX_SSL
         if (d->ssl_session)
@@ -2456,6 +2207,7 @@ void shutdownsock(DESC *d, int reason)
         free_desc(d);
         ndescriptors--;
     }
+#endif // WINDOWS_NETWORKING
 }
 
 #if defined(WINDOWS_NETWORKING)
@@ -2476,7 +2228,7 @@ static void shutdownsock_brief(DESC *d)
 
     // cancel any pending reads or writes on this socket
     //
-    if (!fpCancelIo((HANDLE) d->descriptor))
+    if (!CancelIo((HANDLE) d->descriptor))
     {
         Log.tinyprintf(T("Error %ld on CancelIo" ENDLINE), GetLastError());
     }
@@ -2581,7 +2333,7 @@ static void config_socket(SOCKET s)
 
 // This function must be thread safe WinNT
 //
-DESC *initializesock(SOCKET s, struct sockaddr_in *a)
+DESC *initializesock(SOCKET s, MUX_SOCKADDR *msa)
 {
     DESC *d;
 
@@ -2589,19 +2341,13 @@ DESC *initializesock(SOCKET s, struct sockaddr_in *a)
     // protect adding the descriptor from the linked list from
     // any interference from socket shutdowns
     //
-    if (bUseCompletionPorts)
-    {
-        EnterCriticalSection(&csDescriptorList);
-    }
+    EnterCriticalSection(&csDescriptorList);
 #endif // WINDOWS_NETWORKING
 
     d = alloc_desc("init_sock");
 
 #if defined(WINDOWS_NETWORKING)
-    if (bUseCompletionPorts)
-    {
-        LeaveCriticalSection(&csDescriptorList);
-    }
+    LeaveCriticalSection(&csDescriptorList);
 #endif // WINDOWS_NETWORKING
 
     d->descriptor = s;
@@ -2614,10 +2360,6 @@ DESC *initializesock(SOCKET s, struct sockaddr_in *a)
 #ifdef UNIX_SSL
     d->ssl_session = NULL;
 #endif
-
-    int AccessFlag = site_check((*a).sin_addr, mudstate.access_list);
-    int SuspectFlag = site_check((*a).sin_addr, mudstate.suspect_list);
-    d->host_info = AccessFlag | SuspectFlag;
 
     // Be sure #0 isn't wizard. Shouldn't be.
     //
@@ -2654,17 +2396,14 @@ DESC *initializesock(SOCKET s, struct sockaddr_in *a)
     d->width = 78;
     d->quota = mudconf.cmd_quota_max;
     d->program_data = NULL;
-    d->address = *a;
-    mux_strncpy(d->addr, (UTF8 *)inet_ntoa(a->sin_addr), sizeof(d->addr)-1);
+    d->address = *msa;
+    msa->ntop(d->addr, sizeof(d->addr));
 
 #if defined(WINDOWS_NETWORKING)
     // protect adding the descriptor from the linked list from
     // any interference from socket shutdowns
     //
-    if (bUseCompletionPorts)
-    {
-        EnterCriticalSection (&csDescriptorList);
-    }
+    EnterCriticalSection (&csDescriptorList);
 #endif // WINDOWS_NETWORKING
 
     ndescriptors++;
@@ -2681,23 +2420,18 @@ DESC *initializesock(SOCKET s, struct sockaddr_in *a)
 #if defined(WINDOWS_NETWORKING)
     // ok to continue now
     //
-    if (bUseCompletionPorts)
-    {
-        LeaveCriticalSection (&csDescriptorList);
+    LeaveCriticalSection (&csDescriptorList);
 
-        d->OutboundOverlapped.hEvent = NULL;
-        d->InboundOverlapped.hEvent = NULL;
-        d->InboundOverlapped.Offset = 0;
-        d->InboundOverlapped.OffsetHigh = 0;
-        d->bConnectionShutdown = false; // not shutdown yet
-        d->bConnectionDropped = false; // not dropped yet
-        d->bCallProcessOutputLater = false;
-    }
+    d->OutboundOverlapped.hEvent = NULL;
+    d->InboundOverlapped.hEvent = NULL;
+    d->InboundOverlapped.Offset = 0;
+    d->InboundOverlapped.OffsetHigh = 0;
+    d->bConnectionShutdown = false; // not shutdown yet
+    d->bConnectionDropped = false; // not dropped yet
+    d->bCallProcessOutputLater = false;
 #endif // WINDOWS_NETWORKING
     return d;
 }
-
-FTASK *process_output = NULL;
 
 #if defined(WINDOWS_NETWORKING)
 
@@ -2721,7 +2455,7 @@ FTASK *process_output = NULL;
  * \return                  None.
  */
 
-void process_output_ntio(void *dvoid, int bHandleShutdown)
+void process_output(void *dvoid, int bHandleShutdown)
 {
     UNUSED_PARAMETER(bHandleShutdown);
 
@@ -2828,7 +2562,7 @@ void process_output_ntio(void *dvoid, int bHandleShutdown)
     mudstate.debug_cmd = cmdsave;
 }
 
-#endif // WINDOWS_NETWORKING
+#elif defined(UNIX_NETWORKING)
 
 /*! \brief Service network request for more output to a specific descriptor.
  *
@@ -2843,7 +2577,7 @@ void process_output_ntio(void *dvoid, int bHandleShutdown)
  * \return                  None.
  */
 
-void process_output_unix(void *dvoid, int bHandleShutdown)
+void process_output(void *dvoid, int bHandleShutdown)
 {
     DESC *d = (DESC *)dvoid;
 
@@ -2912,6 +2646,8 @@ void process_output_unix(void *dvoid, int bHandleShutdown)
 
     mudstate.debug_cmd = cmdsave;
 }
+
+#endif // UNIX_NETWORKING
 
 /*! \brief Table to quickly classify characters recieved from the wire with
  * their Telnet meaning.
@@ -5090,7 +4826,6 @@ static void DCL_CDECL sighandler(int sig)
 
         // Coredump.
         //
-        check_panicking(sig);
         log_signal(sig);
         report();
 
@@ -5098,12 +4833,10 @@ static void DCL_CDECL sighandler(int sig)
         WSACleanup();
 #endif // WINDOWS_NETWORKING
 
-        unset_signals();
-        signal(sig, SIG_DFL);
         exit(1);
     }
     signal(sig, CAST_SIGNAL_FUNC sighandler);
-    mudstate.panicking = 0;
+    mudstate.panicking = false;
 }
 
 NAMETAB sigactions_nametab[] =
@@ -5208,20 +4941,19 @@ void list_system_resources(dbref player)
 #if defined(WINDOWS_NETWORKING)
 
 // ---------------------------------------------------------------------------
-// Thread to listen on MUD port - for Windows NT
+// Thread to listen on port - for Windows NT
 // ---------------------------------------------------------------------------
 //
-static DWORD WINAPI MUDListenThread(LPVOID pVoid)
+static DWORD WINAPI MUXListenThread(LPVOID pVoid)
 {
-    PortInfo *Port = (PortInfo *)pVoid;
+    SOCKET *ps = (SOCKET *)pVoid;
+    SOCKET s = *ps;
 
-    SOCKADDR_IN SockAddr;
-    int         nLen;
-    BOOL        b;
+    mux_sockaddr SockAddr;
+    int          nLen;
+    BOOL         b;
 
     struct descriptor_data * d;
-
-    Log.tinyprintf(T("Starting NT-style listening on port %d" ENDLINE), Port->port);
 
     //
     // Loop forever accepting connections
@@ -5231,9 +4963,8 @@ static DWORD WINAPI MUDListenThread(LPVOID pVoid)
         //
         // Block on accept()
         //
-        nLen = sizeof(SOCKADDR_IN);
-        SOCKET socketClient = accept(Port->socket, (LPSOCKADDR) &SockAddr,
-            &nLen);
+        nLen = SockAddr.maxaddrlen();
+        SOCKET socketClient = accept(s, SockAddr.sa(), &nLen);
 
         if (socketClient == INVALID_SOCKET)
         {
@@ -5244,12 +4975,14 @@ static DWORD WINAPI MUDListenThread(LPVOID pVoid)
         }
 
         DebugTotalSockets++;
-        if (site_check(SockAddr.sin_addr, mudstate.access_list) == H_FORBIDDEN)
+        if (mudstate.access_list.isForbid(&SockAddr))
         {
+            UTF8 host_address[MBUF_SIZE];
             STARTLOG(LOG_NET | LOG_SECURITY, "NET", "SITE");
-            unsigned short us = ntohs(SockAddr.sin_port);
+            unsigned short us = SockAddr.Port();
+            SockAddr.ntop(host_address, sizeof(host_address));
             Log.tinyprintf(T("[%d/%s] Connection refused.  (Remote port %d)"),
-                socketClient, inet_ntoa(SockAddr.sin_addr), us);
+                socketClient, host_address, us);
             ENDLOG;
 
             // The following are commented out for thread-safety, but
@@ -5272,7 +5005,7 @@ static DWORD WINAPI MUDListenThread(LPVOID pVoid)
         // Go take control of the stack, but don't bother if it takes
         // longer than 5 seconds to do it.
         //
-        if (bSlaveBooted && (WAIT_OBJECT_0 == WaitForSingleObject(hSlaveRequestStackSemaphore, 5000)))
+        if (fSlaveBooted && (WAIT_OBJECT_0 == WaitForSingleObject(hSlaveRequestStackSemaphore, 5000)))
         {
             // We have control of the stack. Skip the request if the stack is full.
             //
@@ -5280,8 +5013,7 @@ static DWORD WINAPI MUDListenThread(LPVOID pVoid)
             {
                 // There is room on the stack, so make the request.
                 //
-                SlaveRequests[iSlaveRequest].sa_in = SockAddr;
-                SlaveRequests[iSlaveRequest].port_in = mudconf.ports.pi[0];
+                SlaveRequests[iSlaveRequest].msa = SockAddr;
                 iSlaveRequest++;
                 ReleaseSemaphore(hSlaveRequestStackSemaphore, 1, NULL);
 
@@ -5334,7 +5066,6 @@ static DWORD WINAPI MUDListenThread(LPVOID pVoid)
             }
         }
     }
-    Log.tinyprintf(T("End of NT-style listening on port %d" ENDLINE), Port->port);
     return 1;
 }
 
@@ -5365,7 +5096,7 @@ void Task_DeferredClose(void *arg_voidptr, int arg_Integer)
 
         // Cancel any pending reads or writes on this socket
         //
-        if (!fpCancelIo((HANDLE) d->descriptor))
+        if (!CancelIo((HANDLE) d->descriptor))
         {
             Log.tinyprintf(T("Error %ld on CancelIo" ENDLINE), GetLastError());
         }
@@ -5561,7 +5292,7 @@ void ProcessWindowsTCP(DWORD dwTimeout)
         else if (lpo == &lpo_welcome)
         {
             UTF8 *buff = alloc_mbuf("ProcessWindowsTCP.Premature");
-            mux_strncpy(buff, (UTF8 *)inet_ntoa(d->address.sin_addr), MBUF_SIZE-1);
+            d->address.ntop(buff, MBUF_SIZE);
 
             // If the socket is invalid, the we were unable to queue a read
             // request, and the port was shutdown while this packet was in
@@ -5575,7 +5306,7 @@ void ProcessWindowsTCP(DWORD dwTimeout)
             const UTF8 *lDesc = mux_i64toa_t(d->descriptor);
             Log.tinyprintf(T("[%s/%s] Connection opened (remote port %d)"),
                 bInvalidSocket ? T("UNKNOWN") : lDesc, buff,
-                ntohs(d->address.sin_port));
+                d->address.Port());
             ENDLOG;
 
             SiteMonSend(d->descriptor, buff, d, T("Connection"));
@@ -5586,7 +5317,7 @@ void ProcessWindowsTCP(DWORD dwTimeout)
                 //
                 STARTLOG(LOG_NET | LOG_LOGIN, "NET", "DISC");
                 Log.tinyprintf(T("[UNKNOWN/%s] Connection closed prematurely (remote port %d)"),
-                    buff, ntohs(d->address.sin_port));
+                    buff, d->address.Port());
                 ENDLOG;
 
                 SiteMonSend(d->descriptor, buff, d, T("Connection closed prematurely"));
@@ -5638,10 +5369,15 @@ void ProcessWindowsTCP(DWORD dwTimeout)
 
 void SiteMonSend(SOCKET port, const UTF8 *address, DESC *d, const UTF8 *msg)
 {
+    int host_info = 0;
+    if (NULL != d)
+    {
+        host_info = mudstate.access_list.check(&d->address);
+    }
+
     // Don't do sitemon for blocked sites.
     //
-    if (  d != NULL
-       && (d->host_info & H_NOSITEMON))
+    if (host_info & HI_NOSITEMON)
     {
         return;
     }
@@ -5649,7 +5385,7 @@ void SiteMonSend(SOCKET port, const UTF8 *address, DESC *d, const UTF8 *msg)
     // Build the msg.
     //
     UTF8 *sendMsg;
-    bool bSuspect = (d != NULL) && (d->host_info & H_SUSPECT);
+    bool bSuspect = (0 != (host_info & HI_SUSPECT));
     if (IS_INVALID_SOCKET(port))
     {
         sendMsg = tprintf(T("SITEMON: [UNKNOWN] %s from %s.%s"), msg, address,
@@ -5672,3 +5408,1423 @@ void SiteMonSend(SOCKET port, const UTF8 *address, DESC *d, const UTF8 *msg)
         }
     }
 }
+
+#if defined(HAVE_IN_ADDR)
+typedef struct
+{
+    int    nShift;
+    UINT32 maxValue;
+    size_t maxOctLen;
+    size_t maxDecLen;
+    size_t maxHexLen;
+} DECODEIPV4;
+
+static bool DecodeN(int nType, size_t len, const UTF8 *p, in_addr_t *pu32)
+{
+    static DECODEIPV4 DecodeIPv4Table[4] =
+    {
+        { 8,         255UL,  3,  3, 2 },
+        { 16,      65535UL,  6,  5, 4 },
+        { 24,   16777215UL,  8,  8, 6 },
+        { 32, 4294967295UL, 11, 10, 8 }
+    };
+
+    *pu32  = (*pu32 << DecodeIPv4Table[nType].nShift) & 0xFFFFFFFFUL;
+    if (len == 0)
+    {
+        return false;
+    }
+    in_addr_t ul = 0;
+    in_addr_t ul2;
+    if (  len >= 3
+       && p[0] == '0'
+       && (  'x' == p[1]
+          || 'X' == p[1]))
+    {
+        // Hexadecimal Path
+        //
+        // Skip the leading zeros.
+        //
+        p += 2;
+        len -= 2;
+        while (*p == '0' && len)
+        {
+            p++;
+            len--;
+        }
+        if (len > DecodeIPv4Table[nType].maxHexLen)
+        {
+            return false;
+        }
+        while (len)
+        {
+            UTF8 ch = *p;
+            ul2 = ul;
+            ul  = (ul << 4) & 0xFFFFFFFFUL;
+            if (ul < ul2)
+            {
+                // Overflow
+                //
+                return false;
+            }
+            if ('0' <= ch && ch <= '9')
+            {
+                ul |= ch - '0';
+            }
+            else if ('A' <= ch && ch <= 'F')
+            {
+                ul |= ch - 'A';
+            }
+            else if ('a' <= ch && ch <= 'f')
+            {
+                ul |= ch - 'a';
+            }
+            else
+            {
+                return false;
+            }
+            p++;
+            len--;
+        }
+    }
+    else if (len >= 1 && p[0] == '0')
+    {
+        // Octal Path
+        //
+        // Skip the leading zeros.
+        //
+        p++;
+        len--;
+        while (*p == '0' && len)
+        {
+            p++;
+            len--;
+        }
+        if (len > DecodeIPv4Table[nType].maxOctLen)
+        {
+            return false;
+        }
+        while (len)
+        {
+            UTF8 ch = *p;
+            ul2 = ul;
+            ul  = (ul << 3) & 0xFFFFFFFFUL;
+            if (ul < ul2)
+            {
+                // Overflow
+                //
+                return false;
+            }
+            if ('0' <= ch && ch <= '7')
+            {
+                ul |= ch - '0';
+            }
+            else
+            {
+                return false;
+            }
+            p++;
+            len--;
+        }
+    }
+    else
+    {
+        // Decimal Path
+        //
+        if (len > DecodeIPv4Table[nType].maxDecLen)
+        {
+            return false;
+        }
+        while (len)
+        {
+            UTF8 ch = *p;
+            ul2 = ul;
+            ul  = (ul * 10) & 0xFFFFFFFFUL;
+            if (ul < ul2)
+            {
+                // Overflow
+                //
+                return false;
+            }
+            ul2 = ul;
+            if ('0' <= ch && ch <= '9')
+            {
+                ul += ch - '0';
+            }
+            else
+            {
+                return false;
+            }
+            if (ul < ul2)
+            {
+                // Overflow
+                //
+                return false;
+            }
+            p++;
+            len--;
+        }
+    }
+    if (ul > DecodeIPv4Table[nType].maxValue)
+    {
+        return false;
+    }
+    *pu32 |= ul;
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// MakeCanonicalIPv4: inet_addr() does not do reasonable checking for sane
+// syntax on all platforms. On certain operating systems, if passed less than
+// four octets, it will cause a segmentation violation. Furthermore, there is
+// confusion between return values for valid input "255.255.255.255" and
+// return values for invalid input (INADDR_NONE as -1). To overcome these
+// problems, it appears necessary to re-implement inet_addr() with a different
+// interface.
+//
+// n8.n8.n8.n8  Class A format. 0 <= n8 <= 255.
+//
+// Supported Berkeley IP formats:
+//
+//    n8.n8.n16  Class B 128.net.host format. 0 <= n16 <= 65535.
+//    n8.n24     Class A net.host format. 0 <= n24 <= 16777215.
+//    n32        Single 32-bit number. 0 <= n32 <= 4294967295.
+//
+// Each element may be expressed in decimal, octal or hexadecimal. '0' is the
+// octal prefix. '0x' or '0X' is the hexadecimal prefix. Otherwise the number
+// is taken as decimal.
+//
+//    08  Octal
+//    0x8 Hexadecimal
+//    0X8 Hexadecimal
+//    8   Decimal
+//
+bool MakeCanonicalIPv4(const UTF8 *str, in_addr_t *pnIP)
+{
+    *pnIP = 0;
+    if (!str)
+    {
+        return false;
+    }
+
+    // Skip leading spaces.
+    //
+    const UTF8 *q = str;
+    while (*q == ' ')
+    {
+        q++;
+    }
+
+    const UTF8 *p = (UTF8 *)strchr((char *)q, '.');
+    int n = 0;
+    while (p)
+    {
+        // Decode
+        //
+        n++;
+        if (n > 3)
+        {
+            return false;
+        }
+        if (!DecodeN(0, p-q, q, pnIP))
+        {
+            return false;
+        }
+        q = p + 1;
+        p = (UTF8 *)strchr((char *)q, '.');
+    }
+
+    // Decode last element.
+    //
+    size_t len = strlen((char *)q);
+    if (!DecodeN(3-n, len, q, pnIP))
+    {
+        return false;
+    }
+    return true;
+}
+
+// Given a host-ordered mask, this function will determine whether it is a
+// valid one. Valid masks consist of a N-bit sequence of '1' bits followed by
+// a (32-N)-bit sequence of '0' bits, where N is 0 to 32.
+//
+bool mux_in_addr::isValidMask(int *pnLeadingBits) const
+{
+    in_addr_t ulTest = 0xFFFFFFFFUL;
+    in_addr_t ulMask = m_ia.s_addr;
+    for (int i = 0; i <= 32; i++)
+    {
+        if (ulMask == ulTest)
+        {
+            *pnLeadingBits = i;
+            return true;
+        }
+        ulTest = (ulTest << 1) & 0xFFFFFFFFUL;
+    }
+    return false;
+}
+
+void mux_in_addr::makeMask(int nLeadingBits)
+{
+    // << [0,31] works. << 32 is problematic on some systems.
+    //
+    in_addr_t ulMask = 0;
+    if (nLeadingBits > 0)
+    {
+        ulMask = (0xFFFFFFFFUL << (32 - nLeadingBits)) & 0xFFFFFFFFUL;
+    }
+    m_ia.s_addr = htonl(ulMask);
+}
+#endif
+
+#if defined(HAVE_IN6_ADDR)
+bool mux_in6_addr::isValidMask(int *pnLeadingBits) const
+{
+    const unsigned char allones = 0xFF;
+    unsigned char ucMask;
+    int i;
+    for (i = 0; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
+    {
+        ucMask = m_ia6.s6_addr[i];
+        if (allones != ucMask)
+        {
+            break;
+        }
+    }
+
+    int nLeadingBits = 8*i;
+
+    if (i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]))
+    {
+        if (0 != ucMask)
+        {
+            bool fFound = false;
+            unsigned char ucTest = allones;
+            for (int j = 0; j <= 8 && !fFound; j++)
+            {
+                if (ucMask == ucTest)
+                {
+                    nLeadingBits += j;
+                    fFound = true;
+                    break;
+                }
+                ucTest = (ucTest << 1) & allones;
+            }
+
+            if (!fFound)
+            {
+                return false;
+            }
+            i++;
+        }
+
+        for ( ; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
+        {
+            ucMask = m_ia6.s6_addr[i];
+            if (0 != ucMask)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void mux_in6_addr::makeMask(int nLeadingBits)
+{
+    const unsigned char allones = 0xFF;
+    memset(&m_ia6, 0, sizeof(m_ia6));
+    int iBytes = nLeadingBits / 8;
+    for (int i = 0; i < iBytes; i++)
+    {
+        m_ia6.s6_addr[i] = allones;
+    }
+
+    if (iBytes < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]))
+    {
+        int iBits = nLeadingBits % 8;
+        if (iBits > 0)
+        {
+            m_ia6.s6_addr[iBytes] = (allones << (8 - iBits)) & allones;
+        }
+    }
+}
+#endif
+
+mux_subnet::~mux_subnet()
+{
+    delete m_iaBase;
+    delete m_iaMask;
+    delete m_iaEnd;
+}
+
+bool mux_subnet::listinfo(UTF8 *sAddress, int *pnLeadingBits) const
+{
+    // Base Address
+    //
+    mux_sockaddr msa;
+    msa.SetAddress(m_iaBase);
+    msa.ntop(sAddress, LBUF_SIZE);
+
+    // Leading significant bits
+    //
+    *pnLeadingBits = m_iLeadingBits;
+
+    return true;
+}
+
+mux_subnet::Comparison mux_subnet::CompareTo(mux_subnet *t) const
+{
+    if (*(t->m_iaEnd) < *m_iaBase)
+    {
+        // this > t
+        //
+        return mux_subnet::kGreaterThan;
+    }
+    else if (*m_iaEnd < *(t->m_iaBase))
+    {
+        // this < t
+        //
+        return mux_subnet::kLessThan;
+    }
+    else if (  *m_iaBase < *(t->m_iaBase)
+            && *(t->m_iaEnd) < *m_iaEnd)
+    {
+        // this contains t
+        //
+        return mux_subnet::kContains;
+    }
+    else if (  *m_iaBase == *(t->m_iaBase)
+            && m_iLeadingBits == t->m_iLeadingBits)
+    {
+        // this == t
+        //
+        return mux_subnet::kEqual;
+    }
+    else
+    {
+        // this is contained by t
+        //
+        return mux_subnet::kContainedBy;
+    }
+}
+
+mux_subnet::Comparison mux_subnet::CompareTo(MUX_SOCKADDR *msa) const
+{
+    mux_addr *ma = NULL;
+    switch (msa->Family())
+    {
+#if defined(HAVE_IN_ADDR)
+    case AF_INET:
+        {
+            struct in_addr ia;
+            msa->GetAddress(&ia);
+            ma = (mux_addr *)(new mux_in_addr(&ia));
+        }
+        break;
+#endif
+
+#if defined(HAVE_IN6_ADDR)
+    case AF_INET6:
+        {
+            struct in6_addr ia6;
+            msa->GetAddress(&ia6);
+            ma = (mux_addr *)(new mux_in6_addr(&ia6));
+        }
+        break;
+#endif
+    default:
+        return mux_subnet::kGreaterThan;
+    }
+
+    mux_subnet::Comparison fComp;
+    if (*ma < *m_iaBase)
+    {
+        // this > t
+        //
+        fComp = mux_subnet::kGreaterThan;
+    }
+    else if (*m_iaEnd < *ma)
+    {
+        // this < t
+        //
+        fComp = mux_subnet::kLessThan;
+    }
+    else
+    {
+        // this contains t
+        //
+        fComp = mux_subnet::kContains;
+    }
+    delete ma;
+    return fComp;
+}
+
+mux_subnet *ParseSubnet(UTF8 *str, dbref player, UTF8 *cmd)
+{
+    mux_addr *maMask = NULL;
+    mux_addr *maBase = NULL;
+    mux_addr *maEnd  = NULL;
+    int nLeadingBits = 0;
+
+    MUX_ADDRINFO hints;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_NUMERICHOST|AI_NUMERICSERV;
+
+    int n;
+    in_addr_t ulNetBits;
+    MUX_ADDRINFO *servinfo;
+
+    UTF8 *addr_txt;
+    UTF8 *mask_txt = (UTF8 *)strchr((char *)str, '/');
+    if (NULL == mask_txt)
+    {
+        // Standard IP range and netmask notation.
+        //
+        MUX_STRTOK_STATE tts;
+        mux_strtok_src(&tts, str);
+        mux_strtok_ctl(&tts, T(" \t=,"));
+        addr_txt = mux_strtok_parse(&tts);
+        if (NULL != addr_txt)
+        {
+            mask_txt = mux_strtok_parse(&tts);
+        }
+
+        if (  NULL == addr_txt
+           || '\0' == *addr_txt
+           || NULL == mask_txt
+           || '\0' == *mask_txt)
+        {
+            cf_log_syntax(player, cmd, T("Missing host address or mask."));
+            return NULL;
+        }
+
+        n = 0;
+        if (0 == mux_getaddrinfo(mask_txt, NULL, &hints, &servinfo))
+        {
+            for (MUX_ADDRINFO *ai = servinfo; NULL != ai; ai = ai->ai_next)
+            {
+                delete maMask;
+                switch (ai->ai_family)
+                {
+#if defined(HAVE_SOCKADDR_IN) && defined(HAVE_IN_ADDR)
+                case AF_INET:
+                    {
+                        struct sockaddr_in *sai = (struct sockaddr_in *)(ai->ai_addr);
+                        maMask = (mux_addr *)(new mux_in_addr(&sai->sin_addr));
+                    }
+                    break;
+#endif
+#if defined(HAVE_SOCKADDR_IN6) && defined(HAVE_IN6_ADDR)
+                case AF_INET6:
+                    {
+                        struct sockaddr_in6 *sai6 = (struct sockaddr_in6 *)(ai->ai_addr);
+                        maMask = (mux_addr *)(new mux_in6_addr(&sai6->sin6_addr));
+                    }
+                    break;
+#endif
+                default:
+                    return NULL;
+                }
+                n++;
+            }
+            mux_freeaddrinfo(servinfo);
+        }
+#if defined(HAVE_SOCKADDR_IN) && defined(HAVE_IN_ADDR)
+        else if (MakeCanonicalIPv4(mask_txt, &ulNetBits))
+        {
+            delete maMask;
+            maMask = (mux_addr *)(new mux_in_addr(ulNetBits));
+            n++;
+        }
+#endif
+
+        if (  1 != n
+           || !maMask->isValidMask(&nLeadingBits))
+        {
+            cf_log_syntax(player, cmd, T("Malformed mask address: %s"), mask_txt);
+            delete maMask;
+            return NULL;
+        }
+    }
+    else
+    {
+        // RFC 1517, 1518, 1519, 1520: CIDR IP prefix notation
+        //
+        addr_txt = str;
+        *mask_txt++ = '\0';
+        if (!is_integer(mask_txt, NULL))
+        {
+            cf_log_syntax(player, cmd, T("Mask field (%s) in CIDR IP prefix is not numeric."), mask_txt);
+            return false;
+        }
+
+        nLeadingBits = mux_atol(mask_txt);
+    }
+
+    n = 0;
+    if (0 == mux_getaddrinfo(addr_txt, NULL, &hints, &servinfo))
+    {
+        for (MUX_ADDRINFO *ai = servinfo; NULL != ai; ai = ai->ai_next)
+        {
+            delete maBase;
+            switch (ai->ai_family)
+            {
+#if defined(HAVE_SOCKADDR_IN) && defined(HAVE_IN_ADDR)
+            case AF_INET:
+                {
+                    struct sockaddr_in *sai = (struct sockaddr_in *)(ai->ai_addr);
+                    maBase = (mux_addr *)(new mux_in_addr(&sai->sin_addr));
+                }
+                break;
+#endif
+#if defined(HAVE_SOCKADDR_IN6) &&  defined(HAVE_IN6_ADDR)
+            case AF_INET6:
+                {
+                    struct sockaddr_in6 *sai6 = (struct sockaddr_in6 *)(ai->ai_addr);
+                    maBase = (mux_addr *)(new mux_in6_addr(&sai6->sin6_addr));
+                }
+                break;
+#endif
+            default:
+                delete maMask;
+                return NULL;
+            }
+            n++;
+        }
+        mux_freeaddrinfo(servinfo);
+    }
+#if defined(HAVE_IN_ADDR)
+    else if (MakeCanonicalIPv4(addr_txt, &ulNetBits))
+    {
+        delete maBase;
+        maBase = (mux_addr *)(new mux_in_addr(ulNetBits));
+        n++;
+    }
+#endif
+
+    if (1 != n)
+    {
+        cf_log_syntax(player, cmd, T("Malformed host address: %s"), addr_txt);
+        delete maMask;
+        delete maBase;
+        return NULL;
+    }
+
+    if (NULL == maMask)
+    {
+        bool fOutOfRange = false;
+        switch (maBase->getFamily())
+        {
+#if defined(HAVE_IN_ADDR)
+        case AF_INET:
+            maMask = (mux_addr *)(new mux_in_addr());
+            if (  nLeadingBits < 0
+               || 32 < nLeadingBits)
+            {
+                fOutOfRange = true;
+            }
+            break;
+#endif
+#if defined(HAVE_IN6_ADDR)
+        case AF_INET6:
+            maMask = (mux_addr *)(new mux_in6_addr());
+            if (  nLeadingBits < 0
+               || 128 < nLeadingBits)
+            {
+                fOutOfRange = true;
+            }
+            break;
+#endif
+        default:
+            return NULL;
+        }
+
+        if (fOutOfRange)
+        {
+            cf_log_syntax(player, cmd, T("Mask bits (%d) in CIDR IP prefix out of range."), nLeadingBits);
+            return NULL;
+        }
+        maMask->makeMask(nLeadingBits);
+    }
+    else if (maBase->getFamily() != maMask->getFamily())
+    {
+        cf_log_syntax(player, cmd, T("Mask type is not compatible with address type: %s %s"), addr_txt, mask_txt);
+        delete maMask;
+        delete maBase;
+        return NULL;
+    }
+
+    if (maBase->clearOutsideMask(*maMask))
+    {
+        // The given subnet address contains 'one' bits which are outside the given subnet mask. If we don't clear these bits, they
+        // will interfere with the subnet tests in site_check. The subnet spec would be defunct and useless.
+        //
+        cf_log_syntax(player, cmd, T("Non-zero host address bits outside the subnet mask (fixed): %s %s"), addr_txt, mask_txt);
+    }
+
+    delete maEnd;
+    maEnd = maBase->calculateEnd(*maMask);
+
+    mux_subnet *msn = new mux_subnet();
+    msn->m_iaBase = maBase;
+    msn->m_iaMask = maMask;
+    msn->m_iaEnd = maEnd;
+    msn->m_iLeadingBits = nLeadingBits;
+    return msn;
+}
+
+#if (defined(WINDOWS_NETWORKING) || (defined(UNIX_NETWORK) && !defined(HAVE_GETADDRINFO))) && defined(HAVE_IN_ADDR)
+static struct addrinfo *gai_addrinfo_new(int socktype, const UTF8 *canonical, struct in_addr addr, unsigned short port)
+{
+    struct addrinfo *ai = (struct addrinfo *)MEMALLOC(sizeof(*ai));
+    if (NULL == ai)
+    {
+        return NULL;
+    }
+    ai->ai_addr = (sockaddr *)MEMALLOC(sizeof(struct sockaddr_in));
+    if (NULL == ai->ai_addr)
+    {
+        free(ai);
+        return NULL;
+    }
+    ai->ai_next = NULL;
+    if (NULL == canonical)
+    {
+        ai->ai_canonname = NULL;
+    }
+    else
+    {
+        ai->ai_canonname = (char *)StringClone(canonical);
+        if (NULL == ai->ai_canonname)
+        {
+            mux_freeaddrinfo(ai);
+            return NULL;
+        }
+    }
+    memset(ai->ai_addr, 0, sizeof(struct sockaddr_in));
+    ai->ai_flags = 0;
+    ai->ai_family = AF_INET;
+    ai->ai_socktype = socktype;
+    ai->ai_protocol = (socktype == SOCK_DGRAM) ? IPPROTO_UDP : IPPROTO_TCP;
+    ai->ai_addrlen = sizeof(struct sockaddr_in);
+    ((struct sockaddr_in *) ai->ai_addr)->sin_family = AF_INET;
+    ((struct sockaddr_in *) ai->ai_addr)->sin_addr = addr;
+    ((struct sockaddr_in *) ai->ai_addr)->sin_port = htons(port);
+    return ai;
+}
+
+static bool convert_service(const UTF8 *string, long *result)
+{
+    if ('\0' == *string)
+    {
+        return false;
+    }
+    *result = mux_atol(string);
+    if (*result < 0)
+    {
+        return false;
+    }
+    return true;
+}
+
+static int gai_service(const UTF8 *servname, int flags, int *type, unsigned short *port)
+{
+    long value;
+    if (convert_service(servname, &value))
+    {
+        if (value > (1L << 16) - 1)
+        {
+            return EAI_SERVICE;
+        }
+        *port = static_cast<unsigned short>(value);
+    }
+    else
+    {
+        if (flags & AI_NUMERICSERV)
+        {
+            return EAI_NONAME;
+        }
+        const UTF8 *protocol;
+        if (0 != *type)
+            protocol = (SOCK_DGRAM == *type) ? T("udp") : T("tcp");
+        else
+            protocol = NULL;
+
+        struct servent *servent = getservbyname((const char *)servname, (const char *)protocol);
+        if (NULL == servent)
+        {
+            return EAI_NONAME;
+        }
+        if (strcmp(servent->s_proto, "udp") == 0)
+        {
+            *type = SOCK_DGRAM;
+        }
+        else if (strcmp(servent->s_proto, "tcp") == 0)
+        {
+            *type = SOCK_STREAM;
+        }
+        else
+        {
+            return EAI_SERVICE;
+        }
+        *port = htons(servent->s_port);
+    }
+    return 0;
+}
+
+static int gai_lookup(const UTF8 *nodename, int flags, int socktype, unsigned short port, struct addrinfo **res)
+{
+    struct addrinfo *ai, *first, *prev;
+    struct in_addr addr;
+    struct hostent *host;
+    const UTF8 *canonical;
+    int i;
+
+    in_addr_t ulAddr;
+    if (MakeCanonicalIPv4(nodename, &ulAddr))
+    {
+        addr.s_addr = ulAddr;
+        canonical = (flags & AI_CANONNAME) ? nodename : NULL;
+        ai = gai_addrinfo_new(socktype, canonical, addr, port);
+        if (NULL == ai)
+        {
+            return EAI_MEMORY;
+        }
+        *res = ai;
+        return 0;
+    }
+    else
+    {
+        if (flags & AI_NUMERICHOST)
+        {
+            return EAI_NONAME;
+        }
+        host = gethostbyname((const char *)nodename);
+        if (NULL == host)
+        {
+            switch (h_errno)
+            {
+            case HOST_NOT_FOUND:
+                return EAI_NONAME;
+            case TRY_AGAIN:
+            case NO_DATA:
+                return EAI_AGAIN;
+            default:
+                return EAI_FAIL;
+            }
+        }
+        if (NULL == host->h_addr_list[0])
+        {
+            return EAI_FAIL;
+        }
+        if (flags & AI_CANONNAME)
+        {
+            if (NULL != host->h_name)
+            {
+                canonical = (UTF8 *)host->h_name;
+            }
+            else
+            {
+                canonical = nodename;
+            }
+        }
+        else
+        {
+            canonical = NULL;
+        }
+        first = NULL;
+        prev = NULL;
+        for (i = 0; host->h_addr_list[i] != NULL; i++)
+        {
+            if (host->h_length != sizeof(addr))
+            {
+                mux_freeaddrinfo(first);
+                return EAI_FAIL;
+            }
+            memcpy(&addr, host->h_addr_list[i], sizeof(addr));
+            ai = gai_addrinfo_new(socktype, canonical, addr, port);
+            if (NULL == ai)
+            {
+                mux_freeaddrinfo(first);
+                return EAI_MEMORY;
+            }
+            if (first == NULL)
+            {
+                first = ai;
+                prev = ai;
+            }
+            else
+            {
+                prev->ai_next = ai;
+                prev = ai;
+            }
+        }
+        *res = first;
+        return 0;
+    }
+}
+
+#endif
+
+int mux_getaddrinfo(const UTF8 *node, const UTF8 *service, const MUX_ADDRINFO *hints, MUX_ADDRINFO **res)
+{
+#if defined(UNIX_NETWORKING) && defined(HAVE_GETADDRINFO)
+    return getaddrinfo((const char *)node, (const char *)service, hints, res);
+#elif defined(WINDOWS_NETWORKING)
+    if (NULL != fpGetAddrInfo)
+    {
+        return fpGetAddrInfo((const char *)node, (const char *)service, hints, res);
+    }
+#endif
+#if (defined(WINDOWS_NETWORKING) || (defined(UNIX_NETWORK) && !defined(HAVE_GETADDRINFO))) && defined(HAVE_IN_ADDR)
+    struct addrinfo *ai;
+    struct in_addr addr;
+    unsigned short port;
+
+    int flags;
+    int socktype;
+    if (NULL != hints)
+    {
+        flags = hints->ai_flags;
+        socktype = hints->ai_socktype;
+        if ((flags & (AI_PASSIVE|AI_CANONNAME|AI_NUMERICHOST|AI_NUMERICSERV|AI_ADDRCONFIG|AI_V4MAPPED)) != flags)
+        {
+            return EAI_BADFLAGS;
+        }
+
+        if (  hints->ai_family != AF_UNSPEC
+           && hints->ai_family != AF_INET)
+        {
+            return EAI_FAMILY;
+        }
+
+        if (  0 != socktype
+           && SOCK_STREAM != socktype
+           && SOCK_DGRAM != socktype)
+        {
+            return EAI_SOCKTYPE;
+        }
+
+        if (0 != hints->ai_protocol)
+        {
+            if (  IPPROTO_TCP != hints->ai_protocol
+               && IPPROTO_UDP != hints->ai_protocol)
+            {
+                return EAI_SOCKTYPE;
+            }
+        }
+    }
+    else
+    {
+        flags = 0;
+        socktype = 0;
+    }
+
+    int status;
+    if (NULL == service)
+    {
+        port = 0;
+    }
+    else
+    {
+        status = gai_service(service, flags, &socktype, &port);
+        if (0 != status)
+        {
+            return status;
+        }
+    }
+    if (node != NULL)
+    {
+        return gai_lookup(node, flags, socktype, port, res);
+    }
+    else
+    {
+        if (NULL == service)
+        {
+            return EAI_NONAME;
+        }
+        if ((flags & AI_PASSIVE) == AI_PASSIVE)
+        {
+            addr.s_addr = INADDR_ANY;
+        }
+        else
+        {
+            addr.s_addr = htonl(0x7f000001UL);
+        }
+        ai = gai_addrinfo_new(socktype, NULL, addr, port);
+        if (NULL == ai)
+        {
+            return EAI_MEMORY;
+        }
+        *res = ai;
+        return 0;
+    }
+#endif
+}
+
+void mux_freeaddrinfo(MUX_ADDRINFO *res)
+{
+#if defined(UNIX_NETWORKING) && defined(HAVE_GETADDRINFO)
+    freeaddrinfo(res);
+#elif defined(WINDOWS_NETWORKING)
+    if (NULL != fpFreeAddrInfo)
+    {
+        fpFreeAddrInfo(res);
+        return;
+    }
+#endif
+#if defined(WINDOWS_NETWORKING) || (defined(UNIX_NETWORK) && !defined(HAVE_GETADDRINFO))
+    MUX_ADDRINFO *next;
+    while (NULL != res)
+    {
+        next = res->ai_next;
+        if (NULL != res->ai_addr)
+        {
+            free(res->ai_addr);
+        }
+        if (NULL != res->ai_canonname)
+        {
+            free(res->ai_canonname);
+        }
+        free(res);
+        res = next;
+    }
+#endif
+}
+
+#if defined(WINDOWS_NETWORKING) || (defined(UNIX_NETWORK) && !defined(HAVE_GETNAMEINFO))
+static bool try_name(const char *name, UTF8 *host, size_t hostlen, int *status)
+{
+    if (NULL == strchr((const char *)name, '.'))
+    {
+        return false;
+    }
+    UTF8 *bufc = host;
+    safe_str((const UTF8 *)name, host, &bufc);
+    *bufc = '\0';
+    return true;
+}
+
+static int lookup_hostname(const struct in_addr *addr, UTF8 *host, size_t hostlen, int flags)
+{
+    UTF8 *bufc;
+#ifdef HAVE_GETHOSTBYADDR
+    if (0 == (flags & NI_NUMERICHOST))
+    {
+        struct hostent *he = gethostbyaddr((const char *)addr, sizeof(struct in_addr), AF_INET);
+        if (NULL == he)
+        {
+            if (flags & NI_NAMEREQD)
+            {
+                return EAI_NONAME;
+            }
+        }
+        else
+        {
+            int status;
+            if (try_name(he->h_name, host, hostlen, &status))
+            {
+                return status;
+            }
+
+            for (char **alias = he->h_aliases; NULL != *alias; alias++)
+            {
+                if (try_name(*alias, host, hostlen, &status))
+                {
+                    return status;
+                }
+            }
+        }
+    }
+#endif
+
+    bufc = host;
+    safe_str((UTF8 *)inet_ntoa(*addr), host, &bufc);
+    *bufc = '\0';
+    return 0;
+}
+
+static int lookup_servicename(unsigned short port, UTF8 *serv, size_t servlen, int flags)
+{
+    UTF8 *bufc;
+    if (0 == (flags & NI_NUMERICSERV))
+    {
+        const char *protocol = (flags & NI_DGRAM) ? "udp" : "tcp";
+        struct servent *srv = getservbyport(htons(port), protocol);
+        if (NULL != srv)
+        {
+            bufc = serv;
+            safe_str((UTF8 *)srv->s_name, serv, &bufc);
+            *bufc = '\0';
+            return 0;
+        }
+    }
+
+    bufc = serv;
+    safe_ltoa(port, serv, &bufc);
+    *bufc = '\0';
+    return 0;
+}
+#endif
+
+int mux_getnameinfo(const MUX_SOCKADDR *msa, UTF8 *host, size_t hostlen, UTF8 *serv, size_t servlen, int flags)
+{
+#if defined(UNIX_NETWORKING) && defined(HAVE_GETNAMEINFO)
+    return getnameinfo(msa->saro(), msa->salen(), (char *)host, hostlen, (char *)serv, servlen, flags);
+#elif defined(WINDOWS_NETWORKING)
+    if (NULL != fpGetNameInfo)
+    {
+        return fpGetNameInfo(msa->saro(), msa->salen(), (char *)host, hostlen, (char *)serv, servlen, flags);
+    }
+#endif
+
+#if defined(WINDOWS_NETWORKING) || (defined(UNIX_NETWORK) && !defined(HAVE_GETNAMEINFO))
+    if (  (  NULL == host
+          || hostlen <= 0)
+       && (  NULL == serv
+          || servlen <= 0))
+    {
+        return EAI_NONAME;
+    }
+
+    if (AF_INET != msa->Family())
+    {
+        return EAI_FAMILY;
+    }
+
+    int status;
+    if (  NULL != host
+       && 0 < hostlen)
+    {
+        status = lookup_hostname(&msa->sairo()->sin_addr, host, hostlen, flags);
+        if (0 != status)
+        {
+            return status;
+        }
+    }
+
+    if (  NULL != serv
+       && 0 < servlen)
+    {
+        unsigned short port = msa->Port();
+        return lookup_servicename(port, serv, servlen, flags);
+    }
+    return 0;
+#endif
+}
+
+unsigned short mux_sockaddr::Port() const
+{
+    switch (u.sa.sa_family)
+    {
+#if defined(HAVE_SOCKADDR_IN)
+    case AF_INET:
+        return ntohs(u.sai.sin_port);
+#endif
+
+#if defined(HAVE_SOCKADDR_IN6)
+    case AF_INET6:
+        return ntohs(u.sai6.sin6_port);
+#endif
+
+    default:
+        return 0;
+    }
+}
+
+struct sockaddr *mux_sockaddr::sa()
+{
+    return &u.sa;
+}
+
+size_t mux_sockaddr::maxaddrlen() const
+{
+    return sizeof(u);
+}
+
+void mux_sockaddr::ntop(UTF8 *sAddress, size_t len) const
+{
+    if (0 != mux_getnameinfo(this, sAddress, len, NULL, 0, NI_NUMERICHOST|NI_NUMERICSERV))
+    {
+        sAddress[0] = '\0';
+    }
+}
+
+void mux_sockaddr::SetAddress(mux_addr *ma)
+{
+    switch (ma->getFamily())
+    {
+#if defined(HAVE_IN_ADDR)
+    case AF_INET:
+        {
+            mux_in_addr *mia = (mux_in_addr *)ma;
+            u.sai.sin_family = AF_INET;
+            u.sai.sin_addr = mia->m_ia;
+        }
+        break;
+#endif
+#if defined(HAVE_IN6_ADDR)
+    case AF_INET6:
+        {
+            mux_in6_addr *mia6 = (mux_in6_addr *)ma;
+            u.sai6.sin6_family = AF_INET6;
+            u.sai6.sin6_addr = mia6->m_ia6;
+        }
+        break;
+#endif
+    }
+}
+
+void mux_sockaddr::Clear()
+{
+    memset(&u, 0, sizeof(u));
+}
+
+#if defined(HAVE_SOCKADDR_IN)
+struct sockaddr_in *mux_sockaddr::sai()
+{
+    return &u.sai;
+}
+
+struct sockaddr_in const *mux_sockaddr::sairo() const
+{
+    return &u.sai;
+}
+#endif
+
+unsigned short mux_sockaddr::Family() const
+{
+    return u.sa.sa_family;
+}
+
+struct sockaddr const *mux_sockaddr::saro() const
+{
+    return &u.sa;
+}
+
+size_t mux_sockaddr::salen() const
+{
+    switch (u.sa.sa_family)
+    {
+#if defined(HAVE_SOCKADDR_IN)
+    case AF_INET:
+        return sizeof(u.sai);
+#endif
+#if defined(HAVE_SOCKADDR_IN6)
+    case AF_INET6:
+        return sizeof(u.sai6);
+#endif
+
+    default:
+        return 0;
+    }
+}
+
+mux_sockaddr::mux_sockaddr()
+{
+    Clear();
+}
+
+mux_sockaddr::mux_sockaddr(const sockaddr *sa)
+{
+    switch (sa->sa_family)
+    {
+#if defined(HAVE_SOCKADDR_IN)
+    case AF_INET:
+        memcpy(&u.sai, sa, sizeof(u.sai));
+        break;
+#endif
+#if defined(HAVE_SOCKADDR_IN6)
+    case AF_INET6:
+        memcpy(&u.sai6, sa, sizeof(u.sai6));
+        break;
+#endif
+    }
+}
+
+bool mux_sockaddr::operator==(const mux_sockaddr &it) const
+{
+    if (it.u.sa.sa_family != u.sa.sa_family)
+    {
+        return false;
+    }
+
+    switch (u.sa.sa_family)
+    {
+#if defined(HAVE_SOCKADDR_IN)
+    case AF_INET:
+        if (  memcmp(&it.u.sai.sin_addr, &u.sai.sin_addr, sizeof(u.sai.sin_addr)) == 0
+           && it.u.sai.sin_family == u.sai.sin_family
+           && it.u.sai.sin_port == u.sai.sin_port)
+        {
+            return true;
+        }
+        break;
+#endif
+#if defined(HAVE_SOCKADDR_IN6)
+    case AF_INET6:
+        // Intentionally ignoring sin6_flowinfo, sin6_scopeid, and others for now.
+        //
+        if (  memcmp(&it.u.sai6.sin6_addr, &u.sai6.sin6_addr, sizeof(u.sai6.sin6_family)) == 0
+           && it.u.sai6.sin6_family == u.sai6.sin6_family
+           && it.u.sai6.sin6_port == u.sai6.sin6_port)
+        {
+            return true;
+        }
+        break;
+#endif
+    }
+    return false;
+}
+
+mux_addr::~mux_addr()
+{
+}
+
+#if defined(HAVE_IN_ADDR)
+mux_in_addr::~mux_in_addr()
+{
+}
+
+mux_in_addr::mux_in_addr(in_addr *ia)
+{
+    m_ia = *ia;
+}
+
+mux_in_addr::mux_in_addr(unsigned int ulBits)
+{
+    m_ia.s_addr = htonl(ulBits);
+}
+
+void mux_sockaddr::GetAddress(in_addr *ia) const
+{
+    *ia = u.sai.sin_addr;
+}
+
+bool mux_in_addr::operator<(const mux_addr &it) const
+{
+    if (AF_INET == it.getFamily())
+    {
+        const mux_in_addr *t = (const mux_in_addr *)&it;
+        return (ntohl(m_ia.s_addr) < ntohl(t->m_ia.s_addr));
+    }
+    return true;
+}
+
+bool mux_in_addr::operator==(const mux_addr &it) const
+{
+    if (AF_INET == it.getFamily())
+    {
+        const mux_in_addr *t = (const mux_in_addr *)&it;
+        return (ntohl(m_ia.s_addr) == ntohl(t->m_ia.s_addr));
+    }
+    return false;
+}
+
+bool mux_in_addr::clearOutsideMask(const mux_addr &it)
+{
+    if (AF_INET == it.getFamily())
+    {
+        const mux_in_addr *t = (const mux_in_addr *)&it;
+        if (m_ia.s_addr & ~t->m_ia.s_addr)
+        {
+            m_ia.s_addr &= t->m_ia.s_addr;
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+
+mux_addr *mux_in_addr::calculateEnd(const mux_addr &it) const
+{
+    if (AF_INET == it.getFamily())
+    {
+        const mux_in_addr *t = (const mux_in_addr *)&it;
+        mux_in_addr *e = new mux_in_addr();
+        e->m_ia.s_addr = m_ia.s_addr | ~t->m_ia.s_addr;
+        return (mux_addr *)e;
+    }
+    return NULL;
+}
+#endif
+
+#if defined(HAVE_IN6_ADDR)
+mux_in6_addr::~mux_in6_addr()
+{
+}
+
+mux_in6_addr::mux_in6_addr(in6_addr *ia6)
+{
+    m_ia6 = *ia6;
+}
+
+void mux_sockaddr::GetAddress(in6_addr *ia6) const
+{
+    *ia6 = u.sai6.sin6_addr;
+}
+
+bool mux_in6_addr::operator<(const mux_addr &it) const
+{
+    if (AF_INET6 == it.getFamily())
+    {
+        const mux_in6_addr *t = (const mux_in6_addr *)&it;
+        for (int i = 0; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
+        {
+            if (m_ia6.s6_addr[i] < t->m_ia6.s6_addr[i])
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool mux_in6_addr::operator==(const mux_addr &it) const
+{
+    if (AF_INET6 == it.getFamily())
+    {
+        const mux_in6_addr *t = (const mux_in6_addr *)&it;
+        return (m_ia6.s6_addr == t->m_ia6.s6_addr);
+    }
+    return false;
+}
+
+bool mux_in6_addr::clearOutsideMask(const mux_addr &it)
+{
+    if (AF_INET6 == it.getFamily())
+    {
+        bool fOutside = false;
+        const mux_in6_addr *t = (const mux_in6_addr *)&it;
+        for (int i = 0; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
+        {
+            if (m_ia6.s6_addr[i] & ~t->m_ia6.s6_addr[i])
+            {
+                fOutside = true;
+                m_ia6.s6_addr[i] &= t->m_ia6.s6_addr[i];
+            }
+        }
+        return fOutside;
+    }
+    return true;
+}
+
+mux_addr *mux_in6_addr::calculateEnd(const mux_addr &it) const
+{
+    if (AF_INET6 == it.getFamily())
+    {
+        const mux_in6_addr *t = (const mux_in6_addr *)&it;
+        mux_in6_addr *e = new mux_in6_addr();
+        for (int i = 0; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
+        {
+            e->m_ia6.s6_addr[i] = m_ia6.s6_addr[i] | ~t->m_ia6.s6_addr[i];
+        }
+        return (mux_addr *)e;
+    }
+    return NULL;
+}
+#endif

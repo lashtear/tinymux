@@ -2426,6 +2426,25 @@ static void do_mail_nuke(dbref player)
     raw_notify(player, T("You annihilate the post office. All messages cleared."));
 }
 
+#ifdef SELFCHECK
+void finish_mail()
+{
+    dbref thing;
+    DO_WHOLE_DB(thing)
+    {
+        MailList ml(thing);
+        ml.RemoveAll();
+    }
+
+    if (NULL != mail_list)
+    {
+        mail_list -= MAIL_FUDGE;
+        MEMFREE(mail_list);
+        mail_list = NULL;
+    }
+}
+#endif
+
 static void do_mail_debug(dbref player, UTF8 *action, UTF8 *victim)
 {
     if (!ExpMail(player))
@@ -3034,6 +3053,8 @@ int dump_mail(FILE *fp)
     return count;
 }
 
+static void malias_read(FILE *fp, bool bConvert);
+
 static void load_mail_V6(FILE *fp)
 {
     int mail_top = getref(fp);
@@ -3041,9 +3062,9 @@ static void load_mail_V6(FILE *fp)
 
     size_t nBuffer;
     UTF8  *pBuffer;
-    UTF8 nbuf1[8];
+    UTF8 nbuf1[200];
     UTF8 *p = (UTF8 *)fgets((char *)nbuf1, sizeof(nbuf1), fp);
-    while (  p
+    while (  NULL != p
           && strncmp((char *)nbuf1, "***", 3) != 0)
     {
         struct mail *mp = NULL;
@@ -3085,12 +3106,24 @@ static void load_mail_V6(FILE *fp)
     }
 
     p = (UTF8 *)fgets((char *)nbuf1, sizeof(nbuf1), fp);
-    while (p && strncmp((char *)nbuf1, "+++", 3))
+    while (  NULL != p
+          && strncmp((char *)nbuf1, "+++", 3) != 0)
     {
         int number = mux_atol(nbuf1);
         pBuffer = (UTF8 *)getstring_noalloc(fp, true, &nBuffer);
         new_mail_message(pBuffer, number);
         p = (UTF8 *)fgets((char *)nbuf1, sizeof(nbuf1), fp);
+    }
+
+    p = (UTF8 *)fgets((char *)nbuf1, sizeof(nbuf1), fp);
+    if (  NULL != p
+       && strcmp((char *)nbuf1, "*** Begin MALIAS ***\n") == 0)
+    {
+        malias_read(fp, false);
+    }
+    else
+    {
+        Log.WriteString(T("ERROR: Couldn\xE2\x80\x99t find Begin MALIAS." ENDLINE));
     }
 }
 
@@ -3104,9 +3137,9 @@ static void load_mail_V5(FILE *fp)
     size_t nBufferUnicode;
     UTF8  *pBufferUnicode;
 
-    char nbuf1[8];
+    char nbuf1[200];
     char *p = fgets(nbuf1, sizeof(nbuf1), fp);
-    while (  p
+    while (  NULL != p
           && strncmp(nbuf1, "***", 3) != 0)
     {
         struct mail *mp = NULL;
@@ -3156,8 +3189,8 @@ static void load_mail_V5(FILE *fp)
     }
 
     p = fgets(nbuf1, sizeof(nbuf1), fp);
-    while (  p
-          && strncmp(nbuf1, "+++", 3))
+    while (  NULL != p
+          && strncmp(nbuf1, "+++", 3) != 0)
     {
         pBufferUnicode = (UTF8 *)nbuf1;
         int number = mux_atol(pBufferUnicode);
@@ -3165,6 +3198,17 @@ static void load_mail_V5(FILE *fp)
         pBufferUnicode = ConvertToUTF8(pBufferLatin1, &nBufferUnicode);
         new_mail_message(pBufferUnicode, number);
         p = fgets(nbuf1, sizeof(nbuf1), fp);
+    }
+
+    p = fgets(nbuf1, sizeof(nbuf1), fp);
+    if (  NULL != p
+       && strcmp(nbuf1, "*** Begin MALIAS ***\n") == 0)
+    {
+        malias_read(fp, true);
+    }
+    else
+    {
+        Log.WriteString(T("ERROR: Couldn\xE2\x80\x99t find Begin MALIAS." ENDLINE));
     }
 }
 
@@ -3390,7 +3434,6 @@ void load_mail(FILE *fp)
         return;
     }
 
-    bool bConvert = false;
     if (strncmp((char *)nbuf1, "+V6", 3) == 0)
     {
         // Started v6 on 2007-MAR-13.
@@ -3400,13 +3443,7 @@ void load_mail(FILE *fp)
     else if (strncmp((char *)nbuf1, "+V5", 3) == 0)
     {
         load_mail_V5(fp);
-        bConvert = true;
     }
-    else
-    {
-        return;
-    }
-    load_malias(fp, bConvert);
 }
 
 void check_mail_expiration(void)
@@ -5058,13 +5095,10 @@ void MailList::RemoveAll(void)
     struct mail *miNext;
     for (mi = miHead; NULL != mi; mi = miNext)
     {
-        if (mi == miHead)
+        miNext = mi->next;
+        if (miNext == miHead)
         {
             miNext = NULL;
-        }
-        else
-        {
-            miNext = mi->next;
         }
         MessageReferenceDec(mi->number);
         MEMFREE(mi->subject);

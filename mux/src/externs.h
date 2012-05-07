@@ -17,37 +17,15 @@
 #include "mudconf.h"
 #include "svdrand.h"
 
-// From bsd.cpp.
-//
-void close_sockets(bool emergency, const UTF8 *message);
-#if defined(HAVE_WORKING_FORK)
-void boot_slave(dbref executor, dbref caller, dbref enactor, int eval, int key);
-void CleanUpSlaveSocket(void);
-void CleanUpSlaveProcess(void);
-#ifdef STUB_SLAVE
-void CleanUpStubSlaveSocket(void);
-void WaitOnStubSlaveProcess(void);
-void boot_stubslave(dbref executor, dbref caller, dbref enactor, int key);
-extern "C" MUX_RESULT DCL_API pipepump(void);
-#endif // STUB_SLAVE
-#endif // HAVE_WORKING_FORK
-#ifdef UNIX_SSL
-void CleanUpSSLConnections(void);
-#endif
-
-#if defined(WINDOWS_NETWORKING)
-extern CRITICAL_SECTION csDescriptorList;
-#endif // WINDOWS_NETWORKING
-
-extern NAMETAB sigactions_nametab[];
-
 // From conf.cpp
 //
 void cf_log_notfound(dbref, const UTF8 *, const UTF8 *, const UTF8 *);
 int  cf_modify_bits(int *, UTF8 *, void *, UINT32, dbref, UTF8 *);
 void DCL_CDECL cf_log_syntax(dbref player, __in_z UTF8 *cmd, __in_z const UTF8 *fmt, ...);
 void ValidateConfigurationDbrefs(void);
+#if defined(HAVE_IN_ADDR)
 bool MakeCanonicalIPv4(const UTF8 *str, in_addr_t *pnIP);
+#endif
 int  cf_read(void);
 void cf_init(void);
 void cf_list(dbref, UTF8 *, UTF8 **);
@@ -102,6 +80,7 @@ UTF8 *MakeCanonicalMailAliasDesc
 const UTF8 *MessageFetch(int number);
 #endif // FIRANMUX
 size_t MessageFetchSize(int number);
+void finish_mail();
 
 // From netcommon.cpp.
 //
@@ -215,7 +194,7 @@ LBUF_OFFSET linewrap_general(const UTF8 *pStr, LBUF_OFFSET nWidth,
 #define notify_html(p,m)                    notify_check(p,p,m, MSG_PUP_ALWAYS|MSG_ME_ALL|MSG_F_DOWN|MSG_HTML)
 #define notify_quiet(p,m)                   notify_check(p,p,m, MSG_PUP_ALWAYS|MSG_ME)
 #define notify_with_cause(p,c,m)            notify_check(p,c,m, MSG_PUP_ALWAYS|MSG_ME_ALL|MSG_F_DOWN)
-#define notify_with_cause_ooc(p,c,m)        notify_check(p,c,m, MSG_PUP_ALWAYS|MSG_ME_ALL|MSG_F_DOWN|MSG_OOC)
+#define notify_with_cause_ooc(p,c,m,s)      notify_check(p,c,m, MSG_PUP_ALWAYS|MSG_ME_ALL|MSG_F_DOWN|MSG_OOC|(s))
 #define notify_with_cause_html(p,c,m)       notify_check(p,c,m, MSG_PUP_ALWAYS|MSG_ME_ALL|MSG_F_DOWN|MSG_HTML)
 #define notify_quiet_with_cause(p,c,m)      notify_check(p,c,m, MSG_PUP_ALWAYS|MSG_ME)
 #define notify_all(p,c,m)                   notify_check(p,c,m, MSG_ME_ALL|MSG_NBR_EXITS|MSG_F_UP|MSG_F_CONTENTS)
@@ -362,6 +341,7 @@ dbref create_player(const UTF8 *name, const UTF8 *pass, dbref executor, bool isr
 void AddToPublicChannel(dbref player);
 bool add_player_name(dbref player, const UTF8 *name, bool bAlias);
 bool delete_player_name(dbref player, const UTF8 *name, bool bAlias);
+void delete_all_player_names();
 dbref lookup_player_name(UTF8 *name, bool &bAlias);
 dbref lookup_player(dbref doer, UTF8 *name, bool check_who);
 void load_player_names(void);
@@ -642,15 +622,23 @@ extern int anum_alc_top;
 //#define GLOB_LIST       3   /* key to list */
 #define HALT_ALL        1   /* halt everything */
 
-#define HOOK_BEFORE     1   /* BEFORE hook */
-#define HOOK_AFTER      2   /* AFTER hook */
-#define HOOK_PERMIT     4   /* PERMIT hook */
-#define HOOK_IGNORE     8   /* IGNORE hook */
-#define HOOK_IGSWITCH   16  /* BFAIL hook */
-#define HOOK_AFAIL      32  /* AFAIL hook */
-#define HOOK_CLEAR      64  /* CLEAR hook */
-#define HOOK_LIST       128 /* LIST hooks */
-#define HOOK_ARGS       256 /* ARGS hooks */
+#define CEF_HOOK_BEFORE    0x00000001UL  /* BEFORE hook */
+#define CEF_HOOK_AFTER     0x00000002UL  /* AFTER hook */
+#define CEF_HOOK_PERMIT    0x00000004UL  /* PERMIT hook */
+#define CEF_HOOK_IGNORE    0x00000008UL  /* IGNORE hook */
+#define CEF_HOOK_IGSWITCH  0x00000010UL  /* BFAIL hook */
+#define CEF_HOOK_AFAIL     0x00000020UL  /* AFAIL hook */
+#define CEF_HOOK_CLEAR     0x00000040UL  /* CLEAR hook */
+#define CEF_HOOK_LIST      0x00000080UL  /* LIST hooks */
+#define CEF_HOOK_ARGS      0x00000100UL  /* ARGS hooks */
+#define CEF_HOOK_MASK      (  CEF_HOOK_BEFORE|CEF_HOOK_AFTER|CEF_HOOK_PERMIT|CEF_HOOK_IGNORE \
+                           |  CEF_HOOK_IGSWITCH|CEF_HOOK_AFAIL|CEF_HOOK_CLEAR|CEF_HOOK_LIST  \
+                           |  CEF_HOOK_ARGS)
+#define HOOKMASK(x)        ((x) & CEF_HOOK_MASK)
+
+#define CEF_ALLOC          0x00000200UL  // CMDENT was allocated.
+#define CEF_VISITED        0x00000400UL  // CMDENT was visted during finish_cmdtab.
+
 #define ICMD_DISABLE    0
 #define ICMD_IGNORE     1
 #define ICMD_ON         2
@@ -831,8 +819,9 @@ extern int anum_alc_top;
 #define CRYPT_MD5         0x00000020UL
 #define CRYPT_SHA256      0x00000040UL
 #define CRYPT_SHA512      0x00000080UL
-#define CRYPT_P6H         0x00000100UL  // From PennMUSH flatfile.
-#define CRYPT_OTHER       0x00000200UL  // Not recognized.
+#define CRYPT_P6H_XX      0x00000100UL  // From PennMUSH flatfile (XX... style).
+#define CRYPT_P6H_VAHT    0x00000200UL  // From PennMUSH flatfile (V:ALGO:HASH:TIMESTAMP)
+#define CRYPT_OTHER       0x00000400UL  // Not recognized.
 
 extern NAMETAB method_nametab[];
 
@@ -879,9 +868,12 @@ extern NAMETAB method_nametab[];
 #define MSG_OOC         0x00008000UL    /* Overide visibility rules because it's OOC */
 #define MSG_SAYPOSE     0x00010000UL    /* Indicates that the message is speech. */
 
-#define MSG_SRC_MASK    0x80000000UL    /* Bit mask for originating code path */
+#define MSG_SRC_KILL    0x10000000UL    /* Message originated from kill */
+#define MSG_SRC_GIVE    0x20000000UL    /* Message originated from give */
+#define MSG_SRC_PAGE    0x40000000UL    /* Message originated from page */
 #define MSG_SRC_COMSYS  0x80000000UL    /* Message originated from comsys */
 #define MSG_SRC_GENERIC 0x00000000UL    /* Message originated from 'none of the above' */
+#define MSG_SRC_MASK    (MSG_SRC_KILL|MSG_SRC_GIVE|MSG_SRC_PAGE|MSG_SRC_COMSYS)
 
 #define MSG_ME_ALL      (MSG_ME|MSG_INV_EXITS|MSG_FWDLIST)
 #define MSG_F_CONTENTS  (MSG_INV)
@@ -1008,57 +1000,12 @@ void list_system_resources(dbref player);
 int DoThingToThingVisibility(dbref looker, dbref lookee, int action_state);
 #endif // WOD_REALMS
 
-typedef struct
-{
-    int    port;
-    SOCKET socket;
-#ifdef UNIX_SSL
-    bool   fSSL;
-#endif
-} PortInfo;
-
-#define MAX_LISTEN_PORTS 10
-#ifdef UNIX_SSL
-extern bool initialize_ssl();
-extern void shutdown_ssl();
-
-extern PortInfo aMainGamePorts[MAX_LISTEN_PORTS * 2];
-#else
-extern PortInfo aMainGamePorts[MAX_LISTEN_PORTS];
-#endif
-extern int      nMainGamePorts;
-
-#if defined(UNIX_NETWORKING_SELECT)
-extern int maxd;
-#endif // UNIX_NETWORKING_SELECT
-
-extern unsigned int ndescriptors;
-
 extern long DebugTotalFiles;
-extern long DebugTotalSockets;
-
-#if defined(WINDOWS_NETWORKING)
-extern bool bUseCompletionPorts;
-extern long DebugTotalThreads;
-extern long DebugTotalSemaphores;
-extern HANDLE hGameProcess;
-typedef BOOL __stdcall FCANCELIO(HANDLE hFile);
-typedef BOOL __stdcall FGETPROCESSTIMES(HANDLE hProcess,
-    LPFILETIME pftCreate, LPFILETIME pftExit, LPFILETIME pftKernel,
-    LPFILETIME pftUser);
-extern FCANCELIO *fpCancelIo;
-extern FGETPROCESSTIMES *fpGetProcessTimes;
-#endif // WINDOWS_NETWORKING
-
 extern pid_t game_pid;
 
 // From timer.cpp
 //
 void init_timer(void);
-#if defined(WINDOWS_NETWORKING)
-void Task_FreeDescriptor(void *arg_voidptr, int arg_Integer);
-void Task_DeferredClose(void *arg_voidptr, int arg_Integer);
-#endif // WINDOWS_NETWORKING
 void dispatch_DatabaseDump(void *pUnused, int iUnused);
 void dispatch_FreeListReconstruction(void *pUnused, int iUnused);
 void dispatch_IdleCheck(void *pUnused, int iUnused);
@@ -1066,7 +1013,6 @@ void dispatch_CheckEvents(void *pUnused, int iUnused);
 #ifndef MEMORY_BASED
 void dispatch_CacheTick(void *pUnused, int iUnused);
 #endif
-
 
 // Using a heap as the data structure for representing this priority
 // has some attributes which we depend on:

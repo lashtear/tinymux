@@ -697,6 +697,18 @@ void notify_check(dbref target, dbref sender, const mux_string &msg, int key)
                 msg_ns->append_TextPlain(T(",comsys"));
                 break;
 
+            case MSG_SRC_KILL:
+                msg_ns->append_TextPlain(T(",kill"));
+                break;
+
+            case MSG_SRC_GIVE:
+                msg_ns->append_TextPlain(T(",give"));
+                break;
+
+            case MSG_SRC_PAGE:
+                msg_ns->append_TextPlain(T(",page"));
+                break;
+
             default:
                 if (key & MSG_SAYPOSE)
                 {
@@ -2370,7 +2382,9 @@ static void dbconvert(void)
         fclose(fpOut);
     }
     CLOSE;
+#ifdef SELFCHECK
     db_free();
+#endif
     exit(0);
 }
 #endif // MEMORY_BASED
@@ -2473,7 +2487,6 @@ long DebugTotalMemory = 0;
 #define CLI_DO_BASENAME    CLI_USER+9
 #define CLI_DO_PID_FILE    CLI_USER+10
 #define CLI_DO_ERRORPATH   CLI_USER+11
-#define CLI_DO_SELECT      CLI_USER+12
 
 static bool bMinDB = false;
 static bool bSyntaxError = false;
@@ -2497,9 +2510,6 @@ static CLI_OptionEntry OptionTable[] =
     { "u", CLI_NONE,     CLI_DO_UNLOAD      },
     { "d", CLI_REQUIRED, CLI_DO_BASENAME    },
 #endif // MEMORY_BASED
-#if defined(WINDOWS_NETWORKING)
-    { "n", CLI_NONE,     CLI_DO_SELECT      },
-#endif // WINDOWS_NETWORKING
     { "p", CLI_REQUIRED, CLI_DO_PID_FILE    },
     { "e", CLI_REQUIRED, CLI_DO_ERRORPATH   }
 };
@@ -2534,12 +2544,6 @@ static void CLI_CallBack(CLI_OptionEntry *p, const char *pValue)
             bServerOption = true;
             pErrorBasename = (UTF8 *)pValue;
             break;
-
-#if defined(WINDOWS_NETWORKING)
-        case CLI_DO_SELECT:
-            bUseCompletionPorts = false;
-            break;
-#endif // WINDOWS_NETWORKING
 
 #ifndef MEMORY_BASED
         case CLI_DO_INFILE:
@@ -3100,6 +3104,60 @@ static void cpu_init(void)
 
 #endif // __INTEL_COMPILER
 
+#if defined(WINDOWS_NETWORKING)
+void DetectWindowsCapabilities()
+{
+    // Get a handle to ws2_32.dll
+    //
+    HINSTANCE hInstWs2_32 = LoadLibrary(L"ws2_32");
+    if (NULL != hInstWs2_32)
+    {
+        fpGetNameInfo = (FGETNAMEINFO *)GetProcAddress(hInstWs2_32, "getnameinfo");
+        fpGetAddrInfo = (FGETADDRINFO *)GetProcAddress(hInstWs2_32, "getaddrinfo");
+        fpFreeAddrInfo = (FFREEADDRINFO *)GetProcAddress(hInstWs2_32, "freeaddrinfo");
+
+        // These interfaces are all-or-nothing.
+        //
+        if (  NULL == fpGetNameInfo
+           || NULL == fpGetAddrInfo
+           || NULL == fpFreeAddrInfo)
+        {
+            fpGetNameInfo = NULL;
+            fpGetAddrInfo = NULL;
+            fpFreeAddrInfo = NULL;
+            FreeLibrary(hInstWs2_32);
+            hInstWs2_32 = NULL;
+        }
+    }
+
+    if (NULL == hInstWs2_32)
+    {
+        // Get a handle to wship6.dll (part of the Windows 2000 IPv6 technology preview).
+        //
+        HINSTANCE hInstWship6 = LoadLibrary(L"wship6");
+        if (NULL != hInstWship6)
+        {
+            fpGetNameInfo = (FGETNAMEINFO *)GetProcAddress(hInstWship6, "getnameinfo");
+            fpGetAddrInfo = (FGETADDRINFO *)GetProcAddress(hInstWship6, "getaddrinfo");
+            fpFreeAddrInfo = (FFREEADDRINFO *)GetProcAddress(hInstWship6, "freeaddrinfo");
+
+            // These interfaces are all-or-nothing.
+            //
+            if (  NULL == fpGetNameInfo
+               || NULL == fpGetAddrInfo
+               || NULL == fpFreeAddrInfo)
+            {
+                fpGetNameInfo = NULL;
+                fpGetAddrInfo = NULL;
+                fpFreeAddrInfo = NULL;
+                FreeLibrary(hInstWship6);
+                hInstWship6 = NULL;
+            }
+        }
+    }
+}
+#endif // WINDOWS_NETWORKING
+
 #define DBCONVERT_NAME1 T("dbconvert")
 #define DBCONVERT_NAME2 T("dbconvert.exe")
 
@@ -3197,9 +3255,6 @@ int DCL_CDECL main(int argc, char *argv[])
             mux_fprintf(stderr, T("  -h  Display this help." ENDLINE));
             mux_fprintf(stderr, T("  -p  Specify process ID file." ENDLINE));
             mux_fprintf(stderr, T("  -s  Start with a minimal database." ENDLINE));
-#if defined(WINDOWS_NETWORKING)
-            mux_fprintf(stderr, T("  -n  Disable use of NT I/O Completion Ports." ENDLINE));
-#endif // WINDOWS_NETWORKING
             mux_fprintf(stderr, T("  -v  Display version string." ENDLINE ENDLINE));
         }
         return 1;
@@ -3230,50 +3285,7 @@ int DCL_CDECL main(int argc, char *argv[])
 #if defined(WINDOWS_NETWORKING)
 
     hGameProcess = GetCurrentProcess();
-
-    // Get a handle to the kernel32 DLL
-    //
-    HINSTANCE hInstKernel32 = LoadLibrary(L"kernel32");
-    if (!hInstKernel32)
-    {
-        Log.WriteString(T("LoadLibrary of kernel32 failed. Cannot use completion ports." ENDLINE));
-        bUseCompletionPorts = false;
-    }
-    else
-    {
-        if (bUseCompletionPorts)
-        {
-            // Find the entry point for CancelIO so we can use it. This is done
-            // dynamically because Windows 95/98 doesn't have a CancelIO entry
-            // point. If it were done at load time, it would always fail on
-            // Windows 95/98...even though we don't use it or depend on it in
-            // that case.
-            //
-            fpCancelIo = (FCANCELIO *)GetProcAddress(hInstKernel32, "CancelIo");
-            if (NULL == fpCancelIo)
-            {
-                Log.WriteString(T("GetProcAddress of _CancelIo failed." ENDLINE));
-                bUseCompletionPorts = false;
-            }
-        }
-
-        fpGetProcessTimes = (FGETPROCESSTIMES *)GetProcAddress(hInstKernel32, "GetProcessTimes");
-        if (NULL == fpGetProcessTimes)
-        {
-            // We can work with or without GetProcessTimes().
-            //
-            Log.WriteString(T("GetProcAddress of GetProcessTimes failed, but that\xE2\x80\x99s OK." ENDLINE));
-        }
-    }
-
-    if (bUseCompletionPorts)
-    {
-        Log.WriteString(T("Using NT I/O Completion Ports for networking." ENDLINE));
-    }
-    else
-    {
-        Log.WriteString(T("Using select() for networking." ENDLINE));
-    }
+    DetectWindowsCapabilities();
 
     // Initialize WinSock.
     //
@@ -3296,23 +3308,7 @@ int DCL_CDECL main(int argc, char *argv[])
         //return 102;
     }
 
-    if (bUseCompletionPorts)
-    {
-        process_output = process_output_ntio;
-    }
-    else
-    {
-        process_output = process_output_unix;
-    }
-#elif defined(UNIX_NETWORKING)
-    process_output = process_output_unix;
-#endif // UNIX_NETWORKING
-#if defined(WINDOWS_CRYPT)
-    if (!bCryptoAPI)
-    {
-        Log.WriteString(T("Crypto API unavailable.\r\n"));
-    }
-#endif // WINDOWS_CYPT
+#endif // WINDOWS_NETWORKING
 
     mudstate.restart_time.GetUTC();
     mudstate.start_time = mudstate.restart_time;
@@ -3532,7 +3528,7 @@ int DCL_CDECL main(int argc, char *argv[])
     SetupPorts(&nMainGamePorts, aMainGamePorts, &mudconf.ports, NULL, mudconf.ip_address);
 #endif
 
-#if defined(HAVE_WORKING_FORK)
+#if defined(HAVE_WORKING_FORK) || defined(WINDOWS_THREADS)
     boot_slave(GOD, GOD, GOD, 0, 0);
 #endif // HAVE_WORKING_FORK
 
@@ -3552,18 +3548,7 @@ int DCL_CDECL main(int argc, char *argv[])
 
     init_timer();
 
-#if defined(WINDOWS_NETWORKING)
-    if (bUseCompletionPorts)
-    {
-        shovecharsNT(nMainGamePorts, aMainGamePorts);
-    }
-    else
-    {
-        shovechars9x(nMainGamePorts, aMainGamePorts);
-    }
-#elif defined(UNIX_NETWORKING_SELECT)
-    shovechars_select(nMainGamePorts, aMainGamePorts);
-#endif // UNIX_NETWORKING
+    shovechars(nMainGamePorts, aMainGamePorts);
 
 #ifdef INLINESQL
      if (mush_database)
@@ -3603,7 +3588,11 @@ int DCL_CDECL main(int argc, char *argv[])
     WaitOnStubSlaveProcess();
 #endif
 #endif // HAVE_WORKING_FORK
+#if defined(WINDOWS_NETWORKING)
+    shutdown_slave();
+#endif
 
+#ifdef SELFCHECK
     // Go ahead and explicitly free the memory for these things so
     // that it's easy to spot unintentional memory leaks.
     //
@@ -3613,15 +3602,15 @@ int DCL_CDECL main(int argc, char *argv[])
         helpindex_clean(i);
     }
 
+    finish_mail();
+    finish_cmdtab();
     db_free();
+#endif
 
 #if defined(WINDOWS_NETWORKING)
     // Critical section not needed any more.
     //
-    if (bUseCompletionPorts)
-    {
-        DeleteCriticalSection(&csDescriptorList);
-    }
+    DeleteCriticalSection(&csDescriptorList);
     WSACleanup();
 #endif // WINDOWS_NETWORKING
 

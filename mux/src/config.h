@@ -22,20 +22,55 @@
 
 #if defined(WIN32)
 
+// Build Options
+//
+#define WINDOWS_NETWORKING
+#define WINDOWS_SIGNALS
+#define WINDOWS_PROCESSES
+#define WINDOWS_FILES
+#define WINDOWS_DYNALIB
+#define WINDOWS_CRYPT
+#define WINDOWS_TIME
+#define WINDOWS_THREADS
+#define WINDOWS_INSTRINSICS
+//#define WINDOWS_SSL
+#define TINYMUX_MODULES
+
 #if (_MSC_VER >= 1400)
 // 1400 is Visual C++ 2005
 #include <SpecStrings.h>
 #endif
 
-#define _WIN32_WINNT 0x0400
-#define FD_SETSIZE      512
+// Targeting Windows 2000 or later.
+//
+#define _WIN32_WINNT 0x0500
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <winsock2.h>
+#include <ws2tcpip.h>
 
 #include <share.h>
 #include <io.h>
 #include <process.h>
+
+#else  // WIN32
+
+// Build Options
+//
+#define UNIX_NETWORKING
+#define UNIX_SIGNALS
+#define UNIX_PROCESSES
+#define UNIX_FILES
+#define UNIX_CRYPT
+#define UNIX_TIME
+#if defined(HAVE_DLOPEN)
+#define UNIX_DYNALIB
+#define TINYMUX_MODULES
+#endif // HAVE_DLOPEN
+#if defined(SSL_ENABLED)
+#define UNIX_SSL
+#define UNIX_DIGEST
+#endif // SSL_ENABLED
 
 #endif // WIN32
 
@@ -128,6 +163,28 @@ extern int getdtablesize(void);
 
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
+
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif // HAVE_NETINET_IN_H
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif // HAVE_ARPA_INET_H
+#ifdef HAVE_NETDB_H
+#include <netdb.h>
+#endif // HAVE_NETDB_H
+
+#if defined(UNIX_NETWORKING_EPOLL) && defined(HAVE_SYS_EPOLL_H)
+#include <sys/epoll.h>
+#endif // UNIX_NETWORKING_EPOLL && HAVE_SYS_EPOLL_H
+
+#if defined(UNIX_NETWORKING_SELECT) && defined(HAVE_SYS_SELECT_H)
+#include <sys/select.h>
+#endif // UNIX_NETWORKING_SELECT && HAVE_SYS_SELECT_H
+
+#ifdef UNIX_SSL
+#include <openssl/ssl.h>
 #endif
 
 #ifdef HAVE_GETPAGESIZE
@@ -338,20 +395,6 @@ typedef char  boolexp_type;
 
 #ifdef WIN32
 
-// Build Options
-//
-#define WINDOWS_NETWORKING
-#define WINDOWS_SIGNALS
-#define WINDOWS_PROCESSES
-#define WINDOWS_FILES
-#define WINDOWS_DYNALIB
-#define WINDOWS_CRYPT
-#define WINDOWS_TIME
-#define WINDOWS_THREADS
-#define WINDOWS_INSTRINSICS
-//#define WINDOWS_SSL
-#define TINYMUX_MODULES
-
 #define DCL_CDECL  __cdecl
 #define DCL_EXPORT __declspec(dllexport)
 #define DCL_API    __stdcall
@@ -383,17 +426,6 @@ typedef unsigned __int64 UINT64;
 #error TinyMUX Requires at least version 6.0 of Visual C++.
 #endif
 
-#define SIZEOF_PATHNAME (_MAX_PATH + 1)
-#define SOCKET_WRITE(s,b,n,f) send(s,b,static_cast<int>(n),f)
-#define SOCKET_READ(s,b,n,f) recv(s,b,static_cast<int>(n),f)
-#define SOCKET_CLOSE(s) closesocket(s)
-#define IS_SOCKET_ERROR(cc) ((cc) == SOCKET_ERROR)
-#define IS_INVALID_SOCKET(s) ((s) == INVALID_SOCKET)
-#define SOCKET_LAST_ERROR (WSAGetLastError())
-#define SOCKET_EINTR       (WSAEINTR)
-#define SOCKET_EWOULDBLOCK (WSAEWOULDBLOCK)
-#define SOCKET_EBADF       (WSAEBADF)
-
 #define popen       _popen
 #define pclose      _pclose
 #define mux_tzset   _tzset
@@ -406,23 +438,6 @@ typedef unsigned __int64 UINT64;
 #define ENDLINE "\r\n"
 
 #else // WIN32
-
-// Build Options
-//
-#define UNIX_NETWORKING
-#define UNIX_SIGNALS
-#define UNIX_PROCESSES
-#define UNIX_FILES
-#define UNIX_CRYPT
-#define UNIX_TIME
-#if defined(HAVE_DLOPEN)
-#define UNIX_DYNALIB
-#define TINYMUX_MODULES
-#endif // HAVE_DLOPEN
-#if defined(SSL_ENABLED)
-#define UNIX_SSL
-#define UNIX_DIGEST
-#endif // SSL_ENABLED
 
 #if defined(HAVE_SYS_SELECT_H) && defined(HAVE_SELECT)
 #define UNIX_NETWORKING_SELECT
@@ -448,27 +463,6 @@ typedef unsigned long long UINT64;
 #define UINT64_C(c)      (c ## ull)
 #endif
 
-typedef int SOCKET;
-#ifdef PATH_MAX
-#define SIZEOF_PATHNAME (PATH_MAX + 1)
-#else // PATH_MAX
-#define SIZEOF_PATHNAME (4095 + 1)
-#endif // PATH_MAX
-#define SOCKET_WRITE(s,b,n,f) mux_write(s,b,n)
-#define SOCKET_READ(s,b,n,f) mux_read(s,b,n)
-#define SOCKET_CLOSE(s) mux_close(s)
-#define IS_SOCKET_ERROR(cc) ((cc) < 0)
-#define IS_INVALID_SOCKET(s) ((s) < 0)
-#define SOCKET_LAST_ERROR (errno)
-#define SOCKET_EINTR       (EINTR)
-#define SOCKET_EWOULDBLOCK (EWOULDBLOCK)
-#ifdef EAGAIN
-#define SOCKET_EAGAIN      (EAGAIN)
-#endif // EAGAIN
-#define SOCKET_EBADF       (EBADF)
-#define INVALID_SOCKET (-1)
-#define SD_BOTH (2)
-
 #define mux_tzset   tzset
 #define mux_getpid  getpid
 #define mux_close   close
@@ -479,6 +473,7 @@ typedef int SOCKET;
 #define ENDLINE "\n"
 
 #endif // WIN32
+
 
 #define INT64_MAX_VALUE  INT64_C(9223372036854775807)
 #define INT64_MIN_VALUE  (INT64_C(-9223372036854775807) - 1)
@@ -643,5 +638,197 @@ extern "C" unsigned int __intel_cpu_indicator;
 #if defined(HAVE_SETRLIMIT) && defined(RLIMIT_NOFILE)
 void init_rlimit(void);
 #endif // HAVE_SETRLIMIT RLIMIT_NOFILE
+
+#if defined(WIN32)
+
+#define SIZEOF_PATHNAME (_MAX_PATH + 1)
+#define SOCKET_WRITE(s,b,n,f) send(s,b,static_cast<int>(n),f)
+#define SOCKET_READ(s,b,n,f) recv(s,b,static_cast<int>(n),f)
+#define SOCKET_CLOSE(s) closesocket(s)
+#define IS_SOCKET_ERROR(cc) ((cc) == SOCKET_ERROR)
+#define IS_INVALID_SOCKET(s) ((s) == INVALID_SOCKET)
+#define SOCKET_LAST_ERROR (WSAGetLastError())
+#define SOCKET_EINTR       (WSAEINTR)
+#define SOCKET_EWOULDBLOCK (WSAEWOULDBLOCK)
+#define SOCKET_EBADF       (WSAEBADF)
+
+// IPPROTO_IPV6 is not defined unless _WIN32_WINNT >= 0x0501, so the following hack is necessary.
+//
+#if !defined(IPPROTO_IPV6)
+#define IPPROTO_IPV6        ((IPPROTO)41)
+#endif
+
+#if (_MSC_VER <= 1400)
+#define AI_ADDRCONFIG   0x00000400
+#define AI_NUMERICSERV  0x00000008
+#define AI_V4MAPPED     0x00000800
+#define IPV6_V6ONLY           27
+#endif
+
+#else
+
+typedef int SOCKET;
+#ifdef PATH_MAX
+#define SIZEOF_PATHNAME (PATH_MAX + 1)
+#else // PATH_MAX
+#define SIZEOF_PATHNAME (4095 + 1)
+#endif // PATH_MAX
+#define SOCKET_WRITE(s,b,n,f) mux_write(s,b,n)
+#define SOCKET_READ(s,b,n,f) mux_read(s,b,n)
+#define SOCKET_CLOSE(s) mux_close(s)
+#define IS_SOCKET_ERROR(cc) ((cc) < 0)
+#define IS_INVALID_SOCKET(s) ((s) < 0)
+#define SOCKET_LAST_ERROR (errno)
+#define SOCKET_EINTR       (EINTR)
+#define SOCKET_EWOULDBLOCK (EWOULDBLOCK)
+#ifdef EAGAIN
+#define SOCKET_EAGAIN      (EAGAIN)
+#endif // EAGAIN
+#define SOCKET_EBADF       (EBADF)
+#define INVALID_SOCKET (-1)
+#define SD_BOTH (2)
+
+#endif
+
+class mux_addr;
+
+#define MUX_SOCKADDR mux_sockaddr
+class mux_sockaddr
+{
+public:
+    mux_sockaddr();
+    mux_sockaddr(const sockaddr *);
+    void SetAddress(mux_addr *ma);
+
+    unsigned short Family() const;
+    unsigned short Port() const;
+    void ntop(UTF8 *sAddress, size_t len) const;
+
+    struct sockaddr *sa();
+    const struct sockaddr *saro() const;
+    struct sockaddr_in *sai();
+    const struct sockaddr_in *sairo() const;
+    struct sockaddr_in6 *sai6();
+    const struct sockaddr_in6 *sai6ro() const;
+    size_t salen() const;
+    size_t maxaddrlen() const;
+    void GetAddress(struct in_addr *ia) const;
+    void GetAddress(struct in6_addr *ia6) const;
+
+    bool operator==(const mux_sockaddr &it) const;
+
+private:
+    void Clear();
+    union
+    {
+        struct sockaddr      sa;
+#if defined(HAVE_SOCKADDR_IN)
+        struct sockaddr_in   sai;
+#endif
+#if defined(HAVE_SOCKADDR_IN6)
+        struct sockaddr_in6  sai6;
+#endif
+    } u;
+};
+
+// Abstract
+//
+class mux_addr
+{
+public:
+    mux_addr() { }
+    virtual ~mux_addr();
+
+    virtual int getFamily() const = 0;
+    virtual bool isValidMask(int *pnLeadingBits) const = 0;
+    virtual void makeMask(int nLeadingBits) = 0;
+    virtual bool clearOutsideMask(const mux_addr &itMask) = 0;
+    virtual mux_addr *calculateEnd(const mux_addr &itMask) const = 0;
+    virtual bool operator<(const mux_addr &it) const = 0;
+    virtual bool operator==(const mux_addr &it) const = 0;
+};
+
+class mux_subnet
+{
+public:
+    enum Comparison
+    {
+        kLessThan,
+        kEqual,
+        kContains,
+        kContainedBy,
+        kGreaterThan
+    };
+
+    mux_subnet() : m_iaBase(NULL), m_iaMask(NULL), m_iaEnd(NULL) { }
+    ~mux_subnet();
+    int getFamily() const { return m_iaBase->getFamily(); }
+    Comparison CompareTo(mux_subnet *msn) const;
+    Comparison CompareTo(MUX_SOCKADDR *msa) const;
+    bool listinfo(UTF8 *sAddress, int *pnLeadingBits) const;
+
+protected:
+    mux_addr *m_iaBase;
+    mux_addr *m_iaMask;
+    mux_addr *m_iaEnd;
+    int      m_iLeadingBits;
+
+    friend mux_subnet *ParseSubnet(UTF8 *str, dbref player, UTF8 *cmd);
+};
+
+mux_subnet *ParseSubnet(UTF8 *str, dbref player, UTF8 *cmd);
+
+// IPv4
+//
+#if defined(HAVE_IN_ADDR)
+class mux_in_addr : public mux_addr
+{
+public:
+    mux_in_addr() { }
+    mux_in_addr(struct in_addr *ia);
+    mux_in_addr(in_addr_t ulBits);
+    virtual ~mux_in_addr();
+
+    int getFamily() const { return AF_INET; }
+    bool isValidMask(int *pnLeadingBits) const;
+    void makeMask(int nLeadingBits);
+    bool clearOutsideMask(const mux_addr &itMask);
+    mux_addr *calculateEnd(const mux_addr &itMask) const;
+    bool operator<(const mux_addr &it) const;
+    bool operator==(const mux_addr &it) const;
+
+private:
+    struct in_addr m_ia;
+
+    friend class mux_sockaddr;
+};
+#endif
+
+// IPv6
+//
+#if defined(HAVE_IN6_ADDR)
+class mux_in6_addr : mux_addr
+{
+public:
+    mux_in6_addr() { }
+    mux_in6_addr(struct in6_addr *ia6);
+    virtual ~mux_in6_addr();
+
+    int getFamily() const { return AF_INET6; }
+    bool isValidMask(int *pnLeadingBits) const;
+    void makeMask(int nLeadingBits);
+    bool clearOutsideMask(const mux_addr &itMask);
+    mux_addr *calculateEnd(const mux_addr &itMask) const;
+    bool operator<(const mux_addr &it) const;
+    bool operator==(const mux_addr &it) const;
+
+private:
+    struct in6_addr m_ia6;
+
+    friend class mux_sockaddr;
+};
+#endif
+
+typedef struct addrinfo MUX_ADDRINFO;
 
 #endif // !CONFIG_H

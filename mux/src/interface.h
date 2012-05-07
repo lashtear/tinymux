@@ -10,30 +10,6 @@
 #ifndef __INTERFACE__H
 #define __INTERFACE__H
 
-#include <sys/types.h>
-
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif // HAVE_NETINET_IN_H
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif // HAVE_ARPA_INET_H
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif // HAVE_NETDB_H
-
-#if defined(UNIX_NETWORKING_EPOLL) && defined(HAVE_SYS_EPOLL_H)
-#include <sys/epoll.h>
-#endif // UNIX_NETWORKING_EPOLL && HAVE_SYS_EPOLL_H
-
-#if defined(UNIX_NETWORKING_SELECT) && defined(HAVE_SYS_SELECT_H)
-#include <sys/select.h>
-#endif // UNIX_NETWORKING_SELECT && HAVE_SYS_SELECT_H
-
-#ifdef UNIX_SSL
-#include <openssl/ssl.h>
-#endif
-
 /* these symbols must be defined by the interface */
 
 /* Disconnection reason codes */
@@ -200,7 +176,6 @@ struct descriptor_data
   int retries_left;
   int command_count;
   int timeout;
-  int host_info;
   dbref player;
   UTF8 *output_prefix;
   UTF8 *output_suffix;
@@ -234,7 +209,7 @@ struct descriptor_data
   struct descriptor_data *next;
   struct descriptor_data **prev;
 
-  struct sockaddr_in address;   /* added 3/6/90 SCG */
+  mux_sockaddr address;   /* added 3/6/90 SCG */
 
   UTF8 addr[51];
   UTF8 username[11];
@@ -258,6 +233,31 @@ void DisableUs(DESC *d, unsigned char chOption);
 #define DS_PUEBLOCLIENT 0x0004      // Client is Pueblo-enhanced.
 
 extern DESC *descriptor_list;
+extern unsigned int ndescriptors;
+#if defined(WINDOWS_NETWORKING)
+extern CRITICAL_SECTION csDescriptorList;
+#endif // WINDOWS_NETWORKING
+
+typedef struct
+{
+    bool fMatched;
+    mux_sockaddr msa;
+    SOCKET socket;
+#ifdef UNIX_SSL
+    bool   fSSL;
+#endif
+} PortInfo;
+
+#define MAX_LISTEN_PORTS 30
+#ifdef UNIX_SSL
+extern bool initialize_ssl();
+extern void shutdown_ssl();
+
+extern PortInfo aMainGamePorts[MAX_LISTEN_PORTS * 2];
+#else
+extern PortInfo aMainGamePorts[MAX_LISTEN_PORTS];
+#endif
+extern int      nMainGamePorts;
 
 /* from the net interface */
 
@@ -267,18 +267,11 @@ extern int mux_socket_read(DESC *d, char* buffer, int nBytes, int flags);
 extern void emergency_shutdown(void);
 extern void shutdownsock(DESC *, int);
 extern void SetupPorts(int *pnPorts, PortInfo aPorts[], IntArray *pia, IntArray *piaSSL, const UTF8 *ip_address);
-#if defined(WINDOWS_NETWORKING)
-extern void shovechars9x(int nPorts, PortInfo aPorts[]);
-extern void shovecharsNT(int nPorts, PortInfo aPorts[]);
-void process_output_ntio(void *, int);
-#elif defined(UNIX_NETWORKING_SELECT)
-extern void shovechars_select(int nPorts, PortInfo aPorts[]);
-#endif
+extern void shovechars(int nPorts, PortInfo aPorts[]);
+void process_output(void *, int);
 #if defined(HAVE_WORKING_FORK)
 extern void dump_restart_db(void);
 #endif // HAVE_WORKING_FORK
-extern FTASK *process_output;
-void process_output_unix(void *, int);
 
 extern void BuildSignalNamesTable(void);
 extern void set_signals(void);
@@ -311,7 +304,6 @@ extern int boot_by_port(SOCKET port, bool bGod, const UTF8 *message);
 extern void find_oldest(dbref target, DESC *dOldest[2]);
 extern void check_idle(void);
 void Task_ProcessCommand(void *arg_voidptr, int arg_iInteger);
-extern int site_check(struct in_addr, SITE *);
 extern dbref  find_connected_name(dbref, UTF8 *);
 extern void do_command(DESC *, UTF8 *);
 extern void desc_addhash(DESC *);
@@ -345,5 +337,61 @@ extern dbref connect_player(UTF8 *, UTF8 *, UTF8 *, UTF8 *, UTF8 *);
     for (d=descriptor_list,n=((d!=NULL) ? d->next : NULL); \
          d; \
          d=n,n=((n!=NULL) ? n->next : NULL))
+
+// From bsd.cpp.
+//
+void close_sockets(bool emergency, const UTF8 *message);
+int mux_getaddrinfo(const UTF8 *node, const UTF8 *service, const MUX_ADDRINFO *hints, MUX_ADDRINFO **res);
+void mux_freeaddrinfo(MUX_ADDRINFO *res);
+int mux_getnameinfo(const mux_sockaddr *msa, UTF8 *host, size_t hostlen, UTF8 *serv, size_t servlen, int flags);
+#if defined(HAVE_WORKING_FORK) || defined(WINDOWS_THREADS)
+void boot_slave(dbref executor, dbref caller, dbref enactor, int eval, int key);
+#endif
+#if defined(WINDOWS_THREADS)
+void shutdown_slave();
+#endif
+#if defined(HAVE_WORKING_FORK)
+void CleanUpSlaveSocket(void);
+void CleanUpSlaveProcess(void);
+#ifdef STUB_SLAVE
+void CleanUpStubSlaveSocket(void);
+void WaitOnStubSlaveProcess(void);
+void boot_stubslave(dbref executor, dbref caller, dbref enactor, int key);
+extern "C" MUX_RESULT DCL_API pipepump(void);
+#endif // STUB_SLAVE
+#endif // HAVE_WORKING_FORK
+#ifdef UNIX_SSL
+void CleanUpSSLConnections(void);
+#endif
+
+extern NAMETAB sigactions_nametab[];
+
+#if defined(UNIX_NETWORKING_SELECT)
+extern int maxd;
+#endif // UNIX_NETWORKING_SELECT
+
+extern long DebugTotalSockets;
+
+#if defined(WINDOWS_NETWORKING)
+extern long DebugTotalThreads;
+extern long DebugTotalSemaphores;
+extern HANDLE hGameProcess;
+typedef int __stdcall FGETNAMEINFO(const SOCKADDR *pSockaddr, socklen_t SockaddrLength, PCHAR pNodeBuffer,
+    DWORD NodeBufferSize, PCHAR pServiceBuffer, DWORD ServiceBufferSize, INT Flags);
+typedef int __stdcall FGETADDRINFO(PCSTR pNodeName, PCSTR pServiceName, const ADDRINFOA *pHints,
+    PADDRINFOA *ppResult);
+typedef void __stdcall FFREEADDRINFO(PADDRINFOA pAddrInfo);
+
+extern FGETNAMEINFO *fpGetNameInfo;
+extern FGETADDRINFO *fpGetAddrInfo;
+extern FFREEADDRINFO *fpFreeAddrInfo;
+#endif // WINDOWS_NETWORKING
+
+// From timer.cpp
+//
+#if defined(WINDOWS_NETWORKING)
+void Task_FreeDescriptor(void *arg_voidptr, int arg_Integer);
+void Task_DeferredClose(void *arg_voidptr, int arg_Integer);
+#endif // WINDOWS_NETWORKING
 
 #endif // !__INTERFACE__H

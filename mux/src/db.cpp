@@ -740,63 +740,77 @@ const UTF8 *Moniker(dbref thing)
     return pReturn;
 }
 
-void s_Name(dbref thing, const UTF8 *s)
+void free_Names(OBJ *p)
 {
-    atr_add_raw(thing, A_NAME, s);
 #ifndef MEMORY_BASED
-    if (db[thing].name)
+    if (p->name)
     {
         if (mudconf.cache_names)
         {
-            if (db[thing].name == db[thing].purename)
+            if (p->name == p->purename)
             {
-                db[thing].purename = NULL;
+                p->purename = NULL;
             }
-            if (db[thing].name == db[thing].moniker)
+            if (p->name == p->moniker)
             {
-                db[thing].moniker = NULL;
+                p->moniker = NULL;
             }
         }
-        MEMFREE(db[thing].name);
-        db[thing].name = NULL;
+        MEMFREE(p->name);
+        p->name = NULL;
     }
-    if (s)
+#endif // !MEMORY_BASED
+
+    if (mudconf.cache_names)
+    {
+        if (p->purename)
+        {
+            MEMFREE(p->purename);
+            p->purename = NULL;
+        }
+        if (p->moniker)
+        {
+            MEMFREE(p->moniker);
+            p->moniker = NULL;
+        }
+    }
+}
+
+
+void s_Name(dbref thing, const UTF8 *s)
+{
+    free_Names(&db[thing]);
+    atr_add_raw(thing, A_NAME, s);
+#ifndef MEMORY_BASED
+    if (NULL != s)
     {
         db[thing].name = StringClone(s);
     }
 #endif // !MEMORY_BASED
+}
+
+void free_Moniker(OBJ *p)
+{
     if (mudconf.cache_names)
     {
-        if (db[thing].purename)
+#ifndef MEMORY_BASED
+        if (p->name == p->moniker)
         {
-            MEMFREE(db[thing].purename);
-            db[thing].purename = NULL;
+            p->moniker = NULL;
         }
-        if (db[thing].moniker)
+#endif // !MEMORY_BASED
+        if (p->moniker)
         {
-            MEMFREE(db[thing].moniker);
-            db[thing].moniker = NULL;
+            MEMFREE(p->moniker);
+            p->moniker = NULL;
         }
     }
 }
 
 void s_Moniker(dbref thing, const UTF8 *s)
 {
+    free_Moniker(&db[thing]);
     atr_add_raw(thing, A_MONIKER, s);
-    if (mudconf.cache_names)
-    {
-#ifndef MEMORY_BASED
-        if (db[thing].name == db[thing].moniker)
-        {
-            db[thing].moniker = NULL;
-        }
-#endif // !MEMORY_BASED
-        if (db[thing].moniker)
-        {
-            MEMFREE(db[thing].moniker);
-            db[thing].moniker = NULL;
-        }
-    }
 }
 
 void s_Pass(dbref thing, const UTF8 *s)
@@ -3030,12 +3044,18 @@ void db_grow(dbref newtop)
 
 void db_free(void)
 {
-    char *cp;
+#ifdef SELFCHECK
+    delete_all_player_names();
+    for (dbref thing = 0; thing < mudstate.db_top; thing++)
+    {
+        free_Names(&db[thing]);
+    }
+#endif
 
     if (db != NULL)
     {
         db -= SIZE_HACK;
-        cp = (char *)db;
+        char *cp = (char *)db;
         MEMFREE(cp);
         cp = NULL;
         db = NULL;
@@ -3606,7 +3626,7 @@ void dump_restart_db(void)
     putref(f, nMainGamePorts);
     for (int i = 0; i < nMainGamePorts; i++)
     {
-        putref(f, aMainGamePorts[i].port);
+        putref(f, aMainGamePorts[i].msa.Port());
         putref(f, aMainGamePorts[i].socket);
 #ifdef UNIX_SSL
         putref(f, aMainGamePorts[i].fSSL ? 1 : 0);
@@ -3625,7 +3645,7 @@ void dump_restart_db(void)
         putref(f, d->connected_at.ReturnSeconds());
         putref(f, d->command_count);
         putref(f, d->timeout);
-        putref(f, d->host_info);
+        putref(f, 0);
         putref(f, d->player);
         putref(f, d->last_time.ReturnSeconds());
         putref(f, d->raw_input_state);
@@ -3679,9 +3699,14 @@ void load_restart_db(void)
         nMainGamePorts = getref(f);
         for (int i = 0; i < nMainGamePorts; i++)
         {
-            aMainGamePorts[i].port   = getref(f);
-            mux_assert(aMainGamePorts[i].port > 0);
+            unsigned short usPort = getref(f);
             aMainGamePorts[i].socket = getref(f);
+            socklen_t n = aMainGamePorts[i].msa.maxaddrlen();
+            if (  0 != getsockname(aMainGamePorts[i].socket, aMainGamePorts[i].msa.sa(), &n)
+               || usPort != aMainGamePorts[i].msa.Port())
+            {
+                mux_assert(0);
+            }
 
 #if defined(UNIX_NETWORKING_SELECT)
             if (maxd <= aMainGamePorts[i].socket)
@@ -3746,7 +3771,7 @@ void load_restart_db(void)
         d->connected_at.SetSeconds(getref(f));
         d->command_count = getref(f);
         d->timeout = getref(f);
-        d->host_info = getref(f);
+        getref(f); // Eat host_info
         d->player = getref(f);
         d->last_time.SetSeconds(getref(f));
         memset(d->nvt_him_state, OPTION_NO, 256);

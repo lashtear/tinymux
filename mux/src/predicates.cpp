@@ -912,7 +912,15 @@ void do_addcommand
             hashdeleteLEN(pName, strlen((char *)pName), &mudstate.command_htab);
         }
 
-        cmd = (CMDENT *)MEMALLOC(sizeof(CMDENT));
+        cmd = NULL;
+        try
+        {
+            cmd = new CMDENT;
+        }
+        catch (...)
+        {
+            ; // Nothing.
+        }
         ISOUTOFMEMORY(cmd);
         cmd->cmdname = StringClone(pName);
         cmd->switches = NULL;
@@ -927,7 +935,7 @@ void do_addcommand
         {
             cmd->callseq = CS_ADDED|CS_ONE_ARG;
         }
-        cmd->hookmask = 0;
+        cmd->flags = CEF_ALLOC;
         add = (ADDENT *)MEMALLOC(sizeof(ADDENT));
         ISOUTOFMEMORY(add);
         add->thing = thing;
@@ -2869,6 +2877,10 @@ bool AssertionFailed(const UTF8 *SourceFile, unsigned int LineNo)
             abort();
         }
     }
+    else
+    {
+        abort();
+    }
     mudstate.asserting--;
     return false;
 }
@@ -3073,7 +3085,7 @@ void do_reference
     {
         try
         {
-            result = (reference_entry *)MEMALLOC(sizeof(result));
+            result = (reference_entry *)MEMALLOC(sizeof(reference_entry));
         }
         catch(...)
         {

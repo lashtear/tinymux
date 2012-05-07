@@ -82,6 +82,9 @@
 /* Define to 1 if you have the <fpu_control.h> header file. */
 /* #undef HAVE_FPU_CONTROL_H */
 
+/* Define to 1 if you have the `getaddrinfo' function. */
+#define HAVE_GETADDRINFO 1
+
 /* Define to 1 if you have the `getdtablesize' function. */
 /* #undef HAVE_GETDTABLESIZE */
 
@@ -90,6 +93,9 @@
 
 /* Define to 1 if you have the `gethostbyname' function. */
 #define HAVE_GETHOSTBYNAME 1
+
+/* Define to 1 if you have the `getnameinfo' function. */
+#define HAVE_GETNAMEINFO 1
 
 /* Define to 1 if you have the `getpagesize' function. */
 /* #undef HAVE_GETPAGESIZE */
@@ -109,8 +115,20 @@
 /* Define if your IEEE floating-point library can generate NaN. */
 #define HAVE_IEEE_FP_SNAN
 
+/* Define if your system has the in6_addr type. */
+#define HAVE_IN6_ADDR
+
+/* Define to 1 if you have the `inet_ntop' function. */
+#define HAVE_INET_NTOP 1
+
+/* Define to 1 if you have the `inet_pton' function. */
+#define HAVE_INET_PTON 1
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 /* #undef HAVE_INTTYPES_H */
+
+/* Define if your system has the in_addr type. */
+#define HAVE_IN_ADDR
 
 /* Define if your system has the in_addr_t type. */
 /* #undef HAVE_IN_ADDR_T */
@@ -165,6 +183,15 @@
 
 /* Define to 1 if you have the `setrlimit' function. */
 /* #undef HAVE_SETRLIMIT */
+
+/* Define if your system has the sockaddr_in type. */
+#define HAVE_SOCKADDR_IN
+
+/* Define if your system has the sockaddr_in6 type. */
+#define HAVE_SOCKADDR_IN6
+
+/* Define if your system has the sockaddr_storage type. */
+#define HAVE_SOCKADDR_STORAGE
 
 /* Define to 1 if you have the `socket' function. */
 /* #undef HAVE_SOCKET */
