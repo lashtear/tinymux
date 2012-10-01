@@ -2672,7 +2672,7 @@ UTF8 *process_command
            && Has_contents(mudconf.master_room))
         {
             succ |= list_check(Contents(mudconf.master_room), executor,
-                AMATCH_CMD, LowerCaseCommand, preserve_cmd, false);
+                AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
 
             if (!No_Command(mudconf.master_room))
             {
