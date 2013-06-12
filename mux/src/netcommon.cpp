@@ -2924,7 +2924,13 @@ void Task_ProcessCommand(void *arg_voidptr, int arg_iInteger)
                     d->input_tail = NULL;
                 }
                 d->input_size -= strlen((char *)t->cmd);
-                d->last_time.GetUTC();
+
+                // Skip updating the idle time if all they sent is 'think'
+                if (strcasecmp((char *)t->cmd, "think") != 0)
+                {
+                    d->last_time.GetUTC();
+                }
+
                 if (d->program_data != NULL)
                 {
                     handle_prog(d, t->cmd);
