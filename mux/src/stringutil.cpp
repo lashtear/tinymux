@@ -5501,19 +5501,21 @@ void BMH_Prepare(BMH_State *bmhs, size_t nPat, const UTF8 *pPat)
 
 bool BMH_Execute(BMH_State *bmhs, size_t *pnMatched, size_t nPat, const UTF8 *pPat, size_t nSrc, const UTF8 *pSrc)
 {
-    size_t scan, skip;
+    size_t scan, skip, pos;
     if (nPat <= 0)
     {
         return false;
     }
-    while (nSrc >= nPat)
+    for (pos = 0; nSrc - pos >= nPat; pos += bmhs->m_d[pSrc[pos+nPat-1]])
     {
-	for (scan = nPat-1; pSrc[scan] == pPat[scan]; --scan)
+	for (scan = nPat-1; pSrc[pos+scan] == pPat[pos+scan]; --scan)
+	{
 	    if (0 == scan)
+	    {
+		*pnMatched = pos;
 		return true;
-	skip = bmhs->m_d[pSrc[nPat-1]];
-	nSrc -= skip;
-	pSrc += skip;
+	    }
+	}
     }
     return false;
 }
@@ -5545,21 +5547,26 @@ void BMH_PrepareI(BMH_State *bmhs, size_t nPat, const UTF8 *pPat)
 
 bool BMH_ExecuteI(BMH_State *bmhs, size_t *pnMatched, size_t nPat, const UTF8 *pPat, size_t nSrc, const UTF8 *pSrc)
 {
-    size_t scan, skip;
+    size_t scan, skip, pos;
     if (nPat <= 0)
     {
         return false;
     }
-    while (nSrc >= nPat)
+    for (pos = 0;
+	 nSrc - pos >= nPat;
+	 pos += bmhs->m_d[mux_toupper_ascii(pSrc[pos+nPat-1])])
     {
 	for (scan = nPat-1;
-	     mux_toupper_ascii(pSrc[scan]) == mux_toupper_ascii(pPat[scan]);
+	     mux_toupper_ascii(pSrc[pos+scan])
+		 == mux_toupper_ascii(pPat[pos+scan]);
 	     --scan)
+	{
 	    if (0 == scan)
+	    {
+		*pnMatched = pos;
 		return true;
-	skip = bmhs->m_d[mux_toupper_ascii(pSrc[nPat-1])];
-	nSrc -= skip;
-	pSrc += skip;
+	    }
+	}
     }
     return false;
 }
