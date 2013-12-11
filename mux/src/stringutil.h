@@ -1452,6 +1452,7 @@ size_t GetLineTrunc(UTF8 *Buffer, size_t nBuffer, FILE *fp);
 typedef struct
 {
     size_t m_d[256];
+    size_t m_skip2;
 } BMH_State;
 
 extern void BMH_Prepare(BMH_State *bmhs, size_t nPat, const UTF8 *pPat);

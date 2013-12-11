@@ -5482,38 +5482,60 @@ size_t GetLineTrunc(UTF8 *Buffer, size_t nBuffer, FILE *fp)
 // If we were searching megabytes of data instead of 8KB at most, then
 // the full Boyer-Moore would make more sense.
 //
+#define BMH_LARGE 32767
 void BMH_Prepare(BMH_State *bmhs, size_t nPat, const UTF8 *pPat)
 {
-    size_t k;
     if (nPat <= 0)
     {
         return;
     }
+    size_t k;
     for (k = 0; k < 256; k++)
     {
         bmhs->m_d[k] = nPat;
     }
+
+    UTF8 chLastPat = pPat[nPat-1];
+    bmhs->m_skip2 = nPat;
     for (k = 0; k < nPat - 1; k++)
     {
         bmhs->m_d[(unsigned char)pPat[k]] = nPat - k - 1;
+        if (pPat[k] == chLastPat)
+        {
+            bmhs->m_skip2 = nPat - k - 1;
+        }
     }
+    bmhs->m_d[(unsigned char)chLastPat] = BMH_LARGE;
 }
 
 bool BMH_Execute(BMH_State *bmhs, size_t *pnMatched, size_t nPat, const UTF8 *pPat, size_t nSrc, const UTF8 *pSrc)
 {
-    size_t scan, skip;
     if (nPat <= 0)
     {
         return false;
     }
-    while (nSrc >= nPat)
+    for (size_t i = nPat-1; i < nSrc; i += bmhs->m_skip2)
     {
-	for (scan = nPat-1; pSrc[scan] == pPat[scan]; --scan)
-	    if (0 == scan)
-		return true;
-	skip = bmhs->m_d[pSrc[nPat-1]];
-	nSrc -= skip;
-	pSrc += skip;
+        while ((i += bmhs->m_d[(unsigned char)(pSrc[i])]) < nSrc)
+        {
+            ; // Nothing.
+        }
+        if (i < BMH_LARGE)
+        {
+            break;
+        }
+        i -= BMH_LARGE;
+        int j = static_cast<int>(nPat - 1);
+        const UTF8 *s = pSrc + (i - j);
+        while (--j >= 0 && s[j] == pPat[j])
+        {
+            ; // Nothing.
+        }
+        if (j < 0)
+        {
+            *pnMatched = s-pSrc;
+            return true;
+        }
     }
     return false;
 }
@@ -5527,39 +5549,60 @@ bool BMH_StringSearch(size_t *pnMatched, size_t nPat, const UTF8 *pPat, size_t n
 
 void BMH_PrepareI(BMH_State *bmhs, size_t nPat, const UTF8 *pPat)
 {
-    size_t k;
     if (nPat <= 0)
     {
         return;
     }
+    size_t k;
     for (k = 0; k < 256; k++)
     {
         bmhs->m_d[k] = nPat;
     }
+
+    UTF8 chLastPat = pPat[nPat-1];
+    bmhs->m_skip2 = nPat;
     for (k = 0; k < nPat - 1; k++)
     {
         bmhs->m_d[mux_toupper_ascii(pPat[k])] = nPat - k - 1;
         bmhs->m_d[mux_tolower_ascii(pPat[k])] = nPat - k - 1;
+        if (mux_toupper_ascii(pPat[k]) == mux_toupper_ascii(chLastPat))
+        {
+            bmhs->m_skip2 = nPat - k - 1;
+        }
     }
+    bmhs->m_d[mux_toupper_ascii(chLastPat)] = BMH_LARGE;
+    bmhs->m_d[mux_tolower_ascii(chLastPat)] = BMH_LARGE;
 }
 
 bool BMH_ExecuteI(BMH_State *bmhs, size_t *pnMatched, size_t nPat, const UTF8 *pPat, size_t nSrc, const UTF8 *pSrc)
 {
-    size_t scan, skip;
     if (nPat <= 0)
     {
         return false;
     }
-    while (nSrc >= nPat)
+    for (size_t i = nPat-1; i < nSrc; i += bmhs->m_skip2)
     {
-	for (scan = nPat-1;
-	     mux_toupper_ascii(pSrc[scan]) == mux_toupper_ascii(pPat[scan]);
-	     --scan)
-	    if (0 == scan)
-		return true;
-	skip = bmhs->m_d[mux_toupper_ascii(pSrc[nPat-1])];
-	nSrc -= skip;
-	pSrc += skip;
+        while ((i += bmhs->m_d[(unsigned char)(pSrc[i])]) < nSrc)
+        {
+            ; // Nothing.
+        }
+        if (i < BMH_LARGE)
+        {
+            break;
+        }
+        i -= BMH_LARGE;
+        int j = static_cast<int>(nPat - 1);
+        const UTF8 *s = pSrc + (i - j);
+        while (  --j >= 0
+              && mux_toupper_ascii(s[j]) == mux_toupper_ascii(pPat[j]))
+        {
+            ; // Nothing.
+        }
+        if (j < 0)
+        {
+            *pnMatched = s-pSrc;
+            return true;
+        }
     }
     return false;
 }
