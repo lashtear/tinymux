@@ -22,11 +22,13 @@
 
 #ifdef FIRANMUX
 #define LBUF_SIZE   24000   // Large
+#define GBUF_SIZE   2048    // Generic
+#define MBUF_SIZE   1280    // Medium
 #else
 #define LBUF_SIZE   64000    // Large
+#define GBUF_SIZE   2048    // Generic
+#define MBUF_SIZE   1280     // Medium
 #endif
-#define GBUF_SIZE   1024    // Generic
-#define MBUF_SIZE   400     // Medium
 #define PBUF_SIZE   128     // Pathname
 #define SBUF_SIZE   64      // Small
 

@@ -326,6 +326,26 @@ bool IsRestricted(const UTF8 *pName, int charset)
         {
             bAllowed = true;
         }
+        else if (  (ALLOW_CHARSET_HANGUL & charset)
+                && mux_ishangul(pName))
+        {
+            bAllowed = true;
+        }
+        else if (  (ALLOW_CHARSET_HIRAGANA & charset)
+                && mux_ishiragana(pName))
+        {
+            bAllowed = true;
+        }
+        else if (  (ALLOW_CHARSET_KANJI & charset)
+                && mux_iskanji(pName))
+        {
+            bAllowed = true;
+        }
+        else if (  (ALLOW_CHARSET_KATAKANA & charset)
+                && mux_iskatakana(pName))
+        {
+            bAllowed = true;
+        }
 
         if (!bAllowed)
         {
