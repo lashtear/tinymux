@@ -67,12 +67,18 @@
 #define UNIX_DYNALIB
 #define TINYMUX_MODULES
 #endif // HAVE_DLOPEN
-#if defined(SSL_ENABLED)
+#if defined(HAVE_OPENSSL_SSL_H)
 #define UNIX_SSL
+#endif // HAVE_OPENSSL_SSL_H
+#if defined(HAVE_OPENSSL_EVP_H)
 #define UNIX_DIGEST
-#endif // SSL_ENABLED
+#endif // HAVE_OPENSSL_EVP_H
 
 #endif // WIN32
+
+#if defined(HAVE_MYSQL_H)
+#define INLINESQL
+#endif // HAVE_MYSQL_H
 
 #ifndef __specstrings
 #define __deref_in

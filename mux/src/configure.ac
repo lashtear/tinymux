@@ -100,25 +100,6 @@ AC_ARG_ENABLE(
 AC_SUBST(FIRANMUX)
 AC_SUBST(FIRANLIBS)
 
-AC_MSG_CHECKING(whether to enable inline MySQL)
-AC_ARG_ENABLE(
-  [inlinesql],
-  AS_HELP_STRING([--enable-inlinesql],[enable inline MySQL support compatible with PennMUSH and TinyMUSH 3.x (default is NO)]),
-  [
-    if test "x$enableval" = "xno"; then
-      AC_MSG_RESULT(no)
-    else
-      INLINESQL="-DINLINESQL"
-      INLINESQL_LIBS="-lmysqlclient -lz"
-      AC_MSG_RESULT(yes)
-    fi
-  ],
-  [
-    AC_MSG_RESULT(no)
-  ])
-AC_SUBST(INLINESQL)
-AC_SUBST(INLINESQL_LIBS)
-
 AC_MSG_CHECKING(whether to perform expensive self-checking)
 AC_ARG_ENABLE(
   [selfcheck],
@@ -135,95 +116,6 @@ AC_ARG_ENABLE(
     AC_MSG_RESULT(no)
   ])
 AC_SUBST(SELFCHECK)
-
-AC_MSG_CHECKING(for location of SQL header files)
-AC_ARG_WITH(
-  [mysql-include],
-  AS_HELP_STRING([--with-mysql-include=PATH],[set the include path for SQL header files]),
-  [
-      if test "x$enable_inlinesql" = "xno"; then
-        AC_MSG_RESULT(none)
-      elif test "x$enable_inlinesql" = "x"; then
-        AC_MSG_RESULT(none)
-      else
-        INLINESQL_INCLUDE="-I$withval"
-        AC_MSG_RESULT($withval)
-      fi
-  ],
-  [
-      if test "x$enable_inlinesql" = "xno"; then
-        AC_MSG_RESULT(none)
-      elif test "x$enable_inlinesql" = "x"; then
-        AC_MSG_RESULT(none)
-      else
-        if test -d "/usr/include/mysql"; then
-            bestguessval="/usr/include/mysql"
-            INLINESQL_INCLUDE="-I$bestguessval"
-            AC_MSG_RESULT($bestguessval)
-        elif test -d "/usr/local/include/mysql"; then
-            bestguessval="/usr/local/include/mysql"
-            INLINESQL_INCLUDE="-I$bestguessval"
-            AC_MSG_RESULT($bestguessval)
-        else
-            AC_MSG_RESULT(Unknown. Use --with-mysql-include with path)
-        fi
-      fi
-  ])
-AC_SUBST(INLINESQL_INCLUDE)
-
-AC_MSG_CHECKING(for location of SQL library files)
-AC_ARG_WITH(
-  [mysql-libs],
-  AS_HELP_STRING([--with-mysql-libs=PATH],[set the library path for SQL library files]),
-  [
-      if test "x$enable_inlinesql" = "xno"; then
-        AC_MSG_RESULT(none)
-      elif test "x$enable_inlinesql" = "x"; then
-        AC_MSG_RESULT(none)
-      else
-        INLINESQL_LIBPATH="-L$withval"
-        AC_MSG_RESULT($withval)
-      fi
-  ],
-  [
-      if test "x$enable_inlinesql" = "xno"; then
-        AC_MSG_RESULT(none)
-      elif test "x$enable_inlinesql" = "x"; then
-        AC_MSG_RESULT(none)
-      else
-        if test -d "/usr/lib/mysql"; then
-            bestguessval="/usr/lib/mysql"
-            INLINESQL_LIBPATH="-L$bestguessval"
-            AC_MSG_RESULT($bestguessval)
-        elif test -d "/usr/local/lib/mysql"; then
-            bestguessval="/usr/local/lib/mysql"
-            INLINESQL_LIBPATH="-L$bestguessval"
-            AC_MSG_RESULT($bestguessval)
-        else
-            AC_MSG_RESULT(Unknown. Use --with-mysql-libs with path)
-        fi
-      fi
-  ])
-AC_SUBST(INLINESQL_LIBPATH)
-
-AC_MSG_CHECKING(whether to enable SSL support)
-AC_ARG_ENABLE(
-  [ssl],
-  AS_HELP_STRING([--enable-ssl],[enable SSL encryption support (default is NO)]),
-  [
-    if test "x$enableval" = "xno"; then
-      AC_MSG_RESULT(no)
-    else
-      SSL="-DSSL_ENABLED"
-      SSL_LIBS="-lssl"
-      AC_MSG_RESULT(yes)
-    fi
-  ],
-  [
-    AC_MSG_RESULT(no)
-  ])
-AC_SUBST(SSL)
-AC_SUBST(SSL_LIBS)
 
 AC_MSG_CHECKING(whether to enable deprecated features)
 AC_ARG_ENABLE(
@@ -261,6 +153,9 @@ AC_SEARCH_LIBS([socket],[socket inet])
 AC_SEARCH_LIBS([gethostbyname],[socket nsl bind])
 AC_SEARCH_LIBS([inet_addr],[nsl])
 AC_SEARCH_LIBS([sqrt],[m])
+AC_SEARCH_LIBS([SSL_library_init],[ssl])
+AC_SEARCH_LIBS([EVP_DigestInit],[crypto])
+AC_SEARCH_LIBS([mysql_init],[mysqlclient],,[z])
 
 AC_MSG_CHECKING(for dlopen)
 LIBS_SAVE=$LIBS
@@ -311,6 +206,9 @@ AC_CHECK_HEADERS(unistd.h stddef.h memory.h string.h errno.h malloc.h sys/select
 AC_CHECK_HEADERS(fcntl.h limits.h sys/file.h sys/ioctl.h sys/types.h sys/time.h sys/stat.h sys/param.h sys/fcntl.h)
 AC_CHECK_HEADERS(fpu_control.h ieeefp.h fenv.h float.h)
 AC_CHECK_HEADERS(netinet/in.h arpa/inet.h netdb.h sys/socket.h)
+AC_CHECK_HEADERS([openssl/ssl.h])
+AC_CHECK_HEADERS([openssl/evp.h])
+AC_CHECK_HEADERS([mysql.h])
 AS_MESSAGE([checking for sys_errlist decl...])
 if test $ac_cv_header_errno_h = no; then
     AC_DEFINE([NEED_SYS_ERRLIST_DCL], [], [Define if you need to declare sys_errlist yourself.])
