@@ -11063,6 +11063,7 @@ for (;!MuxAlarm.bAlarmed;)
 
   }             /* End of main loop */
 /* Control never reaches here */
+  abort();
 }
 
 

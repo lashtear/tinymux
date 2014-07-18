@@ -1188,7 +1188,7 @@ static void look_simple(dbref player, dbref thing, bool obey_terse)
             0, NULL, 0);
 #else
         did_it(player, thing,
-            (obey_terse && Terse(player)) ? 0 : iDescDefault
+            (obey_terse && Terse(player)) ? 0 : iDescDefault,
             NULL, A_ODESC, NULL, iADescDefault,
             0, NULL, 0);
 #endif // REALITY_LVLS
