@@ -14,12 +14,18 @@ Asynchronous SQL:
 1) To enable this functionality, you will need to pass --enable-stubslave
    to the configure script.  If your MySQL is not in the default location,
    (namely, /usr/include/mysql and /usr/lib/mysql), then you will need to
-   tell configure where to find the headers and libraries with the
-   --with-mysql-include and --with-mysql-libs options.  For instance:
+   tell configure where to find the headers and libraries using the normal
+   autoconf environment variables.  (CPPFLAGS and LDFLAGS)
+
+   For instance:
 
    ./configure --enable-stubslave
-               --with-mysql-include=/usr/local/mysql/include
-               --with-mysql-libs=/usr/local/mysql/lib
+
+   or
+
+   export LDFLAGS=/usr/local/mysql/lib
+   export CPPFLAGS=/usr/local/mysql/include
+   ./configure --enable-stubslave
 
 
 2) Once the game has been compiled you will need to add six configuration
@@ -78,16 +84,22 @@ Asynchronous SQL:
 In-Line/Synchronous SQL:
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-1) To enable this functionality, you will need to pass --enable-inlinesql
-   to the configure script.  If your MySQL is not in the default location,
-   (namely, /usr/include/mysql and /usr/lib/mysql), then you will need to
-   tell configure where to find the headers and libraries with the
-   --with-mysql-include and --with-mysql-libs options.  For instance:
+1) This is enabled by default in the Mechanipus version.  If your
+   MySQL is not in the default location, then you will need to tell
+   configure where to find the headers and libraries using the normal
+   autoconf environment variables.  (CPPFLAGS and LDFLAGS)
 
-   ./configure --enable-inlinesql
-               --with-mysql-include=/usr/local/mysql/include
-               --with-mysql-libs=/usr/local/mysql/lib
+   For instance:
 
+   ./configure
+
+   or
+
+   export LDFLAGS=/usr/local/mysql/lib
+   export CPPFLAGS=/usr/local/mysql/include
+   ./configure
+
+   
 2) Once the game has been compiled you will need to add four configuration
    options to the .conf file.  The four are listed below:
 
