@@ -21,7 +21,7 @@ LIBS = @LIBS@ @FIRANLIBS@
 #
 #OPTIM = -O
 #OPTIM = -g -pg -O
-OPTIM = -g -O
+OPTIM = -g -O3 -fno-omit-frame-pointer -Wall -Wno-narrowing -Wno-parentheses -Wno-sign-compare
 
 # By default, REALITY_LVLS is not enabled.  If you wish to use REALITY_LVLS,
 # run configure with --enable-realitylvls.  Please read the docs/REALITY.
