@@ -11838,7 +11838,7 @@ static FUNCTION(fun_Functions)
         mux_IFunction *pIFun = pfn->pIFun;
         if (NULL != pIFun)
         {
-            MUX_RESULT mr = pIFun->Call(pfn->nKey, buff, bufc, executor, caller, enactor, eval, fargs, nfargs, cargs, ncargs);
+            (void) pIFun->Call(pfn->nKey, buff, bufc, executor, caller, enactor, eval, fargs, nfargs, cargs, ncargs);
         }
     }
 }

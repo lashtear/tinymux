@@ -1180,7 +1180,6 @@ static void look_simple(dbref player, dbref thing, bool obey_terse)
     LetDescriptionsDefault(thing, &iDescDefault, &iADescDefault, iRealmDirective);
 #endif
 
-    int pattr = (obey_terse && Terse(player)) ? 0 : iDescDefault;
     if (!show_a_desc(player, thing))
     {
         notify(player, T("You see nothing special."));
@@ -1188,7 +1187,9 @@ static void look_simple(dbref player, dbref thing, bool obey_terse)
         did_it_rlevel(player, thing, 0, NULL, A_ODESC, NULL, iADescDefault,
             0, NULL, 0);
 #else
-        did_it(player, thing, pattr, NULL, A_ODESC, NULL, iADescDefault,
+        did_it(player, thing,
+            (obey_terse && Terse(player)) ? 0 : iDescDefault
+            NULL, A_ODESC, NULL, iADescDefault,
             0, NULL, 0);
 #endif // REALITY_LVLS
     }

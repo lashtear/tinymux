@@ -3406,23 +3406,6 @@ static void malias_read(FILE *fp, bool bConvert)
     }
 }
 
-static void load_malias(FILE *fp, bool bConvert)
-{
-    UTF8 buffer[200];
-
-    getref(fp);
-    if (  fgets((char *)buffer, sizeof(buffer), fp)
-       && strcmp((char *)buffer, "*** Begin MALIAS ***\n") == 0)
-    {
-        malias_read(fp, bConvert);
-    }
-    else
-    {
-        Log.WriteString(T("ERROR: Couldn\xE2\x80\x99t find Begin MALIAS." ENDLINE));
-        return;
-    }
-}
-
 void load_mail(FILE *fp)
 {
     UTF8 nbuf1[8];

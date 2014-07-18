@@ -195,7 +195,6 @@ UTF8 *rxlevel_description(dbref player, dbref target)
 {
     // Allocate the return buffer.
     //
-    int  otype = Typeof(target);
     UTF8 *buff = alloc_mbuf("rxlevel_description");
     UTF8 *bp   = buff;
 
@@ -226,7 +225,6 @@ UTF8 *txlevel_description(dbref player, dbref target)
 {
     // Allocate the return buffer.
     //
-    int otype = Typeof(target);
     UTF8 *buff = alloc_mbuf("txlevel_description");
     UTF8 *bp = buff;
 
