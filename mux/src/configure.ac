@@ -138,7 +138,7 @@ AC_SEARCH_LIBS([inet_addr],[nsl])
 AC_SEARCH_LIBS([sqrt],[m])
 AC_SEARCH_LIBS([SSL_library_init],[ssl])
 AC_SEARCH_LIBS([EVP_DigestInit],[crypto])
-AC_SEARCH_LIBS([mysql_init],[mysqlclient],,[z])
+AC_SEARCH_LIBS([mysql_init],[mysqlclient],,,[z])
 
 AC_MSG_CHECKING(for dlopen)
 LIBS_SAVE=$LIBS

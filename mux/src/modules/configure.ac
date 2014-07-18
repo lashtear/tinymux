@@ -20,7 +20,7 @@ AC_USE_SYSTEM_EXTENSIONS
 #   -lcposix: ISC is obsolete as of 2006-07-23.
 AC_SEARCH_LIBS([strerror],[cposix])
 AC_SEARCH_LIBS([sqrt],[m])
-AC_SEARCH_LIBS([mysql_init],[mysqlclient],,[z])
+AC_SEARCH_LIBS([mysql_init],[mysqlclient],,,[z])
 
 AC_MSG_CHECKING(for dlopen)
 AC_SEARCH_LIBS([dlopen],[dl])
