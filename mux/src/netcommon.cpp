@@ -1982,9 +1982,6 @@ static void dump_users(DESC *e, const UTF8 *match, int key)
 
 static const UTF8 *DumpInfoTable[] =
 {
-#if defined(DEPRECATED)
-    T("DEPRECATED"),
-#endif
 #if defined(FIRANMUX)
     T("FIRANMUX"),
 #endif

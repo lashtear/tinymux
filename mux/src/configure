@@ -653,7 +653,6 @@ CPPFLAGS
 LDFLAGS
 CXXFLAGS
 CXX
-DEPRECATED
 SELFCHECK
 FIRANLIBS
 FIRANMUX
@@ -711,7 +710,6 @@ enable_memorybased
 enable_stubslave
 enable_firanmux
 enable_selfcheck
-enable_deprecated
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1345,7 +1343,6 @@ Optional Features:
   --enable-stubslave      enable Stub Slave (default is NO)
   --enable-firanmux       enable Firan MUX (default is NO)
   --enable-selfcheck      enable expensive self-checking (default is NO)
-  --enable-deprecated     enable deprecated features (default is NO)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -2697,29 +2694,6 @@ if test "${enable_selfcheck+set}" = set; then :
 $as_echo "no" >&6; }
     else
       SELFCHECK="-DSELFCHECK"
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-    fi
-
-else
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-fi
-
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable deprecated features" >&5
-$as_echo_n "checking whether to enable deprecated features... " >&6; }
-# Check whether --enable-deprecated was given.
-if test "${enable_deprecated+set}" = set; then :
-  enableval=$enable_deprecated;
-    if test "x$enableval" = "xno"; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-    else
-      DEPRECATED="-DDEPRECATED"
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
     fi

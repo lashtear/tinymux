@@ -63,12 +63,6 @@ STUBLIBS   =  # -ldbi
 #
 FIRANMUX    = @FIRANMUX@
 
-# Deprecated Features. By default, this is off. This can be turned on by
-# running configure with --enable-deprecated. Features which are infrequently
-# used become deprecated and are eventually removed from the source.
-#
-DEPRECATED = @DEPRECATED@
-
 # Potentially expensive internal self-checking of the server. This does not
 # increase softcode validation or validation of the operating environment.
 # It's useful primarily during development while running test cases.
@@ -148,7 +142,7 @@ DEFS =
 #
 AUX_SRC = unsplit.cpp
 ALLCXXFLAGS = $(CXXFLAGS) $(OPTIM) $(DEFS) $(MEMORY_BASED) $(WOD_REALMS) \
-    $(REALITY_LVLS) $(STUB_SLAVE) $(FIRANMUX) $(DEPRECATED) $(SELFCHECK)
+    $(REALITY_LVLS) $(STUB_SLAVE) $(FIRANMUX) $(SELFCHECK)
 
 # Compiliation source files.
 #

@@ -198,15 +198,6 @@ XFUNCTION(fun_zfun);
 XFUNCTION(fun_zone);
 XFUNCTION(fun_zwho);
 
-#ifdef DEPRECATED
-XFUNCTION(fun_empty);
-XFUNCTION(fun_items);
-XFUNCTION(fun_lstack);
-XFUNCTION(fun_peek);
-XFUNCTION(fun_pop);
-XFUNCTION(fun_push);
-#endif // DEPRECATED
-
 XFUNCTION(fun_create);
 XFUNCTION(fun_destroy);
 XFUNCTION(fun_emit);

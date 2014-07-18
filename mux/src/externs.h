@@ -1219,9 +1219,6 @@ UTF8 *modSpeech(dbref player, UTF8 *message, bool bWhich, UTF8 *command);
 
 // From funceval.cpp
 //
-#ifdef DEPRECATED
-void stack_clr(dbref obj);
-#endif // DEPRECATED
 bool parse_and_get_attrib(dbref, UTF8 *[], UTF8 **, dbref *, dbref *, int *, UTF8 *, UTF8 **);
 
 #if defined(TINYMUX_MODULES)

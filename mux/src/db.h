@@ -153,10 +153,6 @@ struct object
     POWER   powers;     /* ALL: Powers on object */
     POWER   powers2;    /* ALL: even more powers */
 
-#ifdef DEPRECATED
-    MUX_STACK   *stackhead; /* Every object has a stack. */
-#endif // DEPRECATED
-
     CLinearTimeDelta cpu_time_used; /* ALL: CPU time eaten */
 
     // ALL: When to refurbish throttled counters.
@@ -221,11 +217,6 @@ extern OBJ *db;
 #define s_ThAttrib(t,n)     db[t].throttled_attributes = (n);
 #define s_ThMail(t,n)       db[t].throttled_mail = (n);
 #define s_ThRefs(t,n)       db[t].throttled_references = (n);
-
-#ifdef DEPRECATED
-#define Stack(t)            db[t].stackhead
-#define s_Stack(t,n)        db[t].stackhead = (n)
-#endif // DEPRECATED
 
 int  Pennies(dbref obj);
 void s_Pennies(dbref obj, int howfew);
