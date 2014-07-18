@@ -3671,7 +3671,7 @@ bool mux_subnets::trust(mux_subnet *msn_arg)
 
 bool mux_subnets::reset(mux_subnet *msn_arg)
 {
-    mux_subnet_node *msn = remove(msnRoot, msn_arg);
+    remove(msnRoot, msn_arg);
     return true;
 }
 
