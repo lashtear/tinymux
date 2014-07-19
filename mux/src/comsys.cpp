@@ -1431,14 +1431,14 @@ static void do_processcom(dbref player, UTF8 *arg1, UTF8 *arg2)
         return;
     }
 
-#if !defined(FIRANMUX)
+#if !defined(HAVE_FIRANMUX)
     if (  Gagged(player)
        && !Wizard(player))
     {
         raw_notify(player, T("GAGGED players may not speak on channels."));
         return;
     }
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
     if (!strcmp((char *)arg2, "on"))
     {

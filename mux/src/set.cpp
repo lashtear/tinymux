@@ -1211,7 +1211,7 @@ void do_set
 
             // Make sure player specified a valid attribute flag.
             //
-            int flagvalue;
+            unsigned int flagvalue;
             if (!search_nametab(executor, indiv_attraccess_nametab, flagname, &flagvalue))
             {
                 notify_quiet(executor, T("You can\xE2\x80\x99t set that!"));

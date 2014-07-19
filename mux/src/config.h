@@ -311,9 +311,9 @@ extern int    select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
 typedef int   dbref;
 typedef int   FLAG;
 typedef int   POWER;
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 typedef unsigned int RLEVEL;
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 typedef char  boolexp_type;
 
 #define UNUSED_PARAMETER(x) ((void)(x))
@@ -342,11 +342,11 @@ typedef char  boolexp_type;
 #define OFLAGS_V4     (V_DATABASE|V_ATRNAME|V_ATRMONEY)
 
 #define OUTPUT_VERSION  4
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
 #define OUTPUT_FLAGS    (MANDFLAGS_V4)
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
 #define OUTPUT_FLAGS    (MANDFLAGS_V4|OFLAGS_V4)
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 #define UNLOAD_VERSION  4
 #define UNLOAD_FLAGS    (MANDFLAGS_V4)

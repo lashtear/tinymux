@@ -24,7 +24,7 @@
 #include "mathutil.h"
 #include "slave.h"
 
-#if defined(HAVE_DLOPEN) && defined(STUB_SLAVE)
+#if defined(HAVE_DLOPEN) && defined(HAVE_STUB_SLAVE)
 extern QUEUE_INFO Queue_In;
 extern QUEUE_INFO Queue_Out;
 #endif
@@ -360,10 +360,10 @@ int maxd = 0;
 
 pid_t slave_pid = 0;
 int slave_socket = INVALID_SOCKET;
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
 pid_t stubslave_pid = 0;
 int stubslave_socket = INVALID_SOCKET;
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
 void CleanUpSlaveSocket(void)
 {
@@ -388,7 +388,7 @@ void CleanUpSlaveProcess(void)
     slave_pid = 0;
 }
 
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
 void CleanUpStubSlaveSocket(void)
 {
     if (!IS_INVALID_SOCKET(stubslave_socket))
@@ -618,7 +618,7 @@ static int StubSlaveWrite(void)
     return 0;
 }
 
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
 /*! \brief Lauch reverse-DNS slave process.
  *
@@ -1470,7 +1470,7 @@ void shovechars(int nPorts, PortInfo aPorts[])
         FD_ZERO(&input_set);
         FD_ZERO(&output_set);
 
-#if defined(HAVE_WORKING_FORK) && defined(STUB_SLAVE)
+#if defined(HAVE_WORKING_FORK) && defined(HAVE_STUB_SLAVE)
         // Listen for replies from the stubslave socket.
         //
         if (!IS_INVALID_SOCKET(stubslave_socket))
@@ -1481,7 +1481,7 @@ void shovechars(int nPorts, PortInfo aPorts[])
                 FD_SET(stubslave_socket, &output_set);
             }
         }
-#endif // HAVE_WORKING_FORK && STUB_SLAVE
+#endif // HAVE_WORKING_FORK && HAVE_STUB_SLAVE
 
         // Listen for new connections if there are free descriptors.
         //
@@ -1563,13 +1563,13 @@ void shovechars(int nPorts, PortInfo aPorts[])
                     boot_slave(GOD, GOD, GOD, 0, 0);
                 }
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
                 if (  !IS_INVALID_SOCKET(stubslave_socket)
                    && !ValidSocket(stubslave_socket))
                 {
                     CleanUpStubSlaveSocket();
                 }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 #endif // HAVE_WORKING_FORK
 
                 for (i = 0; i < nPorts; i++)
@@ -1605,7 +1605,7 @@ void shovechars(int nPorts, PortInfo aPorts[])
             }
         }
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
         // Get data from stubslave.
         //
         if (!IS_INVALID_SOCKET(stubslave_socket))
@@ -1628,7 +1628,7 @@ void shovechars(int nPorts, PortInfo aPorts[])
                 }
             }
         }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 #endif // HAVE_WORKING_FORK
 
         // Check for new connection requests.
@@ -1698,7 +1698,7 @@ void shovechars(int nPorts, PortInfo aPorts[])
 
 #endif // UNIX_NETWORKING_SELECT
 
-#if defined(HAVE_WORKING_FORK) && defined(STUB_SLAVE)
+#if defined(HAVE_WORKING_FORK) && defined(HAVE_STUB_SLAVE)
 extern "C" MUX_RESULT DCL_API pipepump(void)
 {
     fd_set input_set;
@@ -1769,7 +1769,7 @@ extern "C" MUX_RESULT DCL_API pipepump(void)
     }
     return MUX_S_OK;
 }
-#endif // HAVE_WORKINGFORK && STUB_SLAVE
+#endif // HAVE_WORKINGFORK && HAVE_STUB_SLAVE
 
 DESC *new_connection(PortInfo *Port, int *piSocketError)
 {
@@ -2741,7 +2741,7 @@ static const int nvt_input_action_table[8][14] =
 
 static void SendSb(DESC *d, unsigned char chOption, unsigned char chRequest)
 {
-    char aSB[6] = { NVT_IAC, NVT_SB, 0, 0, NVT_IAC, NVT_SE };
+    unsigned char aSB[6] = { NVT_IAC, NVT_SB, 0, 0, NVT_IAC, NVT_SE };
     aSB[2] = chOption;
     aSB[3] = chRequest;
     queue_write_LEN(d, aSB, sizeof(aSB));
@@ -2798,7 +2798,7 @@ static void SendSb
     *(p++) = NVT_SE;
 
     size_t length = p - pSB;
-    queue_write_LEN(d, (char *)pSB, length);
+    queue_write_LEN(d, pSB, length);
 
     if (pSB != buffer)
     {
@@ -2815,7 +2815,7 @@ static void SendSb
 
 static void SendWill(DESC *d, unsigned char chOption)
 {
-    char aWill[3] = { NVT_IAC, NVT_WILL, 0 };
+    unsigned char aWill[3] = { NVT_IAC, NVT_WILL, 0 };
     aWill[2] = chOption;
     queue_write_LEN(d, aWill, sizeof(aWill));
 }
@@ -2829,7 +2829,7 @@ static void SendWill(DESC *d, unsigned char chOption)
 
 static void SendDont(DESC *d, unsigned char chOption)
 {
-    char aDont[3] = { NVT_IAC, NVT_DONT, 0 };
+    unsigned char aDont[3] = { NVT_IAC, NVT_DONT, 0 };
     aDont[2] = chOption;
     queue_write_LEN(d, aDont, sizeof(aDont));
 }
@@ -2843,7 +2843,7 @@ static void SendDont(DESC *d, unsigned char chOption)
 
 static void SendDo(DESC *d, unsigned char chOption)
 {
-    char aDo[3]   = { NVT_IAC, NVT_DO,   0 };
+    unsigned char aDo[3] = { NVT_IAC, NVT_DO, 0 };
     aDo[2] = chOption;
     queue_write_LEN(d, aDo, sizeof(aDo));
 }
@@ -2857,7 +2857,7 @@ static void SendDo(DESC *d, unsigned char chOption)
 
 static void SendWont(DESC *d, unsigned char chOption)
 {
-    char aWont[3] = { NVT_IAC, NVT_WONT, 0 };
+    unsigned char aWont[3] = { NVT_IAC, NVT_WONT, 0 };
     aWont[2] = chOption;
     queue_write_LEN(d, aWont, sizeof(aWont));
 }
@@ -4159,7 +4159,7 @@ void close_sockets(bool emergency, const UTF8 *message)
         else
         {
             queue_string(d, message);
-            queue_write_LEN(d, "\r\n", 2);
+            queue_write_LEN(d, (const unsigned char *) "\r\n", 2);
             shutdownsock(d, R_GOING_DOWN);
         }
     }
@@ -4605,7 +4605,7 @@ static void DCL_CDECL sighandler(int sig)
 
                     continue;
                 }
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
                 else if (child == stubslave_pid)
                 {
                     // The Stub slave process ended unexpectedly.
@@ -4616,7 +4616,7 @@ static void DCL_CDECL sighandler(int sig)
 
                     continue;
                 }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
                 else if (  mudconf.fork_dump
                         && mudstate.dumping)
                 {
@@ -4654,13 +4654,13 @@ static void DCL_CDECL sighandler(int sig)
 
 #if defined(HAVE_WORKING_FORK)
             STARTLOG(LOG_PROBLEMS, "SIG", "DEBUG");
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
             Log.tinyprintf(T("mudstate.dumper=%d, child=%d, slave_pid=%d, stubslave_pid=%d" ENDLINE),
                 mudstate.dumper, child, slave_pid, stubslave_pid);
 #else
             Log.tinyprintf(T("mudstate.dumper=%d, child=%d, slave_pid=%d" ENDLINE),
                 mudstate.dumper, child, slave_pid);
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
             ENDLOG;
 #endif // HAVE_WORKING_FORK
         }
@@ -4754,7 +4754,7 @@ static void DCL_CDECL sighandler(int sig)
         final_modules();
 #endif // TINYMUX_MODULES
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
         al_store();
 #endif
         pcache_sync();
@@ -5409,7 +5409,7 @@ void SiteMonSend(SOCKET port, const UTF8 *address, DESC *d, const UTF8 *msg)
         if (SiteMon(nd->player))
         {
             queue_string(nd, sendMsg);
-            queue_write_LEN(nd, "\r\n", 2);
+            queue_write_LEN(nd, (const unsigned char *) "\r\n", 2);
             process_output(nd, false);
         }
     }
@@ -5688,7 +5688,7 @@ bool mux_in6_addr::isValidMask(int *pnLeadingBits) const
 {
     const unsigned char allones = 0xFF;
     unsigned char ucMask;
-    int i;
+    size_t i;
     for (i = 0; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
     {
         ucMask = m_ia6.s6_addr[i];
@@ -5740,8 +5740,8 @@ void mux_in6_addr::makeMask(int nLeadingBits)
 {
     const unsigned char allones = 0xFF;
     memset(&m_ia6, 0, sizeof(m_ia6));
-    int iBytes = nLeadingBits / 8;
-    for (int i = 0; i < iBytes; i++)
+    size_t iBytes = (size_t) nLeadingBits / 8;
+    for (size_t i = 0; i < iBytes; i++)
     {
         m_ia6.s6_addr[i] = allones;
     }
@@ -6779,7 +6779,9 @@ bool mux_in6_addr::operator<(const mux_addr &it) const
     if (AF_INET6 == it.getFamily())
     {
         const mux_in6_addr *t = (const mux_in6_addr *)&it;
-        for (int i = 0; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
+        for (size_t i = 0;
+             i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]);
+             i++)
         {
             if (m_ia6.s6_addr[i] < t->m_ia6.s6_addr[i])
             {
@@ -6806,7 +6808,9 @@ bool mux_in6_addr::clearOutsideMask(const mux_addr &it)
     {
         bool fOutside = false;
         const mux_in6_addr *t = (const mux_in6_addr *)&it;
-        for (int i = 0; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
+        for (size_t i = 0;
+             i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]);
+             i++)
         {
             if (m_ia6.s6_addr[i] & ~t->m_ia6.s6_addr[i])
             {
@@ -6825,7 +6829,9 @@ mux_addr *mux_in6_addr::calculateEnd(const mux_addr &it) const
     {
         const mux_in6_addr *t = (const mux_in6_addr *)&it;
         mux_in6_addr *e = new mux_in6_addr();
-        for (int i = 0; i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]); i++)
+        for (size_t i = 0;
+             i < sizeof(m_ia6.s6_addr)/sizeof(m_ia6.s6_addr[0]);
+             i++)
         {
             e->m_ia6.s6_addr[i] = m_ia6.s6_addr[i] | ~t->m_ia6.s6_addr[i];
         }

@@ -42,7 +42,7 @@ const UTF8 *mux_FPStrings[8] =
 
 typedef union
 {
-    INT64  i64;
+    UINT64  i64;
     double d;
 } SpecialFloatUnion;
 

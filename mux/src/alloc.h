@@ -20,15 +20,15 @@
 #define POOL_STRING  9
 #define NUM_POOLS    10
 
-#ifdef FIRANMUX
+#ifdef HAVE_FIRANMUX
 #define LBUF_SIZE   24000   // Large
 #define GBUF_SIZE   2048    // Generic
 #define MBUF_SIZE   1280    // Medium
-#else
+#else // HAVE_FIRANMUX
 #define LBUF_SIZE   64000    // Large
 #define GBUF_SIZE   2048    // Generic
 #define MBUF_SIZE   1280     // Medium
-#endif
+#endif // HAVE_FIRANMUX
 #define PBUF_SIZE   128     // Pathname
 #define SBUF_SIZE   64      // Small
 

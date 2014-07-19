@@ -137,7 +137,7 @@ void dispatch_CheckEvents(void *pUnused, int iUnused)
     scheduler.DeferTask(mudstate.events_counter, PRIORITY_SYSTEM, dispatch_CheckEvents, 0, 0);
 }
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
 void dispatch_CacheTick(void *pUnused, int iUnused)
 {
     UNUSED_PARAMETER(pUnused);
@@ -162,7 +162,7 @@ void dispatch_CacheTick(void *pUnused, int iUnused)
     scheduler.DeferTask(ltaNextTime, PRIORITY_SYSTEM, dispatch_CacheTick, 0, 0);
     mudstate.debug_cmd = cmdsave;
 }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 
 #if 0
 void dispatch_CleanChannels(void *pUnused, int iUnused)
@@ -222,7 +222,7 @@ void init_timer(void)
     scheduler.DeferTask(mudstate.events_counter, PRIORITY_SYSTEM,
         dispatch_CheckEvents, 0, 0);
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     // Setup re-occuring cache_tick task.
     //
     ltd.SetSeconds(0);
@@ -232,7 +232,7 @@ void init_timer(void)
     }
     scheduler.DeferTask(ltaNow+mudconf.cache_tick_period, PRIORITY_SYSTEM,
         dispatch_CacheTick, 0, 0);
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 
 #if 0
     // Setup comsys channel scrubbing.

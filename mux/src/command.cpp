@@ -664,11 +664,11 @@ static CMDENT_ONE_ARG command_table_one_arg[] =
     {T("enter"),         enter_sw,   CA_LOCATION,                0,  CS_ONE_ARG|CS_INTERP, 0, do_enter},
     {T("examine"),       examine_sw, CA_PUBLIC,                  0,  CS_ONE_ARG|CS_INTERP, 0, do_examine},
     {T("get"),           get_sw,     CA_LOCATION|CA_NO_GUEST,    0,  CS_ONE_ARG|CS_INTERP, 0, do_get},
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     {T("goto"),          goto_sw,    CA_LOCATION|CA_NO_IMMOBILE, 0,  CS_ONE_ARG|CS_INTERP, 0, do_move},
 #else
     {T("goto"),          goto_sw,    CA_LOCATION,                0,  CS_ONE_ARG|CS_INTERP, 0, do_move},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {T("look"),          look_sw,    CA_LOCATION,        LOOK_LOOK,  CS_ONE_ARG|CS_INTERP, 0, do_look},
     {T("outputprefix"),  NULL,       CA_PUBLIC,         CMD_PREFIX,  CS_ONE_ARG,           0, logged_out1},
     {T("outputsuffix"),  NULL,       CA_PUBLIC,         CMD_SUFFIX,  CS_ONE_ARG,           0, logged_out1},
@@ -747,12 +747,12 @@ static CMDENT_TWO_ARG command_table_two_arg[] =
     {T("@quota"),       quota_sw,   CA_PUBLIC,                                        0,           CS_TWO_ARG|CS_INTERP, 0, do_quota},
     {T("@reference"),   reference_sw, CA_PUBLIC,                                      0,           CS_TWO_ARG|CS_INTERP, 0, do_reference},
     {T("@robot"),       NULL,       CA_NO_SLAVE|CA_GBL_BUILD|CA_NO_GUEST|CA_PLAYER,   PCRE_ROBOT,  CS_TWO_ARG,           0, do_pcreate},
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("@rxlevel"),     NULL,       CA_WIZARD,                                        0,           CS_TWO_ARG|CS_INTERP, 0, do_rxlevel},
 #endif
     {T("@set"),         set_sw,     CA_NO_SLAVE|CA_GBL_BUILD|CA_NO_GUEST,             0,           CS_TWO_ARG,           0, do_set},
     {T("@teleport"),    teleport_sw,CA_NO_GUEST,                                      TELEPORT_DEFAULT, CS_TWO_ARG|CS_INTERP, 0, do_teleport},
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("@txlevel"),     NULL,       CA_WIZARD,                                        0,           CS_TWO_ARG|CS_INTERP, 0, do_txlevel},
 #endif
     {T("@toad"),        toad_sw,    CA_WIZARD,                                        0,           CS_TWO_ARG|CS_INTERP, 0, do_toad},
@@ -915,7 +915,7 @@ void clear_prefix_cmds()
     }
 }
 
-#ifdef SELFCHECK
+#ifdef HAVE_SELFCHECK
 void finish_cmdtab()
 {
     clear_prefix_cmds();
@@ -1095,10 +1095,10 @@ bool check_access(dbref player, int mask)
            || ((mask & CA_NO_SLAVE)   && Slave(player))
            || ((mask & CA_NO_SUSPECT) && Suspect(player))
            || ((mask & CA_NO_GUEST)   && Guest(player))
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
            // || ((mask & CA_NO_IMMOBILE) && Immobile(player))
            || ((mask & CA_NO_RESTRICTED) && Restricted(player))
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
            || ((mask & CA_NO_UNINS)   && Uninspected(player)))
         {
             return false;
@@ -1352,7 +1352,7 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
             {
                 *buf1++ = '\0';
             }
-            if (!search_nametab(executor, cmdp->switches, switchp, &xkey))
+            if (!search_nametab(executor, cmdp->switches, switchp, (unsigned int *) &xkey))
             {
                 if (xkey == -1)
                 {
@@ -2272,7 +2272,7 @@ UTF8 *process_command
         // CEF_HOOK_IGSWITCH will allow us to treat the entire command as if it
         // weren't a built-in command.
         //
-        int flagvalue;
+        unsigned int flagvalue;
         if (  (cmdp->flags & CEF_HOOK_IGSWITCH)
            && pSlash)
         {
@@ -2293,14 +2293,14 @@ UTF8 *process_command
                           && *switch_ptr)
                     {
                         search_nametab(executor, cmdp->switches, switch_ptr, &flagvalue);
-                        if (flagvalue == -1)
+                        if (flagvalue == (unsigned int) -1)
                         {
                             break;
                         }
                         switch_ptr = mux_strtok_parse(&ttswitch);
                     }
                 }
-                if (flagvalue == -1)
+                if (flagvalue == (unsigned int) -1)
                 {
                     cval = 2;
                 }
@@ -2819,9 +2819,9 @@ static void list_attrtable(dbref player)
 NAMETAB access_nametab[] =
 {
     {T("builder"),               6, CA_WIZARD, CA_BUILDER},
-#if !defined(FIRANMUX)
+#if !defined(HAVE_FIRANMUX)
     {T("dark"),                  4, CA_GOD,    CF_DARK},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {T("disabled"),              4, CA_GOD,    CA_DISABLED},
     {T("global_build"),          8, CA_PUBLIC, CA_GBL_BUILD},
     {T("global_interp"),         8, CA_PUBLIC, CA_GBL_INTERP},
@@ -2832,10 +2832,10 @@ NAMETAB access_nametab[] =
     {T("need_contents"),         6, CA_PUBLIC, CA_CONTENTS},
     {T("need_player"),           6, CA_PUBLIC, CA_PLAYER},
     {T("no_haven"),              4, CA_PUBLIC, CA_NO_HAVEN},
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     {T("no_immobile"),           5, CA_WIZARD, CA_NO_IMMOBILE},
     {T("no_restricted"),         6, CA_WIZARD, CA_NO_RESTRICTED},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {T("no_robot"),              4, CA_WIZARD, CA_NO_ROBOT},
     {T("no_slave"),              5, CA_PUBLIC, CA_NO_SLAVE},
     {T("no_suspect"),            5, CA_WIZARD, CA_NO_SUSPECT},
@@ -3064,7 +3064,7 @@ CF_HAND(cf_access)
         }
         else
         {
-            return cf_modify_bits(&(cmdp->perms), ap, pExtra, nExtra, player,
+            return cf_modify_bits((int *) &(cmdp->perms), ap, pExtra, nExtra, player,
                                   cmd);
         }
     }
@@ -3103,7 +3103,7 @@ CF_HAND(cf_acmd_access)
         if (cmdp != NULL)
         {
             int save = cmdp->perms;
-            int failure = cf_modify_bits(&(cmdp->perms), str, pExtra, nExtra,
+            int failure = cf_modify_bits((int *) &(cmdp->perms), str, pExtra, nExtra,
                  player, cmd);
             if (failure != 0)
             {
@@ -3730,9 +3730,9 @@ static void list_hashstats(dbref player)
     list_hashstat(player, T("Excl. $-cmds"), &mudstate.parent_htab);
     list_hashstat(player, T("Mail Messages"), &mudstate.mail_htab);
     list_hashstat(player, T("Channel Names"), &mudstate.channel_htab);
-#if !defined(MEMORY_BASED)
+#if !defined(HAVE_MEMORY_BASED)
     list_hashstat(player, T("Attr. Cache"), &mudstate.acache_htab);
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
     for (int i = 0; i < mudstate.nHelpDesc; i++)
     {
         list_hashstat(player, mudstate.aHelpDesc[i].pBaseFilename,
@@ -3746,9 +3746,9 @@ static void list_hashstats(dbref player)
 //
 static void list_db_stats(dbref player)
 {
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     raw_notify(player, T("Database is memory based."));
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
     CLinearTimeAbsolute lsaNow;
     lsaNow.GetUTC();
     CLinearTimeDelta ltd = lsaNow - cs_ltime;
@@ -3758,7 +3758,7 @@ static void list_db_stats(dbref player)
     raw_notify(player, tprintf(T("Syncs      %12d"), cs_syncs));
     raw_notify(player, tprintf(T("I/O        %12d%12d"), cs_dbwrites, cs_dbreads));
     raw_notify(player, tprintf(T("Cache Hits %12d%12d"), cs_whits, cs_rhits));
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 }
 
 // ---------------------------------------------------------------------------
@@ -3858,7 +3858,7 @@ static void list_modules(dbref executor)
         raw_notify(executor, tprintf(T("%s (%s)"), ModuleInfo.pName, ModuleInfo.bLoaded ? T("loaded") : T("unloaded")));
     }
 
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
     if (NULL != mudstate.pISlaveControl)
     {
         for (i = 0; ; i++)
@@ -3884,7 +3884,7 @@ static void list_modules(dbref executor)
 // list_rlevels
 //
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 static void list_rlevels(dbref player)
 {
     int i;
@@ -3897,7 +3897,7 @@ static void list_rlevels(dbref player)
     }
     raw_notify(player, T("--Completed."));
 }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 // ---------------------------------------------------------------------------
 // do_list: List information stored in internal structures.
@@ -3927,7 +3927,7 @@ static void list_rlevels(dbref player)
 #define LIST_RESOURCES  23
 #define LIST_GUESTS     24
 #define LIST_MODULES    25
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #define LIST_RLEVELS    26
 #endif
 
@@ -3958,7 +3958,7 @@ NAMETAB list_names[] =
     {T("switches"),           2,  CA_PUBLIC,  LIST_SWITCHES},
     {T("user_attributes"),    1,  CA_WIZARD,  LIST_VATTRS},
     {T("guests"),             2,  CA_WIZARD,  LIST_GUESTS},
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("rlevels"),            3,  CA_PUBLIC,  LIST_RLEVELS},
 #endif
     {(UTF8 *) NULL,                0,  0,          0}
@@ -3979,10 +3979,10 @@ void do_list(dbref executor, dbref caller, dbref enactor, int eval, int key,
     mux_strtok_ctl(&tts, T(" \t=,"));
     UTF8 *s_option = mux_strtok_parse(&tts);
 
-    int flagvalue;
+    unsigned int flagvalue;
     if (!search_nametab(executor, list_names, arg, &flagvalue))
     {
-        if (flagvalue == -1)
+        if (flagvalue == (unsigned int) -1)
         {
             display_nametab(executor, list_names, T("Unknown option.  Use one of"), true);
         }
@@ -4075,7 +4075,7 @@ void do_list(dbref executor, dbref caller, dbref enactor, int eval, int key,
     case LIST_MODULES:
         list_modules(executor);
         break;
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     case LIST_RLEVELS:
         list_rlevels(executor);
         break;

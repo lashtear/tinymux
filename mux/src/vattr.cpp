@@ -616,11 +616,11 @@ void do_dbclean(dbref executor, dbref caller, dbref enactor, int eval, int key)
         return;
     }
 #endif // HAVE_WORKING_FORK
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     // Save cached modified attribute list
     //
     al_store();
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
     pcache_sync();
 
     notify(executor, T("Checking Integrity of the attribute data structures..."));

@@ -105,9 +105,9 @@ UTF8 *MakeCanonicalMailAliasDesc
     size_t *pnVisualWidth
 );
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 const UTF8 *MessageFetch(int number);
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 size_t MessageFetchSize(int number);
 void finish_mail();
 
@@ -1018,7 +1018,7 @@ void do_lock(dbref executor, dbref caller, dbref enactor, int eval, int key,
 void check_events(void);
 void list_system_resources(dbref player);
 
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS) || defined(HAVE_REALITY_LVLS)
 
 #define ACTION_IS_STATIONARY    0
 #define ACTION_IS_MOVING        1
@@ -1035,7 +1035,7 @@ void list_system_resources(dbref player);
 #define REALM_DO_MASK                 7
 #define REALM_DISABLE_ADESC           0x00000008L
 int DoThingToThingVisibility(dbref looker, dbref lookee, int action_state);
-#endif // WOD_REALMS
+#endif // HAVE_WOD_REALMS || HAVE_REALITY_LVLS
 
 extern long DebugTotalFiles;
 extern pid_t game_pid;
@@ -1047,7 +1047,7 @@ void dispatch_DatabaseDump(void *pUnused, int iUnused);
 void dispatch_FreeListReconstruction(void *pUnused, int iUnused);
 void dispatch_IdleCheck(void *pUnused, int iUnused);
 void dispatch_CheckEvents(void *pUnused, int iUnused);
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
 void dispatch_CacheTick(void *pUnused, int iUnused);
 #endif
 

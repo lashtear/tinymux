@@ -292,8 +292,8 @@ extern void raw_notify(dbref, const UTF8 *);
 extern void raw_notify(dbref player, const mux_string &sMsg);
 extern void raw_notify_newline(dbref);
 extern void clearstrings(DESC *);
-extern void queue_write_LEN(DESC *, const char *, size_t n);
-extern void queue_write(DESC *, const char *);
+extern void queue_write_LEN(DESC *, const unsigned char *, size_t n);
+extern void queue_write(DESC *, const unsigned char *);
 extern void queue_string(DESC *, const UTF8 *);
 extern void queue_string(DESC *d, const mux_string &s);
 extern void freeqs(DESC *);
@@ -353,12 +353,12 @@ void shutdown_slave();
 #if defined(HAVE_WORKING_FORK)
 void CleanUpSlaveSocket(void);
 void CleanUpSlaveProcess(void);
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
 void CleanUpStubSlaveSocket(void);
 void WaitOnStubSlaveProcess(void);
 void boot_stubslave(dbref executor, dbref caller, dbref enactor, int key);
 extern "C" MUX_RESULT DCL_API pipepump(void);
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 #endif // HAVE_WORKING_FORK
 #ifdef UNIX_SSL
 void CleanUpSSLConnections(void);

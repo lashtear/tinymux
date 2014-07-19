@@ -147,10 +147,10 @@ CMD_TWO_ARG(do_delcommand);     /* Delete an added global command */
 CMD_ONE_ARG(do_listcommands);   /* List added global commands */
 CMD_TWO_ARG(do_assert);         /* Stop evaluating an action list */
 CMD_TWO_ARG(do_break);          /* Stop evaluating an action list */
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 CMD_TWO_ARG(do_rxlevel);        /* set Rx Levels */
 CMD_TWO_ARG(do_txlevel);        /* set Tx Levels */
-#endif
+#endif // HAVE_REALITY_LVLS
 CMD_TWO_ARG_ARGV(do_icmd);      // Disable commands on a player or room
 CMD_ONE_ARG(do_hook);           // Set additional operations for a command
 CMD_TWO_ARG(do_flag);           // Rename a flag or remove flag aliases
@@ -162,10 +162,10 @@ typedef struct
 {
     const UTF8 *cmdname;
     NAMETAB *switches;
-    int     perms;
+    unsigned int     perms;
     int     extra;
     int     callseq;
-    int     flags;
+    unsigned int flags;
     void    (*handler)(dbref executor, dbref caller, dbref enactor, int eval, int key);
 } CMDENT_NO_ARG;
 
@@ -173,10 +173,10 @@ typedef struct
 {
     const UTF8 *cmdname;
     NAMETAB *switches;
-    int     perms;
+    unsigned int     perms;
     int     extra;
     int     callseq;
-    int     flags;
+    unsigned int flags;
     void    (*handler)(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8 *arg1, const UTF8 *cargs[], int ncargs);
 } CMDENT_ONE_ARG;
 
@@ -184,10 +184,10 @@ typedef struct
 {
     const UTF8 *cmdname;
     NAMETAB *switches;
-    int     perms;
+    unsigned int     perms;
     int     extra;
     int     callseq;
-    int     flags;
+    unsigned int flags;
     void    (*handler)(dbref executor, dbref caller, dbref enactor, int eval, int key, int nargs, UTF8 *arg1, UTF8 *arg2, const UTF8 *cargs[], int ncargs);
 } CMDENT_TWO_ARG;
 
@@ -195,10 +195,10 @@ typedef struct
 {
     const UTF8 *cmdname;
     NAMETAB *switches;
-    int     perms;
+    unsigned int     perms;
     int     extra;
     int     callseq;
-    int     flags;
+    unsigned int     flags;
     void    (*handler)(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8 *arg1, UTF8 *args[], int nargs, const UTF8 *cargs[], int ncargs);
 } CMDENT_TWO_ARG_ARGV;
 
@@ -215,10 +215,10 @@ typedef struct
 {
     UTF8 *cmdname;
     NAMETAB *switches;
-    int     perms;
+    unsigned int     perms;
     int     extra;
     int     callseq;
-    int     flags;
+    unsigned int flags;
     union
     {
         void (*handler)(void);
@@ -283,13 +283,13 @@ extern NAMETAB allow_charset_nametab[];
 #define CA_NO_SUSPECT 0x00008000  /* Not by SUSPECT players */
 #define CA_NO_GUEST   0x00010000  /* Not by GUEST players */
 #define CA_NO_UNINS   0x00020000  /* Not by UNINSPECTED players */
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 #define CA_NO_IMMOBILE   0x00040000    /* Not by IMMOBILE players */
 #define CA_NO_RESTRICTED 0x00080000    /* Not by RESTRICTED players */
 #define CA_CANTBE_MASK (CA_NO_HAVEN|CA_NO_ROBOT|CA_NO_SLAVE|CA_NO_SUSPECT|CA_NO_GUEST|CA_NO_UNINS|CA_NO_IMMOBILE|CA_NO_RESTRICTED)
 #else
 #define CA_CANTBE_MASK (CA_NO_HAVEN|CA_NO_ROBOT|CA_NO_SLAVE|CA_NO_SUSPECT|CA_NO_GUEST|CA_NO_UNINS)
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 #define CA_MARKER0    0x00002000
 #define CA_MARKER1    0x00004000

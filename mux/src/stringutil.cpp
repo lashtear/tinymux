@@ -740,10 +740,10 @@ const int g_trimoffset[4][4] =
  * \return          Equivalent string in ASCII codeset.
  */
 
-const char *ConvertToAscii(const UTF8 *pString)
+const unsigned char *ConvertToAscii(const UTF8 *pString)
 {
-    static char buffer[2*LBUF_SIZE];
-    char *q = buffer;
+    static unsigned char buffer[2*LBUF_SIZE];
+    unsigned char *q = buffer;
 
     while ('\0' != *pString)
     {
@@ -800,13 +800,13 @@ const char *ConvertToAscii(const UTF8 *pString)
 /*! \brief Convert UTF8 to cp437 with '?' for all unsupported characters.
  *
  * \param pString   UTF8 string.
- * \return          Equivalent string in latin1 codeset.
+ * \return          Equivalent string in cp437 codeset.
  */
 
-const char *ConvertToCp437(const UTF8 *pString)
+const unsigned char *ConvertToCp437(const UTF8 *pString)
 {
-    static char buffer[2*LBUF_SIZE];
-    char *q = buffer;
+    static unsigned char buffer[2*LBUF_SIZE];
+    unsigned char *q = buffer;
 
     while (  '\0' != *pString
           && q < buffer + sizeof(buffer) - 1)
@@ -854,7 +854,7 @@ const char *ConvertToCp437(const UTF8 *pString)
                 }
             }
         } while (iState < TR_CP437_ACCEPTING_STATES_START);
-        *q++ = (char)(iState - TR_CP437_ACCEPTING_STATES_START);
+        *q++ = (unsigned char)(iState - TR_CP437_ACCEPTING_STATES_START);
         pString = utf8_NextCodePoint(pString);
     }
     *q = '\0';
@@ -867,10 +867,10 @@ const char *ConvertToCp437(const UTF8 *pString)
  * \return          Equivalent string in latin1 codeset.
  */
 
-const char *ConvertToLatin1(const UTF8 *pString)
+const unsigned char *ConvertToLatin1(const UTF8 *pString)
 {
-    static char buffer[2*LBUF_SIZE];
-    char *q = buffer;
+    static unsigned char buffer[2*LBUF_SIZE];
+    unsigned char *q = buffer;
 
     while (  '\0' != *pString
           && q < buffer + sizeof(buffer) - 1)
@@ -928,13 +928,13 @@ const char *ConvertToLatin1(const UTF8 *pString)
 /*! \brief Convert UTF8 to latin2 with '?' for all unsupported characters.
  *
  * \param pString   UTF8 string.
- * \return          Equivalent string in latin1 codeset.
+ * \return          Equivalent string in latin2 codeset.
  */
 
-const char *ConvertToLatin2(const UTF8 *pString)
+const unsigned char *ConvertToLatin2(const UTF8 *pString)
 {
-    static char buffer[2*LBUF_SIZE];
-    char *q = buffer;
+    static unsigned char buffer[2*LBUF_SIZE];
+    unsigned char *q = buffer;
 
     while (  '\0' != *pString
           && q < buffer + sizeof(buffer) - 1)
@@ -2083,9 +2083,9 @@ inline void ValidateColorState(ColorState cs)
     mux_assert((CS_BACKGROUND & cs) <= CS_BG_DEFAULT);
 }
 
-inline ColorState UpdateColorState(ColorState cs, int iColorCode)
+inline ColorState UpdateColorState(ColorState cs, unsigned int iColorCode)
 {
-    mux_assert(0 <= iColorCode &&  iColorCode <= COLOR_INDEX_LAST);
+    mux_assert(iColorCode <= COLOR_INDEX_LAST);
     if (COLOR_INDEX_FG_24 <= iColorCode)
     {
         // In order to apply an RGB 24-bit modification, we need to translate

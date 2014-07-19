@@ -11,7 +11,7 @@ BIN = ../game/bin
 CC = @CC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
-LIBS = @LIBS@ @FIRANLIBS@
+LIBS = @LIBS@
 
 .SUFFIXES: .cpp
 
@@ -21,53 +21,7 @@ LIBS = @LIBS@ @FIRANLIBS@
 #
 #OPTIM = -O
 #OPTIM = -g -pg -O
-OPTIM = -g -O3 -fno-omit-frame-pointer -Wall -Wno-narrowing -Wno-parentheses -Wno-sign-compare
-
-# By default, REALITY_LVLS is not enabled.  If you wish to use REALITY_LVLS,
-# run configure with --enable-realitylvls.  Please read the docs/REALITY.
-#
-# NOTE: To ensure a clean build, please 'make clean' first.
-#
-REALITY_LVLS = @REALITY_LVLS@
-REALITY_SRC = @REALITY_SRC@
-REALITY_OBJ = @REALITY_OBJ@
-
-# By default, WOD_REALMS is not enabled.  If you wish to use WOD_REALMS,
-# run configure with --enable-wodrealms.  Please read the docs/REALMS.
-#
-# NOTE: To ensure a clean build, please 'make clean' first.
-#
-WOD_REALMS = @WOD_REALMS@
-
-# Disk-based caching is the default.  If you wish to use memory-based, run
-# configure with --enable-memorybased.  Disk-based usually uses less memory,
-# but more disk space.  Memory-based usually uses more memory, less
-# disk-space, and some gain in performance for a very narrow set of
-# operations.
-#
-# NOTE: To ensure a clean build, please 'make clean' first.
-#
-MEMORY_BASED = @MEMORY_BASED@
-
-# Stub Slave. By default, this is off. This can be turned on by running
-# configure with --enable-stubslave. The Stub Slave is how to load modules in
-# a separate process including support for asyncronous SQL.
-#
-STUB_SLAVE = @STUB_SLAVE@
-STUBLIBS   =  # -ldbi
-
-# Firan MUX. By default, this is off. This can be turned on by running
-# configure with --enable-firanmux. Firan MUX modifications are necessary
-# in order to run Firan's database.  Typically, --enable-memorybased is also
-# necessary.
-#
-FIRANMUX    = @FIRANMUX@
-
-# Potentially expensive internal self-checking of the server. This does not
-# increase softcode validation or validation of the operating environment.
-# It's useful primarily during development while running test cases.
-#
-SELFCHECK = @SELFCHECK@
+OPTIM = -g -O3 -fno-omit-frame-pointer -Wall -Werror
 
 # Base source and object files for building netmux
 #
@@ -80,7 +34,7 @@ NETMUX_BASE_SRC = _build.cpp alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp \
     plusemail.cpp powers.cpp quota.cpp rob.cpp pcre.cpp set.cpp sha1.cpp \
     speech.cpp stringutil.cpp strtod.cpp svdrand.cpp svdhash.cpp timer.cpp \
     timeabsolute.cpp timedelta.cpp timeparser.cpp timeutil.cpp timezone.cpp \
-    unparse.cpp utf8tables.cpp vattr.cpp walkdb.cpp wild.cpp wiz.cpp
+    unparse.cpp utf8tables.cpp vattr.cpp walkdb.cpp wild.cpp wiz.cpp levels.cpp
 NETMUX_BASE_OBJ = _build.o alarm.o alloc.o attrcache.o boolexp.o bsd.o \
     command.o comsys.o conf.o cque.o create.o db.o db_rw.o eval.o file_c.o \
     flags.o funceval.o funceval2.o functions.o funmath.o game.o help.o \
@@ -89,7 +43,7 @@ NETMUX_BASE_OBJ = _build.o alarm.o alloc.o attrcache.o boolexp.o bsd.o \
     plusemail.o powers.o quota.o rob.o pcre.o set.o sha1.o speech.o \
     stringutil.o strtod.o svdrand.o svdhash.o timer.o timeabsolute.o \
     timedelta.o timeparser.o timeutil.o timezone.o unparse.o utf8tables.o \
-    vattr.o walkdb.o wild.o wiz.o
+    vattr.o walkdb.o wild.o wiz.o levels.o
 
 # Base sources and object files for building @DYNAMICLIB_TARGET@
 #
@@ -105,62 +59,40 @@ VER_OBJ = version.o
 VER_FLG = -DMUX_BUILD_DATE="\"`date`\"" \
           -DMUX_BUILD_NUM="\"`sh ./buildnum.sh`\""
 
-# ===================== CONFIGURATION SECTION ====================
-#
-# Select the correct C compiler.  Whatever you choose, it must be able
-# to grok ANSI C (function prototypes)
-#
-#-----CC or GCC (must be able to grok function prototypes)
-#
 DEFS =
-#
-#-----CC on a NeXT system, really weird derivative of GCC
-#
-#DEFS = -DNEXT -DNEED_STRDUP
-#
-#-----GCC if the libraries were built for a pcc-derived cc compiler
-#     (most systems)
-#
-#DEFS = -fpcc-struct-return -Wall
-#
-#-----GCC with GCC-compatible libraries if you want verbose error messages
-#
-#DEFS = -Wall
-#
-#-----HP-UX C compiler
-#
-#DEFS = -w +Obb800 -Aa -D_INCLUDE_POSIX_SOURCE -D_INCLUDE_HPUX_SOURCE -D_INCLUDE_XOPEN_SOURCE
-#
-#-----MIPS C compiler (also DEC 3xxx, Prime EXL7xxx)
-#
-#DEFS = -signed
-#
 
-# ================== END OF CONFIGURATION SECTION =================
 
 # Auxiliary source files: only used by offline utilities.
 #
 AUX_SRC = unsplit.cpp
-ALLCXXFLAGS = $(CXXFLAGS) $(OPTIM) $(DEFS) $(MEMORY_BASED) $(WOD_REALMS) \
-    $(REALITY_LVLS) $(STUB_SLAVE) $(FIRANMUX) $(SELFCHECK)
+ALLCXXFLAGS = $(CXXFLAGS) $(OPTIM)
 
 # Compiliation source files.
 #
-ALLSRC     = $(NETMUX_BASE_SRC) $(LIBMUX_BASE_SRC) $(REALITY_SRC) $(VER_SRC) $(AUX_SRC)
-NETMUX_SRC = $(NETMUX_BASE_SRC) $(REALITY_SRC)
-NETMUX_OBJ = $(NETMUX_BASE_OBJ) $(REALITY_OBJ)
+ALLSRC     = $(NETMUX_BASE_SRC) $(LIBMUX_BASE_SRC) $(VER_SRC) $(AUX_SRC)
+NETMUX_SRC = $(NETMUX_BASE_SRC)
+NETMUX_OBJ = $(NETMUX_BASE_OBJ)
 
 .cpp.o:
 	$(CXX) $(ALLCXXFLAGS) -c $<
 
-all: @DYNAMICLIB_TARGET@ netmux slave @STUBSLAVE_TARGET@ links
+all: @DYNAMICLIB_TARGET@ netmux slave @STUBSLAVE_TARGET@
 
+# deprecated
 links: netmux slave @STUBSLAVE_TARGET@
 	cd ../game/bin ; rm -f dbconvert ; ln -s ../../src/netmux dbconvert
 	cd ../game/bin ; rm -f netmux ; ln -s ../../src/netmux netmux
 	cd ../game/bin ; rm -f slave ; ln -s ../../src/slave slave
-	( if [ ! -z "@STUBSLAVE_TARGET@" -a -f "@STUBSLAVE_TARGET@" ]; then cd ../game/bin ; rm -f @STUBSLAVE_TARGET@; ln -s ../../src/@STUBSLAVE_TARGET@ @STUBSLAVE_TARGET@ ; fi )
-	( if [ ! -z "@DYNAMICLIB_TARGET@" -a -f "@DYNAMICLIB_TARGET@" ]; then cd ../game/bin ; rm -f @DYNAMICLIB_TARGET@; ln -s ../../src/@DYNAMICLIB_TARGET@ @DYNAMICLIB_TARGET@ ; fi )
+	( if [ ! -z "@STUBSLAVE_TARGET@" -a -f "@STUBSLAVE_TARGET@" ]; then \
+		cd ../game/bin ;\
+		rm -f @STUBSLAVE_TARGET@ ;\
+		ln -s ../../src/@STUBSLAVE_TARGET@ @STUBSLAVE_TARGET@ ;\
+		fi )
+	( if [ ! -z "@DYNAMICLIB_TARGET@" -a -f "@DYNAMICLIB_TARGET@" ]; then \
+		cd ../game/bin ;\
+		rm -f @DYNAMICLIB_TARGET@ ;\
+		ln -s ../../src/@DYNAMICLIB_TARGET@ @DYNAMICLIB_TARGET@ ;\
+		 fi )
 
 stubslave: stubslave.o
 	$(CXX) $(ALLCXXFLAGS) -o stubslave stubslave.o -L. $(LIBS) $(MUX_LIBS) $(STUBLIBS)
@@ -180,18 +112,37 @@ netmux: $(NETMUX_OBJ) $(VER_SRC)
 	( if [ -f @DYNAMICLIB_TARGET@ ]; then mv -f @DYNAMICLIB_TARGET@ @DYNAMICLIB_TARGET@~ ; fi )
 	$(CXX) $(ALLCXXFLAGS) @DYNAMICLIB_CPPFLAGS@ -o @DYNAMICLIB_TARGET@ $(LIBMUX_BASE_SRC) $(LIBS) $(DL_LIB)
 
-depend: $(ALLSRC) unsplit
-	for i in $(ALLSRC) slave.cpp stubslave.cpp ; do $(CXXCPP) $(ALLCXXFLAGS) -M $$i; done | ./unsplit > .depend~
-	mv .depend~ .depend
+BASIC_CLEAN=$(wildcard *.o *~ a.out core gmon.out warn.log)
+CONFIGS=$(wildcard config.log config.status Makefile depend)
+PRODUCTS=$(wildcard netmux dbconvert @DYNAMICLIB_TARGET@ @STUBSLAVE_TARGET@)
 
 realclean:
-	-rm -f *.o a.out core gmon.out dbconvert config.status config.log netmux netmux~ @DYNAMICLIB_TARGET@ @DYNAMICLIB_TARGET@~ slave @STUBSLAVE_TARGET@ Makefile
+	rm -f $(BASIC_CLEAN) $(CONFIGS) $(PRODUCTS)
 
 clean:
-	-rm -f *.o a.out core gmon.out warn.log config.status config.log netmux~ @DYNAMICLIB_TARGET@~
+	rm -f $(BASIC_CLEAN)
 
 docs:
 	doxygen
 	( cd doxygen/latex; make )
 
-include .depend
+ALLCODE=$(wildcard *.h *.cpp)
+TAGS: $(ALLCODE)
+	etags $(ALLCODE)
+tags: $(ALLCODE)
+	ctags $(ALLCODE)
+
+configure: configure.ac
+	autoconf
+
+autoconf.h: autoconf.h.in configure.ac
+	autoheader
+
+config.status Makefile: Makefile.in configure
+	./configure
+
+depend: Makefile $(ALLSRC) $(wildcard *.h *.cpp)
+	@echo Regenerating dependencies
+	@$(CXX) -MM $(ALLSRC) > depend || rm depend
+
+-include depend

@@ -110,7 +110,7 @@ static void Task_RunQueueEntry(void *pEntry, int iUnused)
                 point->scr[i] = NULL;
             }
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
             if (NULL != mudstate.pResultsSet)
             {
                 mudstate.pResultsSet->Release();
@@ -119,7 +119,7 @@ static void Task_RunQueueEntry(void *pEntry, int iUnused)
             mudstate.pResultsSet = point->pResultsSet;
             point->pResultsSet = NULL;
             mudstate.iRow = point->iRow;
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
             UTF8 *command = point->comm;
 
@@ -244,14 +244,14 @@ static void Task_RunQueueEntry(void *pEntry, int iUnused)
         }
     }
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     mudstate.iRow = RS_TOP;
     if (NULL != mudstate.pResultsSet)
     {
         mudstate.pResultsSet->Release();
         mudstate.pResultsSet = NULL;
     }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
     MEMFREE(point->text);
     point->text = NULL;
@@ -839,14 +839,14 @@ static BQUE *setup_que
         }
     }
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     tmp->iRow = mudstate.iRow;
     tmp->pResultsSet = mudstate.pResultsSet;
     if (NULL != mudstate.pResultsSet)
     {
         mudstate.pResultsSet->AddRef();
     }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
     // Load the rest of the queue block.
     //
@@ -938,7 +938,7 @@ void wait_que
     }
 }
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
 bool   QueryComplete_bDone   = false;
 UINT32 QueryComplete_hQuery  = 0;
 CResultsSet *QueryComplete_prsResultsSet = NULL;
@@ -991,7 +991,7 @@ void query_complete(UINT32 hQuery, UINT32 iError, CResultsSet *prsResultsSet)
     scheduler.TraverseUnordered(CallBack_QueryComplete);
     QueryComplete_prsResultsSet = NULL;
 }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
 #if defined(TINYMUX_MODULES)
 
@@ -1276,7 +1276,7 @@ static int CallBack_ShowDispatches(PTASK_RECORD p)
     {
         notify(Show_Player, tprintf(T("[%d]Test for @daily time"), ltd.ReturnSeconds()));
     }
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     else if (p->fpTask == dispatch_CacheTick)
     {
         notify(Show_Player, tprintf(T("[%d]Database cache tick"), ltd.ReturnSeconds()));

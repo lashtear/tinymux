@@ -14,9 +14,9 @@
 #include "interface.h"
 #include "mathutil.h"
 #include "powers.h"
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 #include "attrs.h"
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 /* ---------------------------------------------------------------------------
  * fh_any: set or clear indicated bit, no security checking
@@ -129,10 +129,10 @@ static bool fh_privileged
     if (!God(player))
     {
         if (  isPlayer(target)
-#if !defined(FIRANMUX)
+#if !defined(HAVE_FIRANMUX)
            || !isPlayer(player)
            || player != Owner(player)
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
            || (db[player].fs.word[fflags] & flag) == 0)
         {
             return false;
@@ -408,7 +408,7 @@ static FLAGBITENT fbeVerbose        = { VERBOSE,      'v',    FLAG_WORD1, 0,    
 static FLAGBITENT fbeVisual         = { VISUAL,       'V',    FLAG_WORD1, 0,                    fh_any};
 static FLAGBITENT fbeWizard         = { WIZARD,       'W',    FLAG_WORD1, 0,                    fh_god};
 static FLAGBITENT fbeSitemon        = { SITEMON,      '$',    FLAG_WORD3, 0,                    fh_wiz};
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
 static FLAGBITENT fbeFae            = { FAE,          '0',    FLAG_WORD3, CA_STAFF,             fh_wizroy};
 static FLAGBITENT fbeChimera        = { CHIMERA,      '1',    FLAG_WORD3, CA_STAFF,             fh_wizroy};
 static FLAGBITENT fbePeering        = { PEERING,      '2',    FLAG_WORD3, CA_STAFF,             fh_wizroy};
@@ -429,7 +429,7 @@ static FLAGBITENT fbeMarker6        = { MARK_6,       ' ',    FLAG_WORD3, 0,    
 static FLAGBITENT fbeMarker7        = { MARK_7,       ' ',    FLAG_WORD3, 0,                    fh_god};
 static FLAGBITENT fbeMarker8        = { MARK_8,       ' ',    FLAG_WORD3, 0,                    fh_god};
 static FLAGBITENT fbeMarker9        = { MARK_9,       ' ',    FLAG_WORD3, 0,                    fh_god};
-#else // WOD_REALMS
+#else // HAVE_WOD_REALMS
 static FLAGBITENT fbeMarker0        = { MARK_0,       '0',    FLAG_WORD3, 0,                    fh_god};
 static FLAGBITENT fbeMarker1        = { MARK_1,       '1',    FLAG_WORD3, 0,                    fh_god};
 static FLAGBITENT fbeMarker2        = { MARK_2,       '2',    FLAG_WORD3, 0,                    fh_god};
@@ -440,14 +440,14 @@ static FLAGBITENT fbeMarker6        = { MARK_6,       '6',    FLAG_WORD3, 0,    
 static FLAGBITENT fbeMarker7        = { MARK_7,       '7',    FLAG_WORD3, 0,                    fh_god};
 static FLAGBITENT fbeMarker8        = { MARK_8,       '8',    FLAG_WORD3, 0,                    fh_god};
 static FLAGBITENT fbeMarker9        = { MARK_9,       '9',    FLAG_WORD3, 0,                    fh_god};
-#endif // WOD_REALMS
-#if defined(FIRANMUX)
+#endif // HAVE_WOD_REALMS
+#if defined(HAVE_FIRANMUX)
 static FLAGBITENT fbeImmobile       = { IMMOBILE,     '#',    FLAG_WORD3, 0,                    fh_wiz};
 static FLAGBITENT fbeLineWrap       = { LINEWRAP,     '>',    FLAG_WORD3, 0,                    fh_any};
 static FLAGBITENT fbeQuell          = { QUELL,        ' ',    FLAG_WORD3, 0,                    fh_inherit};
 static FLAGBITENT fbeRestricted     = { RESTRICTED,   '!',    FLAG_WORD3, CA_WIZARD,            fh_wiz};
 static FLAGBITENT fbeParent         = { PARENT,       '+',    FLAG_WORD3, 0,                    fh_any};
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 FLAGNAMEENT gen_flag_names[] =
 {
@@ -525,7 +525,7 @@ FLAGNAMEENT gen_flag_names[] =
     {(UTF8 *)"VERBOSE",         true, &fbeVerbose        },
     {(UTF8 *)"VISUAL",          true, &fbeVisual         },
     {(UTF8 *)"WIZARD",          true, &fbeWizard         },
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
     {(UTF8 *)"FAE",             true, &fbeFae            },
     {(UTF8 *)"CHIMERA",         true, &fbeChimera        },
     {(UTF8 *)"PEERING",         true, &fbePeering        },
@@ -536,14 +536,14 @@ FLAGNAMEENT gen_flag_names[] =
     {(UTF8 *)"HSS",             true, &fbeHss            },
     {(UTF8 *)"MEDIUM",          true, &fbeMedium         },
     {(UTF8 *)"DEAD",            true, &fbeDead           },
-#endif // WOD_REALMS
-#if defined(FIRANMUX)
+#endif // HAVE_WOD_REALMS
+#if defined(HAVE_FIRANMUX)
     {(UTF8 *)"IMMOBILE",        true, &fbeImmobile       },
     {(UTF8 *)"LINEWRAP",        true, &fbeLineWrap       },
     {(UTF8 *)"QUELL",           true, &fbeQuell          },
     {(UTF8 *)"RESTRICTED",      true, &fbeRestricted     },
     {(UTF8 *)"PARENT",          true, &fbeParent         },
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {(UTF8 *)NULL,             false, NULL}
 };
 
@@ -968,7 +968,7 @@ UTF8 *unparse_object_numonly(dbref target)
     return buf;
 }
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 static UTF8 *AcquireColorLetters(dbref player, dbref target)
 {
     int   aflags;
@@ -995,7 +995,7 @@ static UTF8 *AcquireColorLetters(dbref player, dbref target)
         return AnsiCodes;
     }
 }
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 /*
  * ---------------------------------------------------------------------------
@@ -1031,7 +1031,7 @@ UTF8 *unparse_object(dbref player, dbref target, bool obey_myopic, bool bAddColo
                                                   LBUF_SIZE-100, LBUF_SIZE-100);
         UTF8 *bp = buf + fldName.m_byte;
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
         if (  fldName.m_column == fldName.m_byte
            && bAddColor)
         {
@@ -1064,7 +1064,7 @@ UTF8 *unparse_object(dbref player, dbref target, bool obey_myopic, bool bAddColo
         }
 #else
         UNUSED_PARAMETER(bAddColor);
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
         if (  exam
            || (Flags(target) & (CHOWN_OK | JUMP_OK | LINK_OK | DESTROY_OK))

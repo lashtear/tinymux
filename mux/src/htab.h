@@ -18,7 +18,7 @@ struct name_table
     const UTF8 *name;
     int minlen;
     int perm;
-    int flag;
+    unsigned int flag;
 };
 
 /* BQUE - Command queue */
@@ -45,10 +45,10 @@ struct bque
     UTF8    *comm;                  // command
     UTF8    *env[NUM_ENV_VARS];     // environment vars
     reg_ref *scr[MAX_GLOBAL_REGS];  // temp vars
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     CResultsSet *pResultsSet;       // Results Set
     int     iRow;                   // Current Row
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
     bool    IsTimed;                // Is there a waittime time on this entry?
 };
 
@@ -88,7 +88,7 @@ void *hash_nextkey(CHashTable *htab, int *, UTF8 **);
 
 extern NAMETAB powers_nametab[];
 
-extern bool search_nametab(dbref, NAMETAB *, const UTF8 *, int *);
+extern bool search_nametab(dbref, NAMETAB *, const UTF8 *, unsigned int *);
 extern NAMETAB *find_nametab_ent(dbref, NAMETAB *, const UTF8 *);
 extern void display_nametab(dbref, NAMETAB *, const UTF8 *, bool);
 extern void interp_nametab(dbref, NAMETAB *, int, const UTF8 *, const UTF8 *, const UTF8 *);

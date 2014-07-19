@@ -135,14 +135,14 @@ extern "C" MUX_RESULT DCL_API netmux_GetClassObject(MUX_CID cid, MUX_IID iid, vo
     return mr;
 }
 
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
 QUEUE_INFO Queue_In;
 QUEUE_INFO Queue_Out;
 #endif
 
 void init_modules(void)
 {
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
     Pipe_InitializeQueueInfo(&Queue_In);
     Pipe_InitializeQueueInfo(&Queue_Out);
     MUX_RESULT mr = mux_InitModuleLibrary(IsMainProcess, pipepump, &Queue_In, &Queue_Out);
@@ -160,7 +160,7 @@ void init_modules(void)
         log_printf(T("Registered netmux modules."));
         ENDLOG;
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
         if (NULL != mudstate.pISlaveControl)
         {
             mudstate.pISlaveControl->Release();
@@ -180,7 +180,7 @@ void init_modules(void)
             log_printf(T("Failed to open interface for StubSlave management (%d)."), mr);
             ENDLOG;
         }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
     }
     else
     {
@@ -194,7 +194,7 @@ void final_modules(void)
 {
     MUX_RESULT mr = MUX_S_OK;
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     if (NULL != mudstate.pISlaveControl)
     {
         mr = mudstate.pISlaveControl->ShutdownSlave();
@@ -208,7 +208,7 @@ void final_modules(void)
         mudstate.pISlaveControl->Release();
         mudstate.pISlaveControl = NULL;
     }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
     mr = mux_RevokeClassObjects(NUM_CLASSES, netmux_classes);
     if (MUX_FAILED(mr))
@@ -1249,7 +1249,7 @@ MUX_RESULT CQueryClient::DisconnectObject(void)
 
 MUX_RESULT CQueryClient::Result(UINT32 hQuery, UINT32 iError, QUEUE_INFO *pqiResultsSet)
 {
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     CResultsSet *prs = NULL;
     try
     {
@@ -1265,7 +1265,7 @@ MUX_RESULT CQueryClient::Result(UINT32 hQuery, UINT32 iError, QUEUE_INFO *pqiRes
     UNUSED_PARAMETER(hQuery);
     UNUSED_PARAMETER(iError);
     UNUSED_PARAMETER(pqiResultsSet);
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
     return MUX_S_OK;
 }
 

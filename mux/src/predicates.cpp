@@ -21,9 +21,9 @@
 #include "interface.h"
 #include "mathutil.h"
 #include "powers.h"
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #include "levels.h"
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 UTF8 *DCL_CDECL tprintf(__in_z const UTF8 *fmt,...)
 {
@@ -170,9 +170,9 @@ bool can_see(dbref player, dbref thing, bool can_see_loc)
     return (  (  (  can_see_loc
                  || Light(thing))
               && !Dark(thing)
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
               && IsReal(player, thing)
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
               && could_doit(player, thing, A_LVISIBLE))
            || (  mudconf.see_own_dark
               && MyopicExam(player, thing)));
@@ -1261,14 +1261,14 @@ void handle_prog(DESC *d, UTF8 *message)
             {
                 // Use telnet protocol's EOR command to show prompt.
                 //
-                const char aEOR[2] = { NVT_IAC, NVT_EOR };
+                const unsigned char aEOR[2] = { NVT_IAC, NVT_EOR };
                 queue_write_LEN(d, aEOR, sizeof(aEOR));
             }
             else if (OPTION_YES != UsState(d, TELNET_SGA))
             {
                 // Use telnet protocol's GOAHEAD command to show prompt.
                 //
-                const char aGoAhead[2] = { NVT_IAC, NVT_GA };
+                const unsigned char aGoAhead[2] = { NVT_IAC, NVT_GA };
                 queue_write_LEN(d, aGoAhead, sizeof(aGoAhead));
             }
         }
@@ -1547,14 +1547,14 @@ void do_prog
         {
             // Use telnet protocol's EOR command to show prompt.
             //
-            const char aEOR[2] = { NVT_IAC, NVT_EOR };
+            const unsigned char aEOR[2] = { NVT_IAC, NVT_EOR };
             queue_write_LEN(d, aEOR, sizeof(aEOR));
         }
         else if (OPTION_YES != UsState(d, TELNET_SGA))
         {
             // Use telnet protocol's GOAHEAD command to show prompt.
             //
-            const char aGoAhead[2] = { NVT_IAC, NVT_GA };
+            const unsigned char aGoAhead[2] = { NVT_IAC, NVT_GA };
             queue_write_LEN(d, aGoAhead, sizeof(aGoAhead));
         }
     }
@@ -1625,7 +1625,7 @@ void do_restart(dbref executor, dbref caller, dbref enactor, int eval, int key)
     final_modules();
 #endif // TINYMUX_MODULES
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     al_store();
 #endif
     pcache_sync();
@@ -1698,19 +1698,19 @@ void do_backup(dbref executor, dbref caller, dbref enactor, int eval, int key)
     log_name(executor);
     ENDLOG;
 
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     // Invoking _backupflat.sh with an argument prompts the backup script
     // to use it as the flatfile.
     //
     dump_database_internal(DUMP_I_FLAT);
     system((char *)tprintf(T("./_backupflat.sh %s.FLAT 1>&2"), mudconf.indb));
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
     // Invoking _backupflat.sh without an argument prompts the backup script
     // to use dbconvert itself.
     //
     dump_database_internal(DUMP_I_NORMAL);
     system((char *)tprintf(T("./_backupflat.sh 1>&2")));
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
     raw_broadcast(0, T("GAME: Backup finished."));
 }
 #endif // UNIX_PROCESSES
@@ -1996,7 +1996,7 @@ bool get_obj_and_lock(dbref player, const UTF8 *what, dbref *it, ATTR **attr, UT
         return false;
     }
 
-    int anum;
+    unsigned int anum;
     if (what[i] == '/')
     {
         // <obj>/<lock> syntax, use the named lock.
@@ -2124,7 +2124,7 @@ bool bCanSetAttr(dbref executor, dbref target, ATTR *tattr)
     dbref aowner;
     int aflags;
     if (  (tattr->flags & mDeny)
-#ifdef FIRANMUX
+#ifdef HAVE_FIRANMUX
        || Immutable(target)
 #endif
        || (  atr_get_info(target, tattr->number, &aowner, &aflags)
@@ -2331,7 +2331,7 @@ bool nearby(dbref player, dbref thing)
  */
 bool exit_visible(dbref exit, dbref player, int key)
 {
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
     if (!mudstate.bStandAlone)
     {
         int iRealmDirective = DoThingToThingVisibility(player, exit,
@@ -2341,9 +2341,9 @@ bool exit_visible(dbref exit, dbref player, int key)
             return false;
         }
     }
-#endif // WOD_REALMS
+#endif // HAVE_WOD_REALMS
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     if (!mudstate.bStandAlone)
     {
         if (!IsReal(player, exit))
@@ -2351,7 +2351,7 @@ bool exit_visible(dbref exit, dbref player, int key)
             return false;
         }
     }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
     // Exam exit's location
     //
@@ -2379,9 +2379,9 @@ bool exit_visible(dbref exit, dbref player, int key)
 //
 bool exit_displayable(dbref exit, dbref player, int key)
 {
-#if !defined(WOD_REALMS) && !defined(REALITY_LVLS)
+#if !defined(HAVE_WOD_REALMS) && !defined(HAVE_REALITY_LVLS)
     UNUSED_PARAMETER(player);
-#endif // WOD_REALMS
+#endif // HAVE_WOD_REALMS
 
     // Dark exit
     //
@@ -2390,7 +2390,7 @@ bool exit_displayable(dbref exit, dbref player, int key)
         return false;
     }
 
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
     if (!mudstate.bStandAlone)
     {
         int iRealmDirective = DoThingToThingVisibility(player, exit,
@@ -2400,9 +2400,9 @@ bool exit_displayable(dbref exit, dbref player, int key)
             return false;
         }
     }
-#endif // WOD_REALMS
+#endif // HAVE_WOD_REALMS
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     if (!mudstate.bStandAlone)
     {
         if (!IsReal(player, exit))
@@ -2410,7 +2410,7 @@ bool exit_displayable(dbref exit, dbref player, int key)
             return false;
         }
     }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
     // Light exit
     //
@@ -2484,7 +2484,7 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
                 *bp = '\0';
                 notify_html(player, buff);
             }
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
             else if (  A_DESC == what
                     && Linewrap(player)
                     && isPlayer(player)
@@ -2496,7 +2496,7 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
                 notify(player, p);
                 free_lbuf(p);
             }
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
             else
             {
                 notify(player, buff);
@@ -2534,11 +2534,11 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
                  AttrTrace(aflags, EV_EVAL|EV_FIGNORE|EV_FCHECK|EV_TOP),
                  args, nargs);
             *bp = '\0';
-#if !defined(FIRANMUX)
+#if !defined(HAVE_FIRANMUX)
             if (*buff)
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
             {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
                 if (aflags & AF_NONAME)
                 {
                     notify_except2_rlevel(loc, player, player, thing, buff);
@@ -2558,13 +2558,13 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
                     notify_except2(loc, player, player, thing,
                         tprintf(T("%s %s"), Moniker(player), buff));
                 }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
             }
             free_lbuf(buff);
         }
         else if (odef)
         {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
             if (ctrl_flags & VERB_NONAME)
             {
                 notify_except2_rlevel(loc, player, player, thing, odef);
@@ -2584,7 +2584,7 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
                 notify_except2(loc, player, player, thing,
                         tprintf(T("%s %s"), Moniker(player), odef));
             }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
         }
         free_lbuf(d);
     } else if (  owhat < 0
@@ -2592,7 +2592,7 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
               && Has_location(player)
               && Good_obj(loc = Location(player)))
     {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         if (ctrl_flags & VERB_NONAME)
         {
             notify_except2_rlevel(loc, player, player, thing, odef);
@@ -2610,7 +2610,7 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
         {
             notify_except2(loc, player, player, thing, tprintf(T("%s %s"), Name(player), odef));
         }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     }
 
     // If we preserved the state of the global registers, restore them.
@@ -2623,12 +2623,12 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
 
     // Do the action attribute.
     //
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     if (  0 < awhat
        && IsReal(thing, player))
 #else
     if (0 < awhat)
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     {
         if (*(act = atr_pget(thing, awhat, &aowner, &aflags)))
         {

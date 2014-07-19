@@ -162,12 +162,12 @@
 
 // Optional WoD Realm descriptions.
 //
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
 #define A_UMBRADESC  145
 #define A_WRAITHDESC 146
 #define A_FAEDESC    147
 #define A_MATRIXDESC 148
-#endif // WOD_REALMS
+#endif // HAVE_WOD_REALMS
 
 #define A_COMJOIN   149
 #define A_COMLEAVE  150
@@ -221,12 +221,12 @@
 
 // 232 - 235 unused
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 #define A_COLOR      236 /* Color of name of object in look commands */
 #define A_ALEAD      237 /* Lead action list */
 #define A_LEAD       238 /* Invoker lead message */
 #define A_OLEAD      239 /* Others lead message */
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 #define A_IDLETMOUT  240 /* Idle message timeout */
 #define A_EXITFORMAT 241
@@ -235,9 +235,9 @@
 #define A_DESCFORMAT 244
 // 245 - 249 unused
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #define A_RLEVEL      250
-#endif
+#endif // HAVE_REALITY_LVLS
 
 // 251 unused
 #define A_VLIST     252

@@ -16,11 +16,11 @@
 #include "mathutil.h"
 #include "powers.h"
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #include "levels.h"
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
 #define NORMAL_REALM  0
 #define UMBRA_REALM   1
 #define SHROUD_REALM  2
@@ -377,7 +377,7 @@ static void LetDescriptionsDefault(dbref thing, int *piDESC, int *piADESC, int R
         }
     }
 }
-#endif
+#endif // HAVE_WOD_REALMS
 
 static void look_exits(dbref player, dbref loc, const UTF8 *exit_name)
 {
@@ -399,11 +399,11 @@ static void look_exits(dbref player, dbref loc, const UTF8 *exit_name)
     bool bFoundAny = false;
     int key = 0;
     int lev;
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     if (Dark(loc) || !IsReal(player, loc))
 #else
     if (Dark(loc))
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     {
         key |= VE_BASE_DARK;
     }
@@ -602,11 +602,11 @@ static void look_contents(dbref player, dbref loc, const UTF8 *contents_name, in
 
     // Check to see if he can see the location.
     //
-#ifdef REALITY_LVLS
-     bool can_see_loc = ( !Dark(loc) && IsReal(player, loc)
+#ifdef HAVE_REALITY_LVLS
+    bool can_see_loc = ( ( !Dark(loc) && IsReal(player, loc) )
 #else
-     bool can_see_loc = (  !Dark(loc)
-#endif // REALITY_LVLS
+    bool can_see_loc = (  !Dark(loc)
+#endif // HAVE_REALITY_LVLS
                        || (mudconf.see_own_dark && Examinable(player, loc)));
 
     dbref aowner;
@@ -624,7 +624,7 @@ static void look_contents(dbref player, dbref loc, const UTF8 *contents_name, in
 
         DOLIST(thing, Contents(loc))
         {
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
             if (  can_see(player, thing, can_see_loc)
                && (REALM_DO_HIDDEN_FROM_YOU != DoThingToThingVisibility(player,
                                                 thing, ACTION_IS_STATIONARY)) )
@@ -684,7 +684,7 @@ static void look_contents(dbref player, dbref loc, const UTF8 *contents_name, in
     //
     DOLIST(thing, Contents(loc))
     {
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
         if (  can_see(player, thing, can_see_loc)
            && (REALM_DO_HIDDEN_FROM_YOU != DoThingToThingVisibility(player, thing, ACTION_IS_STATIONARY)))
 #else
@@ -696,7 +696,7 @@ static void look_contents(dbref player, dbref loc, const UTF8 *contents_name, in
             notify(player, contents_name);
             DOLIST(thing, Contents(loc))
             {
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
                 if (  can_see(player, thing, can_see_loc)
                    && (REALM_DO_HIDDEN_FROM_YOU != DoThingToThingVisibility(player, thing, ACTION_IS_STATIONARY)))
 #else
@@ -1005,7 +1005,7 @@ static bool show_a_desc(dbref player, dbref loc)
 {
     int iDescDefault = A_DESC;
     int iADescDefault = A_ADESC;
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
     int iRealmDirective = DoThingToThingVisibility(player, loc, ACTION_IS_STATIONARY);
     if (REALM_DO_HIDDEN_FROM_YOU == iRealmDirective)
     {
@@ -1032,7 +1032,7 @@ static bool show_a_desc(dbref player, dbref loc)
 
         int   aflags2 = 0;
         int   iDescUsed = iDescDefault;
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         UTF8 *tbuf1 = get_rlevel_desc(player, loc, &iDescUsed);
 #else
         dbref aowner2;
@@ -1061,13 +1061,13 @@ static bool show_a_desc(dbref player, dbref loc)
         *tPtr = '\0';
 
         notify(player, FormatOutput);
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         did_it_rlevel(player, loc, 0, NULL, A_ODESC, NULL, iADescDefault, 0,
             NULL, 0);
 #else
         did_it(player, loc, 0, NULL, A_ODESC, NULL, iADescDefault, 0,
             NULL, 0);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
         free_lbuf(tbuf1);
         free_lbuf(attrname);
@@ -1087,13 +1087,13 @@ static bool show_a_desc(dbref player, dbref loc)
             got = atr_pget(loc, A_HTDESC, &aowner1, &aflags1);
             if (*got)
             {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
                 did_it_rlevel(player, loc, A_HTDESC, NULL, A_ODESC, NULL,
                     A_ADESC, 0, NULL, 0);
 #else
                 did_it(player, loc, A_HTDESC, NULL, A_ODESC, NULL, A_ADESC,
                     0, NULL, 0);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
                 ret = true;
             }
             else
@@ -1106,13 +1106,13 @@ static bool show_a_desc(dbref player, dbref loc)
                     {
                         raw_notify_newline(player);
                     }
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
                     did_it_rlevel(player, loc, iDescDefault, NULL, A_ODESC,
                         NULL, iADescDefault, 0, NULL, 0);
 #else
                     did_it(player, loc, iDescDefault, NULL, A_ODESC, NULL,
                         iADescDefault, 0, NULL, 0);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
                     if (indent)
                     {
                         raw_notify_newline(player);
@@ -1127,13 +1127,13 @@ static bool show_a_desc(dbref player, dbref loc)
             {
                 raw_notify_newline(player);
             }
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
             did_it_rlevel(player, loc, iDescDefault, NULL, A_ODESC, NULL,
                 iADescDefault, 0, NULL, 0);
 #else
             did_it(player, loc, iDescDefault, NULL, A_ODESC, NULL,
                 iADescDefault, 0, NULL, 0);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
             if (indent)
             {
                 raw_notify_newline(player);
@@ -1155,7 +1155,7 @@ static void look_simple(dbref player, dbref thing, bool obey_terse)
         return;
     }
 
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
     int iRealmDirective = DoThingToThingVisibility(player, thing, ACTION_IS_STATIONARY);
     if (REALM_DO_HIDDEN_FROM_YOU == iRealmDirective)
     {
@@ -1173,17 +1173,17 @@ static void look_simple(dbref player, dbref thing, bool obey_terse)
         notify(player, buff);
         free_lbuf(buff);
     }
-    int iDescDefault = A_DESC;
     int iADescDefault = A_ADESC;
 
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
+    int iDescDefault = A_DESC;
     LetDescriptionsDefault(thing, &iDescDefault, &iADescDefault, iRealmDirective);
 #endif
 
     if (!show_a_desc(player, thing))
     {
         notify(player, T("You see nothing special."));
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         did_it_rlevel(player, thing, 0, NULL, A_ODESC, NULL, iADescDefault,
             0, NULL, 0);
 #else
@@ -1191,7 +1191,7 @@ static void look_simple(dbref player, dbref thing, bool obey_terse)
             (obey_terse && Terse(player)) ? 0 : iDescDefault,
             NULL, A_ODESC, NULL, iADescDefault,
             0, NULL, 0);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     }
 
     if (  !mudconf.quiet_look
@@ -1211,26 +1211,26 @@ static void show_desc(dbref player, dbref loc, int key)
     if (  (key & LK_OBEYTERSE)
        && Terse(player))
     {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         did_it_rlevel(player, loc, 0, NULL, A_ODESC, NULL, A_ADESC, 0,
             NULL, 0);
 #else
         did_it(player, loc, 0, NULL, A_ODESC, NULL, A_ADESC, 0,
             NULL, 0);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     }
     else if (  !isRoom(loc)
             && (key & LK_IDESC))
     {
         if (*(got = atr_pget(loc, A_IDESC, &aowner, &aflags)))
         {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
            did_it_rlevel(player, loc, A_IDESC, NULL, A_ODESC, NULL, A_ADESC,
                0, NULL, 0);
 #else
             did_it(player, loc, A_IDESC, NULL, A_ODESC, NULL, A_ADESC, 0,
                 NULL, 0);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
         }
         else
         {
@@ -1459,10 +1459,10 @@ void do_look(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
     //
     if (Good_obj(thing))
     {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         if (!IsReal(executor, thing))
             return;
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
         switch (Typeof(thing))
         {
         case TYPE_ROOM:
@@ -1531,14 +1531,14 @@ static void debug_examine(dbref player, dbref thing)
     buf = powers_list(player, thing);
     notify(player, tprintf(T("Powers  = %s"), buf));
     free_lbuf(buf);
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     buf = rxlevel_description(player, thing);
     notify(player, tprintf(T("RxLevel = %s"), buf));
     free_lbuf(buf);
     buf = txlevel_description(player, thing);
     notify(player, tprintf(T("TxLevel = %s"), buf));
     free_lbuf(buf);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     buf = atr_get("debug_examine.1530", thing, A_LOCK, &aowner, &aflags);
     pBoolExp = parse_boolexp(player, buf, true);
     free_lbuf(buf);
@@ -1724,7 +1724,7 @@ void do_examine(dbref executor, dbref caller, dbref enactor, int eval, int key, 
         }
     }
 
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
     if (REALM_DO_HIDDEN_FROM_YOU == DoThingToThingVisibility(executor, thing, ACTION_IS_STATIONARY))
     {
         notify(executor, NOMATCH_MESSAGE);
@@ -1845,7 +1845,7 @@ void do_examine(dbref executor, dbref caller, dbref enactor, int eval, int key, 
         buf2 = powers_list(executor, thing);
         notify(executor, tprintf(T("Powers: %s"), buf2));
         free_lbuf(buf2);
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         // Show Rx and Tx levels.
         //
         buf2 = rxlevel_description(executor, thing);
@@ -1854,7 +1854,7 @@ void do_examine(dbref executor, dbref caller, dbref enactor, int eval, int key, 
         buf2 = txlevel_description(executor, thing);
         notify(executor, tprintf(T("TxLevel: %s"), buf2));
         free_mbuf(buf2);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     }
     if (!(key & EXAM_BRIEF))
     {
@@ -2748,9 +2748,9 @@ void do_decomp
     {
         decompile_flags(executor, thing, pShortAndStrippedName);
         decompile_powers(executor, thing, pShortAndStrippedName);
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         decompile_rlevels(executor, thing, pShortAndStrippedName);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     }
 
     // If the object has a parent, report it.

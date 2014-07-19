@@ -22,9 +22,9 @@
 #include "muxcli.h"
 #include "pcre.h"
 #include "powers.h"
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #include "levels.h"
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 #if defined(INLINESQL)
 #include <mysql.h>
@@ -620,7 +620,7 @@ void notify_check(dbref target, dbref sender, const mux_string &msg, int key)
         return;
     }
 
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
     if ((key & MSG_OOC) == 0)
     {
         if ((key & MSG_SAYPOSE) != 0)
@@ -638,7 +638,7 @@ void notify_check(dbref target, dbref sender, const mux_string &msg, int key)
             }
         }
     }
-#endif // WOD_REALMS
+#endif // HAVE_WOD_REALMS
 
     // Enforce a recursion limit
     //
@@ -1302,11 +1302,11 @@ void do_shutdown
 
         // Close the attribute text db and dump the header db.
         //
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
         // Save cached modified attribute list
         //
         al_store();
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
         pcache_sync();
         SYNC;
@@ -1591,11 +1591,11 @@ static void dump_database(void)
     }
 #endif // TINYMUX_MODULES
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     // Save cached modified attribute list
     //
     al_store();
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
     pcache_sync();
 
@@ -1695,11 +1695,11 @@ void fork_and_dump(int key)
     }
 #endif // TINYMUX_MODULES
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     // Save cached modified attribute list
     //
     al_store();
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
     pcache_sync();
     SYNC;
@@ -1817,11 +1817,11 @@ void fork_and_dump(int key)
 #define LOAD_GAME_CANNOT_OPEN     (-2)
 #define LOAD_GAME_LOADING_PROBLEM (-3)
 
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
 static int load_game(void)
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
 static int load_game(int ccPageFile)
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 {
     FILE *f = NULL;
     UTF8 infile[SIZEOF_PATHNAME+8];
@@ -1914,7 +1914,7 @@ static int load_game(int ccPageFile)
     }
     f = 0;
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     if (db_flags & V_DATABASE)
     {
         // It loaded an output file.
@@ -1937,7 +1937,7 @@ static int load_game(int ccPageFile)
             ENDLOG;
         }
     }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 
     if (mudconf.have_comsys)
     {
@@ -1992,14 +1992,14 @@ bool list_check
     int limit = mudstate.db_top;
     while (NOTHING != thing)
     {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         if ((thing != player)
            && (!(No_Command(thing)))
            && IsReal(thing, player))
 #else
         if (  thing != player
            && !No_Command(thing))
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
         {
             bMatch |= atr_match(thing, player, type, str, raw_str, check_parent);
         }
@@ -2182,7 +2182,7 @@ static void process_preload(void)
     free_lbuf(tstr);
 }
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
 
 /*
  * ---------------------------------------------------------------------------
@@ -2373,21 +2373,21 @@ static void dbconvert(void)
         Log.WriteString(T("Output: "));
         info(F_MUX, db_flags, db_ver);
         setvbuf(fpOut, NULL, _IOFBF, 16384);
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
         // Save cached modified attribute list
         //
         al_store();
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
         db_write(fpOut, F_MUX, db_ver | db_flags);
         fclose(fpOut);
     }
     CLOSE;
-#ifdef SELFCHECK
+#ifdef HAVE_SELFCHECK
     db_free();
 #endif
     exit(0);
 }
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 static void write_pidfile(const UTF8 *pFilename)
 {
@@ -2502,14 +2502,14 @@ static CLI_OptionEntry OptionTable[] =
     { "s", CLI_NONE,     CLI_DO_MINIMAL     },
     { "v", CLI_NONE,     CLI_DO_VERSION     },
     { "h", CLI_NONE,     CLI_DO_USAGE       },
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     { "i", CLI_REQUIRED, CLI_DO_INFILE      },
     { "o", CLI_REQUIRED, CLI_DO_OUTFILE     },
     { "k", CLI_NONE,     CLI_DO_CHECK       },
     { "l", CLI_NONE,     CLI_DO_LOAD        },
     { "u", CLI_NONE,     CLI_DO_UNLOAD      },
     { "d", CLI_REQUIRED, CLI_DO_BASENAME    },
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
     { "p", CLI_REQUIRED, CLI_DO_PID_FILE    },
     { "e", CLI_REQUIRED, CLI_DO_ERRORPATH   }
 };
@@ -2545,7 +2545,7 @@ static void CLI_CallBack(CLI_OptionEntry *p, const char *pValue)
             pErrorBasename = (UTF8 *)pValue;
             break;
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
         case CLI_DO_INFILE:
             mudstate.bStandAlone = true;
             standalone_infile = (UTF8 *)pValue;
@@ -3194,7 +3194,7 @@ int DCL_CDECL main(int argc, char *argv[])
     //
     CLI_Process(argc, argv, OptionTable, NUM_CLI_OPTIONS, CLI_CallBack);
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     if (mudstate.bStandAlone)
     {
         int n = 0;
@@ -3225,7 +3225,7 @@ int DCL_CDECL main(int argc, char *argv[])
         }
     }
     else
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
     if (bVersion)
     {
@@ -3345,9 +3345,9 @@ int DCL_CDECL main(int argc, char *argv[])
     // much until they get a notification that the part of loading they depend
     // on is complete.
     //
-#if defined(HAVE_WORKING_FORK) && defined(STUB_SLAVE)
+#if defined(HAVE_WORKING_FORK) && defined(HAVE_STUB_SLAVE)
     boot_stubslave(GOD, GOD, GOD, 0);
-#endif // HAVE_WORKING_FORK && STUB_SLAVE
+#endif // HAVE_WORKING_FORK && HAVE_STUB_SLAVE
     init_modules();
 #endif // TINYMUX_MODULES
 
@@ -3425,9 +3425,9 @@ int DCL_CDECL main(int argc, char *argv[])
     fcache_init();
     helpindex_init();
 
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     db_free();
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
     if (bMinDB)
     {
         RemoveFile(mudconf.game_dir);
@@ -3443,7 +3443,7 @@ int DCL_CDECL main(int argc, char *argv[])
         ENDLOG;
         return 2;
     }
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
     mudstate.record_players = 0;
 
@@ -3453,27 +3453,27 @@ int DCL_CDECL main(int argc, char *argv[])
     }
     else
     {
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
         int ccInFile = load_game();
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
         int ccInFile = load_game(ccPageFile);
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
         if (LOAD_GAME_NO_INPUT_DB == ccInFile)
         {
             // The input file didn't exist.
             //
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
             if (HF_OPEN_STATUS_NEW == ccPageFile)
             {
                 // Since the .db file didn't exist, and the .pag/.dir files
                 // were newly created, just create a minimal DB.
                 //
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
                 db_make_minimal();
                 ccInFile = LOAD_GAME_SUCCESS;
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
             }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
         }
         if (ccInFile != LOAD_GAME_SUCCESS)
         {
@@ -3583,7 +3583,7 @@ int DCL_CDECL main(int argc, char *argv[])
 #if defined(HAVE_WORKING_FORK)
     CleanUpSlaveSocket();
     CleanUpSlaveProcess();
-#ifdef STUB_SLAVE
+#ifdef HAVE_STUB_SLAVE
     CleanUpStubSlaveSocket();
     WaitOnStubSlaveProcess();
 #endif
@@ -3592,7 +3592,7 @@ int DCL_CDECL main(int argc, char *argv[])
     shutdown_slave();
 #endif
 
-#ifdef SELFCHECK
+#ifdef HAVE_SELFCHECK
     // Go ahead and explicitly free the memory for these things so
     // that it's easy to spot unintentional memory leaks.
     //

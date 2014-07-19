@@ -8,7 +8,7 @@
 #ifndef SVDHASH_H
 #define SVDHASH_H
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
 //
 // These are from 'svdhash.cpp'.
 //
@@ -21,7 +21,7 @@ extern int cs_dbreads;      // total read-throughs
 extern int cs_dbwrites;     // total write-throughs
 extern int cs_rhits;        // total reads filled from cache
 extern int cs_whits;        // total writes to dirty cache
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 
 //#define HP_PROTECTION
 
@@ -113,10 +113,10 @@ typedef struct tagHPHeapNode
 
 #define HP_MIN_HEAP_ALLOC HP_SIZEOF_HEAPNODE
 
-#if !defined(MEMORY_BASED)
+#if !defined(HAVE_MEMORY_BASED)
 typedef unsigned long HF_FILEOFFSET, *HF_PFILEOFFSET;
 #define HF_SIZEOF_FILEOFFSET sizeof(HF_FILEOFFSET)
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 class CHashPage
 {
@@ -129,7 +129,7 @@ private:
     unsigned char  *m_pHeapEnd;
     HP_PTRAILER     m_pTrailer;
 
-    int             m_iDir;
+    unsigned int    m_iDir;
     int             m_nProbesLeft;
     UINT32          m_nDirEmptyTrigger;
 
@@ -167,10 +167,10 @@ public:
     void HeapFree(UINT32 iDir);
     void HeapUpdate(UINT32 iDir, HP_HEAPLENGTH nRecord, void *pRecord);
 
-#if !defined(MEMORY_BASED)
+#if !defined(HAVE_MEMORY_BASED)
     bool WritePage(HANDLE hFile, HF_FILEOFFSET oWhere);
     bool ReadPage(HANDLE hFile, HF_FILEOFFSET oWhere);
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
     UINT32 GetDepth(void);
     bool Split(CHashPage &hp0, CHashPage &hp1);
@@ -182,7 +182,7 @@ public:
 #define HF_FIND_FIRST  HP_DIR_EMPTY
 #define HF_FIND_END    HP_DIR_EMPTY
 
-#if !defined(MEMORY_BASED)
+#if !defined(HAVE_MEMORY_BASED)
 
 #define HF_CACHE_EMPTY       0
 #define HF_CACHE_CLEAN       1
@@ -248,7 +248,7 @@ public:
     ~CHashFile(void);
 };
 
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 typedef CHashPage *pCHashPage;
 

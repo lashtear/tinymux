@@ -15,9 +15,9 @@
 #include "interface.h"
 #include "mathutil.h"
 #include "powers.h"
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #include "levels.h"
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 /* ---------------------------------------------------------------------------
  * process_leave_loc: Generate messages and actions resulting from leaving a
@@ -52,11 +52,11 @@ static void process_leave_loc(dbref thing, dbref dest, dbref cause, bool canhear
     // EXCEPT if we were called with the HUSH_LEAVE key.
     //
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     bool quiet = (  (hush & HUSH_LEAVE) || !IsReal(loc, thing)
 #else
     bool quiet = (  (hush & HUSH_LEAVE)
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
                  || (  !Wizard(loc)
                     && (  Dark(thing)
                        || Dark(loc))
@@ -89,17 +89,17 @@ static void process_leave_loc(dbref thing, dbref dest, dbref cause, bool canhear
         if (  (  !Dark(thing)
               && !Dark(loc))
            || (  canhear
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
               && !Dark(thing)))
 #else
               && !(Wizard(thing) && Dark(thing))))
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
         {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
             notify_except2_rlevel(loc, thing, thing, cause,
 #else
             notify_except2(loc, thing, thing, cause,
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
                        tprintf(T("%s has left."), Moniker(thing)));
         }
     }
@@ -130,28 +130,28 @@ static void process_enter_loc(dbref thing, dbref src, dbref cause, bool canhear,
     //
     // EXCEPT if we were called with the HUSH_ENTER key.
     //
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     bool quiet = (  (hush & HUSH_ENTER) || !IsReal(loc, thing)
 #else
     bool quiet = (  (hush & HUSH_ENTER)
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
                  || (  !Wizard(loc)
                     && (  Dark(thing)
                        || Dark(loc))
                     && (  !canhear
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
                        || Dark(thing))));
 #else
                        || (  Wizard(thing)
                           && Dark(thing)))));
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
     int oattr = quiet ? 0 : A_OENTER;
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     int aattr = (hush & HUSH_ENTER) ? 0 : A_AENTER;
 #else
     int aattr = quiet ? 0 : A_AENTER;
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     int pattr = (!mudconf.terse_movemsg && Terse(thing)) ? 0 : A_ENTER;
 
     did_it(thing, loc, pattr, NULL, oattr, NULL, aattr, 0, NULL, 0);
@@ -174,17 +174,17 @@ static void process_enter_loc(dbref thing, dbref src, dbref cause, bool canhear,
        && canhear
        && !Blind(thing)
        && !Blind(loc)
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
        && !Dark(thing))
 #else
        && !(Dark(thing) && Wizard(thing)))
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         notify_except2_rlevel(loc, thing, thing, cause,
 #else
         notify_except2(loc, thing, thing, cause,
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
                    tprintf(T("%s has arrived."), Moniker(thing)));
     }
 }
@@ -351,9 +351,9 @@ void move_via_generic(dbref thing, dbref dest, dbref cause, int hush)
     move_object(thing, dest);
     did_it(thing, thing, A_MOVE, NULL, A_OMOVE, NULL, A_AMOVE, 0, NULL, 0);
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     did_it(thing, thing, A_LEAD, NULL, A_OLEAD, NULL, A_ALEAD, 0, NULL, 0);
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
     process_enter_loc(thing, src, cause, canhear, hush);
 }
@@ -371,7 +371,7 @@ static void move_via_exit(dbref thing, dbref dest, dbref cause, dbref exit, int 
     dbref src = Location(thing);
     bool canhear = Hearer(thing);
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     bool quiet = Dark(thing) || (hush & HUSH_EXIT);
     int aattr = (hush & HUSH_EXIT) ? 0 : A_ASUCC;
 #else
@@ -379,7 +379,7 @@ static void move_via_exit(dbref thing, dbref dest, dbref cause, dbref exit, int 
     bool quiet = (  (Wizard(thing) && Dark(thing))
                  || (hush & HUSH_EXIT));
     int aattr = quiet ? 0 : A_ASUCC;
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
     int oattr = quiet ? 0 : A_OSUCC;
     int pattr = (!mudconf.terse_movemsg && Terse(thing)) ? 0 : A_SUCC;
@@ -387,11 +387,11 @@ static void move_via_exit(dbref thing, dbref dest, dbref cause, dbref exit, int 
     process_leave_loc(thing, dest, cause, canhear, hush);
     move_object(thing, dest);
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     aattr = (hush & HUSH_EXIT) ? 0 : A_ADROP;
 #else
     aattr = quiet ? 0 : A_ADROP;
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
     oattr = quiet ? 0 : A_ODROP;
     pattr = (!mudconf.terse_movemsg && Terse(thing)) ? 0 : A_DROP;
@@ -399,7 +399,7 @@ static void move_via_exit(dbref thing, dbref dest, dbref cause, dbref exit, int 
 
     did_it(thing, thing, A_MOVE, NULL, A_OMOVE, NULL, A_AMOVE, 0, NULL, 0);
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     did_it(thing, thing, A_LEAD, NULL, A_OLEAD, NULL, A_ALEAD, 0, NULL, 0);
 #endif
 
@@ -481,10 +481,10 @@ bool move_via_teleport(dbref thing, dbref dest, dbref cause, int hush)
     did_it(thing, thing, A_MOVE, NULL, A_OMOVE, NULL, A_AMOVE,
         0, NULL, 0);
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     did_it(thing, thing, A_LEAD, NULL, A_OLEAD, NULL, A_ALEAD,
            0, NULL, 0);
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
     process_enter_loc(thing, src, NOTHING, canhear, hush);
     divest_object(thing);
@@ -535,7 +535,7 @@ void move_exit(dbref player, dbref exit, bool divest, const UTF8 *failmsg, int h
         loc = Home(player);
     }
 
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
     if (Good_obj(loc) && (REALM_DO_HIDDEN_FROM_YOU != DoThingToThingVisibility(player, exit, ACTION_IS_MOVING)))
     {
         if (isShroud(player))
@@ -582,13 +582,13 @@ void move_exit(dbref player, dbref exit, bool divest, const UTF8 *failmsg, int h
         }
     }
 #else
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     if (Immobile(player))
     {
         notify(player, mudconf.immobile_msg);
         return;
     }
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     if (Good_obj(loc) && could_doit(player, exit, A_LOCK))
     {
         bDoit = true;
@@ -624,11 +624,11 @@ void move_exit(dbref player, dbref exit, bool divest, const UTF8 *failmsg, int h
         if ((Wizard(player) && Dark(player)) || (hush & HUSH_EXIT))
         {
             oattr = 0;
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
             aattr = (hush & HUSH_EXIT) ? 0 : A_AFAIL;
 #else
             aattr = 0;
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
         }
         else
         {
@@ -666,13 +666,13 @@ void do_move(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
             return;
         }
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
         if (Immobile(executor))
         {
             notify(executor, mudconf.immobile_msg);
             return;
         }
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
         if (  (loc = Location(executor)) != NOTHING
            && !Dark(executor)
@@ -701,11 +701,11 @@ void do_move(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
     //
     init_match_check_keys(executor, direction, TYPE_EXIT);
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     match_exit_with_parents();
 #else
     match_exit();
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
     exit = match_result();
     switch (exit)

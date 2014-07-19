@@ -8,13 +8,13 @@
 #ifndef __DB_H
 #define __DB_H
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
 #define SYNC                    cache_sync()
 #define CLOSE                   cache_close()
-#else // !MEMORY_BASED
+#else // !HAVE_MEMORY_BASED
 #define SYNC
 #define CLOSE
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 
 #include "attrcache.h"
 #include "flags.h"
@@ -35,7 +35,7 @@ struct attr
     int flags;
 };
 
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
 typedef struct atrlist ATRLIST;
 struct atrlist
 {
@@ -43,7 +43,7 @@ struct atrlist
     int size;       /* Length of attribute */
     int number;     /* Attribute number. */
 };
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 UTF8 *MakeCanonicalAttributeName(const UTF8 *pName, size_t *pnName, bool *pbValid);
 UTF8 *MakeCanonicalAttributeCommand(const UTF8 *pName, size_t *pnName, bool *pbValid);
@@ -165,13 +165,13 @@ struct object
     UTF8    *purename;
     UTF8    *moniker;
 
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     ATRLIST *pALHead;   /* The head of the attribute list.       */
     int      nALAlloc;  /* Size of the allocated attribute list. */
     int      nALUsed;   /* Used portion of the attribute list.   */
 #else
     UTF8    *name;
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 };
 
 const int INITIAL_ATRLIST_SIZE = 10;

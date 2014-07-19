@@ -653,16 +653,7 @@ CPPFLAGS
 LDFLAGS
 CXXFLAGS
 CXX
-SELFCHECK
-FIRANLIBS
-FIRANMUX
 STUBSLAVE_TARGET
-STUB_SLAVE
-MEMORY_BASED
-WOD_REALMS
-REALITY_OBJ
-REALITY_SRC
-REALITY_LVLS
 target_alias
 host_alias
 build_alias
@@ -1337,7 +1328,7 @@ Optional Features:
   --disable-option-checking  ignore unrecognized --enable/--with options
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-realitylvls    enable Reality Levels (default is NO)
+  --enable-realitylvls    enable Reality Levels (default is YES)
   --enable-wodrealms      enable WOD Realms (default is NO)
   --enable-memorybased    enable Memory-Based Database (default is NO)
   --enable-stubslave      enable Stub Slave (default is NO)
@@ -2568,24 +2559,21 @@ if test "${enable_realitylvls+set}" = set; then :
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     else
-      REALITY_LVLS="-DREALITY_LVLS"
-      LIBS="-lstdc++"
-      REALITY_SRC="levels.cpp"
-      REALITY_OBJ="levels.o"
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_REALITY_LVLS 1" >>confdefs.h
+
     fi
 
 else
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+    $as_echo "#define HAVE_REALITY_LVLS 1" >>confdefs.h
+
 
 fi
-
-
-
-
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable WOD Realms" >&5
@@ -2600,6 +2588,9 @@ $as_echo "no" >&6; }
       WOD_REALMS="-DWOD_REALMS"
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_WOD_REALMS 1" >>confdefs.h
+
     fi
 
 else
@@ -2608,7 +2599,6 @@ else
 $as_echo "no" >&6; }
 
 fi
-
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable Memory-Based Database" >&5
@@ -2620,9 +2610,11 @@ if test "${enable_memorybased+set}" = set; then :
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     else
-      MEMORY_BASED="-DMEMORY_BASED"
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_MEMORY_BASED 1" >>confdefs.h
+
     fi
 
 else
@@ -2631,7 +2623,6 @@ else
 $as_echo "no" >&6; }
 
 fi
-
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable Stub Slave" >&5
@@ -2643,10 +2634,12 @@ if test "${enable_stubslave+set}" = set; then :
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     else
-      STUB_SLAVE="-DSTUB_SLAVE"
-      STUBSLAVE_TARGET="stubslave"
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_STUB_SLAVE 1" >>confdefs.h
+
+      STUBSLAVE_TARGET="stubslave"
     fi
 
 else
@@ -2655,7 +2648,6 @@ else
 $as_echo "no" >&6; }
 
 fi
-
 
 
 
@@ -2668,10 +2660,11 @@ if test "${enable_firanmux+set}" = set; then :
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     else
-      FIRANMUX="-DFIRANMUX"
-      FIRANLIBS=""
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_FIRANMUX 1" >>confdefs.h
+
     fi
 
 else
@@ -2680,8 +2673,6 @@ else
 $as_echo "no" >&6; }
 
 fi
-
-
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to perform expensive self-checking" >&5
@@ -2693,9 +2684,11 @@ if test "${enable_selfcheck+set}" = set; then :
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     else
-      SELFCHECK="-DSELFCHECK"
       { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_SELFCHECK 1" >>confdefs.h
+
     fi
 
 else
@@ -2704,7 +2697,6 @@ else
 $as_echo "no" >&6; }
 
 fi
-
 
 
 # Checks for programs.

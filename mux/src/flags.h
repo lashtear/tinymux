@@ -89,10 +89,12 @@
 
 // Third word of flags
 //
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
-#if defined(FIRANMUX)
-#error "FIRANMUX is incompatible with both WOD_REALMS and REALITY_LVLS"
-#endif
+#if defined(HAVE_WOD_REALMS) || defined(HAVE_REALITY_LVLS)
+#if defined(HAVE_FIRANMUX)
+#error "HAVE_FIRANMUX is incompatible with both HAVE_WOD_REALMS and HAVE_REALITY_LVLS"
+#endif // HAVE_FIRANMUX
+#endif // HAVE_WOD_REALMS || HAVE_REALITY_LVLS
+#if defined(HAVE_WOD_REALMS)
 #define OBF          0x00000001      // Obfuscate Flag
 #define HSS          0x00000002      // Auspex/Heightened Senses Flag
 #define UMBRA        0x00000004      // Umbra, UMBRADESC
@@ -105,7 +107,7 @@
 #define PEERING      0x00000200      // Means the a looker is seeing a
                                      // different realm than they are in.
 #endif // WOD_REALMS
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 #define LINEWRAP     0x00000001      // Player linewraps.
 #define IMMOBILE     0x00000002      // Player immobile.
 #define QUELL        0x00000004      // Temporarily discard wizardry.
@@ -113,7 +115,7 @@
 #define REMOTEECHO   0x00000010      // Adds remote echo!
 #define RESTRICTED   0x00000020      // Player uses restricted commandset.
 #define PARENT       0x00000040      // Object is an official parent obj.
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 #define SITEMON      0x00000400      // Sitemonitor Flag
 #define CMDCHECK     0x00000800      // Has @icmd set
@@ -134,10 +136,10 @@
  */
 typedef struct flag_bit_entry
 {
-    int  flagvalue;         // Which bit in the object is the flag.
-    UTF8 flaglett;          // Flag letter for listing.
-    int  flagflag;          // Ctrl flags for this flag.
-    int  listperm;          // Who sees this flag when set.
+    unsigned int flagvalue;         // Which bit in the object is the flag.
+    UTF8         flaglett;          // Flag letter for listing.
+    int          flagflag;          // Ctrl flags for this flag.
+    int           listperm;          // Who sees this flag when set.
     bool (*handler)(dbref target, dbref player, FLAG flag, int fflags,
         bool reset);         // Handler for setting/clearing this flag.
 } FLAGBITENT;
@@ -242,10 +244,10 @@ UTF8 *MakeCanonicalFlagName
 /* Marked(x)            - Check marked flag on X */
 /* See_attr(P,X.A,O,F)  - Can P see text attr A on X if attr has owner O */
 /* KeepAlive(x)         - Does the user want keepalives? */
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 /* Linewrap(x)          - Is X set Linewrap? */
 /* Restricted(x)        - Is X restricted to the restricted commandset? */
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 #define Typeof(x)           (Flags(x) & TYPE_MASK)
 #define God(x)              ((x) == GOD)
@@ -269,7 +271,7 @@ UTF8 *MakeCanonicalFlagName
 #define Good_owner(x)       (Good_obj(x) && OwnsOthers(x))
 
 #define Staff(x)            (Wizard(x) || Royalty(x) || ((Flags2(x) & STAFF) != 0))
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 #define Royalty(x)          (  (  (Flags(x) & ROYALTY) \
                                && (Flags3(x) & QUELL) == 0 \
                                ) \
@@ -284,14 +286,14 @@ UTF8 *MakeCanonicalFlagName
                                && Inherits(x) \
                                ) \
                             )
-#else // FIRANMUX
+#else // HAVE_FIRANMUX
 #define Royalty(x)          (  (Flags(x) & ROYALTY) \
                             || (  (Flags(Owner(x)) & ROYALTY) \
                                && Inherits(x) \
                                ) \
                             )
 #define RealRoyalty(x)      (Royalty(x))
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 #define WizRoy(x)           (Royalty(x) || Wizard(x))
 #define RealWizRoy(x)       (RealRoyalty(x) || RealWizard(x))
 #define Head(x)             ((Flags2(x) & HEAD_FLAG) != 0)
@@ -307,7 +309,7 @@ UTF8 *MakeCanonicalFlagName
 #define Transparent(x)      ((Flags(x) & SEETHRU) != 0)
 #define Link_ok(x)          (((Flags(x) & LINK_OK) != 0) && Has_contents(x))
 #define Open_ok(x)          (((Flags2(x) & OPEN_OK) != 0) && Has_exits(x))
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 #define Wizard(x)           (  (Flags3(x) & QUELL) == 0 \
                             && (  (Flags(x) & WIZARD) \
                                || (  (Flags(Owner(x)) & WIZARD) \
@@ -322,7 +324,7 @@ UTF8 *MakeCanonicalFlagName
                                ) \
                             )
 #define Dark(x)             ((Flags(x) & DARK) != 0)
-#else // FIRANMUX
+#else // HAVE_FIRANMUX
 #define Wizard(x)           (  (Flags(x) & WIZARD) \
                             || (  (Flags(Owner(x)) & WIZARD) \
                                && Inherits(x) \
@@ -331,7 +333,7 @@ UTF8 *MakeCanonicalFlagName
 #define RealWizard(x)       (Wizard(x))
 #define Dark(x)             (((Flags(x) & DARK) != 0) && (Wizard(x) || \
                             !(isPlayer(x) || (Puppet(x) && Has_contents(x)))))
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 #define Jump_ok(x)          (((Flags(x) & JUMP_OK) != 0) && Has_contents(x))
 #define Sticky(x)           ((Flags(x) & STICKY) != 0)
 #define Destroy_ok(x)       ((Flags(x) & DESTROY_OK) != 0)
@@ -388,7 +390,7 @@ UTF8 *MakeCanonicalFlagName
 #define c_Connected(x)      s_Flags((x), FLAG_WORD2, Flags2(x) & ~CONNECTED)
 #define SiteMon(x)          ((Flags3(x) & SITEMON) != 0)
 #define CmdCheck(x)         ((Flags3(x) & CMDCHECK) != 0)
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS)
 #define isObfuscate(x)        ((Flags3(x) & OBF) != 0)
 #define isHeightenedSenses(x) ((Flags3(x) & HSS) != 0)
 #define isUmbra(x)            ((Flags3(x) & UMBRA) != 0)
@@ -399,7 +401,7 @@ UTF8 *MakeCanonicalFlagName
 #define isFae(x)              ((Flags3(x) & FAE) != 0)
 #define isChimera(x)          ((Flags3(x) & CHIMERA) != 0)
 #define isPeering(x)          ((Flags3(x) & PEERING) != 0)
-#endif // WOD_REALMS
+#endif // HAVE_WOD_REALMS
 
 
 #define Parentable(p,x)     (Controls(p,x) || \
@@ -448,10 +450,10 @@ UTF8 *MakeCanonicalFlagName
 #define Unicode(x)          ((Flags3(x) & MUX_UNICODE) != 0)
 #define s_Unicode(x)        s_Flags((x), FLAG_WORD3, Flags3(x) | MUX_UNICODE)
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 #define Linewrap(x)   ((Flags3(x) & LINEWRAP) != 0)
 #define Immobile(x)   ((Flags3(x) & IMMOBILE) != 0)
 #define Restricted(x) ((Flags3(x) & RESTRICTED) != 0)
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 #endif // !__FLAGS_H

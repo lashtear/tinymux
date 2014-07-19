@@ -15,7 +15,7 @@
 #include "interface.h"
 #include "mathutil.h"
 #include "powers.h"
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #include "levels.h"
 #endif
 
@@ -219,7 +219,7 @@ void do_say(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8
         {
             notify_saypose(executor, tprintf(T("%s %s \xE2\x80\x9C%s\xE2\x80\x9D"),
                 Moniker(executor), saystring, message));
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
             notify_except_rlevel(loc, executor, executor, tprintf(T("%s %s \xE2\x80\x9C%s\xE2\x80\x9D"), Moniker(executor), saystring, message), MSG_SAYPOSE);
 #else
             notify_except(loc, executor, executor, tprintf(T("%s %s \xE2\x80\x9C%s\xE2\x80\x9D"), Moniker(executor), saystring, message), MSG_SAYPOSE);
@@ -229,7 +229,7 @@ void do_say(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8
         else
         {
             notify_saypose(executor, tprintf(T("You say, \xE2\x80\x9C%s\xE2\x80\x9D"), message));
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
             notify_except_rlevel(loc, executor, executor, tprintf(T("%s says, \xE2\x80\x9C%s\xE2\x80\x9D"), Moniker(executor), message), MSG_SAYPOSE);
 #else
             notify_except(loc, executor, executor, tprintf(T("%s says, \xE2\x80\x9C%s\xE2\x80\x9D"), Moniker(executor), message), MSG_SAYPOSE);
@@ -238,7 +238,7 @@ void do_say(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8
         break;
 
     case SAY_POSE:
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         notify_except_rlevel(loc, executor, -1, tprintf(T("%s %s"), Moniker(executor), message), MSG_SAYPOSE);
 #else
         notify_all_from_inside_saypose(loc, executor, tprintf(T("%s %s"), Moniker(executor), message));
@@ -246,7 +246,7 @@ void do_say(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8
         break;
 
     case SAY_POSE_NOSPC:
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
         notify_except_rlevel(loc, executor, -1, tprintf(T("%s%s"), Moniker(executor), message), MSG_SAYPOSE);
 #else
         notify_all_from_inside_saypose(loc, executor, tprintf(T("%s%s"), Moniker(executor), message));
@@ -265,7 +265,7 @@ void do_say(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8
             else
             {
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
                 notify_except_rlevel(loc, executor, -1, message, SAY_EMIT);
 #else
                 notify_all_from_inside(loc, executor, message);
@@ -298,7 +298,7 @@ void do_say(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8
             }
             if (isRoom(loc))
             {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
                 notify_except_rlevel(loc, executor, -1, message, -1);
 #else
                 notify_all_from_inside(loc, executor, message);

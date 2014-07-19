@@ -8,25 +8,19 @@ AC_CONFIG_HEADER([autoconf.h])
 AC_MSG_CHECKING(whether to enable Reality Levels)
 AC_ARG_ENABLE(
   [realitylvls],
-  AS_HELP_STRING([--enable-realitylvls],[enable Reality  Levels (default is NO)]),
+  AS_HELP_STRING([--enable-realitylvls],[enable Reality Levels (default is YES)]),
   [
     if test "x$enableval" = "xno"; then
       AC_MSG_RESULT(no)
     else
-      REALITY_LVLS="-DREALITY_LVLS"
-      LIBS="-lstdc++"
-      REALITY_SRC="levels.cpp"
-      REALITY_OBJ="levels.o"
       AC_MSG_RESULT(yes)
+      AC_DEFINE([HAVE_REALITY_LVLS],[1],[Define to enable reality levels])
     fi
   ],
   [
-    AC_MSG_RESULT(no)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE([HAVE_REALITY_LVLS],[1])
   ])
-AC_SUBST(REALITY_LVLS)
-AC_SUBST(LIBS)
-AC_SUBST(REALITY_SRC)
-AC_SUBST(REALITY_OBJ)
 
 AC_MSG_CHECKING(whether to enable WOD Realms)
 AC_ARG_ENABLE(
@@ -38,12 +32,12 @@ AC_ARG_ENABLE(
     else
       WOD_REALMS="-DWOD_REALMS"
       AC_MSG_RESULT(yes)
+      AC_DEFINE([HAVE_WOD_REALMS],[1],[Define to enable WOD realms])
     fi
   ],
   [
     AC_MSG_RESULT(no)
   ])
-AC_SUBST(WOD_REALMS)
 
 AC_MSG_CHECKING(whether to enable Memory-Based Database)
 AC_ARG_ENABLE(
@@ -53,14 +47,13 @@ AC_ARG_ENABLE(
     if test "x$enableval" = "xno"; then
       AC_MSG_RESULT(no)
     else
-      MEMORY_BASED="-DMEMORY_BASED"
       AC_MSG_RESULT(yes)
+      AC_DEFINE([HAVE_MEMORY_BASED],[1],[Define to enable memory-based database])
     fi
   ],
   [
     AC_MSG_RESULT(no)
   ])
-AC_SUBST(MEMORY_BASED)
 
 AC_MSG_CHECKING(whether to enable Stub Slave)
 AC_ARG_ENABLE(
@@ -70,15 +63,14 @@ AC_ARG_ENABLE(
     if test "x$enableval" = "xno"; then
       AC_MSG_RESULT(no)
     else
-      STUB_SLAVE="-DSTUB_SLAVE"
-      STUBSLAVE_TARGET="stubslave"
       AC_MSG_RESULT(yes)
+      AC_DEFINE([HAVE_STUB_SLAVE],[1],[Define to enable the stub slave])
+      STUBSLAVE_TARGET="stubslave"
     fi
   ],
   [
     AC_MSG_RESULT(no)
   ])
-AC_SUBST(STUB_SLAVE)
 AC_SUBST(STUBSLAVE_TARGET)
 
 AC_MSG_CHECKING(whether to enable Firan MUX)
@@ -89,16 +81,13 @@ AC_ARG_ENABLE(
     if test "x$enableval" = "xno"; then
       AC_MSG_RESULT(no)
     else
-      FIRANMUX="-DFIRANMUX"
-      FIRANLIBS=""
       AC_MSG_RESULT(yes)
+      AC_DEFINE([HAVE_FIRANMUX],[1],[Define to enable Firan customizations])
     fi
   ],
   [
     AC_MSG_RESULT(no)
   ])
-AC_SUBST(FIRANMUX)
-AC_SUBST(FIRANLIBS)
 
 AC_MSG_CHECKING(whether to perform expensive self-checking)
 AC_ARG_ENABLE(
@@ -108,14 +97,13 @@ AC_ARG_ENABLE(
     if test "x$enableval" = "xno"; then
       AC_MSG_RESULT(no)
     else
-      SELFCHECK="-DSELFCHECK"
       AC_MSG_RESULT(yes)
+      AC_DEFINE([HAVE_SELFCHECK],[1],[enable selfcheck])
     fi
   ],
   [
     AC_MSG_RESULT(no)
   ])
-AC_SUBST(SELFCHECK)
 
 # Checks for programs.
 #

@@ -112,9 +112,9 @@ void cf_init(void)
     mux_strncpy(mudconf.guests_channel, T("Guests"), sizeof(mudconf.guests_channel)-1);
     mux_strncpy(mudconf.guests_channel_alias, T("g"), sizeof(mudconf.guests_channel_alias)-1);
     mux_strncpy(mudconf.pueblo_msg, T("</xch_mudtext><img xch_mode=html>"), sizeof(mudconf.pueblo_msg)-1);
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     mux_strncpy(mudconf.immobile_msg, T("You have been set immobile."), sizeof(mudconf.immobile_msg)-1);
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 #if defined(INLINESQL) || defined(TINYMUX_MODULES)
     mudconf.sql_server[0]   = '\0';
     mudconf.sql_user[0]     = '\0';
@@ -158,7 +158,7 @@ void cf_init(void)
     mudconf.paycheck = 0;
     mudconf.paystart = 0;
     mudconf.paylimit = 10000;
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     mudconf.no_levels = 0;
     mudconf.def_room_rx = 1;
     mudconf.def_room_tx = ~(RLEVEL)0;
@@ -168,7 +168,7 @@ void cf_init(void)
     mudconf.def_exit_tx = 1;
     mudconf.def_thing_rx = 1;
     mudconf.def_thing_tx = 1;
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     mudconf.start_quota = 20;
     mudconf.site_chars = 25;
     mudconf.payfind = 0;
@@ -370,10 +370,10 @@ void cf_init(void)
     {
         mudstate.global_regs[i] = NULL;
     }
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     mudstate.pResultsSet = NULL;
     mudstate.iRow = RS_TOP;
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
     mudstate.nObjEvalNest = 0;
     mudstate.in_loop = 0;
     mudstate.bStackLimitReached = false;
@@ -382,9 +382,9 @@ void cf_init(void)
     mudstate.aHelpDesc = NULL;
     mudstate.mHelpDesc = 0;
     mudstate.nHelpDesc = 0;
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     mudstate.pISlaveControl = NULL;
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 #if defined(TINYMUX_MODULES)
     mudstate.pIQueryControl = NULL;
 #endif
@@ -472,7 +472,7 @@ static int cf_status_from_succfail(dbref player, UTF8 *cmd, int success, int fai
 // cf_rlevel
 //
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 
 CF_HAND(cf_rlevel)
 {
@@ -516,7 +516,7 @@ CF_HAND(cf_rlevel)
     mc->no_levels++;
     return 0;
 }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 // ---------------------------------------------------------------------------
 // cf_int_array: Setup array of integers.
@@ -670,7 +670,7 @@ static CF_HAND(cf_bool)
     UNUSED_PARAMETER(pExtra);
     UNUSED_PARAMETER(nExtra);
 
-    int i;
+    unsigned int i;
     if (!search_nametab(GOD, bool_names, str, &i))
     {
         cf_log_notfound(player, cmd, T("Value"), str);
@@ -688,7 +688,7 @@ static CF_HAND(cf_option)
 {
     UNUSED_PARAMETER(nExtra);
 
-    int i;
+    unsigned int i;
     if (!search_nametab(GOD, (NAMETAB *)pExtra, str, &i))
     {
         cf_log_notfound(player, cmd, T("Value"), str);
@@ -990,7 +990,8 @@ static CF_HAND(cf_or_in_bits)
 {
     UNUSED_PARAMETER(nExtra);
 
-    int f, success, failure;
+    int success, failure;
+    unsigned int f;
 
     // Walk through the tokens.
     //
@@ -1029,7 +1030,8 @@ CF_HAND(cf_modify_bits)
 {
     UNUSED_PARAMETER(nExtra);
 
-    int f, success, failure;
+    int success, failure;
+    unsigned int f;
     bool negate;
 
     // Walk through the tokens.
@@ -1486,7 +1488,7 @@ static CF_HAND(cf_hook)
     UNUSED_PARAMETER(cmd);
 
     UTF8 *hookcmd, *hookptr, playbuff[201];
-    int hookflg;
+    unsigned int hookflg;
     CMDENT *cmdp;
 
     int retval = -1;
@@ -1582,20 +1584,20 @@ static CF_HAND(cf_module)
         return -1;
     }
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     if (  NULL == mudstate.pISlaveControl
        && eLocal == eType)
     {
         cf_log_syntax(player, cmd, T("No StubSlave management interface available."));
         return -1;
     }
-#else // STUB_SLAVE
+#else // HAVE_STUB_SLAVE
     if (eLocal == eType)
     {
         cf_log_syntax(player, cmd, T("StubSlave is not enabled."));
         return -1;
     }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
     MUX_RESULT mr = MUX_S_OK;
     if ('!' == str[0])
@@ -1604,12 +1606,12 @@ static CF_HAND(cf_module)
         {
             mr = mux_RemoveModule(str+1);
         }
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
         else
         {
             mr = mudstate.pISlaveControl->RemoveModule(str+1);
         }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
     }
     else
     {
@@ -1626,12 +1628,12 @@ static CF_HAND(cf_module)
         {
             mr = mux_AddModule(str, filename);
         }
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
         else
         {
             mr = mudstate.pISlaveControl->AddModule(str, filename);
         }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
         free_lbuf(buffer);
     }
 
@@ -1992,7 +1994,7 @@ static CONFPARM conftable[] =
     {T("wizard_motd_file"),          cf_string_dyn,  CA_STATIC, CA_GOD,      (int *)&mudconf.wizmotd_file,    NULL, SIZEOF_PATHNAME},
     {T("wizard_motd_message"),       cf_string,      CA_GOD,    CA_WIZARD,   (int *)mudconf.wizmotd_msg,      NULL,       GBUF_SIZE},
     {T("zone_recursion_limit"),      cf_int,         CA_GOD,    CA_PUBLIC,   &mudconf.zone_nest_lim,          NULL,               0},
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("reality_level"),             cf_rlevel,      CA_STATIC, CA_GOD,      (int *)&mudconf,                 NULL,               0},
     {T("def_room_rx"),               cf_int,         CA_WIZARD, CA_PUBLIC,   (int *)&mudconf.def_room_rx,     NULL,               0},
     {T("def_room_tx"),               cf_int,         CA_WIZARD, CA_PUBLIC,   (int *)&mudconf.def_room_tx,     NULL,               0},
@@ -2002,11 +2004,11 @@ static CONFPARM conftable[] =
     {T("def_exit_tx"),               cf_int,         CA_WIZARD, CA_PUBLIC,   (int *)&mudconf.def_exit_tx,     NULL,               0},
     {T("def_thing_rx"),              cf_int,         CA_WIZARD, CA_PUBLIC,   (int *)&mudconf.def_thing_rx,    NULL,               0},
     {T("def_thing_tx"),              cf_int,         CA_WIZARD, CA_PUBLIC,   (int *)&mudconf.def_thing_tx,    NULL,               0},
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
-#ifdef FIRANMUX
+#ifdef HAVE_FIRANMUX
     {T("immobile_message"),          cf_string,      CA_WIZARD, CA_PUBLIC,   (int *)mudconf.immobile_msg,     NULL,             128},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 #if defined(INLINESQL) || defined(TINYMUX_MODULES)
     {T("sql_server"),                cf_string,      CA_STATIC, CA_DISABLED, (int *)mudconf.sql_server,       NULL,             128},
     {T("sql_user"),                  cf_string,      CA_STATIC, CA_DISABLED, (int *)mudconf.sql_user,         NULL,             128},

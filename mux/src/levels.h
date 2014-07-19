@@ -10,6 +10,9 @@
 #ifndef __LEVELS_H
 #define __LEVELS_H
 
+#include "autoconf.h"
+#if defined(HAVE_REALITY_LVLS)
+
 #include "htab.h"
 #include "db.h"
 
@@ -44,6 +47,7 @@ void did_it_rlevel
     int   ctrl_flags,
     const UTF8 *args[],
     int   nargs
-);
+    );
 
+#endif // HAVE_REALITY_LVLS
 #endif // __LEVELS_H

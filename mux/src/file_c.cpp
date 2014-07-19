@@ -81,7 +81,7 @@ void do_list_file(dbref executor, dbref caller, dbref enactor, int eval, int key
     UNUSED_PARAMETER(cargs);
     UNUSED_PARAMETER(ncargs);
 
-    int flagvalue;
+    unsigned int flagvalue;
     if (!search_nametab(executor, list_files, arg, &flagvalue))
     {
         display_nametab(executor, list_files, T("Unknown file.  Use one of"), true);
@@ -225,7 +225,7 @@ void fcache_dump(DESC *d, int num)
 
     while (fp != NULL)
     {
-        queue_write_LEN(d, (char *)fp->data, fp->hdr.nchars);
+        queue_write_LEN(d, (const unsigned char *)fp->data, fp->hdr.nchars);
         fp = fp->hdr.nxt;
     }
 }

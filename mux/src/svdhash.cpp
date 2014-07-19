@@ -1038,7 +1038,7 @@ bool CHashPage::Split(CHashPage &hp0, CHashPage &hp1)
     UINT32 nHashGroup1 = nHashGroup0 | nBitMask;
     hp0.Empty(nNewDepth, nHashGroup0, nGoodDirSize);
     hp1.Empty(nNewDepth, nHashGroup1, nGoodDirSize);
-    for (int iDir = 0; iDir < m_pHeader->m_nDirSize; iDir++)
+    for (size_t iDir = 0; iDir < m_pHeader->m_nDirSize; iDir++)
     {
         if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
         {
@@ -1103,7 +1103,7 @@ void CHashPage::GetRange
     nEnd   = nBase | ~ulMask;
 }
 
-#if !defined(MEMORY_BASED)
+#if !defined(HAVE_MEMORY_BASED)
 
 #if defined(WINDOWS_FILES)
 bool CHashPage::WritePage(HANDLE hFile, HF_FILEOFFSET oWhere)
@@ -1238,7 +1238,7 @@ bool CHashPage::ReadPage(HANDLE hFile, HF_FILEOFFSET oWhere)
 }
 #endif // UNIX_FILES
 
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 UINT32 CHashPage::GetDepth(void)
 {
@@ -1270,7 +1270,7 @@ bool CHashPage::Defrag(HP_HEAPLENGTH nExtra)
     //
     hpNew->Empty(m_pHeader->m_nDepth, m_pHeader->m_nHashGroup, nGoodDirSize);
     int errInserted = HP_INSERT_SUCCESS;
-    for (int iDir = 0; iDir < m_pHeader->m_nDirSize && IS_HP_SUCCESS(errInserted); iDir++)
+    for (size_t iDir = 0; iDir < m_pHeader->m_nDirSize && IS_HP_SUCCESS(errInserted); iDir++)
     {
         if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
         {
@@ -1336,7 +1336,7 @@ UINT32 CHashPage::FindNext(HP_PHEAPLENGTH pnRecord, void *pRecord)
     return HP_DIR_EMPTY;
 }
 
-#if !defined(MEMORY_BASED)
+#if !defined(HAVE_MEMORY_BASED)
 
 CHashFile::CHashFile(void)
 {
@@ -2386,7 +2386,7 @@ int CHashFile::ReadCache(UINT32 iFileDir, int *phits)
     return -1;
 }
 
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 CHashTable::CHashTable(void)
 {

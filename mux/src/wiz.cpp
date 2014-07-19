@@ -824,7 +824,7 @@ void do_global(dbref executor, dbref caller, dbref enactor, int eval, int key, U
 
     // Set or clear the indicated flag.
     //
-    int flagvalue;
+    unsigned int flagvalue;
     if (!search_nametab(executor, enable_names, flag, &flagvalue))
     {
         notify_quiet(executor, T("I don\xE2\x80\x99t know about that flag."));

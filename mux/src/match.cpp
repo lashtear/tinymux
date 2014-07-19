@@ -12,9 +12,9 @@
 
 #include "attrs.h"
 #include "powers.h"
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #include "levels.h"
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 const UTF8 *NOMATCH_MESSAGE      = T("I don\xE2\x80\x99t see that here.");
 const UTF8 *AMBIGUOUS_MESSAGE    = T("I don\xE2\x80\x99t know which one you mean!");
@@ -39,7 +39,7 @@ static MSTATE md;
 
 static void promote_match(dbref what, int confidence)
 {
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     // Check is the object is visible.
     //
     if (  Good_obj(what)
@@ -49,7 +49,7 @@ static void promote_match(dbref what, int confidence)
     {
         return;
     }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     // Check for type and locks, if requested.
     //
     if (md.pref_type != NOTYPE)
@@ -594,11 +594,11 @@ dbref match_result(void)
         return md.match;
 
     default:
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
         return md.match;
 #else
         return AMBIGUOUS;
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     }
 }
 

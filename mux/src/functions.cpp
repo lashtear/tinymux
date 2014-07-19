@@ -18,9 +18,9 @@
 #include "misc.h"
 #include "mathutil.h"
 #include "pcre.h"
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #include "levels.h"
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 #if defined(INLINESQL)
 #include <mysql.h>
@@ -1680,7 +1680,7 @@ LBUF_OFFSET linewrap_general(const UTF8 *pStr,     LBUF_OFFSET nWidth,
     return fldLine.m_byte;
 }
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 
 /*
  * ---------------------------------------------------------------------------
@@ -1816,7 +1816,7 @@ FUNCTION(fun_text)
     safe_str(T("#-1 FILE NOT LISTED"),buff,bufc);
 }
 
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 
 // fun_successes
@@ -3580,7 +3580,7 @@ static FUNCTION(fun_comp)
     }
 }
 
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS) || defined(HAVE_REALITY_LVLS)
 static FUNCTION(fun_cansee)
 {
     UNUSED_PARAMETER(caller);
@@ -3626,15 +3626,20 @@ static FUNCTION(fun_cansee)
 
     // Do it.
     //
-    int Realm_Do = DoThingToThingVisibility(looker, lookee, mode);
     bool bResult = false;
+#ifdef HAVE_WOD_REALMS
+    int Realm_Do = DoThingToThingVisibility(looker, lookee, mode);
     if ((Realm_Do & REALM_DO_MASK) != REALM_DO_HIDDEN_FROM_YOU)
     {
-#ifdef REALITY_LVLS
+#else // HAVE_WOD_REALMS
+    if (1)
+    {
+#endif // HAVE_WOD_REALMS
+#ifdef HAVE_REALITY_LVLS
         bResult = (!Dark(lookee) && IsReal(looker, lookee));
 #else
         bResult = !Dark(lookee);
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     }
     safe_bool(bResult, buff, bufc);
 }
@@ -3722,7 +3727,7 @@ static FUNCTION(fun_lcon)
         ItemToList_Init(&pContext, buff, bufc, '#');
         DOLIST(thing, Contents(it))
         {
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
             int iRealmAction = DoThingToThingVisibility(executor, thing,
                 ACTION_IS_STATIONARY);
             if (iRealmAction != REALM_DO_HIDDEN_FROM_YOU)
@@ -3756,7 +3761,7 @@ static FUNCTION(fun_lcon)
                 {
                     break;
                 }
-#ifdef WOD_REALMS
+#ifdef HAVE_WOD_REALMS
             }
 #endif
         }
@@ -5035,7 +5040,7 @@ static FUNCTION(fun_haspower)
     }
 }
 
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 static FUNCTION(fun_hasrxlevel)
 {
     dbref it;
@@ -5202,7 +5207,7 @@ static FUNCTION(fun_txlevel)
         safe_str(T("#-1 PERMISSION DENIED"), buff, bufc);
     }
 }
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 static FUNCTION(fun_powers)
 {
@@ -9062,7 +9067,7 @@ static FUNCTION(fun_r)
     }
 }
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
 static FUNCTION(fun_rserror)
 {
     UNUSED_PARAMETER(executor);
@@ -9361,7 +9366,7 @@ FUNCTION(fun_rsrecprev)
     }
 }
 
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 
 /* ---------------------------------------------------------------------------
  * isdbref: is the argument a valid dbref?
@@ -11021,7 +11026,7 @@ static FUN builtin_function_list[] =
     {T("BXOR"),        fun_bxor,       MAX_ARG, 1, MAX_ARG,         0, CA_PUBLIC},
     {T("CAND"),        fun_cand,       MAX_ARG, 0, MAX_ARG, FN_NOEVAL, CA_PUBLIC},
     {T("CANDBOOL"),    fun_candbool,   MAX_ARG, 0, MAX_ARG, FN_NOEVAL, CA_PUBLIC},
-#if defined(WOD_REALMS) || defined(REALITY_LVLS)
+#if defined(HAVE_WOD_REALMS) || defined(HAVE_REALITY_LVLS)
     {T("CANSEE"),      fun_cansee,     MAX_ARG, 2,       3,         0, CA_PUBLIC},
 #endif
     {T("CAPSTR"),      fun_capstr,           1, 1,       1,         0, CA_PUBLIC},
@@ -11105,9 +11110,9 @@ static FUN builtin_function_list[] =
     {T("FMOD"),        fun_fmod,       MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("FOLD"),        fun_fold,       MAX_ARG, 2,       4,         0, CA_PUBLIC},
     {T("FOREACH"),     fun_foreach,    MAX_ARG, 2,       4,         0, CA_PUBLIC},
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     {T("FORMAT"),      fun_format,     MAX_ARG, 4,       4,         0, CA_PUBLIC},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {T("FULLNAME"),    fun_fullname,   MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("GET"),         fun_get,        MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("GET_EVAL"),    fun_get_eval,   MAX_ARG, 1,       1,         0, CA_PUBLIC},
@@ -11122,10 +11127,10 @@ static FUN builtin_function_list[] =
     {T("HASFLAG"),     fun_hasflag,    MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("HASPOWER"),    fun_haspower,   MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("HASQUOTA"),    fun_hasquota,   MAX_ARG, 2,       3,         0, CA_PUBLIC},
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("HASRXLEVEL"),  fun_hasrxlevel, MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("HASTXLEVEL"),  fun_hastxlevel, MAX_ARG, 2,       2,         0, CA_PUBLIC},
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     {T("HASTYPE"),     fun_hastype,    MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("HEIGHT"),      fun_height,     MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("HOME"),        fun_home,       MAX_ARG, 1,       1,         0, CA_PUBLIC},
@@ -11160,7 +11165,7 @@ static FUN builtin_function_list[] =
     {T("LATTR"),       fun_lattr,      MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("LATTRCMDS"),   fun_lattrcmds,  MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("LATTRP"),      fun_lattrp,     MAX_ARG, 1,       1,         0, CA_PUBLIC},
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("LISTRLEVELS"), fun_listrlevels, MAX_ARG, 0,       0,         0, CA_PUBLIC},
 #endif
     {T("LCMDS"),       fun_lcmds,      MAX_ARG, 1,       3,         0, CA_PUBLIC},
@@ -11192,9 +11197,9 @@ static FUN builtin_function_list[] =
     {T("LWHO"),        fun_lwho,       MAX_ARG, 0,       1,         0, CA_PUBLIC},
     {T("MAIL"),        fun_mail,       MAX_ARG, 0,       2,         0, CA_PUBLIC},
     {T("MAILFROM"),    fun_mailfrom,   MAX_ARG, 1,       2,         0, CA_PUBLIC},
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     {T("MAILJ"),       fun_mailj,      MAX_ARG, 0,       2,         0, CA_PUBLIC},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {T("MAILSIZE"),    fun_mailsize,   MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("MAILSUBJ"),    fun_mailsubj,   MAX_ARG, 1,       2,         0, CA_PUBLIC},
     {T("MAP"),         fun_map,        MAX_ARG, 2,      13,         0, CA_PUBLIC},
@@ -11270,7 +11275,7 @@ static FUN builtin_function_list[] =
     {T("ROOM"),        fun_room,       MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("ROUND"),       fun_round,      MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("RPAD"),        fun_rpad,       MAX_ARG, 2,       3,         0, CA_PUBLIC},
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     {T("RSERROR"),     fun_rserror,    MAX_ARG, 0,       0,         0, CA_PUBLIC},
     {T("RSNEXT"),      fun_rsnext,     MAX_ARG, 0,       0,         0, CA_PUBLIC},
     {T("RSRECNEXT"),   fun_rsrecnext,  MAX_ARG, 0,       1,         0, CA_PUBLIC},
@@ -11280,9 +11285,9 @@ static FUN builtin_function_list[] =
     {T("RSROWS"),      fun_rsrows,     MAX_ARG, 0,       0,         0, CA_PUBLIC},
     {T("RSREC"),       fun_rsrec,      MAX_ARG, 0,       1,         0, CA_PUBLIC},
 #endif
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("RXLEVEL"),     fun_rxlevel,    MAX_ARG, 1,       1,         0, CA_PUBLIC},
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     {T("S"),           fun_s,                1, 1,       1,         0, CA_PUBLIC},
     {T("SCRAMBLE"),    fun_scramble,   MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("SEARCH"),      fun_search,           1, 0,       1,         0, CA_PUBLIC},
@@ -11291,14 +11296,14 @@ static FUN builtin_function_list[] =
     {T("SET"),         fun_set,        MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("SETDIFF"),     fun_setdiff,    MAX_ARG, 2,       5,         0, CA_PUBLIC},
     {T("SETINTER"),    fun_setinter,   MAX_ARG, 2,       5,         0, CA_PUBLIC},
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     {T("SETPARENT"),   fun_setparent,  MAX_ARG, 2,       2,         0, CA_PUBLIC},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {T("SETQ"),        fun_setq,       MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("SETR"),        fun_setr,       MAX_ARG, 2,       2,         0, CA_PUBLIC},
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     {T("SETNAME"),     fun_setname,    MAX_ARG, 2,       2,         0, CA_PUBLIC},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {T("SETUNION"),    fun_setunion,   MAX_ARG, 2,       5,         0, CA_PUBLIC},
     {T("SHA1"),        fun_sha1,             1, 0,       1,         0, CA_PUBLIC},
     {T("SHL"),         fun_shl,        MAX_ARG, 2,       2,         0, CA_PUBLIC},
@@ -11340,9 +11345,9 @@ static FUN builtin_function_list[] =
     {T("TAN"),         fun_tan,        MAX_ARG, 1,       2,         0, CA_PUBLIC},
     {T("TEL"),         fun_tel,        MAX_ARG, 2,       3,         0, CA_PUBLIC},
     {T("TERMINFO"),    fun_terminfo,         1, 1, MAX_ARG,         0, CA_PUBLIC},
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
     {T("TEXT"),        fun_text,       MAX_ARG, 2,       2,         0, CA_PUBLIC},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {T("TEXTFILE"),    fun_textfile,   MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("TIME"),        fun_time,       MAX_ARG, 0,       2,         0, CA_PUBLIC},
     {T("TIMEFMT"),     fun_timefmt,    MAX_ARG, 1,       2,         0, CA_PUBLIC},
@@ -11351,9 +11356,9 @@ static FUN builtin_function_list[] =
     {T("TRIGGER"),     fun_trigger,    MAX_ARG, 1, MAX_ARG,         0, CA_PUBLIC},
     {T("TRIM"),        fun_trim,       MAX_ARG, 1,       3,         0, CA_PUBLIC},
     {T("TRUNC"),       fun_trunc,      MAX_ARG, 1,       1,         0, CA_PUBLIC},
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("TXLEVEL"),     fun_txlevel,    MAX_ARG, 1,       1,         0, CA_PUBLIC},
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     {T("TYPE"),        fun_type,       MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("U"),           fun_u,          MAX_ARG, 1, MAX_ARG,         0, CA_PUBLIC},
     {T("UCSTR"),       fun_ucstr,            1, 1,       1,         0, CA_PUBLIC},

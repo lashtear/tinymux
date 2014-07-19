@@ -1887,12 +1887,12 @@ void do_dbck(dbref executor, dbref caller, dbref enactor, int eval, int key)
     scheduler.Shrink();
 #if defined(TINYMUX_MODULES)
     mux_ModuleMaintenance();
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     if (NULL != mudstate.pISlaveControl)
     {
         mudstate.pISlaveControl->ModuleMaintenance();
     }
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 #endif // TINYMUX_MODULES
 
     // Allow the local extensions to do data checks.

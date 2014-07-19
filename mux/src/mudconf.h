@@ -135,7 +135,7 @@ struct confdata
     int     thing_name_charset; // Charset restrictions for thing names.
     int     password_methods;   // Password encryption methods.
     int     default_charset;    // Default client charset mapping.
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     int     no_levels;          /* Number of reality levels */
     struct  rlevel_def
     {
@@ -151,7 +151,7 @@ struct confdata
     RLEVEL  def_exit_tx;        /* Default exit TX level */
     RLEVEL  def_thing_rx;       /* Default thing RX level */
     RLEVEL  def_thing_tx;       /* Default thing TX level */
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
     int     ntfy_nest_lim;      /* Max nesting of notifys */
     int     number_guests;      // number of guest characters allowed.
     int     opencost;           /* cost of @open command */
@@ -212,9 +212,9 @@ struct confdata
     UTF8    fixed_home_msg[128];    /* Message displayed when going home and FIXED */
     UTF8    fixed_tel_msg[128]; /* Message displayed when teleporting and FIXED */
     UTF8    postdump_msg[256];  /* Message displayed after @dump-ing */
-#ifdef FIRANMUX
+#ifdef HAVE_FIRANMUX
     UTF8    immobile_msg[128];  /* Message displayed to immobile players */
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 #if defined(INLINESQL) || defined(TINYMUX_MODULES)
     UTF8    sql_server[128];
@@ -506,11 +506,11 @@ struct statedata
     OLSTK   *olist;             /* Stack of object lists for nested searches */
     mux_subnets access_list;    /* Access/suspect attributes for subnets */
 
-#if defined(STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
     mux_ISlaveControl *pISlaveControl;  // Management interface for StubSlave process.
     CResultsSet *pResultsSet;           // ResultsSet from @query.
     int iRow;                           // Current Row.
-#endif // STUB_SLAVE
+#endif // HAVE_STUB_SLAVE
 #if defined(TINYMUX_MODULES)
     mux_IQueryControl *pIQueryControl;
 #endif
@@ -524,9 +524,9 @@ struct statedata
     CLinearTimeAbsolute restart_time;   /* When was MUX restarted */
     CLinearTimeAbsolute tThrottleExpired; // How much time is left in this hour of throttling.
 
-#if !defined(MEMORY_BASED)
+#if !defined(HAVE_MEMORY_BASED)
     CHashTable acache_htab;     // Attribute Cache
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
     CHashTable attr_name_htab;  /* Attribute names hashtable */
     CHashTable channel_htab;    /* Channels hashtable */
     CHashTable command_htab;    /* Commands hashtable */

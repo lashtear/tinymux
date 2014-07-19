@@ -24,9 +24,9 @@
 #include "mail.h"
 #include "misc.h"
 #include "mathutil.h"
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
 #include "levels.h"
-#endif // REALITY_LVLS
+#endif // HAVE_REALITY_LVLS
 
 /* Note: Many functions in this file have been taken, whole or in part, from
  * PennMUSH 1.50, and TinyMUSH 2.2, for softcode compatibility. The
@@ -255,7 +255,7 @@ FUNCTION(fun_link)
     do_link(executor, caller, enactor, eval, 0, 2, fargs[0], fargs[1], NULL, 0);
 }
 
-#if defined(FIRANMUX)
+#if defined(HAVE_FIRANMUX)
 FUNCTION(fun_setparent)
 {
     UNUSED_PARAMETER(nfargs);
@@ -284,7 +284,7 @@ FUNCTION(fun_setname)
     do_name(executor, caller, enactor, eval, 0, 2, fargs[0], fargs[1], NULL, 0);
 }
 
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 FUNCTION(fun_trigger)
 {
@@ -664,7 +664,7 @@ FUNCTION(fun_set)
 
             // Make sure player specified a valid attribute flag.
             //
-            int flagvalue;
+            unsigned int flagvalue;
             if (!search_nametab(executor, indiv_attraccess_nametab, flagname, &flagvalue))
             {
                 safe_str(T("#-1 CANNOT SET"), buff, bufc);
@@ -1974,7 +1974,7 @@ FUNCTION(fun_mailsubj)
     }
 }
 
-#ifdef FIRANMUX
+#ifdef HAVE_FIRANMUX
 // This function can take one of three formats:
 //
 //  1.  mailj(num)  --> returns message <num> for privs.
@@ -2094,7 +2094,7 @@ FUNCTION(fun_mailj)
         safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
     }
 }
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
 
 // This function can take these formats:
 //
@@ -2381,8 +2381,8 @@ FUNCTION(fun_findable)
         safe_str(T(" (ARG2)"), buff, bufc);
         return;
     }
-#ifndef WOD_REALMS
-#ifndef REALITY_LVLS
+#ifndef HAVE_WOD_REALMS
+#ifndef HAVE_REALITY_LVLS
     safe_bool(locatable(obj, victim, obj), buff, bufc);
 #else
     if (IsReal(obj, victim))
@@ -2392,7 +2392,7 @@ FUNCTION(fun_findable)
     else safe_chr('0', buff, bufc);
 #endif
 #else
-#ifndef REALITY_LVLS
+#ifndef HAVE_REALITY_LVLS
     if (REALM_DO_HIDDEN_FROM_YOU != DoThingToThingVisibility(obj, victim, ACTION_IS_STATIONARY))
     {
         safe_bool(locatable(obj, victim, obj), buff, bufc);

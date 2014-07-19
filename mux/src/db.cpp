@@ -227,15 +227,15 @@ ATTR AttrTable[] =
     {T("RegInfo"),     A_REGINFO,  AF_PRIVATE | AF_MDARK | AF_NOPROG | AF_NOCMD | AF_WIZARD | AF_NODECOMP},
 #endif // GAME_DOOFERMUX
     {T("ConnInfo"),    A_CONNINFO, AF_PRIVATE | AF_MDARK | AF_NOPROG | AF_NOCMD | AF_GOD | AF_NODECOMP},
-#ifdef REALITY_LVLS
+#ifdef HAVE_REALITY_LVLS
     {T("Rlevel"),      A_RLEVEL,   AF_DARK | AF_NOPROG | AF_NOCMD | AF_INTERNAL},
-#endif // REALITY_LVLS
-#if defined(FIRANMUX)
+#endif // HAVE_REALITY_LVLS
+#if defined(HAVE_FIRANMUX)
     {T("Color"),       A_COLOR,    AF_ODARK},
     {T("Alead"),       A_ALEAD,    AF_ODARK | AF_WIZARD},
     {T("Lead"),        A_LEAD,     AF_ODARK | AF_NOPROG | AF_WIZARD},
     {T("Olead"),       A_OLEAD,    AF_ODARK | AF_NOPROG | AF_WIZARD},
-#endif // FIRANMUX
+#endif // HAVE_FIRANMUX
     {NULL,                  0,          0}
 };
 
@@ -584,11 +584,11 @@ const UTF8 *Name(dbref thing)
 
     dbref aowner;
     int aflags;
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     static UTF8 tbuff[LBUF_SIZE];
     atr_get_str(tbuff, thing, A_NAME, &aowner, &aflags);
     return tbuff;
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
     if (!db[thing].name)
     {
         size_t len;
@@ -597,7 +597,7 @@ const UTF8 *Name(dbref thing)
         free_lbuf(pName);
     }
     return db[thing].name;
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 }
 
 const UTF8 *PureName(dbref thing)
@@ -617,12 +617,12 @@ const UTF8 *PureName(dbref thing)
         {
             size_t nName;
             size_t nPureName;
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
             pName = atr_get_LEN(thing, A_NAME, &aowner, &aflags, &nName);
             pPureName = strip_color(pName, &nPureName);
             free_lbuf(pName);
             db[thing].purename = StringCloneLen(pPureName, nPureName);
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
             if (!db[thing].name)
             {
                 pName = atr_get_LEN(thing, A_NAME, &aowner, &aflags, &nName);
@@ -643,7 +643,7 @@ const UTF8 *PureName(dbref thing)
             {
                 db[thing].purename = StringCloneLen(pPureName, nPureName);
             }
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
         }
         return db[thing].purename;
     }
@@ -687,9 +687,9 @@ const UTF8 *Moniker(dbref thing)
         //
         if (mudconf.cache_names)
         {
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
             db[thing].moniker = StringCloneLen(pMoniker, nMoniker);
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
             if (strcmp((char *)pMoniker, (char *)Name(thing)) == 0)
             {
                 db[thing].moniker = db[thing].name;
@@ -698,7 +698,7 @@ const UTF8 *Moniker(dbref thing)
             {
                 db[thing].moniker = StringCloneLen(pMoniker, nMoniker);
             }
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
             pReturn = db[thing].moniker;
         }
         else
@@ -712,7 +712,7 @@ const UTF8 *Moniker(dbref thing)
         // @moniker can't be used, so instead reflect @name (whether it
         // contains ANSI color and accents or not).
         //
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
         if (mudconf.cache_names)
         {
             db[thing].moniker = StringClone(Name(thing));
@@ -722,7 +722,7 @@ const UTF8 *Moniker(dbref thing)
         {
             pReturn = Name(thing);
         }
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
         if (mudconf.cache_names)
         {
             db[thing].moniker = db[thing].name;
@@ -732,7 +732,7 @@ const UTF8 *Moniker(dbref thing)
         {
             pReturn = Name(thing);
         }
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
     }
     free_lbuf(pMoniker);
     MEMFREE(pPureNameCopy);
@@ -742,7 +742,7 @@ const UTF8 *Moniker(dbref thing)
 
 void free_Names(OBJ *p)
 {
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     if (p->name)
     {
         if (mudconf.cache_names)
@@ -759,7 +759,7 @@ void free_Names(OBJ *p)
         MEMFREE(p->name);
         p->name = NULL;
     }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 
     if (mudconf.cache_names)
     {
@@ -781,24 +781,24 @@ void s_Name(dbref thing, const UTF8 *s)
 {
     free_Names(&db[thing]);
     atr_add_raw(thing, A_NAME, s);
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     if (NULL != s)
     {
         db[thing].name = StringClone(s);
     }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 }
 
 void free_Moniker(OBJ *p)
 {
     if (mudconf.cache_names)
     {
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
         if (p->name == p->moniker)
         {
             p->moniker = NULL;
         }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
         if (p->moniker)
         {
             MEMFREE(p->moniker);
@@ -860,7 +860,7 @@ void do_attribute
         return;
     }
 
-    int f;
+    unsigned int f;
     UTF8 *sp;
     ATTR *va2;
     bool negate, success;
@@ -1583,7 +1583,7 @@ int mkattr(dbref executor, const UTF8 *buff)
     return -1;
 }
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
 
 /* ---------------------------------------------------------------------------
  * al_decode: Fetch an attribute number from an alist.
@@ -1639,7 +1639,7 @@ static unsigned char *al_code(unsigned char *ap, unsigned int atrnum)
     return ap + i + 1;
 }
 
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 /* ---------------------------------------------------------------------------
  * Commer: check if an object has any $-commands in its attributes.
@@ -1734,7 +1734,7 @@ bool Commer(dbref thing)
 // routines to handle object attribute lists
 //
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
 /* ---------------------------------------------------------------------------
  * al_fetch, al_store, al_add, al_delete: Manipulate attribute lists
  */
@@ -1905,7 +1905,7 @@ static inline void makekey(dbref thing, int atr, Aname *abuff)
     abuff->attrnum = atr;
     return;
 }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 
 /* ---------------------------------------------------------------------------
  * atr_encode: Encode an attribute string.
@@ -2030,7 +2030,7 @@ static void atr_decode_LEN(const UTF8 *iattr, size_t nLen, UTF8 *oattr,
 
 void atr_clr(dbref thing, int atr)
 {
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
 
     if (  !db[thing].nALUsed
        || !db[thing].pALHead)
@@ -2071,13 +2071,13 @@ void atr_clr(dbref thing, int atr)
             break;
         }
     }
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
     Aname okey;
 
     makekey(thing, atr, &okey);
     cache_del(&okey);
     al_delete(thing, atr);
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
     switch (atr)
     {
@@ -2141,7 +2141,7 @@ void atr_add_raw_LEN(dbref thing, int atr, const UTF8 *szValue, size_t nValue)
         return;
     }
 
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     ATRLIST *list = db[thing].pALHead;
     UTF8 *text = StringCloneLen(szValue, nValue);
 
@@ -2245,7 +2245,7 @@ void atr_add_raw_LEN(dbref thing, int atr, const UTF8 *szValue, size_t nValue)
 
 FoundAttribute:
 
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
 
     if (nValue > LBUF_SIZE-1)
     {
@@ -2268,7 +2268,7 @@ FoundAttribute:
         }
         cache_put(&okey, szValue, nValue+1);
     }
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
     switch (atr)
     {
@@ -2373,7 +2373,7 @@ int get_atr(const UTF8 *name)
     return ap->number;
 }
 
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
 const UTF8 *atr_get_raw_LEN(dbref thing, int atr, size_t *pLen)
 {
     if (!Good_obj(thing))
@@ -2413,7 +2413,7 @@ const UTF8 *atr_get_raw_LEN(dbref thing, int atr, size_t *pLen)
     return NULL;
 }
 
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
 
 const UTF8 *atr_get_raw_LEN(dbref thing, int atr, size_t *pLen)
 {
@@ -2426,7 +2426,7 @@ const UTF8 *atr_get_raw_LEN(dbref thing, int atr, size_t *pLen)
     *pLen = nLen;
     return a;
 }
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
 const UTF8 *atr_get_raw(dbref thing, int atr)
 {
@@ -2578,7 +2578,7 @@ bool atr_pget_info(dbref thing, int atr, dbref *owner, int *flags)
 
 void atr_free(dbref thing)
 {
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     if (db[thing].pALHead)
     {
         MEMFREE(db[thing].pALHead);
@@ -2586,7 +2586,7 @@ void atr_free(dbref thing)
     db[thing].pALHead  = NULL;
     db[thing].nALAlloc = 0;
     db[thing].nALUsed  = 0;
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
     atr_push();
     unsigned char *as;
     for (int atr = atr_head(thing, &as); atr; atr = atr_next(&as))
@@ -2599,7 +2599,7 @@ void atr_free(dbref thing)
         al_store(); // remove from cache
     }
     atr_clr(thing, A_LIST);
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 
     mudstate.bfCommands.Clear(thing);
     mudstate.bfNoCommands.Set(thing);
@@ -2687,7 +2687,7 @@ void atr_chown(dbref obj)
 
 int atr_next(UTF8 **attrp)
 {
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     ATRCOUNT *atr;
 
     if (!attrp || !*attrp)
@@ -2707,7 +2707,7 @@ int atr_next(UTF8 **attrp)
         return db[atr->thing].pALHead[atr->count - 1].number;
     }
 
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
     if (!*attrp || !**attrp)
     {
         return 0;
@@ -2716,7 +2716,7 @@ int atr_next(UTF8 **attrp)
     {
         return al_decode(attrp);
     }
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 }
 
 /* ---------------------------------------------------------------------------
@@ -2725,7 +2725,7 @@ int atr_next(UTF8 **attrp)
 
 void atr_push(void)
 {
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     ALIST *new_alist = (ALIST *) alloc_sbuf("atr_push");
     new_alist->data = mudstate.iter_alist.data;
     new_alist->len = mudstate.iter_alist.len;
@@ -2734,12 +2734,12 @@ void atr_push(void)
     mudstate.iter_alist.data = NULL;
     mudstate.iter_alist.len = 0;
     mudstate.iter_alist.next = new_alist;
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 }
 
 void atr_pop(void)
 {
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
     ALIST *old_alist = mudstate.iter_alist.next;
 
     if (mudstate.iter_alist.data)
@@ -2761,7 +2761,7 @@ void atr_pop(void)
         mudstate.iter_alist.len = 0;
         mudstate.iter_alist.next = NULL;
     }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 }
 
 /* ---------------------------------------------------------------------------
@@ -2770,7 +2770,7 @@ void atr_pop(void)
 
 int atr_head(dbref thing, unsigned char **attrp)
 {
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
     if (db[thing].nALUsed)
     {
         ATRCOUNT *atr = (ATRCOUNT *) MEMALLOC(sizeof(ATRCOUNT));
@@ -2781,7 +2781,7 @@ int atr_head(dbref thing, unsigned char **attrp)
         return db[thing].pALHead[0].number;
     }
     return 0;
-#else // MEMORY_BASED
+#else // HAVE_MEMORY_BASED
     const unsigned char *astr;
     size_t alen;
 
@@ -2810,7 +2810,7 @@ int atr_head(dbref thing, unsigned char **attrp)
     memcpy(mudstate.iter_alist.data, astr, alen+1);
     *attrp = mudstate.iter_alist.data;
     return atr_next(attrp);
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
 }
 
 attr_info::attr_info(void)
@@ -2925,13 +2925,13 @@ static void initialize_objects(dbref first, dbref last)
         s_ThMail(thing, 0);
         s_ThRefs(thing, 0);
 
-#ifdef MEMORY_BASED
+#ifdef HAVE_MEMORY_BASED
         db[thing].pALHead  = NULL;
         db[thing].nALAlloc = 0;
         db[thing].nALUsed  = 0;
 #else
         db[thing].name = NULL;
-#endif // MEMORY_BASED
+#endif // HAVE_MEMORY_BASED
         db[thing].purename = NULL;
         db[thing].moniker = NULL;
     }
@@ -3041,7 +3041,7 @@ void db_grow(dbref newtop)
 
 void db_free(void)
 {
-#ifdef SELFCHECK
+#ifdef HAVE_SELFCHECK
     delete_all_player_names();
     for (dbref thing = 0; thing < mudstate.db_top; thing++)
     {
@@ -3528,7 +3528,7 @@ static BOOLEXP *dup_bool(BOOLEXP *b)
     return (r);
 }
 
-#ifndef MEMORY_BASED
+#ifndef HAVE_MEMORY_BASED
 int init_dbfile(UTF8 *game_dir_file, UTF8 *game_pag_file, int nCachePages)
 {
     if (mudstate.bStandAlone)
@@ -3554,7 +3554,7 @@ int init_dbfile(UTF8 *game_dir_file, UTF8 *game_pag_file, int nCachePages)
     }
     return cc;
 }
-#endif // !MEMORY_BASED
+#endif // !HAVE_MEMORY_BASED
 
 // check_zone - checks back through a zone tree for control.
 //
