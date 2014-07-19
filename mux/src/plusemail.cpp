@@ -21,7 +21,6 @@
 #include "interface.h"
 #include "mathutil.h"
 
-#include "_build.h"
 
 // Encode mail body such that CRLF.CRLF only appears at the end of the
 // message.  Here are some example transforms.
