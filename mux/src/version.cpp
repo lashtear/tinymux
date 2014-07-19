@@ -10,8 +10,18 @@
 #include "config.h"
 #include "externs.h"
 
-#include "_build.h"
 #include "command.h"
+
+#if !(defined(MUX_BUILD_VER_ID)                                         \
+      && defined(MUX_BUILD_BUILDER)                                     \
+      && defined(MUX_BUILD_TIME)                                        \
+      && defined(MUX_BUILD_CXXVER)                                      \
+      && defined(MUX_BUILD_UNAME))
+#  error MUX_BUILD_ vars not defined
+#endif
+
+#define stringify(x) stringify_(x)
+#define stringify_(x) #x
 
 void do_version(dbref executor, dbref caller, dbref enactor, int eval, int key)
 {
@@ -21,68 +31,24 @@ void do_version(dbref executor, dbref caller, dbref enactor, int eval, int key)
     UNUSED_PARAMETER(key);
 
     notify(executor, mudstate.version);
-    UTF8 *buff = alloc_mbuf("do_version");
-    mux_sprintf(buff, MBUF_SIZE, T("Build date: %s"), MUX_BUILD_DATE);
-    notify(executor, buff);
-    free_mbuf(buff);
+    notify(executor, tprintf(T("%s\r\n"
+                               "Builder: %s\r\n"
+                               "Build time: %s\r\n"
+                               "Compiler: %s\r\n"
+                               "System: %s"),
+                             stringify(MUX_BUILD_VER_ID),
+                             stringify(MUX_BUILD_BUILDER),
+                             stringify(MUX_BUILD_TIME),
+                             stringify(MUX_BUILD_CXXVER),
+                             stringify(MUX_BUILD_UNAME)));
 }
 
 void build_version(void)
 {
-#if defined(WIN64)
-#if defined(ALPHA)
         mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s for Win64 #%s [ALPHA]"), MUX_VERSION, MUX_BUILD_NUM);
+                    T("MUX %s"), stringify(MUX_BUILD_VER_ID));
         mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s Alpha Win64"), MUX_VERSION);
-#elif defined(BETA)
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s for Win64 #%s [BETA]"), MUX_VERSION, MUX_BUILD_NUM);
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s Beta Win64"), MUX_VERSION);
-#else // RELEASED
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s for Win64 #%s [%s]"), MUX_VERSION, MUX_BUILD_NUM,
-            MUX_RELEASE_DATE);
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s Win64"), MUX_VERSION);
-#endif // ALPHA, BETA, RELEASED
-#elif defined(WIN32)
-#if defined(ALPHA)
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s for Win32 #%s [ALPHA]"), MUX_VERSION, MUX_BUILD_NUM);
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s Alpha Win32"), MUX_VERSION);
-#elif defined(BETA)
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s for Win32 #%s [BETA]"), MUX_VERSION, MUX_BUILD_NUM);
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s Beta Win32"), MUX_VERSION);
-#else // RELEASED
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s for Win32 #%s [%s]"), MUX_VERSION, MUX_BUILD_NUM,
-            MUX_RELEASE_DATE);
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s Win32"), MUX_VERSION);
-#endif // ALPHA, BETA, RELEASED
-#else // WIN32
-#if defined(ALPHA)
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s #%s [ALPHA]"), MUX_VERSION, MUX_BUILD_NUM);
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s Alpha"), MUX_VERSION);
-#elif defined(BETA)
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s #%s [BETA]"), MUX_VERSION, MUX_BUILD_NUM);
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s Beta"), MUX_VERSION);
-#else // RELEASED
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-            T("MUX %s #%s [%s]"), MUX_VERSION, MUX_BUILD_NUM, MUX_RELEASE_DATE);
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-            T("MUX %s"), MUX_VERSION);
-#endif // ALPHA, BETA, RELEASED
-#endif // WIN32
+                    T("MUX %s"), stringify(MUX_BUILD_VER_ID));
 }
 
 void init_version(void)
@@ -93,6 +59,6 @@ void init_version(void)
     ENDLOG;
     STARTLOG(LOG_ALWAYS, "INI", "START");
     log_text(T("Build date: "));
-    log_text((UTF8 *)MUX_BUILD_DATE);
+    log_text((UTF8 *)stringify(MUX_BUILD_TIME));
     ENDLOG;
 }

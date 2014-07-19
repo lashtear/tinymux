@@ -1,98 +1,82 @@
 # Makefile for TinyMUX 2.12
-#
-# Search for the text 'CONFIGURATION SECTION' and make any changes needed
-# there.
-#
 
 SHELL=/bin/sh
 srcdir = @srcdir@
 VPATH = @srcdir@
-BIN = ../game/bin
 CC = @CC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 LIBS = @LIBS@
 
+.DEFAULTS: all
+
 .SUFFIXES: .cpp
 
-# After we finish beta testing, we'll take away the debugging -g flag.
-# If you don't use GCC, don't use -g. Add -pg for profiling (gprof netmux
-# gmon.out)
-#
-#OPTIM = -O
-#OPTIM = -g -pg -O
 OPTIM = -g -O3 -fno-omit-frame-pointer -Wall -Werror
 
 # Base source and object files for building netmux
 #
-NETMUX_BASE_SRC = _build.cpp alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp \
-    bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp db.cpp \
-    db_rw.cpp eval.cpp file_c.cpp flags.cpp funceval.cpp funceval2.cpp \
-    functions.cpp funmath.cpp game.cpp help.cpp htab.cpp local.cpp log.cpp \
-    look.cpp mail.cpp match.cpp mathutil.cpp mguests.cpp modules.cpp move.cpp \
-    muxcli.cpp netcommon.cpp object.cpp predicates.cpp player.cpp player_c.cpp \
-    plusemail.cpp powers.cpp quota.cpp rob.cpp pcre.cpp set.cpp sha1.cpp \
-    speech.cpp stringutil.cpp strtod.cpp svdrand.cpp svdhash.cpp timer.cpp \
-    timeabsolute.cpp timedelta.cpp timeparser.cpp timeutil.cpp timezone.cpp \
-    unparse.cpp utf8tables.cpp vattr.cpp walkdb.cpp wild.cpp wiz.cpp levels.cpp
-NETMUX_BASE_OBJ = _build.o alarm.o alloc.o attrcache.o boolexp.o bsd.o \
-    command.o comsys.o conf.o cque.o create.o db.o db_rw.o eval.o file_c.o \
-    flags.o funceval.o funceval2.o functions.o funmath.o game.o help.o \
-    htab.o local.o log.o look.o mail.o match.o mathutil.o mguests.o modules.o \
-    move.o muxcli.o netcommon.o object.o predicates.o player.o player_c.o \
-    plusemail.o powers.o quota.o rob.o pcre.o set.o sha1.o speech.o \
-    stringutil.o strtod.o svdrand.o svdhash.o timer.o timeabsolute.o \
-    timedelta.o timeparser.o timeutil.o timezone.o unparse.o utf8tables.o \
-    vattr.o walkdb.o wild.o wiz.o levels.o
 
-# Base sources and object files for building @DYNAMICLIB_TARGET@
-#
-LIBMUX_BASE_SRC = libmux.cpp
-LIBMUX_BASE_OBJ = libmux.o
+TARGETS = netmux slave @DYNAMICLIB_TARGET@ @STUBSLAVE_TARGET@
+all: $(TARGETS)
+
+NETMUX_CXX = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp bsd.cpp	\
+    command.cpp comsys.cpp conf.cpp cque.cpp create.cpp db.cpp		\
+    db_rw.cpp eval.cpp file_c.cpp flags.cpp funceval.cpp		\
+    funceval2.cpp functions.cpp funmath.cpp game.cpp help.cpp		\
+    htab.cpp levels.cpp local.cpp log.cpp look.cpp mail.cpp match.cpp	\
+    mathutil.cpp mguests.cpp modules.cpp move.cpp muxcli.cpp		\
+    netcommon.cpp object.cpp pcre.cpp player.cpp player_c.cpp		\
+    plusemail.cpp powers.cpp predicates.cpp quota.cpp rob.cpp set.cpp	\
+    sha1.cpp speech.cpp stringutil.cpp strtod.cpp svdhash.cpp		\
+    svdrand.cpp timeabsolute.cpp timedelta.cpp timeparser.cpp		\
+    timer.cpp timeutil.cpp timezone.cpp unparse.cpp utf8tables.cpp	\
+    vattr.cpp walkdb.cpp wild.cpp wiz.cpp
+SLAVE_CXX = slave.cpp
+LIBMUX_CXX = libmux.cpp
+STUBSLAVE_CXX = stubslave.cpp
+VER_CXX = version.cpp
+
+# ucptable.cpp is included by pcre.cpp (!)
+pcre.o: ucptable.cpp
+
+NETMUX_OBJ = $(NETMUX_CXX:.cpp=.o)
+SLAVE_OBJ = $(SLAVE_CXX:.cpp=.o)
+LIBMUX_OBJ = $(LIBMUX_CXX:.cpp=.o)
+STUBSLAVE_OBJ = $(STUBSLAVE_CXX:.cpp=.o)
+VER_OBJ = $(VER_CXX:.cpp=.o)
+
 MUX_LIBS = @MUX_LIBS@
 DL_LIB = @DL_LIB@
 
 # Version number routines
 #
-VER_SRC = version.cpp
-VER_OBJ = version.o
-VER_FLG = -DMUX_BUILD_DATE="\"`date`\"" \
-          -DMUX_BUILD_NUM="\"`sh ./buildnum.sh`\""
+# Pull the version from git, if possible-- otherwise look for release.txt.
+VER_ID_SRC=$(notdir $(firstword $(strip $(wildcard ../../.git) $(wildcard release.txt))))
+VER_ID=$(if $(filter .git,$(VER_ID_SRC)),$(GITDESC),\
+	  $(if $(filter release.txt,$(VER_ID_SRC)),$(shell cat release.txt),\
+	  $(error Unable to determine source version. VER_ID_SRC is $(VER_ID_SRC))))
 
-DEFS =
+GITDESC = $(shell git describe --tags --long --dirty)
+BUILDER = $(LOGNAME)@$(shell hostname)
+BUILDTIME = $(shell date)
+CXXVER = $(shell $(CXX) --version | head -n1)
+UNAME = $(shell uname -a)
+VER_FLG = -DMUX_BUILD_VER_ID="$(VER_ID)" \
+	  -DMUX_BUILD_BUILDER="$(BUILDER)" \
+	  -DMUX_BUILD_TIME="$(BUILDTIME)" \
+	  -DMUX_BUILD_CXXVER="$(CXXVER)" \
+	  -DMUX_BUILD_UNAME="$(UNAME)"
 
-
-# Auxiliary source files: only used by offline utilities.
-#
-AUX_SRC = unsplit.cpp
 ALLCXXFLAGS = $(CXXFLAGS) $(OPTIM)
 
 # Compiliation source files.
 #
-ALLSRC     = $(NETMUX_BASE_SRC) $(LIBMUX_BASE_SRC) $(VER_SRC) $(AUX_SRC)
-NETMUX_SRC = $(NETMUX_BASE_SRC)
-NETMUX_OBJ = $(NETMUX_BASE_OBJ)
+ALLSRC = $(NETMUX_CXX) $(SLAVE_CXX) $(LIBMUX_CXX) $(STUBSLAVE_CXX) $(VER_CXX)
+# not VER_CXX...
 
 .cpp.o:
 	$(CXX) $(ALLCXXFLAGS) -c $<
-
-all: @DYNAMICLIB_TARGET@ netmux slave @STUBSLAVE_TARGET@
-
-# deprecated
-links: netmux slave @STUBSLAVE_TARGET@
-	cd ../game/bin ; rm -f dbconvert ; ln -s ../../src/netmux dbconvert
-	cd ../game/bin ; rm -f netmux ; ln -s ../../src/netmux netmux
-	cd ../game/bin ; rm -f slave ; ln -s ../../src/slave slave
-	( if [ ! -z "@STUBSLAVE_TARGET@" -a -f "@STUBSLAVE_TARGET@" ]; then \
-		cd ../game/bin ;\
-		rm -f @STUBSLAVE_TARGET@ ;\
-		ln -s ../../src/@STUBSLAVE_TARGET@ @STUBSLAVE_TARGET@ ;\
-		fi )
-	( if [ ! -z "@DYNAMICLIB_TARGET@" -a -f "@DYNAMICLIB_TARGET@" ]; then \
-		cd ../game/bin ;\
-		rm -f @DYNAMICLIB_TARGET@ ;\
-		ln -s ../../src/@DYNAMICLIB_TARGET@ @DYNAMICLIB_TARGET@ ;\
-		 fi )
 
 stubslave: stubslave.o
 	$(CXX) $(ALLCXXFLAGS) -o stubslave stubslave.o -L. $(LIBS) $(MUX_LIBS) $(STUBLIBS)
@@ -100,49 +84,51 @@ stubslave: stubslave.o
 slave: slave.o
 	$(CXX) $(ALLCXXFLAGS) -o slave slave.o $(LIBS)
 
-unsplit: unsplit.o
-	$(CXX) $(ALLCXXFLAGS) -o unsplit unsplit.o
+netmux: $(NETMUX_OBJ) $(VER_CXX) @DYNAMICLIB_TARGET@
+	$(CXX) $(ALLCXXFLAGS) $(VER_FLG) -c $(VER_CXX) || $(RM) $(VER_OBJ)
+	$(CXX) $(ALLCXXFLAGS) \
+	    -o netmux $(NETMUX_OBJ) $(VER_OBJ) -L. $(LIBS) $(MUX_LIBS) \
+	    && $(RM) $(VER_OBJ)
 
-netmux: $(NETMUX_OBJ) $(VER_SRC)
-	$(CXX) $(ALLCXXFLAGS) $(VER_FLG) -c $(VER_SRC)
-	( if [ -f netmux ]; then mv -f netmux netmux~ ; fi )
-	$(CXX) $(ALLCXXFLAGS) -o netmux $(NETMUX_OBJ) $(VER_OBJ) -L. $(LIBS) $(MUX_LIBS)
+@DYNAMICLIB_TARGET@: $(LIBMUX_CXX)
+	$(CXX) $(ALLCXXFLAGS) @DYNAMICLIB_CPPFLAGS@ \
+	    -o @DYNAMICLIB_TARGET@ $(LIBMUX_CXX) $(LIBS) $(DL_LIB)
 
-@DYNAMICLIB_TARGET@: $(LIBMUX_BASE_SRC)
-	( if [ -f @DYNAMICLIB_TARGET@ ]; then mv -f @DYNAMICLIB_TARGET@ @DYNAMICLIB_TARGET@~ ; fi )
-	$(CXX) $(ALLCXXFLAGS) @DYNAMICLIB_CPPFLAGS@ -o @DYNAMICLIB_TARGET@ $(LIBMUX_BASE_SRC) $(LIBS) $(DL_LIB)
-
-BASIC_CLEAN=$(wildcard *.o *~ a.out core gmon.out warn.log)
+BASIC_CLEAN=$(strip $(wildcard *.o *~ a.out core gmon.out warn.log) $(PRODUCTS))
 CONFIGS=$(wildcard config.log config.status Makefile depend)
 PRODUCTS=$(wildcard netmux dbconvert @DYNAMICLIB_TARGET@ @STUBSLAVE_TARGET@)
 
 realclean:
-	rm -f $(BASIC_CLEAN) $(CONFIGS) $(PRODUCTS)
+	rm -f $(strip $(BASIC_CLEAN) $(CONFIGS))
 
 clean:
 	rm -f $(BASIC_CLEAN)
 
+# fixme detect doxygen/latex in autoconf...
 docs:
 	doxygen
 	( cd doxygen/latex; make )
 
-ALLCODE=$(wildcard *.h *.cpp)
+ALLCODE=$(wildcard *.h *.cpp modules/*.h modules/*.cpp)
 TAGS: $(ALLCODE)
 	etags $(ALLCODE)
 tags: $(ALLCODE)
 	ctags $(ALLCODE)
 
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(MAKECMDGOALS),realclean)
 configure: configure.ac
 	autoconf
-
 autoconf.h: autoconf.h.in configure.ac
 	autoheader
-
 config.status Makefile: Makefile.in configure
 	./configure
 
-depend: Makefile $(ALLSRC) $(wildcard *.h *.cpp)
+depend: Makefile $(ALLSRC)
 	@echo Regenerating dependencies
-	@$(CXX) -MM $(ALLSRC) > depend || rm depend
-
+	@$(CXX) -MM $(VER_FLG) $(ALLSRC) > depend || rm depend
 -include depend
+endif
+endif
+
+# end
