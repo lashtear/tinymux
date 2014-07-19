@@ -19,7 +19,9 @@ Makefile
 *.a
 autoconf.h
 *~
-mux/src/buildnum.data
 mux/src/netmux
 mux/src/slave
 autom4te.cache
+depend
+TAGS
+tags
