@@ -9,6 +9,7 @@ CXXCPP = @CXXCPP@
 LIBS = @LIBS@
 
 .DEFAULTS: all
+.PHONY: all clean realclean mods docs
 
 .SUFFIXES:
 .SUFFIXES: .o .cpp .@DYNAMICLIB_EXT@
@@ -109,16 +110,23 @@ PRODUCTS=$(wildcard netmux dbconvert @DYNAMICLIB_TARGET@ @STUBSLAVE_TARGET@)
 
 realclean:
 	$(MAKE) -C modules $@
-	rm -f $(strip $(BASIC_CLEAN) $(CONFIGS))
+	rm -rf $(strip $(BASIC_CLEAN) $(CONFIGS) $(wildcard doxygen))
 
 clean:
 	$(MAKE) -C modules $@
 	rm -f $(BASIC_CLEAN)
 
-# fixme detect doxygen/latex in autoconf...
 docs:
+ifeq (1,@HAVE_DOXYGEN@)
 	doxygen
-	( cd doxygen/latex; make )
+ifeq (1,@HAVE_PDFLATEX@)
+	$(MAKE) -C doxygen/latex
+else
+	@echo 'No pdflatex installed; skipping PDF docs'
+endif
+else
+	@echo 'No doxygen installed; skipping docs'
+endif
 
 ALLCODE=$(wildcard *.h *.cpp modules/*.h modules/*.cpp)
 TAGS: $(ALLCODE)
