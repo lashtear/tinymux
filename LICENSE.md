@@ -1,6 +1,9 @@
-Transcribed from `mux/src/copyright.h`.
+Mostly transcribed from `mux/src/copyright.h`.
 
 # Base copyright notices
+
+Mechanipus MUX Source code (2.12+)
+Portions copyright © 2014 by Emily Backes
 
 MUX Source Code (version 2.0 through 2.12).
 Copyright © 1999-2004 by Solid Vertical Domains, Ltd.
@@ -10,8 +13,7 @@ TinyMUX Source Code (versions 1.0 through 1.6)
 Copyright © 1995, 1996, 1997, 1998, 1999, David Passmore.
 
 TinyMUSH 2.2 Source Code
-Copyright © 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, Lydia Leong,
-Jean Marie Diaz, and Deborah Wilson-Hooker.
+Copyright © 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, Lydia Leong, Jean Marie Diaz, and Deborah Wilson-Hooker.
 
 TinyMUSH 2.0 Source code
 Copyright © 1991, Joseph Traub and Glenn Crocker. All rights reserved.
@@ -69,7 +71,7 @@ The intent of this document is to state the conditions under which a Package may
   8. The name of the Copyright Holder may not be used to endorse or promote products derived from this software without specific prior written permission.
   9. *This package is provided “as is” and without any express or implied warranties, including, without limitation, the implied warranties of merchantibility and fitness for a particular purpose.*
 
-The author may be reached via email at brazilofmux@gmail.com.
+The author may be reached via email at lashtear@gmail.com.
 
 
 

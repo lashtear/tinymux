@@ -1,12 +1,12 @@
 /*! \file copyright.h
  * \brief Copyright notice in comments.
  *
- * $Id$
- *
  */
 
-/* -*-C-*- */
 /*
+ * Mechanipus MUX Source code (2.12+)
+ * Portions copyright (c) 2014 by Emily Backes
+ *
  * MUX Source Code (version 2.0 through 2.12).
  * Copyright (C) 1999-2004 by Solid Vertical Domains, Ltd.
  * Copyright (C) 2005-2012 Stephen Dennis
@@ -157,7 +157,7 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * The author may be reached via email at brazilofmux@gmail.com.
+ * The author may be reached via email at lashtear@gmail.com.
  *
  *
  *
