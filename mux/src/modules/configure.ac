@@ -20,7 +20,7 @@ AC_USE_SYSTEM_EXTENSIONS
 #   -lcposix: ISC is obsolete as of 2006-07-23.
 AC_SEARCH_LIBS([strerror],[cposix])
 AC_SEARCH_LIBS([sqrt],[m])
-AC_SEARCH_LIBS([mysql_init],[mysqlclient],,,[z])
+AC_SEARCH_LIBS([mysql_init],[mysqlclient])
 
 AC_MSG_CHECKING(for dlopen)
 AC_SEARCH_LIBS([dlopen],[dl])
@@ -46,13 +46,15 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 AC_SUBST(MODULE_EXT)
 AC_SUBST(MODULE_CPPFLAGS)
 AC_SUBST(MUX_LIBS)
+AC_MSG_CHECKING(for gperftools TCMalloc)
+AC_CHECK_LIB([tcmalloc],[malloc])
 
 # Checks for header files.
 #
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_TIME
-AC_CHECK_HEADERS([mysql.h])
+AC_CHECK_HEADERS([mysql/mysql.h])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

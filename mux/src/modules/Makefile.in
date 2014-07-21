@@ -1,42 +1,54 @@
 CXX = @CXX@
 
-ALLSRC     = funcs.cpp sample.cpp sum.cpp sqlproxy.cpp sqlslave.cpp
+MODS_CXX = funcs.cpp sample.cpp sum.cpp sqlproxy.cpp sqlslave.cpp
 
-all: funcs.so sample.so sum.so sqlproxy.so sqlslave.so
+PRODUCTS = $(MODS_CXX:.cpp=.@MODULE_EXT@)
 
-funcs.so: funcs.cpp funcs.h ../autoconf.h ../config.h ../libmux.h ../modules.h
-	( if [ -f funcs.so ]; then mv -f funcs.so funcs.so~ ; fi )
-	$(CXX) @MODULE_CPPFLAGS@ -o funcs.so funcs.cpp -L.. @MUX_LIBS@
-	( if [ -f funcs.so ]; then cd ../../game/bin ; rm -f funcs.so ; ln -s ../../src/modules/funcs.so funcs.so ; fi )
+all: $(PRODUCTS)
 
-sample.so: sample.cpp sample.h ../autoconf.h ../config.h ../libmux.h ../modules.h
-	( if [ -f sample.so ]; then mv -f sample.so sample.so~ ; fi )
-	$(CXX) @MODULE_CPPFLAGS@ -o sample.so sample.cpp -L.. @MUX_LIBS@
-	( if [ -f sample.so ]; then cd ../../game/bin ; rm -f sample.so ; ln -s ../../src/modules/sample.so sample.so ; fi )
+.SUFFIXES:
+.SUFFIXES: .o .cpp .@MODULE_EXT@
 
-sum.so: sum.cpp sum.h ../autoconf.h ../config.h ../libmux.h ../modules.h
-	( if [ -f sum.so ]; then mv -f sum.so sum.so~ ; fi )
-	$(CXX) @MODULE_CPPFLAGS@ -o sum.so sum.cpp -L.. @MUX_LIBS@
-	( if [ -f sum.so ]; then cd ../../game/bin ; rm -f sum.so ; ln -s ../../src/modules/sum.so sum.so ; fi )
+% : RCS/%,v
+% : RCS/%
+% : %,v
+% : s.%
+% : SCCS/s.%
 
-sqlproxy.so: sqlproxy.cpp sql.h ../autoconf.h ../config.h ../libmux.h ../modules.h
-	( if [ -f sqlproxy.so ]; then mv -f sqlproxy.so sqlproxy.so~ ; fi )
-	$(CXX) @MODULE_CPPFLAGS@ -o sqlproxy.so sqlproxy.cpp -L.. @MUX_LIBS@
-	( if [ -f sqlproxy.so ]; then cd ../../game/bin ; rm -f sqlproxy.so ; ln -s ../../src/modules/sqlproxy.so sqlproxy.so ; fi )
+.cpp.@MODULE_EXT@:
+	$(CXX) @MODULE_CPPFLAGS@ -o $@ $< -L.. @MUX_LIBS@ @LIBS@
 
-sqlslave.so: sqlslave.cpp sql.h ../autoconf.h ../config.h ../libmux.h ../modules.h
-	( if [ -f sqlslave.so ]; then mv -f sqlslave.so sqlslave.so~ ; fi )
-	$(CXX) @MODULE_CPPFLAGS@ -o sqlslave.so sqlslave.cpp -L.. @MUX_LIBS@
-	( if [ -f sqlslave.so ]; then cd ../../game/bin ; rm -f sqlslave.so ; ln -s ../../src/modules/sqlslave.so sqlslave.so ; fi )
+$(PRODUCTS): ../libmux.@MODULE_EXT@
 
-depend: $(ALLSRC) ../unsplit
-	for i in $(ALLSRC) ; do $(CXX) $(CXXFLAGS) @MODULE_CPPFLAGS@ -M $$i; done | ../unsplit > .depend~
-	mv .depend~ .depend
+../libmux.@MODULE_EXT@: ../Makefile
+	( cd ..; make $(notdir $@) )
 
-clean:
-	-rm -f *.o a.out core gmon.out warn.log config.status config.log funcs.so~ sample.so~ sum.so~ sqlproxy.so~ sqlslave.so~
+../Makefile: ../Makefile.in ../configure ../autoconf.h.in
+	( cd ..; ./configure )
+
+BASIC_CLEAN=$(strip $(wildcard *.o *~ a.out core gmon.out warn.log) $(PRODUCTS))
+CONFIGS=$(wildcard config.log config.status Makefile depend)
 
 realclean:
-	-rm -f *.o a.out core gmon.out warn.log config.status config.log funcs.so funcs.so~ sample.so sample.so~ sum.so sum.so~ sqlproxy.so sqlproxy.so~ sqlslave.so sqlslave.so~ autoconf.h Makefile
+	rm -f $(strip $(BASIC_CLEAN) $(CONFIGS))
 
-include .depend
+clean:
+	rm -f $(BASIC_CLEAN)
+
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(MAKECMDGOALS),realclean)
+configure autoconf.h.in: configure.ac
+	autoconf -f
+	autoheader -f
+Makefile autoconf.h: Makefile.in configure autoconf.h.in
+	./configure && touch autoconf.h Makefile
+$(wildcard *.o *.@MODULE_EXT@): Makefile
+
+depend: Makefile $(MODS_CXX)
+	@echo Regenerating dependencies
+	@$(CXX) -MM $(MODS_CXX) > depend || rm depend
+-include depend
+endif
+endif
+
+# end

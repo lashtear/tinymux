@@ -10,7 +10,14 @@ LIBS = @LIBS@
 
 .DEFAULTS: all
 
-.SUFFIXES: .cpp
+.SUFFIXES:
+.SUFFIXES: .o .cpp .@DYNAMICLIB_EXT@
+
+% : RCS/%,v
+% : RCS/%
+% : %,v
+% : s.%
+% : SCCS/s.%
 
 OPTIM = -g -O3 -fno-omit-frame-pointer -Wall -Werror
 
@@ -18,7 +25,10 @@ OPTIM = -g -O3 -fno-omit-frame-pointer -Wall -Werror
 #
 
 TARGETS = netmux slave @DYNAMICLIB_TARGET@ @STUBSLAVE_TARGET@
-all: $(TARGETS)
+all: $(TARGETS) mods
+
+mods:
+	$(MAKE) -C modules
 
 NETMUX_CXX = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp bsd.cpp	\
     command.cpp comsys.cpp conf.cpp cque.cpp create.cpp db.cpp		\
@@ -77,9 +87,12 @@ ALLSRC = $(NETMUX_CXX) $(SLAVE_CXX) $(LIBMUX_CXX) $(STUBSLAVE_CXX) $(VER_CXX)
 
 .cpp.o:
 	$(CXX) $(ALLCXXFLAGS) -c $<
+.cpp.@DYNAMICLIB_EXT@:
+	$(CXX) $(ALLCXXFLAGS) @DYNAMICLIB_CPPFLAGS@ \
+		-o $@ $< @LIBS@ $(DL_LIB)
 
 stubslave: stubslave.o
-	$(CXX) $(ALLCXXFLAGS) -o stubslave stubslave.o -L. $(LIBS) $(MUX_LIBS) $(STUBLIBS)
+	$(CXX) $(ALLCXXFLAGS) -o stubslave stubslave.o -L. $(MUX_LIBS) $(STUBLIBS) $(LIBS)
 
 slave: slave.o
 	$(CXX) $(ALLCXXFLAGS) -o slave slave.o $(LIBS)
@@ -87,21 +100,19 @@ slave: slave.o
 netmux: $(NETMUX_OBJ) $(VER_CXX) @DYNAMICLIB_TARGET@
 	$(CXX) $(ALLCXXFLAGS) $(VER_FLG) -c $(VER_CXX) || $(RM) $(VER_OBJ)
 	$(CXX) $(ALLCXXFLAGS) \
-	    -o netmux $(NETMUX_OBJ) $(VER_OBJ) -L. $(LIBS) $(MUX_LIBS) \
+	    -o netmux $(NETMUX_OBJ) $(VER_OBJ) -L. $(MUX_LIBS) $(LIBS) \
 	    && $(RM) $(VER_OBJ)
-
-@DYNAMICLIB_TARGET@: $(LIBMUX_CXX)
-	$(CXX) $(ALLCXXFLAGS) @DYNAMICLIB_CPPFLAGS@ \
-	    -o @DYNAMICLIB_TARGET@ $(LIBMUX_CXX) $(LIBS) $(DL_LIB)
 
 BASIC_CLEAN=$(strip $(wildcard *.o *~ a.out core gmon.out warn.log) $(PRODUCTS))
 CONFIGS=$(wildcard config.log config.status Makefile depend)
 PRODUCTS=$(wildcard netmux dbconvert @DYNAMICLIB_TARGET@ @STUBSLAVE_TARGET@)
 
 realclean:
+	$(MAKE) -C modules $@
 	rm -f $(strip $(BASIC_CLEAN) $(CONFIGS))
 
 clean:
+	$(MAKE) -C modules $@
 	rm -f $(BASIC_CLEAN)
 
 # fixme detect doxygen/latex in autoconf...
@@ -117,12 +128,12 @@ tags: $(ALLCODE)
 
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),realclean)
-configure: configure.ac
-	autoconf
-autoconf.h: autoconf.h.in configure.ac
-	autoheader
-config.status Makefile: Makefile.in configure
-	./configure
+configure autoconf.h.in: configure.ac
+	autoconf -f
+	autoheader -f
+Makefile autoconf.h: Makefile.in configure autoconf.h.in
+	./configure && touch autoconf.h Makefile
+$(wildcard *.o): Makefile
 
 depend: Makefile $(ALLSRC)
 	@echo Regenerating dependencies

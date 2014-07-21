@@ -118,6 +118,8 @@ AC_USE_SYSTEM_EXTENSIONS
 #
 # The following may be removeable:
 #   -lcposix: ISC is obsolete as of 2006-07-23.
+AC_MSG_CHECKING(for gperftools TCMalloc)
+AC_CHECK_LIB([tcmalloc],[malloc])
 AC_SEARCH_LIBS([strerror],[cposix])
 AC_SEARCH_LIBS([crypt],[crypt])
 AC_SEARCH_LIBS([socket],[socket inet])
@@ -126,7 +128,8 @@ AC_SEARCH_LIBS([inet_addr],[nsl])
 AC_SEARCH_LIBS([sqrt],[m])
 AC_SEARCH_LIBS([SSL_library_init],[ssl])
 AC_SEARCH_LIBS([EVP_DigestInit],[crypto])
-AC_SEARCH_LIBS([mysql_init],[mysqlclient],,,[z])
+AC_SEARCH_LIBS([deflate],[z])
+AC_SEARCH_LIBS([mysql_init],[mysqlclient])
 
 AC_MSG_CHECKING(for dlopen)
 LIBS_SAVE=$LIBS
@@ -179,7 +182,8 @@ AC_CHECK_HEADERS(fpu_control.h ieeefp.h fenv.h float.h)
 AC_CHECK_HEADERS(netinet/in.h arpa/inet.h netdb.h sys/socket.h)
 AC_CHECK_HEADERS([openssl/ssl.h])
 AC_CHECK_HEADERS([openssl/evp.h])
-AC_CHECK_HEADERS([mysql.h])
+AC_CHECK_HEADERS([mysql/mysql.h])
+AC_CHECK_HEADERS([zlib.h])
 AS_MESSAGE([checking for sys_errlist decl...])
 if test $ac_cv_header_errno_h = no; then
     AC_DEFINE([NEED_SYS_ERRLIST_DCL], [], [Define if you need to declare sys_errlist yourself.])
