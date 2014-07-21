@@ -58,7 +58,7 @@ It is not appropriate for all games or environments and is currently in a very r
 * Build/Packaging
   * Finish (start?) updating the packaging so that a Debian-style install becomes the norm; users wanting in-homedir builds can use `--prefix=$HOME/tinymux` or the like, though perhaps that should be the default.
   * Migration tools to somewhat-safely move existing mushes into the new style separated game/binary setup.
-  * Unified tools for automated backups, a la [mux-git-backup](https://github.com/lashtear/mux-git-backup) and Loki's (@kkragenbrik) S3 backup tools for mushes.
+  * Unified tools for automated backups, a la [mux-git-backup](https://github.com/lashtear/mux-git-backup) and Loki's (@kkragenbrink) S3 backup tools for mushes.
   * Use automake and libtool to simplify libmux.so machinery.
   * Re-organize the build-tree to make Omega a more commonly used and accessible tool because it's amazingly useful.
   * Simplify the color-matching code to give better results on low-color displays.
