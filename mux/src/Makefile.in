@@ -29,7 +29,7 @@ TARGETS = netmux slave @DYNAMICLIB_TARGET@ @STUBSLAVE_TARGET@
 all: $(TARGETS) mods
 
 mods:
-	$(MAKE) -C modules
+	+$(MAKE) -C modules
 
 NETMUX_CXX = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp bsd.cpp	\
     command.cpp comsys.cpp conf.cpp cque.cpp create.cpp db.cpp		\
@@ -109,11 +109,11 @@ CONFIGS=$(wildcard config.log config.status Makefile depend)
 PRODUCTS=$(wildcard netmux dbconvert @DYNAMICLIB_TARGET@ @STUBSLAVE_TARGET@)
 
 realclean:
-	$(MAKE) -C modules $@
+	+$(MAKE) -C modules $@
 	rm -rf $(strip $(BASIC_CLEAN) $(CONFIGS) $(wildcard doxygen))
 
 clean:
-	$(MAKE) -C modules $@
+	+$(MAKE) -C modules $@
 	rm -f $(BASIC_CLEAN)
 
 docs:

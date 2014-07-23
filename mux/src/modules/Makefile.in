@@ -21,7 +21,7 @@ all: $(PRODUCTS)
 $(PRODUCTS): ../libmux.@MODULE_EXT@
 
 ../libmux.@MODULE_EXT@: ../Makefile
-	( cd ..; make $(notdir $@) )
+	+$(MAKE) -C .. $(notdir $@)
 
 ../Makefile: ../Makefile.in ../configure ../autoconf.h.in
 	( cd ..; ./configure )
