@@ -310,8 +310,6 @@ extern void desc_addhash(DESC *);
 
 // From predicates.cpp
 //
-#define alloc_desc(s) (DESC *)pool_alloc(POOL_DESC, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_desc(b) pool_free(POOL_DESC,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
 extern void handle_prog(DESC *d, UTF8 *message);
 
 // From player.cpp

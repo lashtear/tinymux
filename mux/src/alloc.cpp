@@ -14,6 +14,20 @@
 #include "config.h"
 #include "externs.h"
 
+#if defined(HAVE_LIBTCMALLOC)
+
+void list_bufstats(dbref player)
+{
+    notify(player, T("Running under TCMalloc; no bufstats available."));
+}
+
+void list_buftrace(dbref player)
+{
+    notify(player, T("Running under TCMalloc; no buftrace available."));
+}
+
+#else // HAVE_LIBTCMALLOC
+
 /*! \brief Per-buffer header to manage and organize client allocation.
  *
  * The POOLHDR structure preceeds a client area which must be properly
@@ -507,7 +521,9 @@ void pool_free(int poolnum, __in UTF8 *buf, __in const UTF8 *file, const int lin
     }
 }
 
-void pool_free_lbuf(__in_ecount(LBUF_SIZE) UTF8 *buf, __in const UTF8 *file, const int line)
+void pool_free_lbuf(__in_ecount(LBUF_SIZE) UTF8 *buf,
+                    __in const UTF8 *file,
+                    const int line)
 {
     if (buf == NULL)
     {
@@ -674,3 +690,5 @@ void pool_reset(void)
         pools[i].max_alloc = pools[i].num_alloc;
     }
 }
+
+#endif // HAVE_LIBTCMALLOC
