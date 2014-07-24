@@ -19,6 +19,7 @@ It is not appropriate for all games or environments and is currently in a very r
   * Use .gitignore and friends as we're not futzing with SVN and none of this is interesting to the SVN half of TinyMUX development.
   * Remove the VisualC project files and solutions because I can't keep them current and intend to build with MSYS or similar anyway.
   * Remove the asinine `buildnum.sh` crap left over from MUSH and rework the version code to report something actually *useful* based on `git describe` output.  For releases, this will pull from `release.txt`, so this does not make git mandatory for people trying to build a stable release.
+  * Implement ATCP using @raelik's code.
 
 ## Plans / ToDo items
 
@@ -32,7 +33,7 @@ It is not appropriate for all games or environments and is currently in a very r
 * Network
   * Move to libevent.
   * Move SSL/TLS support into a stubslave so we can carry clients across a restart. (Penn style).
-  * Implement telnet-level MSSP, consider ATCP (hi @raelik).
+  * Implement telnet-level MSSP.
   * Add a native websocket server in support of modern javascript clients.
   * LDAP - in support of SSO with common mush-community web services like wikis and forums.
     * Implement authentication of incoming connections via an external LDAP server.

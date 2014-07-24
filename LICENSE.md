@@ -4,6 +4,7 @@ Mostly transcribed from `mux/src/copyright.h`.
 
 Mechanipus MUX Source code (2.12+)
 Portions copyright © 2014 by Emily Backes
+Portions copyright © 2012 by xardion@maleficium.org (ATCP code)
 
 MUX Source Code (version 2.0 through 2.12).
 Copyright © 1999-2004 by Solid Vertical Domains, Ltd.
