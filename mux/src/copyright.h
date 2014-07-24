@@ -6,7 +6,7 @@
 /*
  * Mechanipus MUX Source code (2.12+)
  * Portions copyright (c) 2014 by Emily Backes
- * Portions copyright (c) 2012 by xardion@maleficium.org (ATCP code)
+ * Portions copyright (c) 2012 by Blane Dabney (ATCP code)
  *
  * MUX Source Code (version 2.0 through 2.12).
  * Copyright (C) 1999-2004 by Solid Vertical Domains, Ltd.
