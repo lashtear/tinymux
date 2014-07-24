@@ -246,8 +246,8 @@ void raw_notify_atcp(dbref player, const mux_string &sMsg)
     }
 
     DESC *d;
-    const char IAC_SB_ATCP[3] = {NVT_IAC, NVT_SB, TELNET_ATCP};
-    const char IAC_SE[2] = {NVT_IAC, NVT_SE};
+    const unsigned char IAC_SB_ATCP[3] = {NVT_IAC, NVT_SB, TELNET_ATCP};
+    const unsigned char IAC_SE[2] = {NVT_IAC, NVT_SE};
     DESC_ITER_PLAYER(player, d)
     {
         queue_write_LEN(d, IAC_SB_ATCP, 3);
