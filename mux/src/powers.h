@@ -49,9 +49,6 @@
 
 /* Second word of powers */
 #define POW_BUILDER     0x00000001  /* Can build */
-#ifdef HAVE_FIRANMUX
-#define POW_IMMUTABLE   0x00000002  /* Can not change */
-#endif // HAVE_FIRANMUX
 
 /* ---------------------------------------------------------------------------
  * POWERENT: Information about object powers.
@@ -112,9 +109,6 @@ extern bool decode_power(dbref player, UTF8 *powername, POWERSET *pset);
 #define Prog(c)             (((Powers(c) & POW_PROG) != 0) || Wizard(c))
 #define Pass_Locks(c)       ((Powers(c) & POW_PASS_LOCKS) != 0)
 #define Builder(c)          (((Powers2(c) & POW_BUILDER) != 0) || WizRoy(c))
-#ifdef HAVE_FIRANMUX
-#define Immutable(c)        ((Powers2(c) & POW_IMMUTABLE) != 0)
-#endif // HAVE_FIRANMUX
 
 #define Can_SiteAdmin(c)    (((Powers(c) & POW_SITEADMIN) != 0) || Wizard(c))
 

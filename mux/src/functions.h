@@ -158,9 +158,6 @@ XFUNCTION(fun_lrand);
 XFUNCTION(fun_lrooms);
 XFUNCTION(fun_mail);
 XFUNCTION(fun_mailfrom);
-#if defined(HAVE_FIRANMUX)
-XFUNCTION(fun_mailj);
-#endif // HAVE_FIRANMUX
 XFUNCTION(fun_mailsize);
 XFUNCTION(fun_mailsubj);
 XFUNCTION(fun_matchall);
@@ -211,10 +208,6 @@ XFUNCTION(fun_tel);
 XFUNCTION(fun_textfile);
 XFUNCTION(fun_trigger);
 XFUNCTION(fun_wipe);
-#if defined(HAVE_FIRANMUX)
-XFUNCTION(fun_setparent);
-XFUNCTION(fun_setname);
-#endif // HAVE_FIRANMUX
 
 // In netcommon.cpp
 XFUNCTION(fun_doing);

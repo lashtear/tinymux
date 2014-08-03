@@ -89,11 +89,7 @@ static void process_leave_loc(dbref thing, dbref dest, dbref cause, bool canhear
         if (  (  !Dark(thing)
               && !Dark(loc))
            || (  canhear
-#if defined(HAVE_FIRANMUX)
-              && !Dark(thing)))
-#else
               && !(Wizard(thing) && Dark(thing))))
-#endif // HAVE_FIRANMUX
         {
 #ifdef HAVE_REALITY_LVLS
             notify_except2_rlevel(loc, thing, thing, cause,
@@ -139,19 +135,11 @@ static void process_enter_loc(dbref thing, dbref src, dbref cause, bool canhear,
                     && (  Dark(thing)
                        || Dark(loc))
                     && (  !canhear
-#if defined(HAVE_FIRANMUX)
-                       || Dark(thing))));
-#else
                        || (  Wizard(thing)
                           && Dark(thing)))));
-#endif // HAVE_FIRANMUX
 
     int oattr = quiet ? 0 : A_OENTER;
-#if defined(HAVE_FIRANMUX)
-    int aattr = (hush & HUSH_ENTER) ? 0 : A_AENTER;
-#else
     int aattr = quiet ? 0 : A_AENTER;
-#endif // HAVE_FIRANMUX
     int pattr = (!mudconf.terse_movemsg && Terse(thing)) ? 0 : A_ENTER;
 
     did_it(thing, loc, pattr, NULL, oattr, NULL, aattr, 0, NULL, 0);
@@ -174,11 +162,7 @@ static void process_enter_loc(dbref thing, dbref src, dbref cause, bool canhear,
        && canhear
        && !Blind(thing)
        && !Blind(loc)
-#if defined(HAVE_FIRANMUX)
-       && !Dark(thing))
-#else
        && !(Dark(thing) && Wizard(thing)))
-#endif // HAVE_FIRANMUX
     {
 #ifdef HAVE_REALITY_LVLS
         notify_except2_rlevel(loc, thing, thing, cause,
@@ -351,10 +335,6 @@ void move_via_generic(dbref thing, dbref dest, dbref cause, int hush)
     move_object(thing, dest);
     did_it(thing, thing, A_MOVE, NULL, A_OMOVE, NULL, A_AMOVE, 0, NULL, 0);
 
-#if defined(HAVE_FIRANMUX)
-    did_it(thing, thing, A_LEAD, NULL, A_OLEAD, NULL, A_ALEAD, 0, NULL, 0);
-#endif // HAVE_FIRANMUX
-
     process_enter_loc(thing, src, cause, canhear, hush);
 }
 
@@ -371,15 +351,10 @@ static void move_via_exit(dbref thing, dbref dest, dbref cause, dbref exit, int 
     dbref src = Location(thing);
     bool canhear = Hearer(thing);
 
-#if defined(HAVE_FIRANMUX)
-    bool quiet = Dark(thing) || (hush & HUSH_EXIT);
-    int aattr = (hush & HUSH_EXIT) ? 0 : A_ASUCC;
-#else
     // Dark wizards don't trigger OSUCC/ASUCC
     bool quiet = (  (Wizard(thing) && Dark(thing))
                  || (hush & HUSH_EXIT));
     int aattr = quiet ? 0 : A_ASUCC;
-#endif // HAVE_FIRANMUX
 
     int oattr = quiet ? 0 : A_OSUCC;
     int pattr = (!mudconf.terse_movemsg && Terse(thing)) ? 0 : A_SUCC;
@@ -387,21 +362,13 @@ static void move_via_exit(dbref thing, dbref dest, dbref cause, dbref exit, int 
     process_leave_loc(thing, dest, cause, canhear, hush);
     move_object(thing, dest);
 
-#if defined(HAVE_FIRANMUX)
-    aattr = (hush & HUSH_EXIT) ? 0 : A_ADROP;
-#else
     aattr = quiet ? 0 : A_ADROP;
-#endif // HAVE_FIRANMUX
 
     oattr = quiet ? 0 : A_ODROP;
     pattr = (!mudconf.terse_movemsg && Terse(thing)) ? 0 : A_DROP;
     did_it(thing, exit, pattr, NULL, oattr, NULL, aattr, 0, NULL, 0);
 
     did_it(thing, thing, A_MOVE, NULL, A_OMOVE, NULL, A_AMOVE, 0, NULL, 0);
-
-#if defined(HAVE_FIRANMUX)
-    did_it(thing, thing, A_LEAD, NULL, A_OLEAD, NULL, A_ALEAD, 0, NULL, 0);
-#endif
 
     process_enter_loc(thing, src, cause, canhear, hush);
     process_sticky_dropto(src, thing);
@@ -480,11 +447,6 @@ bool move_via_teleport(dbref thing, dbref dest, dbref cause, int hush)
     }
     did_it(thing, thing, A_MOVE, NULL, A_OMOVE, NULL, A_AMOVE,
         0, NULL, 0);
-
-#if defined(HAVE_FIRANMUX)
-    did_it(thing, thing, A_LEAD, NULL, A_OLEAD, NULL, A_ALEAD,
-           0, NULL, 0);
-#endif // HAVE_FIRANMUX
 
     process_enter_loc(thing, src, NOTHING, canhear, hush);
     divest_object(thing);
@@ -581,19 +543,12 @@ void move_exit(dbref player, dbref exit, bool divest, const UTF8 *failmsg, int h
             bDoit = true;
         }
     }
-#else
-#if defined(HAVE_FIRANMUX)
-    if (Immobile(player))
-    {
-        notify(player, mudconf.immobile_msg);
-        return;
-    }
-#endif // HAVE_FIRANMUX
+#else // HAVE_WOD_REALMS
     if (Good_obj(loc) && could_doit(player, exit, A_LOCK))
     {
         bDoit = true;
     }
-#endif
+#endif // HAVE_WOD_REALMS
 
     if (bDoit)
     {
@@ -624,11 +579,7 @@ void move_exit(dbref player, dbref exit, bool divest, const UTF8 *failmsg, int h
         if ((Wizard(player) && Dark(player)) || (hush & HUSH_EXIT))
         {
             oattr = 0;
-#if defined(HAVE_FIRANMUX)
-            aattr = (hush & HUSH_EXIT) ? 0 : A_AFAIL;
-#else
             aattr = 0;
-#endif // HAVE_FIRANMUX
         }
         else
         {
@@ -666,14 +617,6 @@ void do_move(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
             return;
         }
 
-#if defined(HAVE_FIRANMUX)
-        if (Immobile(executor))
-        {
-            notify(executor, mudconf.immobile_msg);
-            return;
-        }
-#endif // HAVE_FIRANMUX
-
         if (  (loc = Location(executor)) != NOTHING
            && !Dark(executor)
            && !Dark(loc)
@@ -701,11 +644,7 @@ void do_move(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
     //
     init_match_check_keys(executor, direction, TYPE_EXIT);
 
-#if defined(HAVE_FIRANMUX)
-    match_exit_with_parents();
-#else
     match_exit();
-#endif // HAVE_FIRANMUX
 
     exit = match_result();
     switch (exit)

@@ -146,15 +146,15 @@
   The following switches are available:
 
      /access   - Changes the access to the named attribute.  <value> is a
-                 space-separated list of permissions to add or remove from
-                 the attribute's access permissions. For a list of possible
-                 values, see the related topic given below.
+		 space-separated list of permissions to add or remove from
+		 the attribute's access permissions. For a list of possible
+		 values, see the related topic given below.
 
      /delete   - Removes the named attribute from the attribute table.
-                 This switch does not remove instances of the attribute from
-                 objects, and any that remain will be renamed to the
-                 user-named attribute that re-uses the attribute number
-                 of the deleted attribute.
+		 This switch does not remove instances of the attribute from
+		 objects, and any that remain will be renamed to the
+		 user-named attribute that re-uses the attribute number
+		 of the deleted attribute.
 
      /rename   - Changes the name of the named attribute to <value>.
 
@@ -184,7 +184,7 @@
 @BOOT
 
   COMMAND: @boot[/quiet] <player>
-           @boot/port <port#>
+	   @boot/port <port#>
 
   Severs the named player's connection to the game.  The player is given a
   notice that they have been booted.  If the player is connected to the game
@@ -195,7 +195,7 @@
     /quiet - Don't give the booted player any special notice.
 
     /port  - Disconnects only a specific port.  In this case, <port#> must
-             be the port number obtained from the SESSION command.
+	     be the port number obtained from the SESSION command.
 
   Related Topics: @destroy, @toad, SESSION.
 
@@ -320,13 +320,13 @@
     building      - Allows players to use the building commands.
     checkpointing - Enables periodic database checkpoint dumping.
     cleaning      - Enables periodic scanning of the database for rooms
-                    to be destroyed.
+		    to be destroyed.
     dequeueing    - Allows commands to be removed from the queue and
-                    executed.
+		    executed.
     idlechecking  - Enables periodic checking for and booting of idle
-                    players.
+		    players.
     interpret     - Enables execution of commands that place commands
-                    on the queue.
+		    on the queue.
     logins        - Allows nonwizard players to connect to their characters.
     eventchecking - Enables certain attribute events (@daily, etc) to occur.
 
@@ -356,14 +356,14 @@
   All of the following switches may by used individually or together:
 
      flatfile   - Dump an internally consistent flatfile which together
-                  with the mail and comsystem databases represent the
-                  entire database of game -- useful in a variety of ways
-                  including for a backup and for moving from one host to
-                  another.
+		  with the mail and comsystem databases represent the
+		  entire database of game -- useful in a variety of ways
+		  including for a backup and for moving from one host to
+		  another.
      structure  - Dump the structure portion of the database to a linear
-                  human-readable file.
+		  human-readable file.
      text       - Ensure that all changes to the text portion of the
-                  database are written out to disk.
+		  database are written out to disk.
 
   Note that the above structure and text options will cause your database and
   certain caches to be out of sync. They should NOT be used in the course
@@ -382,13 +382,13 @@
     building      - Allows players to use the building commands.
     checkpointing - Enables periodic database checkpoint dumping.
     cleaning      - Enables periodic scanning of the database for rooms
-                    to be destroyed.
+		    to be destroyed.
     dequeueing    - Allows commands to be removed from the queue and
-                    executed.
+		    executed.
     idlechecking  - Enables periodic checking for and booting of idle
-                    players.
+		    players.
     interpret     - Enables execution of commands that place commands
-                    on the queue.
+		    on the queue.
     logins        - Allows nonwizard players to connect to their characters.
     eventchecking - Enables certain attribute events (@daily, etc) to occur.
 
@@ -505,48 +505,48 @@
   attributes.  You may specify multiple hooks on items.  The HOOK_OBJ is
   an @admin param that specifies the hook object.  The following hooks exist:
 
-         /before    - Set up a BEFORE hook which will execute before the
-                      corresponding built-in command/attribute is executed.
-                      The HOOK_OBJ attribute is b_<command>.
+	 /before    - Set up a BEFORE hook which will execute before the
+		      corresponding built-in command/attribute is executed.
+		      The HOOK_OBJ attribute is b_<command>.
 
-         /after     - Set up an AFTER hook on a command which will execute
-                      after the corresponding built-in command/attribute is
-                      executed.  The HOOK_OBJ attribute is a_<command>.
+	 /after     - Set up an AFTER hook on a command which will execute
+		      after the corresponding built-in command/attribute is
+		      executed.  The HOOK_OBJ attribute is a_<command>.
 
-         /permit    - Affects command permission.  Return BOOLEAN TRUE to
-                      permit. Return FALSE to notify the enactor with
-                      'Permission denied.'.  The HOOK_OBJ attribute is
-                      p_<command>.
+	 /permit    - Affects command permission.  Return BOOLEAN TRUE to
+		      permit. Return FALSE to notify the enactor with
+		      'Permission denied.'.  The HOOK_OBJ attribute is
+		      p_<command>.
 
-         /ignore    - Return BOOLEAN FALSE to ignore the corresponding
-                      built-in command.  Any matching softcoded commands
-                      continue to be handled.  The HOOK_OBJ attribute is
-                      i_<command>.
+	 /ignore    - Return BOOLEAN FALSE to ignore the corresponding
+		      built-in command.  Any matching softcoded commands
+		      continue to be handled.  The HOOK_OBJ attribute is
+		      i_<command>.
 
-         /igswitch  - Specifies that any non-matching /switch to the command
-                      falls through and is handled by softcode.  This allows
-                      you to softcode switches to built-in commands.
+	 /igswitch  - Specifies that any non-matching /switch to the command
+		      falls through and is handled by softcode.  This allows
+		      you to softcode switches to built-in commands.
 
 { 'wizhelp @hook2' for more }
 
 & @HOOK2
 @HOOK (continued)
 
-         /fail      - Set up a FAIL hook which executes if the command is
-                      somehow block by a @hook/permit or @icmd/disable.
-                      The HOOK_OBJ attribute is af_<command>.
+	 /fail      - Set up a FAIL hook which executes if the command is
+		      somehow block by a @hook/permit or @icmd/disable.
+		      The HOOK_OBJ attribute is af_<command>.
 
-         /args      - Set up a ARGS hook which will execute once per
-                      argument passed to a built-in command. %0 is the first
-                      argument, %1 is the second argument, %2 is the
-                      argument in a list, %3 is which argument (starting
-                      at 0 with list arguments starting at 2), and %4 is the
-                      list of switches passed verbatim.
+	 /args      - Set up a ARGS hook which will execute once per
+		      argument passed to a built-in command. %0 is the first
+		      argument, %1 is the second argument, %2 is the
+		      argument in a list, %3 is which argument (starting
+		      at 0 with list arguments starting at 2), and %4 is the
+		      list of switches passed verbatim.
 
-         /clear     - When used in junction with any of the above switches,
-                      will clear the hook from being applied.
+	 /clear     - When used in junction with any of the above switches,
+		      will clear the hook from being applied.
 
-         /list      - This lists the current commands/attributes with hooks.
+	 /list      - This lists the current commands/attributes with hooks.
 
 { 'wizhelp @hook3' for examples}
 
@@ -571,7 +571,7 @@
     ---------------------------------+---------------------------------------
     Built-in Attribute               | Hook Mask Values
     ---------------------------------+---------------------------------------
-                               -- No @hooks defined --
+			       -- No @hooks defined --
     ---------------------------------+---------------------------------------
 
   Related Topics: hook_obj, hook_cmd, HOOK SETUP.
@@ -586,17 +586,17 @@
   This command is available only to #1.
   Possible switches are:
     /ON       - Turn on personal command parsing so that it checks
-                against invalid commands for the player. (Default)
+		against invalid commands for the player. (Default)
     /OFF      - Turn off personal command parsing so that commands
-                by player parses normally.
+		by player parses normally.
     /DISABLE  - Disables the given command so it returns a
-                Permission Denied. (Default)
+		Permission Denied. (Default)
     /IGNORE   - This command actually removes from existence the
-                specified commands from the user's standpoint so
-                that it is skipped upon command execution checks.
+		specified commands from the user's standpoint so
+		that it is skipped upon command execution checks.
     /CHECK    - Displays a list of the specified players current
-                disabled commands and at what level.
-                1=disabled   2=ignored
+		disabled commands and at what level.
+		1=disabled   2=ignored
     /CLEAR    - Removes all icmd information from player.
 
 { Type 'wizhelp @icmd2' for more switches }
@@ -608,16 +608,16 @@
   Continued Switches:
 
     /IROOM    - This sets commands ignored on the location.
-                This is a NON-PLAYER.
+		This is a NON-PLAYER.
     /DROOM    - This sets commands disabled on the location.
-                This is a NON-PLAYER.
+		This is a NON-PLAYER.
     /CROOM    - Clears disabled/ignored commands on target location.
-                This is a NON-PLAYER.
+		This is a NON-PLAYER.
     /LROOM    - List disabled/ignored commands on target location.
-                This is a NON-PLAYER.
+		This is a NON-PLAYER.
     /LALLROOM - List all disabled/ignored commands at location
-                and zones from location.  Listings that start with
-                'z' are zonemasters.
+		and zones from location.  Listings that start with
+		'z' are zonemasters.
 
 { Type 'wizhelp @icmd3' for examples and syntax }
 
@@ -646,7 +646,7 @@
     @icmd/iroom here=!@pemit, !@emit, @pemit, @emit
 
   Example:  @icmd/ignore majortwit=page,",:,say,pose,@emit,@pemit,whisper,;
-            @icmd/ignore dimwit=page,!say,!",pose,:
+	    @icmd/ignore dimwit=page,!say,!",pose,:
 
   Related Topics: access
 
@@ -693,17 +693,17 @@
   Information is reported for the following pools:
 
     Lbufs    - Large buffers, used when handling data input by the user,
-               object attributes, the results of interpreting commands, and
-               many other places.
+	       object attributes, the results of interpreting commands, and
+	       many other places.
     Mbufs    - Medium-sized buffers, for when an sbuf is too small but an lbuf
-               is too large.
+	       is too large.
     Sbufs    - Small buffers, for when you need only a little space.
     Bools    - Boolean expressions, used when evaluating locks.
     Descs    - Network descriptors, one is used for each connected player.
     Qentries - Queue entries, one is used for each command placed on the
-               queue. (@wait, @trigger, @switch, @dolist, etc).
+	       queue. (@wait, @trigger, @switch, @dolist, etc).
     Lbufrefs - Reference counting structures for the lbufs that hold global
-               r-register contents.
+	       r-register contents.
     Regrefs  - Reference counting structures for global r-registers.
 
   Related Topics: @list buffers.
@@ -784,7 +784,7 @@
   exits, and robots when they are created.
 
   Related Topics: player_flags, thing_flags, room_flags, exit_flags,
-                  robot_flags.
+		  robot_flags.
 
 & @LIST FLAGS
 @LIST FLAGS
@@ -811,18 +811,18 @@
   @disable commands.  The following parameters are displayed.
 
     building      - Indicates whether or not commands that alter the
-                    structure of the database are allowed.
+		    structure of the database are allowed.
     checkpointing - Indicates whether or not the database is to be
-                    periodically written to disk.
+		    periodically written to disk.
     cleaning      - Indicates whether or not the database is to be
-                    periodically checked for deleted or disconnected rooms,
-                    and other connectivity problems.
+		    periodically checked for deleted or disconnected rooms,
+		    and other connectivity problems.
     dequeueing    - Indicates whether or not commands on the queue may be
-                    automatically executed.
+		    automatically executed.
     idlechecking  - Indicates whether or not the inactivity limits are
-                    enforced.
+		    enforced.
     interpret     - Indicates whether or not new commands may be added to
-                    the queue.
+		    the queue.
 
 { 'wizhelp @list globals2' for more }
 
@@ -830,11 +830,11 @@
 @LIST GLOBALS (continued)
 
     logins        - Indicates whether or not nonwizard players are allowed
-                    to connect.
+		    to connect.
 
   Related Topics: @dbck, @disable, @enable, @kick, @list permissions,
-                  @timewarp, checkpoint, conn_timeout, dump_interval,
-                  dump_offset, idle_interval, idle_timeout.
+		  @timewarp, checkpoint, conn_timeout, dump_interval,
+		  dump_offset, idle_interval, idle_timeout.
 
 & @LIST GUESTS
 @LIST GUESTS
@@ -856,13 +856,13 @@
     Size    - The number of hash buckets in the hash table.
     Entries - The number of entries currently in the hash table.
     Deleted - The number of entries that have been deleted from the hash
-              table.
+	      table.
     Empty   - The number of hash buckets with no entries.
     Lookups - The number of times the hash table has been searched.
     Hits    - The number of times that an item that was searched for was
-              found.
+	      found.
     Checks  - The total number of comparisons made against hash table entries
-              to see if they were the desired entry.
+	      to see if they were the desired entry.
     Longest - The maximum number of entries in one hash bucket.
 
 { 'wizhelp @list hashstats2' for more }
@@ -874,7 +874,7 @@
 
     Commands            - Internal MUX commands
     Logged-out commands - Commands valid whether or not you are connected
-                          (such as WHO and QUIT).
+			  (such as WHO and QUIT).
     Functions           - MUX functions, such as rand() and lexits().
     Flags               - Names of flags.
     Powers              - Names of powers.
@@ -977,16 +977,16 @@
      CPU time used, both user and system.
      Maximum resident size, in both pages and bytes.
      Integral resident size of the shared, private, and stack segments.
-        This number is not terribly useful.
+	This number is not terribly useful.
      Page faults, counting separately those that cause I/O and those that do
-        not.
+	not.
      Number of times the process has been swapped out.
      Number of real disk reads and writes done (possibly via NFS).
      Number of network packets read and written.
      Context switches, counting separately voluntary switches (as the result
-        of calling a blocking I/O routine) and involuntarily switches (as the
-        result of a timeslice end or a higher-priority process becoming
-        runnable).
+	of calling a blocking I/O routine) and involuntarily switches (as the
+	result of a timeslice end or a higher-priority process becoming
+	runnable).
      Signals received.
      How many file descriptors are available to the MUX.
 
@@ -999,23 +999,23 @@
 
     Address - The address to which this entry applies.
     Mask    - The mask that is ANDed to both the input address and the address
-              in the entry when checking to see if this entry is to be used.
+	      in the entry when checking to see if this entry is to be used.
     Status  - Indicates what type of access or restriction is to be applied.
 
   The following statuses may occur in the site access list:
 
       Forbid       - Connections from this site are rejected.
       Guest        - Connections from this site are allowed to connect as
-                     guests.
+		     guests.
       NoGuest      - Connections from this site are not allowed to connect as
-                     guests.
+		     guests.
       NoSitemon    - Surpress notifications normally given to those with the
-                     SITEMON flag.
+		     SITEMON flag.
       Permit       - Allow connections from this site.
       Register     - Connections from this site are accepted, new characters
-                     may not be created with the 'create' command, players
-                     wanting a character must get a wizard to create one for
-                     them.
+		     may not be created with the 'create' command, players
+		     wanting a character must get a wizard to create one for
+		     them.
 
 { 'wizhelp @list site_information2' for more }
 
@@ -1023,17 +1023,17 @@
 @LIST SITE_INFORMATION (continued)
 
       Sitemon      - Notify those with the SITEMON flag of network connections
-                     and disconnections along with the network address.
+		     and disconnections along with the network address.
       Suspect      - Notify logged-in wizards of any connects or disconnects
-                     from this site.
+		     from this site.
       Trust        - Don't notify wizards of connects or disconnects from this
-                     site.
+		     site.
 
   Default site attributes are: Guest, Permit, Sitemon, and Trust.
 
   Related Topics: forbid_site, guest_site, permit_site, register_site,
-                  reset_site, suspect_site, trust_site, nositemon_site,
-                  noguest_site.
+		  reset_site, suspect_site, trust_site, nositemon_site,
+		  noguest_site.
 
 & @LIST SWITCHES
 @LIST SWITCHES
@@ -1084,22 +1084,22 @@
   files may be listed:
 
      badsite_connect - shown when a connection is opened from a forbidden
-                       site.
+		       site.
      connect          - shown when a connection is opened from a site for
-                        which registration is not enforced.
+			which registration is not enforced.
      create_register  - shown when the 'create' command is used from a site
-                        for which registration is enforced.
+			for which registration is enforced.
      down             - shown when a non-wizard attempts to connect to or
-                        create a character when logins are disabled.
+			create a character when logins are disabled.
      full             - shown when a non-wizard attempts to connect to or
-                        create a character when the maximum number of connected
-                        players are connected.  Note that this is different
-                        from what happens when someone tries to connect but
-                        there are no free descriptors, which is
-                        machine-dependent (usually the connect attempt hangs
-                        or is rejected).
+			create a character when the maximum number of connected
+			players are connected.  Note that this is different
+			from what happens when someone tries to connect but
+			there are no free descriptors, which is
+			machine-dependent (usually the connect attempt hangs
+			or is rejected).
      guest_motd       - shown to guest characters immediately after they
-                        connect.
+			connect.
 
 { 'wizhelp @list_file2' for more }
 
@@ -1107,19 +1107,19 @@
 @LIST_FILE (continued)
 
      motd             - shown to all players immediately after they connect.
-                        (except guests and players connecting for the first
-                        time)
+			(except guests and players connecting for the first
+			time)
      newuser          - shown to players the first time they connect in place
-                        of the motd file.
+			of the motd file.
      quit             - shown to players when they disconnect from the game.
      register_connect - shown when a connection is opened from a site for
-                        which registration is enforced.
+			which registration is enforced.
      wizard_motd      - shown to wizards when they connect in addition to
-                        the motd file.
+			the motd file.
 
   Related Topics: @readcache, badsite_file, connect_file, connect_reg_file,
-                  down_file, guest_file, motd_file, newuser_file, quit_file,
-                  register_create_file, wizard_motd_file.
+		  down_file, guest_file, motd_file, newuser_file, quit_file,
+		  register_create_file, wizard_motd_file.
 
 & @LOCK
 @LOCK
@@ -1191,13 +1191,13 @@
   The following switches are available:
 
      (No switches)   - Sets the message that all players see when they
-                       connect.
+		       connect.
      /wizard         - Sets the message that wizards see when they connect.
      /down           - Sets the message the players see when they try to
-                       connect, but fail because logins are disabled.
+		       connect, but fail because logins are disabled.
      /full           - Sets the message that players see when they try to
-                       connect, but fail because there are too many players
-                       already connected.
+		       connect, but fail because there are too many players
+		       already connected.
      /list           - Lists the current messages.
 
   Related Topics: @listmotd.
@@ -1254,7 +1254,7 @@
 @QUOTA
 
   Command: @quota[/<switches>] [<player>[=<quota>]]
-           @quota/all[/<switches>] [<quota>]]
+	   @quota/all[/<switches>] [<quota>]]
 
   Lists or sets the player's (or everyone's) remaining or total quota
   according to the switches used.
@@ -1263,7 +1263,7 @@
 
      /all       - Display or set the quota for all players.
      /fix       - Repair the remaining or total quota, assuming that the other
-                  is correct.
+		  is correct.
      /remaining - Set or repair the remaining quota.
      /set       - Set the remaining or total quota to the specified value.
      /total     - Set or repair the total quota.
@@ -1389,14 +1389,14 @@
   depending on the switches specified from the following list:
 
      /check    - The time left until the next consistency check and database
-                 cleaning.
+		 cleaning.
      /dump     - The time left until the next automatic checkpoint dump.
      /idle     - The time left until the next check for idle users.
      /queue    - (default) Adjusts the time-to-execute for all entries in the
-                 wait and semaphore queues.  Entries whose time-to-execute
-                 becomes less than the current time are then ready for
-                 execution. The contents of the object queue are also
-                 appended to the player queue.
+		 wait and semaphore queues.  Entries whose time-to-execute
+		 becomes less than the current time are then ready for
+		 execution. The contents of the object queue are also
+		 appended to the player queue.
 
   Note: these flags may be specified together if desired.
 
@@ -1528,10 +1528,10 @@ ATTRIBUTE PERMISSIONS
 
     const      - No one can change the attribute after the server starts.
     dark       - Attribute is not shown or readable to anyone but #1, but
-                 anyone can potentially change it.
+		 anyone can potentially change it.
     deleted    - Attribute should be ignored.  It is not included in the
-                 @dump.  Not recommended.  This appears to be a manual way to
-                 accomplish @dbclean.
+		 @dump.  Not recommended.  This appears to be a manual way to
+		 accomplish @dbclean.
     god        - Only #1 can change the attribute.
     hidden     - Only WIZARDS can see it.  Dark to mortals.
     ignore     - Don't create a @ command for it.  Not recommended.
@@ -1565,7 +1565,7 @@ ATTR_ACCESS
   The following privileges may be used:
 
   private     - The attribute is visible only to those who can examine the
-                object.
+		object.
   internal    - The attribute is not visible to anyone.
   wizard      - Only wizards may change the attribute.
   hidden      - The attribute is visible only to wizards.
@@ -1614,7 +1614,7 @@ ATTR_NAME_CHARSET
   character appears in any of the character sets, it is allowed.
 
   Related Topics: exit_name_charset, player_name_charset, room_name_charset,
-                  thing_name_charset.
+		  thing_name_charset.
 
 & AUTOZONE
 AUTOZONE
@@ -2391,7 +2391,7 @@ EXIT_NAME_CHARSET
   character appears in any of the character sets, it is allowed.
 
   Related Topics: attr_name_charset, player_name_charset, room_name_charset,
-                  thing_name_charset.
+		  thing_name_charset.
 
 & EXIT_PARENT
 EXIT_PARENT
@@ -2437,13 +2437,13 @@ FILES
   netmux.conf).
 
   badsite.txt:    Displayed when someone connects from a site that is not
-                  allowed to connect.  The connection is then closed.
+		  allowed to connect.  The connection is then closed.
   connect.txt:    Displayed when someone connects from a site for which
-                  registration is not enabled.
+		  registration is not enabled.
   create_reg.txt: Displayed when someone tries to 'create' a character from
-                  a site for which registration is enforced.
+		  a site for which registration is enforced.
   down.txt:       Displayed when someone tries to connect to a non-wizard
-                  character when logins are disabled.
+		  character when logins are disabled.
   help.txt:       File containing information displayed by the help command.
 
 { 'wizhelp files2' for more }
@@ -2452,23 +2452,23 @@ FILES
 FILES (continued)
 
   guest.txt:      Displayed to whoever connects to the guest character
-                  specified by the guest_character config parameter.
+		  specified by the guest_character config parameter.
   motd.txt:       Displayed after someone connects to an existing character.
   netmux.conf:    Configuration directives read at startup.
   news.txt:       File containing information displayed by the news command.
   newuser.txt:    Displayed after someone creates a new character or connects
-                  to their character for the first time.
+		  to their character for the first time.
   quit.txt:       Displayed after someone QUITs but before the net connection
-                  is closed.
+		  is closed.
   register.txt:   Displayed when someone connects from a site for which
-                  registration is enabled.
+		  registration is enabled.
   wizhelp.txt:    File containing information displayed by the wizhelp
-                  command.
+		  command.
   wizmotd.txt:    Displayed to wizards when they connect to their characters.
 
   Related Topics: badsite_file, connect_file, connect_reg_file, down_file,
-                  guest_file, helpfile, raw_helpfile, motd_file, newuser_file,
-                  quit_file, register_create_file, wizard_motd_file.
+		  guest_file, helpfile, raw_helpfile, motd_file, newuser_file,
+		  quit_file, register_create_file, wizard_motd_file.
 
 & FIND_MONEY_CHANCE
 FIND_MONEY_CHANCE
@@ -2528,10 +2528,10 @@ FLAG_ACCESS
   any             - Anyone can set this flag.
   god             - Only God can set this flag.
   privileged      - Only God can set this flag on players, but non-robot
-                    players can set it on objects of other types, if they
-                    themselves have the flag.
+		    players can set it on objects of other types, if they
+		    themselves have the flag.
   restrict_player - Only Wizards can set this flag on players, but mortals can
-                    set the flag on objects of other types.
+		    set the flag on objects of other types.
   royalty         - Only Royalty, Wizards, and God can set this flag.
   staff           - Only Staff, Royalty, Wizards, and God can set this flag.
   wizard          - Only Wizards and God can set this flag.
@@ -2593,8 +2593,8 @@ FORBID_SITE
   be allowed to connect, none forbidden.
 
   Related Topics: badsite_file, guest_site, noguest_site, nositemon-site,
-                  permit_site, register_site, reset_site, suspect_site,
-                  trust_site, SITE LIST, SITE NOTATION,
+		  permit_site, register_site, reset_site, suspect_site,
+		  trust_site, SITE LIST, SITE NOTATION,
 
 & FORK_DUMP
 FORK_DUMP
@@ -2835,7 +2835,7 @@ GUEST_CHAR_NUM
   can only be changed via the configuration file.
 
   Related Topics: guest_prefix, guest_nuker, number_guests, access,
-                  min_guests, guest_site.
+		  min_guests, guest_site.
 
 & GUEST_FILE
 GUEST_FILE
@@ -2861,7 +2861,7 @@ GUEST_NUKER
   object or a wizard, it defaults to #1.
 
   Related Topics: guest_char_num, guest_prefix, number_guests, min_guests,
-                  guest_site.
+		  guest_site.
 
 &GUEST_PREFIX
 GUEST_PREFIX
@@ -2887,8 +2887,8 @@ GUEST_SITE
   is used in conjunction with noguest_site.
 
   Related Topics: allow_guest_from_registered_site, badsite_file, forbid_site,
-                  noguest_site, permit_site, register_site, reset_site,
-                  SITE LIST, SITE NOTATION.
+		  noguest_site, permit_site, register_site, reset_site,
+		  SITE LIST, SITE NOTATION.
 
 & HAVE_COMSYS
 HAVE_COMSYS
@@ -3006,8 +3006,8 @@ HOOK SETUP
   5)  The BEFORE and AFTER switches are automatically processed if existing.
 
   6)  The following attributes on the global hook object (hook_obj) exist:
-         I_<command> - ignore            P_<command> - permit
-         A_<command> - after             B_<command> - before
+	 I_<command> - ignore            P_<command> - permit
+	 A_<command> - after             B_<command> - before
 
 { see 'wizhelp hook setup2' for examples }
 
@@ -3128,19 +3128,6 @@ IDLE_WIZ_DARK
   dark by this action will have a 'd' instead of a 'D' by their idle time
   in the privileged WHO listing.
 
-& IMMOBILE_MESSAGE
-IMMOBILE_MESSAGE
-
-  CONFIG PARAMETER: immobile_message <string>
-  DEFAULT: none
-
-  Specifies the string that is sent to a player when they try to move
-  while their IMMOBILE flag is set.
-
-  This configuration option is only available with --enable-firanmux.
-
-  Related Topics: fixed_home_message, fixed_tel_message.
-
 & INCLUDE
 INCLUDE
 
@@ -3227,7 +3214,7 @@ KILL_GUARANTEE_COST
   The chance of a successful kill is <amount spent> / <kill_guarantee_cost>.
 
   Related Topics: kill, kill_max_cost, kill_min_cost, HAVEN, IMMORTAL,
-                  KILLING.
+		  KILLING.
 
 & KILL_MAX_COST
 KILL_MAX_COST
@@ -3242,7 +3229,7 @@ KILL_MAX_COST
   of failing.
 
   Related Topics: kill, kill_guarantee_cost, kill_min_cost, HAVEN, IMMORTAL,
-                  KILLING.
+		  KILLING.
 
 & KILL_MIN_COST
 KILL_MIN_COST
@@ -3254,7 +3241,7 @@ KILL_MIN_COST
   something.
 
   Related Topics: kill, kill_guarantee_cost, kill_max_cost, HAVEN, IMMORTAL,
-                  KILLING.
+		  KILLING.
 
 & LAG_LIMIT
 LAG_LIMIT
@@ -3344,12 +3331,12 @@ LOG
 
   CONFIG PARAMETER: log [!]<logoption> [[!]<logoption>]...
   DEFAULT: bugs checkpoints config_changes create logins network problems
-           security shouts startup suspect time_usage wizard
+	   security shouts startup suspect time_usage wizard
 
   Specifies what types of events are to be logged to the logfile.
 
     accounting     - Write an accounting record to the log for each player
-                     who disconnects.
+		     who disconnects.
     all_commands   - Record all commands executed.
     bad_commands   - Record commands entered that did not match anything.
     buffer_alloc   - Record buffer allocates and frees.
@@ -3449,7 +3436,7 @@ LOOK_OBEY_TERSE
   players.
 
   Related Topics: terse_shows_contents, terse_shows_exits,
-                  terse_shows_move_messages.
+		  terse_shows_move_messages.
 
 & MACHINE_COMMAND_COST
 MACHINE_COMMAND_COST
@@ -3562,7 +3549,7 @@ MARKED
   be run immediately before turning automatic cleaning back on.
 
   Related Topics: @apply_marked, @dbck, @disable, @enable, @list, @mark,
-                  @mark_all.
+		  @mark_all.
 
 & MASTER_ROOM
 MASTER_ROOM
@@ -3761,8 +3748,8 @@ NOGUEST_SITE
   in conjunction with guest_site.
 
   Related Topics: allow_guest_from_registered_site, badsite_file, forbid_site,
-                  guest_site, permit_site, register_site, reset_site,
-                  SITE LIST, SITE NOTATION,
+		  guest_site, permit_site, register_site, reset_site,
+		  SITE LIST, SITE NOTATION,
 
 & NOSITEMON_SITE
 NOSITEMON_SITE
@@ -3871,7 +3858,7 @@ PASSWORD_METHODS
   DEFAULT: none (which defaults to sha1)
 
     sha1      - A built-in method based on SHA-1 which is sufficient and
-                provides interoperability between UNIX and Windows.
+		provides interoperability between UNIX and Windows.
     des       - DES-based crypt available on most UNIX flavors.
     md5       - More secure MD5-based crypt available on most UNIX flavors.
     sha256    - SHA-256 which is available in glibc on Linux.
@@ -3958,7 +3945,7 @@ PERMISSIONS
   This is a list of the valid permissions and their meanings:
 
     builder        - Must be Wizard, ROYALTY, or have the BUILDER power.
-    dark           - Feature is not shown but is still available (1).
+    dark           - Feature is not shown but is still available.
     disabled       - No one can use this feature.
 
 { 'wizhelp permissions2' for more }
@@ -3967,7 +3954,7 @@ PERMISSIONS
 PERMISSIONS (continued)
 
     global_build   - Requires the BUILDER power, Wizard/ROYALTY, or for
-                     building to be allowed game-wide.
+		     building to be allowed game-wide.
     global_interp  - Requires that global interpretation be turned on.
     god            - Only #1 may use this feature.
     head           - Must be set HEAD to use this feature.
@@ -3978,14 +3965,10 @@ PERMISSIONS (continued)
     need_location  - Only players and things may use this feature.
     need_player    - Only players may use this feature.
     no_haven       - Non-Wizard players with owners set HAVEN may not use this
-                     feature.
-    no_immobile    - Non-Wizard players with owners set IMMOBILE may not use
-                     this feature (2).
-    no_restricted  - Non-Wizard players with owners set RESTRICTED may not use
-                     this feature (2).
+		     feature.
     no_robot       - Non-Wizard players set ROBOT may not use this feature.
     no_slave       - Non-Wizard players with owners set SLAVE may not use this
-                     feature.
+		     feature.
 
 { 'wizhelp permissions3' for more }
 
@@ -3993,25 +3976,19 @@ PERMISSIONS (continued)
 PERMISSIONS (continued)
 
     no_suspect     - Non-Wizard players with owners set SUSPECT may not use
-                     this feature.
+		     this feature.
     no_guest       - Non-Wizards must not possess the GUEST power in order to
-                     use this feature.
+		     use this feature.
     no_uninspected - Only things which have been inspected can use this
-                     feature.
+		     feature.
     robot          - Only players set ROBOT can use this feature.
     staff          - Only STAFF/ROYALTY/IMMORTAL players can use this feature.
     static         - Nothing is allowed to use this feature after the server
-                     starts.  This is useful for controlling something in the
-                     configuration file that you do not want to be
-                     controllable via the @admin command.
+		     starts.  This is useful for controlling something in the
+		     configuration file that you do not want to be
+		     controllable via the @admin command.
     uninspected    - Only things marked uninspected can use this feature.
     wizard         - Only Wizards may use this feature.
-
-  Footnotes:
-
-    (1) The dark permission is not available with --enable-firanmux.
-    (2) The no_immobile and no_restricted permissions are only available with
-        --enable-firanmux.
 
 & PERMIT_SITE
 PERMIT_SITE
@@ -4025,7 +4002,7 @@ PERMIT_SITE
   The default is all sites permitted, none forbidden.
 
   Related Topics: badsite_file, forbid_site, guest_site, noguest_site,
-                  register_site, reset_site, SITE LIST, SITE NOTATION.
+		  register_site, reset_site, SITE LIST, SITE NOTATION.
 
 & PLAYER_FLAGS
 PLAYER_FLAGS
@@ -4081,7 +4058,7 @@ PLAYER_NAME_CHARSET
   character appears in any of the character sets, it is allowed.
 
   Related Topics: attr_name_charset, exit_name_charset, room_name_charset,
-                  thing_name_charset.
+		  thing_name_charset.
 
 & PLAYER_NAME_SPACES
 PLAYER_NAME_SPACES
@@ -4352,8 +4329,8 @@ REALITY LEVELS
   compile-time.
 
   Related topics: @rxlevel, @txlevel, def_player_rx, def_player_tx,
-                 def_thing_rx, def_thing_tx, def_room_rx, def_room_tx,
-                 reality_level, CANSEE()
+		 def_thing_rx, def_thing_tx, def_room_rx, def_room_tx,
+		 reality_level, CANSEE()
 
 & REALITY_LEVEL
 REALITY_LEVEL
@@ -4412,7 +4389,7 @@ REGISTER_SITE
   matches the specified <site>.
 
   Related Topics: forbid_site, guest_site, noguest_site, permit_site,
-                  reset_site, REGISTRATION, SITE LIST, SITE NOTATION.
+		  reset_site, REGISTRATION, SITE LIST, SITE NOTATION.
 
 & REGISTRATION
 REGISTRATION
@@ -4438,9 +4415,9 @@ RESET_SITE
   Remove any previously-made site restrictions contained within <site>.
 
   Related Topics: badsite_file, forbid_site, guest_site, noguest_site,
-                  nositemon_site, permit_site, register_site, reset_site,
-                  sitemon_site, suspect_site, trust_site, SITE LIST,
-                  SITE NOTATION.
+		  nositemon_site, permit_site, register_site, reset_site,
+		  sitemon_site, suspect_site, trust_site, SITE LIST,
+		  SITE NOTATION.
 
 & RESTRICT_HOME
 RESTRICT_HOME
@@ -4529,7 +4506,7 @@ ROOM_NAME_CHARSET
   character appears in any of the character sets, it is allowed.
 
   Related Topics: attr_name_charset, exit_name_charset, player_name_charset,
-                  room_name_charset, thing_name_charset.
+		  room_name_charset, thing_name_charset.
 
 & ROOM_PARENT
 ROOM_PARENT
@@ -4626,9 +4603,9 @@ SEARCH CRITERIA
   Syntax: {@mark|@search} [<player>] [<class>=<restriction>]
 
   <player>  - Restricts to objects owned by the named player.
-              By default, the search is limited to objects owned by the
-              invoking player, except when searching for players or if
-              the invoking player is a wizard.
+	      By default, the search is limited to objects owned by the
+	      invoking player, except when searching for players or if
+	      the invoking player is a wizard.
 
 { 'wizhelp search criteria2' for more }
 
@@ -4638,14 +4615,14 @@ SEARCH CRITERIA (continued)
   The following classes may be used when searching:
 
   TYPE      - Restricts to objects of the indicated type (OBJECTS, ROOMS,
-              EXITS, PLAYERS).
+	      EXITS, PLAYERS).
   NAME      - Restricts to objects whose names start with <restriction>.
   OBJECTS   - A combination of TYPE=OBJECT and NAME=<restriction>
   ROOMS     - A combination of TYPE=ROOM and NAME=<restriction>
   EXITS     - A combination of TYPE=EXIT and NAME=<restriction>
   PLAYERS   - A combination of TYPE=PLAYER and NAME=<restriction>
   FLAGS     - Restricts to objects which have the flags listed in
-              <restriction> set.
+	      <restriction> set.
 
   Related Topics: @mark, @search.
 
@@ -4717,8 +4694,8 @@ SIGNAL_ACTION
   possibilities are:
 
      default  - Log the error, produce a panic dump, dump a core file, and
-                restart the game using the last reliably saved database.
-                For a description of the restart process, see @restart.
+		restart the game using the last reliably saved database.
+		For a description of the restart process, see @restart.
      exit     - Log the error, and exit, hopefully with a core file.
 
   This configuration option cannot be changed after the server starts.  It
@@ -4767,9 +4744,9 @@ SITE LIST (continued)
   net are allowed to create their own characters.
 
   Related Topics: @admin, forbid_site, guest_site, @list site_information,
-                  noguest_site, nositemon_site, permit_site, register_site,
-                  reset_site, sitemon_site, suspect_site, trust_site,
-                  SITE NOTATION.
+		  noguest_site, nositemon_site, permit_site, register_site,
+		  reset_site, sitemon_site, suspect_site, trust_site,
+		  SITE NOTATION.
 
 & SITE NOTATION
 SITE NOTATION
@@ -4780,12 +4757,12 @@ SITE NOTATION
  There are two variations:
 
    <address> <mask>  - Each '1' bit in the <mask> indicates which
-                       corresponding bit of the <address> is signficant.
+		       corresponding bit of the <address> is signficant.
 
    <address>/<N>     - <N> is an integer that specifices the number of
-                       significant bits in the left-most part of the <address>.
-                       This notation is called CIDR IP prefix notation or
-                       'slash notation'.
+		       significant bits in the left-most part of the <address>.
+		       This notation is called CIDR IP prefix notation or
+		       'slash notation'.
 
  Both <address> and <mask> above use the same format (appear as either IPv4
  or IPv6 addresses).  The <mask> is additionally restricted in that its
@@ -5004,7 +4981,7 @@ STRIPPED_FLAGS
 
   CONFIG PARAMETER: stripped_flags <flags>
   DEFAULT: BLIND CONNECTED GAGGED HEAD_FLAG IMMORTAL INHERIT
-           ROYALTY SLAVE STAFF SUSPECT UNINSPECTED WIZARD
+	   ROYALTY SLAVE STAFF SUSPECT UNINSPECTED WIZARD
 
   Modifies the set of flags that are stripped from objects during @chown,
   @chownall, @clone, @chzone, and guest creation.  Flags prefixed by a !
@@ -5069,7 +5046,7 @@ TERSE_SHOWS_CONTENTS
   look if look_obey_terse is turned on.
 
   Related Topics: look_obey_terse, terse_shows_exits,
-                  terse_shows_move_messages.
+		  terse_shows_move_messages.
 
 & TERSE_SHOWS_EXITS
 TERSE_SHOWS_EXITS
@@ -5082,7 +5059,7 @@ TERSE_SHOWS_EXITS
   'real' look if look_obey_terse is turned on.
 
   Related Topics: look_obey_terse, terse_shows_contents,
-                  terse_shows_move_messages.
+		  terse_shows_move_messages.
 
 & TERSE_SHOWS_MOVE_MESSAGES
 TERSE_SHOWS_MOVE_MESSAGES
@@ -5130,7 +5107,7 @@ THING_NAME_CHARSET
   character appears in any of the character sets, it is allowed.
 
   Related Topics: attr_name_charset, exit_name_charset, player_name_charset,
-                  room_name_charset.
+		  room_name_charset.
 
 & THING_PARENT
 THING_PARENT
@@ -5198,7 +5175,7 @@ TOAD_RECIPIENT
   Example:
    > @pcreate Nobody=noone
    New player 'Nobody' created with password 'noone'
-             (dbref of #57)
+	     (dbref of #57)
 
    > @admin toad_recipient=57
 
@@ -5325,11 +5302,11 @@ WHO
 
      Room         - The room that the player is in.
      Commands     - The number of commands that the player has entered during
-                    this session (not counting machine commands).
+		    this session (not counting machine commands).
      Host flags   - located between the Commands and Host fields:
-                    F(forbidden), R(registration), +(suspect).
+		    F(forbidden), R(registration), +(suspect).
      Host         - The Internet host name or address from where the player has
-                    connected.
+		    connected.
 
   Related Topics: SESSION, DOING.
 
@@ -5398,4 +5375,3 @@ ZONE_RECURSION_LIMIT
 
   This directive specifies how far back to check a zone tree for control and
   commands.
-

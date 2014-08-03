@@ -4,10 +4,10 @@ HELP
   This is the TinyMUX online help facility.
 
      Notes on help descriptions:
-        [text] - Text enclosed in []'s is optional.  The []'s are never typed
-                 in as part of the command.
-        <parameter> - Information parameter for a command.  The <>'s are
-                      never typed in as part of the command.
+	[text] - Text enclosed in []'s is optional.  The []'s are never typed
+		 in as part of the command.
+	<parameter> - Information parameter for a command.  The <>'s are
+		      never typed in as part of the command.
 
   -  Syntax of help command:
        help [<command>]
@@ -188,8 +188,8 @@ $-COMMANDS
   player disconnects in that zone.
 
   Example: @aclone Time bomb = @wait 600=@trig me/va;@wait 10=@trig me/vb
-           @va time bomb = :EXPLODES with a thundering roar;@destroy me
-           @vb time bomb = :ticks.; @wait 10=@trig me/vb
+	   @va time bomb = :EXPLODES with a thundering roar;@destroy me
+	   @vb time bomb = :ticks.; @wait 10=@trig me/vb
 
   Related Topics: @clone.
 
@@ -211,7 +211,7 @@ $-COMMANDS
 
      a) if the zone object is a thing, execute its @aconnect.
      b) if the zone object is a room, execute any @aconnect found on any of
-        that room's contents.
+	that room's contents.
 
   Example:
     > @aconnect me=@mail
@@ -261,7 +261,7 @@ $-COMMANDS
 
      a) if the zone object is a thing, execute its @adisconnect.
      b) if the zone object is a room, execute any @adisconnect found on any of
-        that room's contents.
+	that room's contents.
 
   Example:
     > @adisconnect me = home
@@ -299,7 +299,7 @@ $-COMMANDS
   automatically triggered on rooms or exits.
 
   Example: @aefail car = @emit ;'s alarm starts wailing when %n tries
-                         to break in.
+			 to break in.
   Related Topics: @aenter, @efail, @ealias, @enter, @oefail, @oenter, enter,
       ENTER_OK.
 
@@ -316,7 +316,7 @@ $-COMMANDS
   be automatically triggered on exits.
 
   Example: @aenter car = :starts its engine, eagerly awaiting a road trip.;
-                         "Beep Beep!
+			 "Beep Beep!
 
   Related Topics: enter, @enter, @oenter, ENTER_OK.
 
@@ -384,18 +384,6 @@ $-COMMANDS
 
   Related Topics: kill, @kill and @okill, BEING KILLED, IMMORTAL, WIZARD.
 
-& @ALEAD
-@ALEAD
-
-  COMMAND:   @alead <object> = <command list>
-  ATTRIBUTE: Alead
-
-  Sets the <command list> executed when object is lead.
-
-  This attribute is only available with --enable-firanmux.
-
-  Related Topics: @lead, @olead.
-
 & @ALEAVE
 @ALEAVE
 
@@ -409,7 +397,7 @@ $-COMMANDS
   be automatically triggered on exits.
 
   Example: @aleave car = :stops to let %n out.;:revs its engine, hoping
-                         another brave soul would like a ride.
+			 another brave soul would like a ride.
 
   Related Topics: leave, @leave, @oleave.
 
@@ -460,7 +448,7 @@ Related Topics: @name.
   *never* @mail another player, as this could cause an infinite loop.
 
   Example: @amail me=@mail/file [mail()]=2
-           This would place all incoming messages in folder #2.
+	   This would place all incoming messages in folder #2.
 
   Related Topics: @mailsucc, @signature, @mail.
 
@@ -512,7 +500,7 @@ Related Topics: @name.
   automatically triggered on other object types.
 
   Example: @apay Coke machine = @clone Can of Coke; :drops a can on the
-                                floor.
+				floor.
 
   Related Topics: give, @cost, @opay, @pay.
 
@@ -544,7 +532,7 @@ Related Topics: @name.
   something that fails its give lock.
 
   Example: @arfail merchant = "I don't buy such junk. Begone!;
-                              @tel %#=cheater_exit
+			      @tel %#=cheater_exit
 
   Related Topics: give, @agfail, @gfail, @ogfail, @orfail, @rfail, @lock.
 
@@ -563,7 +551,7 @@ Related Topics: @name.
 
     /inline   - Evaluates <action list>, if present, inline.
     /queued   - Queues any <action list> to be evaluated in the next
-                queue cycle (default).
+		queue cycle (default).
 
   Examples:
     > @va obj=$testme *:@pemit %#=Before;@assert %0;@pemit %#=After
@@ -671,7 +659,7 @@ Related Topics: @name.
   automatically triggered on other object types.
 
   Example: @ause grenade = :EXPLODES with a thundering roar; kill %n=100;
-                           @destroy me
+			   @destroy me
   Related Topics: use, @ouse, @use.
 
 & @AWAY
@@ -705,7 +693,7 @@ Related Topics: @name.
 
     /inline   - Evaluates <action list>, if present, inline.
     /queued   - Queues any <action list> to be evaluated in the next
-                queue cycle (default).
+		queue cycle (default).
 
   Examples:
     > @va obj=$testme *:@pemit %#=Before;@break %0;@pemit %#=After
@@ -824,7 +812,7 @@ Related Topics: @name.
   The following switches are available:
 
     /noheader - Sends the message to everyone on <channel> without the
-                channel's name prefixed.
+		channel's name prefixed.
 
   Example:
     > @cemit Public=This is a test!
@@ -854,7 +842,7 @@ Related Topics: @name.
 @CHOWN
 
   COMMAND: @chown[/nostrip] <object>[=<player>]
-           @chown           <object>/<attr>[=<player>]
+	   @chown           <object>/<attr>[=<player>]
 
   The first form changes the ownership of <object> to <player>.  By default,
   this is yourself.  Objects may be things, rooms or exits.  To @chown things,
@@ -888,7 +876,7 @@ Related Topics: @name.
   owned by others to the owner of the object.
 
   Related Topics: ATTRIBUTE OWNERSHIP, CHOWN_OK, @lock, stripped_flags, and
-                  @unlock.
+		  @unlock.
 
 & @CHZONE
 @CHZONE
@@ -921,10 +909,10 @@ Related Topics: @name.
   <option>, if given, may be either of the following:
 
     full    - @clist will display more detailed information including
-              the channel object's dbref.
+	      the channel object's dbref.
 
     headers - Shows the @clist report with the description column
-              replaced by the a column of the channel headers.
+	      replaced by the a column of the channel headers.
 
   <pattern>, if given, is used to match and select a subset of channels.
 
@@ -992,15 +980,15 @@ Related Topics: @name.
   The following switches are available:
 
      /cost       - Treat the argument after the = as the cost of the new
-                   object, not the name.
+		   object, not the name.
 
      /inherit    - Don't reset the INHERIT bit on the new object.
 
      /inventory  - Create the new object in your inventory (or your exitlist,
-                   in the case of cloning exits).
+		   in the case of cloning exits).
 
      /nostrip    - Flags in the stripped_flags set are not stripped except
-                   that only #1 is allowed to clone WIZARD.
+		   that only #1 is allowed to clone WIZARD.
 
      /location   - Create the new object in your location (default).
 
@@ -1010,10 +998,10 @@ Related Topics: @name.
 @CLONE (continued)
 
      /parent     - Set the new object's parent to be the template object and
-                   don't copy the attributes.
+		   don't copy the attributes.
 
      /preserve   - Let the existing owner own the clone. Existing owner must
-                   be controllable.
+		   be controllable.
 
   Related Topics: @create, @decompile, @destroy, stripped_flags, VISUAL.
 
@@ -1084,22 +1072,6 @@ Related Topics: @name.
   corresponding to <object>.
 
   Related Topics: alias, CHANNEL OBJECT, @comjoin, @comleave, @comoff.
-
-& @COLOR
-@COLOR
-
-  COMMAND:   @color <object> = <color-code-list>
-  ATTRIBUTE: Color
-
-  Controls the colorization of an object's name.
-
-  Example:
-    @color me = hr
-
-  This attribute is only available with --enable-firanmux, and is expected to
-  be deprecated in favor of @moniker.
-
-  Related Topics: ansi(), ANSI CODES, @moniker, moniker().
 
 & @CONFORMAT
 @CONFORMAT
@@ -1213,13 +1185,13 @@ Related Topics: @name.
     anon    - same as spoof.
     nospoof - channel will append the player's name to the comtitle.
     header  - Changes the prefix text used to announce a channel emit to
-              <value>. <value> may contain color.
+	      <value>. <value> may contain color.
     object  - Sets the channel object to <value>. You must create an object
-              before associating a channel with it.
+	      before associating a channel with it.
     log     - Sets the maximum number of channel messages to log.
-              The channel must have an object.
+	      The channel must have an object.
     timestamp_logs - [0/1] Indicates if log messages are prepended with a
-            - timestamp.   Channel must have an object and logging enabled.
+	    - timestamp.   Channel must have an object and logging enabled.
 
   You can set a description for the channel by changing the description
   of the channel object. Also, the channel object's lock will be used
@@ -1471,7 +1443,7 @@ Related Topics: @name.
   automatically triggered on other object types.
 
   Examples: <object> @drop vase = You gently put down the delicate vase.
-            <exit>   @drop elevator = The elevator doors close behind you.
+	    <exit>   @drop elevator = The elevator doors close behind you.
 
   Related Topics: drop, @adrop, @odrop, DROP-TO, EXITS.
 
@@ -1501,8 +1473,8 @@ Related Topics: @name.
 @EDIT
 
   COMMAND: @edit <object>/<wild-attr> = <search>,<replace>
-           @edit <object>/<wild-attr> = ^,<text>
-           @edit <object>/<wild-attr> = $,<text>
+	   @edit <object>/<wild-attr> = ^,<text>
+	   @edit <object>/<wild-attr> = $,<text>
 
   This command edits the contents of one or more attributes of an object,
   eliminating the need to retype a long attribute in order to make a simple
@@ -1556,7 +1528,7 @@ Related Topics: @name.
   options in wizhelp.
 
   Related Topics: mail_server, mail_ehlo, mail_sendaddr, mail_sendname,
-                  mail_subject
+		  mail_subject
 
 & @EMIT
 @EMIT
@@ -1572,9 +1544,9 @@ Related Topics: @name.
      /here  - Sends the message to everyone in the same location as you.
      /html  - Sends the message to HTML-flags players.
      /room  - Sends the message to everyone in the room that contains the
-             object you are in.  Starting from your location, this switch
-             'leaves' objects until it reaches a room, and @emits the message
-             there.
+	     object you are in.  Starting from your location, this switch
+	     'leaves' objects until it reaches a room, and @emits the message
+	     there.
 
   If both switches are specified, the message is sent to both places.  If
   neither is specified, /here is assumed.
@@ -1716,9 +1688,9 @@ Related Topics: @name.
   The following switches are available:
      /here  - Sends the message to everyone in the same location as <object>.
      /room  - Sends the message to everyone in the room that contains the
-              object that <object> is in.  Starting from your location, this
-              switch 'leaves' objects until it reaches a room, and @emits the
-              message there.
+	      object that <object> is in.  Starting from your location, this
+	      switch 'leaves' objects until it reaches a room, and @emits the
+	      message there.
 
   If both switches are specified, the message is sent to both places.  If
   neither is specified, /here is assumed.
@@ -1785,10 +1757,10 @@ Related Topics: @name.
   @folder <folder>=<message list> - Reads the <message list> in folder.
   @folder/file <folder>=<msgs>    - Files <msgs> in <folder> like @mail/file.
   @folder/list <folder>[=<msgs>]  - Lists <msgs> if provided from <folder> or
-                                    all messages in <folder>.
+				    all messages in <folder>.
   @folder/read <folder>=<mgs>     - Display <msgs> in <folder>
   @folder/set  <folder>[=<name>]  - Set the active folder number if no name is
-                                    given, or give <folder> <name>.
+				    given, or give <folder> <name>.
 
   Other than @folder/set or @folder <folder>, the @folder command does not
   change the active folder for @mail.
@@ -1834,9 +1806,9 @@ Related Topics: @name.
 
   The following switches are available:
      /default - (default) Put a space between the name of the object and
-                the message (ie, send '<name> <message>').
+		the message (ie, send '<name> <message>').
      /nospace - Don't put a space between the name of the object and the
-                message (ie, send '<name><message>').
+		message (ie, send '<name><message>').
 
   Related Topics: @femit, @fsay, pose, :, ;, INHERIT.
 
@@ -1933,7 +1905,7 @@ Related Topics: @name.
   automatically triggered on other object types.
 
   Example: @idesc car = You are sitting in the driver's seat of a Volkswagen
-                        Beetle.
+			Beetle.
 
   Related Topics: enter, @describe, ENTER_OK.
 
@@ -1974,7 +1946,7 @@ Related Topics: @name.
   automatically referenced on other object types.
 
   Example: @idle me = Working IRL. Monitoring this window from time to time.
-           @idletimeout me = 60
+	   @idletimeout me = 60
 
   Related Topics: @away, @idle, @reject, page.
 
@@ -2063,7 +2035,7 @@ Related Topics: @name.
   the enactor (such as %n, %#, %p, etc) refer to the player doing the killing.
 
   Example: @kill guard = The guard says "I'll get.. you... for... this... %n"
-                         as he falls down and dies.
+			 as he falls down and dies.
 
   Related Topics: kill, @akill, @okill, BEING KILLED, IMMORTAL, WIZARD.
 
@@ -2096,18 +2068,6 @@ Related Topics: @name.
   recent successful and failed connection attempts, as well as the total
   number of successful and failed connections.
   You can only display information about yourself.
-
-& @LEAD
-@LEAD
-
-  COMMAND:   @lead <object> = <message>
-  ATTRIBUTE: Lead
-
-  Sets the <message> seen by the object when it is lead.
-
-  This attribute is only available with --enable-firanmux.
-
-  Related Topics: @alead, @olead.
 
 & @LEAVE
 @LEAVE
@@ -2194,18 +2154,18 @@ Related Topics: @name.
   about the following options:
     attributes      - Valid object attributes.
     commands        - Commands that you may use (excluding the
-                      attribute-setting commands as well as any exits, and
-                      $-commands available).
+		      attribute-setting commands as well as any exits, and
+		      $-commands available).
     costs           - Lists the costs associated with many commands and
-                      actions.
+		      actions.
     default_flags   - Lists the flags that new objects receive by default
-                      when created.
+		      when created.
     flags           - Lists the name and letter of all the flags.
     functions       - Lists all the available functions.
     options         - Lists several global options and limits.
     powers          - Lists all powers.
     switches        - Lists what commands support switches and the switches
-                      that they do support.
+		      that they do support.
   The information provided by the @list command is definitive, as it reads
   the internal tables to produce the information it displays.  Specifying
   @list with no argument lists the options you may use.
@@ -2235,7 +2195,7 @@ Related Topics: @name.
   the contents.
 
   Example: @listen camera = * has arrived.
-           @ahear camera = @va me = %va %0
+	   @ahear camera = @va me = %va %0
 
   Related Topics: @aahear, @ahear, @amhear, @sweep, @inprefix, @infilter.
 
@@ -2251,7 +2211,7 @@ Related Topics: @name.
 @LOCK
 
   COMMAND: @lock[/<whichlock>] <object>=<key>
-           @lock <object>/<attrib>
+	   @lock <object>/<attrib>
 
   The first form locks <object> to a specific key(s).  Type 'help @lock keys'
   for a list of the keys you may use.
@@ -2440,13 +2400,13 @@ Related Topics: @name.
   Ownership   $<object>
   Indirect    @<object>
   Attribute   <attribute>:<wildcard-pattern>
-              +<attribute>:<wildcard-pattern>
-              =<attribute>:<wildcard-pattern>
+	      +<attribute>:<wildcard-pattern>
+	      =<attribute>:<wildcard-pattern>
   Evaluation  <attribute>/<value>
   Compound    <key> & <key>
-              <key> | <key>
-              !<key>
-              ( <key> )
+	      <key> | <key>
+	      !<key>
+	      ( <key> )
 
 & @LOCK LOCKS
 @LOCK LOCKS
@@ -2454,28 +2414,28 @@ Related Topics: @name.
   You can set the following locks:
 
      DefaultLock:  Exits:          controls who may traverse the exit to
-                                   its destination.
-                   Rooms:          controls whether the player sees the SUCC
-                                   or FAIL message for the room following the
-                                   room description when looking at the room.
-                   Players/Things: controls who may GET the object.
+				   its destination.
+		   Rooms:          controls whether the player sees the SUCC
+				   or FAIL message for the room following the
+				   room description when looking at the room.
+		   Players/Things: controls who may GET the object.
      EnterLock:    Players/Things: controls who may ENTER the object if the
-                                   object is ENTER_OK. Also, the enter lock
-                                   of an object being used as a Zone Master
-                                   Object determines control of that zone.
+				   object is ENTER_OK. Also, the enter lock
+				   of an object being used as a Zone Master
+				   Object determines control of that zone.
      GetFromLock:  All but Exits:  controls who may gets things from a given
-                                   location.
+				   location.
      GiveLock:     Players/Things: controls who may give the object.
      LeaveLock:    Players/Things: controls who may LEAVE the object.
      LinkLock:     All but Exits:  controls who may link to the location if the
-                                   location is LINK_OK (for linking exits or
-                                   setting drop-tos) or ABODE (for setting
-                                   homes)
+				   location is LINK_OK (for linking exits or
+				   setting drop-tos) or ABODE (for setting
+				   homes)
      MailLock:     Players:        controls who may @mail the player.
      OpenLock:     All but Exits:  controls who may open an exit.
      PageLock:     Players:        controls who may page the player.
      ParentLock:   All:            controls who may make @parent links to the
-                                   object.
+				   object.
      ReceiveLock:  Players/Things: controls who may give things to the object.
 
 { 'help @lock locks2' for more }
@@ -2484,26 +2444,26 @@ Related Topics: @name.
 @LOCK LOCKS (continued)
 
      SpeechLock:   All but Exits:  controls who may speak in that location
-                                   (only checked if AUDITORIUM flag is set
-                                   on that location)
+				   (only checked if AUDITORIUM flag is set
+				   on that location)
      TeloutLock:   All but Exits:  controls who may teleport out of the
-                                   location.
+				   location.
      TportLock:    Rooms/Things:   controls who may teleport there if the
-                                   location is JUMP_OK.
+				   location is JUMP_OK.
      UseLock:      All but Exits:  controls who may USE the object, GIVE the
-                                   object money and have the PAY attributes
-                                   run, have their messages heard and possibly
-                                   acted on by LISTEN and AxHEAR, and invoke
-                                   $-commands stored on the object.
+				   object money and have the PAY attributes
+				   run, have their messages heard and possibly
+				   acted on by LISTEN and AxHEAR, and invoke
+				   $-commands stored on the object.
      DropLock:     All but rooms:  controls who may drop that object.
      UserLock:     All:            Not used by MUX, is intended to be used
-                                   in MUX programming where a user-defined
-                                   lock is needed.
+				   in MUX programming where a user-defined
+				   lock is needed.
      VisibleLock:  All:            Controls object visibility when the object
-                                   is not dark and the looker passes the lock.
-                                   In DARK locations, the object must also be
-                                   set LIGHT and the viewer must pass the
-                                   VisibleLock.
+				   is not dark and the looker passes the lock.
+				   In DARK locations, the object must also be
+				   set LIGHT and the viewer must pass the
+				   VisibleLock.
      AtcpLock:     Players:        controls who may @pemit/atcp the player.
 
  Note: If a player fails the UseLock on a parent of an object being searched
@@ -2556,20 +2516,20 @@ Related Topics: @name.
   any messages you may try to send.
 
   A <player-list> is a space-separated list of recipients, which may be:
-        Player names (names with spaces in them should be put in double
-                      quotes, ex: "Foo Bar")
-        Player dbref #'s
-        Message numbers to be replied to.
-        A mix of the above, and mail aliases (see @malias)
+	Player names (names with spaces in them should be put in double
+		      quotes, ex: "Foo Bar")
+	Player dbref #'s
+	Message numbers to be replied to.
+	A mix of the above, and mail aliases (see @malias)
 
   A <msg-list> is one of the following:
-        A single msg # (ex: 3)
-        A message range (ex: 2-5, -7, 3-)
-        A sender (ex: *Hunger)
-        An age of mail in days (ex: ~3 (exactly 3), <2, >1)
-           "days" here means 24-hour periods from the current time.
-        One of the following: "read", "unread", "cleared", "tagged", "urgent"
-        For certain commands, "all".
+	A single msg # (ex: 3)
+	A message range (ex: 2-5, -7, 3-)
+	A sender (ex: *Hunger)
+	An age of mail in days (ex: ~3 (exactly 3), <2, >1)
+	   "days" here means 24-hour periods from the current time.
+	One of the following: "read", "unread", "cleared", "tagged", "urgent"
+	For certain commands, "all".
 
   Related Topics:
     mail-sending    mail-reading     mail-folders      mail-other
@@ -2625,10 +2585,10 @@ Related Topics: @name.
   @malias/desc *<alias>=<description>  Changes the description for *<alias>.
   @malias/add *<alias>=<player>        Adds <player> to *<alias>.
   @malias/rename *<alias>=<name>       Renames that alias. Names must always
-                                       begin with '*'.
+				       begin with '*'.
   @malias/delete *<alias>              Deletes <alias>.
   @malias/chown *<alias>=<player>      Changes the owner of <alias> to
-                                       <player>.
+				       <player>.
 
   Wizards can use all of the malias commands on any mail alias. Instead of
   trying to figure out different mailing lists with the same name, wizards
@@ -2637,8 +2597,8 @@ Related Topics: @name.
   owned by you, or by number.
 
   @malias/list                         When invoked by a wizard, it will
-                                       list all mailing aliases currently
-                                       defined by their number.
+				       list all mailing aliases currently
+				       defined by their number.
 
 & @MFAIL
 @MFAIL
@@ -2675,7 +2635,7 @@ Related Topics: @name.
     Ansi string entered for 99 Red Balloons of '99 Red Balloons'.
 
   Related Topics: accent(), ansi(), chr(), moniker(), @name, ASCII, ord(),
-                  stripaccents(), and stripansi().
+		  stripaccents(), and stripansi().
 
 & @MOVE
 @MOVE
@@ -2749,9 +2709,9 @@ Related Topics: @name.
      /here  - Sends the message to everyone in the same location as you.
      /html  - Sends the message to HTML-flags players.
      /room  - Sends the message to everyone in the room that contains the
-             object you are in.  Starting from your location, this switch
-             'leaves' objects until it reaches a room, and @emits the message
-             there.
+	     object you are in.  Starting from your location, this switch
+	     'leaves' objects until it reaches a room, and @emits the message
+	     there.
 
   If both switches are specified, the message is sent to both places.  If
   neither is specified, /here is assumed.
@@ -2778,9 +2738,9 @@ Related Topics: @name.
 
   The following switches are available:
      /first - (default) Notify the first command waiting on the indicated
-              semaphore (or the first <count> commands).
+	      semaphore (or the first <count> commands).
      /all   - Notify all commands waiting on the semaphore and reset the
-              semaphore count to zero.  <count> is ignored.
+	      semaphore count to zero.  <count> is ignored.
      /quiet - Suppress the 'Notified.' message associated with the command.
 
   Related Topics: @drain, @ps, @wait, SEMAPHORES
@@ -2825,7 +2785,7 @@ Related Topics: @name.
   that refer to the enactor (such as %n, %#, %p, etc) refer to the dropper.
 
   Example: @odfail sword = tries to put down the sword but it leaps back
-                                       into %p hand.
+				       into %p hand.
 
   Related Topics: drop, @adfail, @dfail, @lock.
 
@@ -2840,8 +2800,8 @@ Related Topics: @name.
   player arrives in after taking an exit.
 
   Example: <object> @odrop loadstone = puts down the loadstone and then
-                                       wipes sweat from %p brow.
-           <exit>   @odrop elevator = enters the elevator from the lobby.
+				       wipes sweat from %p brow.
+	   <exit>   @odrop elevator = enters the elevator from the lobby.
 
   Related Topics: drop, @adrop, @drop, DROP-TO, EXITS.
 
@@ -2955,18 +2915,6 @@ Related Topics: @name.
 
   Related Topics: kill, @akill, @kill, BEING KILLED, IMMORTAL, WIZARD.
 
-& @OLEAD
-@OLEAD
-
-  COMMAND:   @olead <object> = <message>
-  ATTRIBUTE: Olead
-
-  Sets the <message> seen by others when <object> is lead.
-
-  This attribute is only available with --enable-firanmux.
-
-  Related Topics: @lead, @alead.
-
 & @OLEAVE
 @OLEAVE
 
@@ -3002,7 +2950,7 @@ Related Topics: @name.
   automatically triggered on rooms or exits.
 
   Example: @olfail plane = thinks about jumping out of the plane without a
-                           parachute, but wisely reconsiders.
+			   parachute, but wisely reconsiders.
 
   Related Topics: @aleave, @alfail, @lalias, @leave, @lfail, @oleave, leave.
 
@@ -3036,9 +2984,9 @@ Related Topics: @name.
   automatically triggered on other object types.
 
   Example: @opay Coke machine = slips some change into the coin slot on the
-                                Coke machine.  You hear some rumbling from
-                                inside the machine and a can of Coke appears
-                                in the tray at the bottom of the machine.
+				Coke machine.  You hear some rumbling from
+				inside the machine and a can of Coke appears
+				in the tray at the bottom of the machine.
 
   Related Topics: give, @cost, @apay, @pay.
 
@@ -3098,8 +3046,8 @@ Related Topics: @name.
   considered good building practice.
 
   Examples: <object> @osucc vase = carefully picks up the vase.
-            <exit>   @osucc doorway = opens the door and leaves the room.
-                                      The door closes behind %o with a click.
+	    <exit>   @osucc doorway = opens the door and leaves the room.
+				      The door closes behind %o with a click.
 
   Related Topics: get, look, @asuccess, @success, SUCCESS.
 
@@ -3124,7 +3072,7 @@ Related Topics: @name.
   lock is checked against the player, not the object.
 
   Example: @otfail here = thinks about teleporting to the Magic Room, but
-                          decides against it at the last moment.
+			  decides against it at the last moment.
 
   Related Topics: @teleport, @atfail, @tfail, @lock.
 
@@ -3145,7 +3093,7 @@ Related Topics: @name.
   %#, %p, etc) refer to the player attempting the teleport.
 
   Example: @otofail here = thinks about teleporting from the Magic Room, but
-                          decides against it at the last moment.
+			  decides against it at the last moment.
 
   Related Topics: @teleport, @atofail, @tofail, @lock.
 
@@ -3414,11 +3362,11 @@ Related Topics: @name.
 
   The following switches are available:
      /brief   - (default) Display a brief summary that shows the semaphore
-                number, time-to-wait, object running the command, and the
-                command to be run.
+		number, time-to-wait, object running the command, and the
+		command to be run.
      /long    - In addition to the information in the /brief report, display
-                the name and number of the object that caused the command
-                to be run (the enactor) and the arguments to the command.
+		the name and number of the object that caused the command
+		to be run (the enactor) and the arguments to the command.
      /summary - Display just the queue counts.
 
   Related Topics: @notify, @wait.
@@ -3463,7 +3411,7 @@ Related Topics: @name.
     sql - Use SQL.
 
   Related Topics: rserror(), rsnext(), rsprev(), rsrelease(), rsrec(),
-                  rsrecnext(), rsrecprev(), rsrows(), sql().
+		  rsrecnext(), rsrecprev(), rsrows(), sql().
 
 & @QUITPROGRAM
 @QUITPROGRAM
@@ -3506,7 +3454,7 @@ Related Topics: @name.
 @REFERENCE
 
   COMMAND: @reference <reference_name> = [<target>]
-           @reference/list [<player>]
+	   @reference/list [<player>]
 
   A name reference (nref) is a mapping between a unique name and a dbref.
   Two types of nref's are possible - global and personal.  Global references
@@ -3654,16 +3602,16 @@ Related Topics: @name.
     @search eval=gt(money(##),10)  <-- search for things worth more than 10.
     @search type=room,100,300      <-- Rooms between #100 and #300, inclusive
     @search object=Test,5000       <-- Things starting with Test from object
-                                       #5000 to the end of the database.
+				       #5000 to the end of the database.
   Related Topics: @find, search().
 
 & @SET
 @SET
 
   COMMAND: @set[/<switch>] <object>=[!]<flag1> [[!][<flag2> [...]]
-           @set[/<switch>] <object>=<attribute>:<value>
-           @set[/<switch>] <object>=<attribute>:_<fromobj>/<fromattr>
-           @set[/<switch>] <object>/<attr>=[!]<attrflag>
+	   @set[/<switch>] <object>=<attribute>:<value>
+	   @set[/<switch>] <object>=<attribute>:_<fromobj>/<fromattr>
+	   @set[/<switch>] <object>/<attr>=[!]<attrflag>
 
   The first form sets (or clears) the indicated flag or flags on <object>,
   the second form sets the <attribute> attribute on <object> to <value>,
@@ -3686,21 +3634,21 @@ Related Topics: @name.
   The following flags may be set using the fourth form of the @set command:
 
      case       - $-command matching will not be case-sensitive.
-                  Non-functional unless the 'R' flag is also set.
+		  Non-functional unless the 'R' flag is also set.
      hidden     - The attribute is only visible to wizards.
      html       - Emits from attr, oattr, aattr are not HTML-escaped.
      no_command - Prevent $-commands and ^-patterns defined in the attribute
-                  from being performed.
+		  from being performed.
      no_inherit - Prevents children of the object from obtaining the
-                  attribute.  From their perspective, the attribute does not
-                  exist.
+		  attribute.  From their perspective, the attribute does not
+		  exist.
      no_name    - If set on an @o-attr, don't prepend the name of the
-                  enactor.  This also affects @verb behavior.
+		  enactor.  This also affects @verb behavior.
      regexp     - When $-commands are matched, treat the pattern as a
-                  regular expression rather than a wildcard glob pattern.
+		  regular expression rather than a wildcard glob pattern.
      trace      - The attribute will generate trace output.
      visual     - Anyone may see the attribute when they examine you, and
-                  may get the attribute with get().
+		  may get the attribute with get().
      wizard     - The attribute may only be changed by wizards.
 
   The @set command takes the following switch:
@@ -3722,7 +3670,7 @@ Related Topics: @name.
   P or p are considered plural, and anything else is considered neuter.
 
   Example: @sex me = female
-           @sex me = No thank you (Silly, but possible.  Treated as neuter)
+	   @sex me = No thank you (Silly, but possible.  Treated as neuter)
 
   Related Topics: GENDER.
 
@@ -3778,7 +3726,7 @@ Related Topics: @name.
   starting up an object that wants to run continuously.
 
   Example: @startup me = @vz me=MUX was last restarted at [time()].
-           @startup me = home
+	   @startup me = home
 
 & @STATS
 @STATS
@@ -3805,8 +3753,8 @@ Related Topics: @name.
   and passes the room's lock.
 
   Example: <object> @succ vase = You carefully pick up the delicate vase.
-           <exit>   @succ doorway = You open the door and walk through the
-                                    doorway.
+	   <exit>   @succ doorway = You open the door and walk through the
+				    doorway.
 
   Related Topics: get, look, @asuccess, @osuccess, SUCCESS.
 
@@ -3830,7 +3778,7 @@ Related Topics: @name.
      /connected - Check for connected players and their puppets.
      /listeners - Check for objects with @listen set to something.
      /players   - Check for players and their puppets, whether or not they
-                  are connected.
+		  are connected.
 
   The default is to search for everything.  If you specify one or more
   switches from either category (either location or listener type then only
@@ -3857,9 +3805,9 @@ Related Topics: @name.
   The following switches are available:
 
     /all    - (default) Perform the action lists associated with all targets
-              that match <string>.
+	      that match <string>.
     /first  - Perform only the action list associated with the first target
-              that matches <string>.
+	      that matches <string>.
     /notify - Queues an '@notify' after all commands in the list.
 
   Related Topics: switch(), ifelse().
@@ -3868,8 +3816,8 @@ Related Topics: @name.
 @TELEPORT
 
   COMMAND: @teleport [<object>=] <room/thing>
-           @teleport [<object>=] <exit>
-           @teleport [<object>=] home
+	   @teleport [<object>=] <exit>
+	   @teleport [<object>=] home
 
   The first form of the @teleport command moves <object> (or you) to the named
   room or thing.  The second form sends <object> (or you) to the destination
@@ -3930,7 +3878,7 @@ Related Topics: @name.
   %#, %p, etc) refer to the player attempting the teleport.
 
   Example: @tofail here = A psychic barrier prevents you from teleporting
-           out.
+	   out.
 
   Related Topics: @teleport, @atofail, @otofail, @lock.
 
@@ -3993,7 +3941,7 @@ Related Topics: @name.
 @UNLOCK
 
   COMMAND: @unlock[/<whichlock>] <object>
-           @unlock <object>/<attrib>
+	   @unlock <object>/<attrib>
 
   The first form removes the lock on <object>, so that anyone may pass
   through (if an exit) or pick it up (if a player or an object).
@@ -4056,34 +4004,34 @@ Related Topics: @name.
   Here is a description of the arguments to @verb:
 
     victim - The object that is searched for attributes, and which runs the
-             <awhat> attribute if it is found.
+	     <awhat> attribute if it is found.
 
     actor  - The object that 'did' the verb, this is the value for %#/%n/etc
-             in substitutions, and this object's name is included in the
-             message to others in the same location.
+	     in substitutions, and this object's name is included in the
+	     message to others in the same location.
 
     what   - The name of the attribute containing the message to be delivered
-             to the actor.
+	     to the actor.
 
     whatd  - The message to deliver to the actor if the victim does not have a
-             <what> attribute, or if it cannot be read.
+	     <what> attribute, or if it cannot be read.
 
     owhat  - The name of the attribute containing the message that is sent to
-             everyone in the room with the actor.  The message is prefixed
-             by the actor's name unless no_name flag is present on the
-             attribute.
+	     everyone in the room with the actor.  The message is prefixed
+	     by the actor's name unless no_name flag is present on the
+	     attribute.
 
     owhatd - The message to deliver to others in the room with the actor if
-             the victim does not have an <owhat> attribute, or it cannot be
-             read.  The message is prefixed by the actor's name unless
-             /no_name switch is specified.
+	     the victim does not have an <owhat> attribute, or it cannot be
+	     read.  The message is prefixed by the actor's name unless
+	     /no_name switch is specified.
 
     awhat  - The name of the attribute that is to be executed by the victim.
 
     args   - The comma-separated arguments to be passed for substitution
-             (%0-%9).  If there is more than one argument, enclose all the
-             arguments within curly braces.  Any argument that contains an
-             embedded comma needs to be enclosed in curly braces as well.
+	     (%0-%9).  If there is more than one argument, enclose all the
+	     arguments within curly braces.  Any argument that contains an
+	     embedded comma needs to be enclosed in curly braces as well.
 
 { 'help @verb3' for more }
 
@@ -4122,8 +4070,8 @@ Related Topics: @name.
 @WAIT
 
   COMMAND: @wait[/until] <seconds>=<command>
-           @wait[/until] <object>[/<seconds>]=<command>
-           @wait <object>/<attribute>=<command>
+	   @wait[/until] <object>[/<seconds>]=<command>
+	   @wait <object>/<attribute>=<command>
 
   Generally, @wait defers the execution of <command> until some future
   condition or combination of conditions.
@@ -4239,27 +4187,27 @@ ACCENT() (continued)
   -----------------------------------------------------------------
   double acute  Two foward slants   "          O,U,o,u
   acute         Forward slant       '          A,C,E,I,L,N,O,R,S,T,U,Y,Z,a,c,
-                above letter                   e,i,l,n,o,r,s,u,y,z
+		above letter                   e,i,l,n,o,r,s,u,y,z
   cedilla       Small tail below    ,          A,C,E,G,I,K,L,N,R,S,T,U,a,c,e,
-                letter                         g,i,k,l,n,r,s,t,u
+		letter                         g,i,k,l,n,r,s,t,u
   macron        dash above letter   -          A,D,E,I,O,U,a,e,i,o,u
   dot           dot above letter    .          C,E,G,I,Z,c,e,g,i,z
   stroke        diagonal or         /          D,H,L,O,d,h,l,o
-                horizonal through
-                letter
+		horizonal through
+		letter
   umlaut        Two dots above      :          A,E,I,O,U,Ya,e,i,o,u,y
   diaeresis     letter
   circumflex    carat above         ^          A,C,E,G,H,I,J,O,S,U,W,Y,a,c,e,
-                letter                         g,h,i,j,o,s,u,w,y
+		letter                         g,h,i,j,o,s,u,w,y
   grave         Backward slant      `          A,E,I,O,U,a,e,i,o,u
-                above letter
+		above letter
   ring          Small circle above  o          A,U,a,u
-                letter
+		letter
   breve         rounded half-circle u          A,E,G,I,O,U,a,e,g,i,o,u
-                above letter
+		above letter
   caron         inverted circumflex v          C,D,E,L,N,R,S,T,Z,c,e,l,n,r,t,z
   tilde         Wavy line above     ~          A,I,N,O,U,a,i,n,o,u
-                letter
+		letter
 
 ("help accent3" for more)
 
@@ -4269,7 +4217,7 @@ ACCENT() (continued)
   These are non-accent special characters, mostly punctuation and
   non-roman letters.
 
-                      Template   String
+		      Template   String
   Description         Character  Character
   --------------------------------------------------------------
   Upside-down ?       u          ?
@@ -4287,7 +4235,7 @@ ACCENT() (continued)
 
   These are ligatures.
 
-                      Template   String
+		      Template   String
   Description         Character  Character
   --------------------------------------------------------------
   Ligature AE         E          A
@@ -4354,7 +4302,7 @@ ADD()
     You say, "11"
 
   Related Topics: dec(), iadd(), idiv(), imul(), inc(), isub(),
-            fdiv(), mod(), mul(), sub().
+	    fdiv(), mod(), mul(), sub().
 
 & ADDCOM
 ADDCOM
@@ -4413,7 +4361,7 @@ ALIAS
     'on'   allows you to turn an alias/channel on.
     'off'  lets you turn off that alias/channel.
     'who'  shows you who is on that channel, which the channel name appended
-           to the bottom.
+	   to the bottom.
 
   You may send a message over the channel with <alias> <text>, where <text>
   is the message to be sent, or you can pose on a channel with
@@ -4532,8 +4480,8 @@ ANSI2
   TinyMUX makes minimal assumptions about the 16-color palette, when colors
   must be remapped, it uses the following xterm palette:
 
-                     Normal          Intense
-                 Red Green Blue   Red Green Blue
+		     Normal          Intense
+		 Red Green Blue   Red Green Blue
     black (x)      0    0    0     85   85   85
     red (r)      187    0    0    255   85   85
     green (g)      0  187    0     85  255   85
@@ -4544,27 +4492,27 @@ ANSI2
     white (w)    187  187  187    255  255  255
 
   Related Topics: ansi(), COLOR256, ANSI CODES, ANSI SUBSTITUTION,
-                  NOBLEED.
+		  NOBLEED.
 
 & ANSI CODES
 ANSI CODES
 
-        f - flash                       i - inverse
-        h - highlight                   n - normal
-        u - underline
+	f - flash                       i - inverse
+	h - highlight                   n - normal
+	u - underline
 
-        x - black foreground            X - black background
-        r - red foreground              R - red background
-        g - green foreground            G - green background
-        y - yellow foreground           Y - yellow background
-        b - blue foreground             B - blue background
-        m - magenta foreground          M - magenta background
-        c - cyan foreground             C - cyan background
-        w - white foreground            W - white background
+	x - black foreground            X - black background
+	r - red foreground              R - red background
+	g - green foreground            G - green background
+	y - yellow foreground           Y - yellow background
+	b - blue foreground             B - blue background
+	m - magenta foreground          M - magenta background
+	c - cyan foreground             C - cyan background
+	w - white foreground            W - white background
 
-        <#RRGGBB> HTML color code
-        <R G B>   RGB decimal vector
-        /         Background indicator prefix
+	<#RRGGBB> HTML color code
+	<R G B>   RGB decimal vector
+	/         Background indicator prefix
 
   Examples:
       ansi(fc, Test) would highlight "Test" is flashing cyan.
@@ -4737,7 +4685,7 @@ ATAN()
 ATAN2()
 
   FUNCTION: atan(<number>[, <units>])
-            atan2(<number1>, <number2>[, <units>])
+	    atan2(<number1>, <number2>[, <units>])
 
   Returns the arctangent of <number> or <number1>/<number2>.  The range of
   atan() is always an angle in quadrants 1 and 4.  Taking into consideration
@@ -4796,7 +4744,7 @@ ATTRIBUTE OWNERSHIP (continued)
   attribute on the object being checked.
 
   Related Topics: ATTRIBUTE FLAGS, @chown, examine, @lock, @set,
-                  @unlock.
+		  @unlock.
 
 & ATTRIBUTE FLAGS
 ATTRIBUTE FLAGS
@@ -4804,14 +4752,14 @@ ATTRIBUTE FLAGS
     The following lists the possible flags on attributes:
 
     case (C)       - $-command matching will not be case-sensitive.
-                     Non-functional unless the 'R' flag is also set.
+		     Non-functional unless the 'R' flag is also set.
 
     const          - No one can change this attribute.
 
     no_command ($) - The attribute is not checked when looking for
-                     $-commands.  Note that the predefined attributes
-                     DESC, IDESC, ODESC, FAIL, OFAIL, SUCC, OSUCC, DROP,
-                     ODROP, SEX, and CHARGES are never checked.
+		     $-commands.  Note that the predefined attributes
+		     DESC, IDESC, ODESC, FAIL, OFAIL, SUCC, OSUCC, DROP,
+		     ODROP, SEX, and CHARGES are never checked.
 
     dark           - Only God can see this attribute.
 
@@ -4827,24 +4775,24 @@ ATTRIBUTE FLAGS
 ATTRIBUTE FLAGS (continued)
 
     no_inherit (I) - This attribute is not inherited by children of the
-                     object.  From their perspective, the attribute does not
-                     exist.
+		     object.  From their perspective, the attribute does not
+		     exist.
 
     locked (+)     - The attribute is locked, it does not change
-                     ownership when the object is @chowned and may not
-                     be modified.
+		     ownership when the object is @chowned and may not
+		     be modified.
 
     no_name (N)    - If set on an @o-attr, don't prepend the name of the
-                     enactor.  This also affects @verb behavior.
+		     enactor.  This also affects @verb behavior.
 
     no_parse (P)   - $-commands and ^-listens matching is performed against
-                     the unparsed (non-evaluated) string.
+		     the unparsed (non-evaluated) string.
 
     private        - Only attribute owner and wizards can see this
-                     attribute.
+		     attribute.
 
     regexp (R)     - $-command matching on this attribute uses
-                     PCRE-style regular expressions.
+		     PCRE-style regular expressions.
 
     trace (T)      - The attribute will generate trace output.
 
@@ -4854,8 +4802,8 @@ ATTRIBUTE FLAGS (continued)
 ATTRIBUTE FLAGS (continued)
 
     visual (V)     - The attribute is visible to anyone who examines
-                     you.  Note that the predefined attributes DESC,
-                     SEX, and LAST are always VISUAL
+		     you.  Note that the predefined attributes DESC,
+		     SEX, and LAST are always VISUAL
 
     wizard (W)     - Only wizards can modify this attribute.
 
@@ -4925,10 +4873,10 @@ BAND()
   0011 1001 1010 in base 2.  Likewise, 785 in base 10 is the same as 311 in
   base 16 and or 0011 0001 0001 in base 2.
 
-         0011 1001 1010 (922)
+	 0011 1001 1010 (922)
   (BAND) 0011 0001 0001 (785)
-         --------------
-         0011 0001 0000 (784)
+	 --------------
+	 0011 0001 0000 (784)
 
   The result may be expressed as 310 in base 16 or 784 in base 10.
 
@@ -5066,10 +5014,10 @@ BNAND()
   of 785 (specifically the one's complement) is 1100 1110 1110 in base
   2, and is a simple bitwise reversal of 1's and 0's.
 
-          0011 1001 1010 (922)
+	  0011 1001 1010 (922)
   (BAND)  1100 1110 1110 (Complement of 785)
-          --------------
-          0000 1000 1010 (138)
+	  --------------
+	  0000 1000 1010 (138)
 
   The result may be expressed as 08A in base 16 or 138 in base 10.
 
@@ -5146,10 +5094,10 @@ BOR()
   0011 1001 1010 in base 2. Likewise, 785 in base 10 is the same as 311 in
   base 16 and or 0011 0001 0001 in base 2.
 
-         0011 1001 1010 (922)
+	 0011 1001 1010 (922)
   (BOR)  0011 0001 0001 (785)
-         --------------
-         0011 1001 1011 (923)
+	 --------------
+	 0011 1001 1011 (923)
 
   The result may be expressed as 39B in base 16 or 923 in base 10.
 
@@ -5351,7 +5299,7 @@ CHANNEL OBJECT
   will override the player settings.
 
   Related Topics: @comjoin, @comleave, @comoff, @comon, @ccreate, @create,
-                  @cset, @speechmod, @saystring.
+		  @cset, @speechmod, @saystring.
 
 & CHANNELS()
 CHANNELS()
@@ -5705,13 +5653,13 @@ COMSYS COMMANDS AND FUNCTIONS
   These are the topics for the MUX comsystem:
 
   User Commands:            @clist, addcom, alias, allcom, comlist, comtitle,
-                            clearcom, delcom
+			    clearcom, delcom
 
   Administrative Commands:  @cboot, @ccharge, @cchown, @ccreate, @cdestroy,
-                            @cemit, @clist, @coflags, @cpflags, @cset, @cwho
+			    @cemit, @clist, @coflags, @cpflags, @cset, @cwho
 
   Functions:                channels(), chanobj(), comalias(), comtitle(),
-                            cwho()
+			    cwho()
 
   General Information:      channel object, comsys examples
 
@@ -5753,7 +5701,7 @@ COMSYS EXAMPLES
 COMTITLE
 
   COMMAND: comtitle <alias>=<title>
-           comtitle[/<option>] <alias>
+	   comtitle[/<option>] <alias>
 
   This command allows you to prefix your name on a channel with a title.
   The second form contains a switch that allow you to turn on or off
@@ -5973,13 +5921,13 @@ CONVSECS()
   If a second argument is given, it is the <zonename>:
 
    local - indicates that a conversion for timezone/DST of the 'local'
-           server time should be applied (the default).
+	   server time should be applied (the default).
 
    utc   - indicates that no timezone/DST conversions should be applied.
-           When used this way, there is a unique one-to-one relationship
-           between an integer and it's corresponding text-string which
-           may be useful for handling other time zones and fictional
-           settings.
+	   When used this way, there is a unique one-to-one relationship
+	   between an integer and it's corresponding text-string which
+	   may be useful for handling other time zones and fictional
+	   settings.
 
   <precision> determines the number of fractional seconds shown.
   By default, no fractional seconds are shown.
@@ -6025,13 +5973,13 @@ CONVTIME() (continued)
   If a second argument is given, it is the <zonename>:
 
    local - indicates that a conversion for timezone/DST of the 'local'
-           server time should be applied (the default).
+	   server time should be applied (the default).
 
    utc   - indicates that no timezone/DST conversions should be applied.
-           When used this way, there is a unique one-to-one relationship
-           between an integer and it's corresponding text-string which
-           may be useful for handling other time zones and fictional
-           settings.
+	   When used this way, there is a unique one-to-one relationship
+	   between an integer and it's corresponding text-string which
+	   may be useful for handling other time zones and fictional
+	   settings.
 
   <precision> determines the number of fractional seconds shown.
   By default, no fractional seconds are shown.
@@ -6481,7 +6429,7 @@ DOING()
 DROP
 
   COMMAND: drop[/<switch>] <object>
-           drop[/<switch>] <exit>
+	   drop[/<switch>] <exit>
 
   The first form removes <object> from your inventory and puts it in your
   location, except for the following special cases: Dropping a STICKY thing
@@ -6495,7 +6443,7 @@ DROP
 
   The following switch is recognized:
      /quiet   - Don't perform the @odrop/@adrop attributes on the dropped
-                 object.  This switch only works if you control the object.
+		 object.  This switch only works if you control the object.
 
   'throw' is the same as 'drop'.
 
@@ -6631,7 +6579,7 @@ ENACTOR
     %# or [v(#)]           - Database number of the enactor
     %N/%n or [v(N)]/[v(n)] - Name of the enactor.
     %O/%o ...              - Objective pronoun for the enactor
-                             (him her it them)
+			     (him her it them)
     %P/%p ...              - Possessive pronoun (his her its their)
     %S/%s ...              - Subjective pronoun (he she it they)
     %A/%a ...              - Absolute possessive pronoun (his hers its theirs)
@@ -6662,12 +6610,12 @@ ENTER
   The following switch is recognized:
 
      /quiet   - Don't perform the @oenter/@aenter or @oefail/@aefail
-                attributes on the entered object, and don't perform the
-                @oxleave attribute on your current location.  This switch
-                only works if you control the object being entered.
+		attributes on the entered object, and don't perform the
+		@oxleave attribute on your current location.  This switch
+		only works if you control the object being entered.
 
   Related Topics: leave, @aefail, @aenter, @efail, @enter, @idesc, @lock,
-                  @oefail, @oenter, @oxleave, ENTER_OK.
+		  @oefail, @oenter, @oxleave, ENTER_OK.
 
 & ENTER_OK
 ENTER_OK
@@ -6815,7 +6763,7 @@ ETIMEFMT()
 EVAL()
 
   FUNCTION: eval(<object>,<attribute>)
-            eval(<string>)
+	    eval(<string>)
 
   The first form of the eval function works exactly like the get_eval
   function, but takes the object and attribute in two separate arguments
@@ -6858,13 +6806,13 @@ EXAMINE (continued)
      /brief  - Shows everything except attributes.
 
      /full   - When examining an object you don't control, show any public
-               attributes set on the object in addition to the owner's name.
+	       attributes set on the object in addition to the owner's name.
 
      /parent - Includes attributes that are not present on the object itself
-               but which are inherited from the object's parent.
+	       but which are inherited from the object's parent.
 
   Related Topics: look, @decompile, VISUAL, ATTRIBUTE FLAGS,
-                  ATTRIBUTE OWNERSHIP.
+		  ATTRIBUTE OWNERSHIP.
 
 & EXIT()
 EXIT()
@@ -7150,10 +7098,6 @@ FLAG LIST2
     4 - SHROUD     |   5 - MATRIX     |   6 - OBF        |   7 - HSS
     8 - MEDIUM     |   9 - DEAD       |                  |
   ------------------------------------------------------------------------
-  Firan-specific
-    # - IMMOBILE   |   > - LINEWRAP   |     - QUELL      |   ! - RESTRICTED
-    + - PARENT     |                  |                  |
-  ------------------------------------------------------------------------
 
   For information on a particular flag, type 'help <flagname>'.
   Some flags may be disabled at your particular MUX.
@@ -7179,7 +7123,7 @@ FLAGS
 FLAGS()
 
   FUNCTION: flags(<object>)
-            flags(<object>/<attr>)
+	    flags(<object>/<attr>)
 
   Flags() returns a string of letters as a single word.  Each letter in this
   word represents a flag associated with <object> or with the <attr> on
@@ -7251,7 +7195,7 @@ FLOORDIV()
     You say, "-6"
 
   Related Topics: fdiv(), iadd(), idiv(), imul(), isub(), mod(),
-                  remainder().
+		  remainder().
 
 & FMOD()
 FMOD()
@@ -7334,16 +7278,16 @@ FULLNAME()
 FUNCTION CLASSES
 
   Arithmetic:                ABS ADD BAND BASECONV BNAND BOR BXOR CEIL CRC32
-                             DEC DIE DIGEST DISTRIBUTE FDIV FLOORDIV FMOD IABS
-                             IADD IDIV IMUL INC ISIGN ISUB MOD MUL PACK POWER
-                             RAND REMAINDER SHA1 SHL SHR SIGN SUB SUCCESSES
-                             SQRT UNPACK
+			     DEC DIE DIGEST DISTRIBUTE FDIV FLOORDIV FMOD IABS
+			     IADD IDIV IMUL INC ISIGN ISUB MOD MUL PACK POWER
+			     RAND REMAINDER SHA1 SHL SHR SIGN SUB SUCCESSES
+			     SQRT UNPACK
 
   Comsystem Information:     CHANNELS CHANOBJ COMALIAS COMTITLE CWHO
 
   Database Information:      EXIT INZONE LOC LOCATE LROOMS MAIL MAILJ MAILFROM
-                             MAILSIZE MAILSUBJ NEARBY NEXT NUM RLOC ROOM
-                             SEARCH STATS VALID WHERE ZFUN ZONE ZWHO
+			     MAILSIZE MAILSUBJ NEARBY NEXT NUM RLOC ROOM
+			     SEARCH STATS VALID WHERE ZFUN ZONE ZWHO
 
   Floating Point Conversion: FLOOR ROUND TRUNC
 
@@ -7355,20 +7299,20 @@ FUNCTION CLASSES
 FUNCTION CLASSES (continued)
 
   Lists:                     CHOOSE COLUMNS EXTRACT ELEMENTS FOREACH FILTER
-                             FILTERBOOL FIRST FOLD ILEV INDEX INSERT ITEMIZE
-                             ITER LADD LAST LDELETE LIST LNUM LRAND MAP MATCH
-                             MATCHALL MEMBER MIX MUNGE PARSE PICKRAND REMOVE
-                             REST REVWORDS SETDIFF SETINTER SETUNION SHUFFLE
-                             SORT SORTBY SPLICE STEP TABLE WORDS
+			     FILTERBOOL FIRST FOLD ILEV INDEX INSERT ITEMIZE
+			     ITER LADD LAST LDELETE LIST LNUM LRAND MAP MATCH
+			     MATCHALL MEMBER MIX MUNGE PARSE PICKRAND REMOVE
+			     REST REVWORDS SETDIFF SETINTER SETUNION SHUFFLE
+			     SORT SORTBY SPLICE STEP TABLE WORDS
 
   Logarithms:                E EXP LOG LN
 
   Logical:                   AND ANDBOOL CAND CANDBOOL COR CORBOOL LAND LOR
-                             NOT OR ORBOOL T XOR
+			     NOT OR ORBOOL T XOR
 
   Miscellaneous:             @@ ANSI ART BEEP ERROR FCOUNT ISDBREF ISINT ISNUM
-                             ISRAT ISWORD LIT NULL R SETQ SETR SUBEVAL
-                             TEXT TEXTFILE
+			     ISRAT ISWORD LIT NULL R SETQ SETR SUBEVAL
+			     TEXT TEXTFILE
 
 { 'help function classes3' for more }
 
@@ -7376,26 +7320,26 @@ FUNCTION CLASSES (continued)
 FUNCTION CLASSES (continued)
 
   Object Information:        ANDFLAGS APOSS ATTRCNT BITTYPE CHILDREN CMDS CON
-                             CONTROLS CTIME DEFAULT EDEFAULT ELOCK ENTRANCES
-                             EVAL FLAGS FULLNAME GET GET_EVAL GREP GREPI
-                             HASATTR HASATTRP HASFLAG HASPOWER HASTYPE HOME
-                             LATTR LATTRCMDS LATTRP LCMDS LCON LEXITS LFLAGS
-                             LPARENT LOCALIZE LOCK MONEY MONIKER MTIME NAME
-                             OBJ OBJEVAL OBJMEM ORFLAGS OWNER PARENT PFIND
-                             PMATCH POSS POWERS S SUBJ TYPE U UDEFAULT ULOCAL
-                             V VISIBLE XGET
+			     CONTROLS CTIME DEFAULT EDEFAULT ELOCK ENTRANCES
+			     EVAL FLAGS FULLNAME GET GET_EVAL GREP GREPI
+			     HASATTR HASATTRP HASFLAG HASPOWER HASTYPE HOME
+			     LATTR LATTRCMDS LATTRP LCMDS LCON LEXITS LFLAGS
+			     LPARENT LOCALIZE LOCK MONEY MONIKER MTIME NAME
+			     OBJ OBJEVAL OBJMEM ORFLAGS OWNER PARENT PFIND
+			     PMATCH POSS POWERS S SUBJ TYPE U UDEFAULT ULOCAL
+			     V VISIBLE XGET
 
   Player Information:        COLORDEPTH CONN CONNLAST CONNLEFT CONNMAX CONNNUM
-                             CONNRECORD CONNTOTAL DOING FINDABLE HASQUOTA HEIGHT
-                             HOST IDLE LWHO LPORTS PLAYMEM PORTS WIDTH
+			     CONNRECORD CONNTOTAL DOING FINDABLE HASQUOTA HEIGHT
+			     HOST IDLE LWHO LPORTS PLAYMEM PORTS WIDTH
 
   Relational:                EQ GT GTE LT LTE MAX MIN NEQ
 
   Side-Effect Functions:     CREATE DESTROY EMIT LINK OEMIT PEMIT REMIT SET
-                             SETNAME SETPARENT TEL TRIGGER
+			     SETNAME SETPARENT TEL TRIGGER
 
   SQL:                       RSERROR RSNEXT RSPREV RSRELEASE RSREC RSRECNEXT
-                             RSRECPREV RSROWS SQL
+			     RSRECPREV RSROWS SQL
 
 { 'help function classes4' for more }
 
@@ -7403,26 +7347,26 @@ FUNCTION CLASSES (continued)
 FUNCTION CLASSES (continued)
 
   Strings:                   ACCENT AFTER ALPHAMAX ALPHAMIN BEFORE CAPSTR CASE
-                             CAT CENTER CHR COMP CPAD DECRYPT DELETE EDIT
-                             ENCRYPT ESCAPE GRAB GRABALL IF IFELSE LCSTR LJUST
-                             LPAD LPOS MERGE MID ORD POS REGMATCH REGMATCHI
-                             REGRAB REGRABALL REGRABALLI REGRABI REPEAT REPLACE
-                             REVERSE RIGHT RJUST ROMAN RPAD SCRAMBLE SECURE
-                             SPACE SPELLNUM SQUISH STRCAT STRIP STRIPACCENTS
-                             STRIPANSI STRLEN STRMATCH STRMEM STRTRUNC SWITCH
-                             TR TRANSLATE TRIM UCSTR WORDPOS WRAP
+			     CAT CENTER CHR COMP CPAD DECRYPT DELETE EDIT
+			     ENCRYPT ESCAPE GRAB GRABALL IF IFELSE LCSTR LJUST
+			     LPAD LPOS MERGE MID ORD POS REGMATCH REGMATCHI
+			     REGRAB REGRABALL REGRABALLI REGRABI REPEAT REPLACE
+			     REVERSE RIGHT RJUST ROMAN RPAD SCRAMBLE SECURE
+			     SPACE SPELLNUM SQUISH STRCAT STRIP STRIPACCENTS
+			     STRIPANSI STRLEN STRMATCH STRMEM STRTRUNC SWITCH
+			     TR TRANSLATE TRIM UCSTR WORDPOS WRAP
 
   Time:                      CONVSECS CONVTIME DIGITTIME ETIMEFMT EXPTIME
-                             RESTARTSECS RESTARTTIME SECS SINGLETIME STARTSECS
-                             STARTTIME TIME TIMEFMT WRITETIME
+			     RESTARTSECS RESTARTTIME SECS SINGLETIME STARTSECS
+			     STARTTIME TIME TIMEFMT WRITETIME
 
   Trigonometric:             ACOS ASIN ATAN ATAN2 COS CTU DIST2D DIST3D PI SIN
-                             TAN VADD VCROSS VDIM VDOT VMAG VMUL VSUB VUNIT
+			     TAN VADD VCROSS VDIM VDOT VMAG VMUL VSUB VUNIT
 
   WOD Realms (optional):     CANSEE
 
   Reality Levels (optional): HASRXLEVEL HASTXLEVEL LISTRLEVELS RXLEVEL
-                             TXLEVEL
+			     TXLEVEL
 
 & FUNCTION LIST
 FUNCTION LIST
@@ -7569,8 +7513,8 @@ GENDER
 GET
 
   COMMAND: get[/<switch>] <object>
-           get[/<switch>] <exit>
-           get[/<switch>] <object>'s <sub-object>
+	   get[/<switch>] <exit>
+	   get[/<switch>] <object>'s <sub-object>
 
   The first form picks up <object> from your location and adds it to your
   inventory.  It will fail if the object is locked against you, or if you
@@ -7611,8 +7555,8 @@ GET (continued)
   The following switch is recognized:
 
      /quiet   - Don't perform the @osucc/@asucc or @ofail/@afail attributes
-                on the target object.  This switch only works if you control
-                the object.
+		on the target object.  This switch only works if you control
+		the object.
 
   <object> and <sub-object> may be either players or things.
   'take' is the same as 'get'.
@@ -7680,9 +7624,9 @@ GOING
 GOTO
 
   COMMAND: goto[/<switch>] <direction>
-           goto[/<switch>] home
-           <direction>
-           home
+	   goto[/<switch>] home
+	   <direction>
+	   home
 
   Moves you in the specified direction, assuming that the direction is not
   locked against you.  'move home' is a special command that returns you to
@@ -7691,8 +7635,8 @@ GOTO
   The following switch is recognized:
 
      /quiet   - Don't perform the @osucc/@asucc/@odrop/@adrop or @ofail/@afail
-                attributes on the exit being used.  This switch only works if
-                you control the exit.
+		attributes on the exit being used.  This switch only works if
+		you control the exit.
 
   'move' is the same as 'goto'.
 
@@ -8106,7 +8050,7 @@ IADD()
     You say, "11"
 
   Related Topics: add(), dec(), idiv(), imul(), inc(), isub(), mod(),
-            mul(), sub().
+	    mul(), sub().
 
 & IDIV()
 IDIV()
@@ -8139,7 +8083,7 @@ IDIV()
     You say, "-5"
 
   Related Topics: iadd(), imul(), isub(), fdiv(), floordiv(), fmod(), mod(),
-                  remainder().
+		  remainder().
 
 & IDLE()
 IDLE()
@@ -8176,7 +8120,7 @@ IF()
 IFELSE()
 
   FUNCTION:     if(<expression>,<true string>[,<false string>])
-            ifelse(<expression>,<true string>,<false string>)
+	    ifelse(<expression>,<true string>,<false string>)
 
   This function returns <true string> if BOOLEAN <expression> is TRUE,
   <false string> otherwise. Much more efficient than an equivalent switch().
@@ -8200,18 +8144,6 @@ ILEV()
   second by 1, etc.
 
   Related Topics: iter(), list().
-
-& IMMOBILE
-IMMOBILE
-
-  FLAG: IMMOBILE()  (#)
-
-  Objects set IMMOBILE cannot move by any means, including using exits,
-  entering other objects, being picked up or dropped, or by @teleporting.
-
-  This flag is only available with --enable-firanmux.
-
-  Related Topics:
 
 & IMMORTAL
 IMMORTAL
@@ -8241,7 +8173,7 @@ IMUL()
     You say, "-30"
 
   Related Topics: add(), fdiv(), iadd(), idiv(), isub(), mod(), mul(),
-            round(), sub(), trunc().
+	    round(), sub(), trunc().
 
 & INC()
 INC()
@@ -8337,8 +8269,8 @@ INSERT()
 INUM()
 
   FUNCTION: itext(<n>)
-            inum(<n>)
-            ilev()
+	    inum(<n>)
+	    ilev()
 
   These functions, when called within an iter() or parse(), return the
   equivalent of ## (itext) or #@ (inum), with reference to the nth more
@@ -8509,7 +8441,7 @@ ISUB()
     You say, "3"
 
   Related Topics: add(), dec(), iadd(), idiv(), imul(), inc(), mod(),
-            sub().
+	    sub().
 
 & ISWORD()
 ISWORD()
@@ -8555,7 +8487,7 @@ ITER()
 PARSE()
 
   FUNCTION: iter(<list>,<eval>[,<input delim>[,<output delim>]])
-            parse(<list>,<eval>[,<input delim>[,<output delim>]])
+	    parse(<list>,<eval>[,<input delim>[,<output delim>]])
 
   <list> is a <input delim>-separated list of strings (e.g., A B C).  <eval>
   is a string that is to be evaluated once for each item in <list> replacing
@@ -8588,8 +8520,8 @@ PARSE()
 ITEXT()
 
   FUNCTION: itext(<n>)
-            inum(<n>)
-            ilev()
+	    inum(<n>)
+	    ilev()
 
   These functions, when called within an iter() or parse(), return the
   equivalent of ## (itext) or #@ (inum), with reference to the nth more
@@ -8902,9 +8834,9 @@ LEAVE
   The following switch is recognized:
 
      /quiet   - Don't perform the @oleave/@aleave or @olfail/@alfail
-                attributes on the entered object, and don't perform the
-                @oxenter attribute on your new location.  This switch
-                only works if you control your current location.
+		attributes on the entered object, and don't perform the
+		@oxenter attribute on your new location.  This switch
+		only works if you control your current location.
 
   Related Topics: enter, @lock, ENTER_OK, @aleave, @alfail, @leave, @lfail,
       @oleave, @olfail, @oxenter.
@@ -8932,7 +8864,7 @@ LEXITS()
 LFLAGS()
 
   FUNCTION: lflags(<object>)
-            lflags(<object>/<attr>)
+	    lflags(<object>/<attr>)
 
   Returns the flags of <object> or the flags of <attr> on <object> written out
   with their actual names.
@@ -8955,18 +8887,6 @@ LIGHT
   visible even though the object itself is not.
 
   Related Topics:
-
-& LINEWRAP
-LINEWRAP
-
-  FLAG: LINEWRAP()  (>)
-
-  Objects set LINEWRAP show their descriptions in a formatted style using
-  code equivalent to that in format().
-
-  This flag is only available with --enable-firanmux.
-
-  Related Topics: format().
 
 & LINK()
 LINK()
@@ -9570,9 +9490,9 @@ LWHO()
 MAIL()
 
   FUNCTION: mail(<mail message #>)
-            mail(<player name>)
-            mail(<player>, <mail message #>)
-            mail()
+	    mail(<player name>)
+	    mail(<player>, <mail message #>)
+	    mail()
 
   The first form returns a message corresponding to that mail message number
   in your MUX mailbox.  This function can be used to forward mail or as a way
@@ -9627,7 +9547,7 @@ MAIL-EXAMPLES
 
   Sending mail to player 'Bob'
   > -Hi bob.                         - This is where you will enter the body
-                                       of the message.
+				       of the message.
   Text Added.
   > @send                            - Basically, sends the @mail.
 
@@ -9642,46 +9562,46 @@ MAIL-FOLDERS
   operate on only the current folder.
 
   @mail/folder
-        This commands lists all folders which contain mail, telling
-        how many messages are in each, and what the current folder is.
+	This commands lists all folders which contain mail, telling
+	how many messages are in each, and what the current folder is.
 
   @mail/folder <folder#|foldername>
-        This command sets your current folder to <folder#>.
+	This command sets your current folder to <folder#>.
 
   @mail/folder <folder#> = <foldername>
-        This command gives <folder#> a name.
+	This command gives <folder#> a name.
 
   @mail/file <msg-list>=<folder#>
-        This command moves all messages in msg-list from the current
-        folder to a new folder, <folder#>.
+	This command moves all messages in msg-list from the current
+	folder to a new folder, <folder#>.
 
 & MAIL-OTHER
 MAIL-OTHER
 
   @mail/clear [<msg-list | all>]
   @mail/unclear [<msg-list> | all>]
-        These commands mark mail in the current folder as cleared or
-        uncleared. Mail marked for clearing is deleted when you
-        disconnect, or if you use @mail/purge. If no msg-list is
-        specified, all mail in your current folder is cleared. If "all"
-        is given instead of a msg-list, all mail in *all* folders is
-        cleared/uncleared.
+	These commands mark mail in the current folder as cleared or
+	uncleared. Mail marked for clearing is deleted when you
+	disconnect, or if you use @mail/purge. If no msg-list is
+	specified, all mail in your current folder is cleared. If "all"
+	is given instead of a msg-list, all mail in *all* folders is
+	cleared/uncleared.
 
   @mail/purge
-        Actually deletes all messages marked for clearing with
-        @mail/clear.  This is done automatically when you log out.
+	Actually deletes all messages marked for clearing with
+	@mail/clear.  This is done automatically when you log out.
 
   @mail/tag [<msg-list | all>]
   @mail/untag [<msg-list> | all>]
-        These commands tag or untag mail in the current folder.
-        Tagged mail can be later acted on en masse by using "tagged" as
-        the msg-list for other commands (which does *not* untag them
-        afterward). If no msg-list is specified, all messages in the
-        current folder are tagged/untagged. If "all" is given as the
-        msg-list, all mail in *all* folders is tagged/untagged.
-        (Ex: To clear all mail from Temperance and Sloth,
-        @mail/tag *temperance, @mail/tag *sloth, @mail/clear tagged,
-        @mail/untag all).
+	These commands tag or untag mail in the current folder.
+	Tagged mail can be later acted on en masse by using "tagged" as
+	the msg-list for other commands (which does *not* untag them
+	afterward). If no msg-list is specified, all messages in the
+	current folder are tagged/untagged. If "all" is given as the
+	msg-list, all mail in *all* folders is tagged/untagged.
+	(Ex: To clear all mail from Temperance and Sloth,
+	@mail/tag *temperance, @mail/tag *sloth, @mail/clear tagged,
+	@mail/untag all).
 
 { 'help mail-other2' for more }
 
@@ -9689,80 +9609,80 @@ MAIL-OTHER
 MAIL-OTHER (continued)
 
   @mail/safe [<msg-list> | all>]
-        This command marks a message as being safe from mail expiration. It
-        should be used sparingly and only for very important messages.
+	This command marks a message as being safe from mail expiration. It
+	should be used sparingly and only for very important messages.
 
 & MAIL-READING
 MAIL-READING
 
   @mail <msg #>
   @mail/read [<folder>=]<msg-list>
-        This displays messages which match the msg# or msg-list from
-        your current folder. If <folder> is specified, mail is read from
-        that folder without changing the current folder.
+	This displays messages which match the msg# or msg-list from
+	your current folder. If <folder> is specified, mail is read from
+	that folder without changing the current folder.
 
   @mail
   @mail <msg-list, but not a single msg #>
-        This gives a brief list of all mail in the current folder,
-        with sender name, a list of receiving players, subject, and
-        message status.
+	This gives a brief list of all mail in the current folder,
+	with sender name, a list of receiving players, subject, and
+	message status.
   @mail/list [<folder>=][<msg-list>]
-        Without <folder>, this gives the same list, but with time sent instead
-        of subject.  The status field is a set of characters (ex: NC-UF+) which
-        mean:
-                N = New (unread) message
-                C = Cleared message
-                U = Urgent message
-                F = Forwarded message
-                + = Tagged message
-        The opposites of these (read messages, etc.) are indicated with a
-        '-' in the status field in that position.
+	Without <folder>, this gives the same list, but with time sent instead
+	of subject.  The status field is a set of characters (ex: NC-UF+) which
+	mean:
+		N = New (unread) message
+		C = Cleared message
+		U = Urgent message
+		F = Forwarded message
+		+ = Tagged message
+	The opposites of these (read messages, etc.) are indicated with a
+	'-' in the status field in that position.
 
 & MAIL-REVIEWING
 MAIL-REVIEWING
 
   @mail/review <player>
-        Reviews the messages you have sent to <player>.
+	Reviews the messages you have sent to <player>.
 
   @mail/review <player>=<msglist>
-        Reads the messages you have sent to <player>.
+	Reads the messages you have sent to <player>.
 
   @mail/retract <player>=<msglist>
-        Retracts (deletes) unread messages you have sent to <player>.
+	Retracts (deletes) unread messages you have sent to <player>.
 
 & MAIL-SENDING
 MAIL-SENDING
 
   @mail[/switch] <player-list> = <subject>
-        This begins a message to all players in <player-list>.  The
-        <player list> forms the To: line of the @mail -- the list of primary
-        recipients.
+	This begins a message to all players in <player-list>.  The
+	<player list> forms the To: line of the @mail -- the list of primary
+	recipients.
 
   -<text>
   ~<text>
-        These add text to the message in progress, for example, the
-        following would add the text 'This is a test' to the end of your
-        @mail message:
+	These add text to the message in progress, for example, the
+	following would add the text 'This is a test' to the end of your
+	@mail message:
 
-            -This is a test
+	    -This is a test
 
-        Likewise, ~<text> prepends the text.
+	Likewise, ~<text> prepends the text.
 
   @mail/send
-        This sends the message that is currently in progress.
-        -- is the equivalent of @mail/send. @mail/urgent sends
-        the message as urgent, and should not be used often.
+	This sends the message that is currently in progress.
+	-- is the equivalent of @mail/send. @mail/urgent sends
+	the message as urgent, and should not be used often.
 
   @mail/cc <player-list>
-        This adds <player-list> to the current list of recipients.  Like the
-        primary recipients, these additions will be visible to every
-        recipient.
+	This adds <player-list> to the current list of recipients.  Like the
+	primary recipients, these additions will be visible to every
+	recipient.
 
   @mail/bcc <player-list>
-        This adds <player-list> to the current list of recipients.
-        Unlike the primary recipients and the carbon-copy (cc) recipients,
-        these additions will be hidden from every recipient including each
-        other.
+	This adds <player-list> to the current list of recipients.
+	Unlike the primary recipients and the carbon-copy (cc) recipients,
+	these additions will be hidden from every recipient including each
+	other.
 
 { 'help mail-sending2' for more }
 
@@ -9770,27 +9690,27 @@ MAIL-SENDING
 MAIL-SENDING (continued)
 
   @mail/proof
-        This shows you the message that is currently in progress, as
-        it would be read by whomever received it.
+	This shows you the message that is currently in progress, as
+	it would be read by whomever received it.
 
   @mail/edit <old text> = <new text>
-        Like @edit, but edits the message in process.
+	Like @edit, but edits the message in process.
 
   @mail/abort
-        This aborts the message currently in progress, allowing you
-        to start a new one.
+	This aborts the message currently in progress, allowing you
+	to start a new one.
 
   @mail/fwd <msg> = <player-list>
-        This sends a copy of <msg> to all the players in <player-list>.
-        The copy will appear to have been sent by you (not the original
-        sender), and its status will be "Forwarded". Note that this
-        places the message to be forwarded into your mail buffer, where
-        you can edit it with @mail/edit, add text with '-', or prepend
-        text with '~'. You have to use '--' or @mail/send to send the
-        message.
+	This sends a copy of <msg> to all the players in <player-list>.
+	The copy will appear to have been sent by you (not the original
+	sender), and its status will be "Forwarded". Note that this
+	places the message to be forwarded into your mail buffer, where
+	you can edit it with @mail/edit, add text with '-', or prepend
+	text with '~'. You have to use '--' or @mail/send to send the
+	message.
 
   @mail/quick <player-list>/<subject> = <message>
-        Sends <message> to the list of players.
+	Sends <message> to the list of players.
 
 { 'help mail-sending3' for more }
 
@@ -9798,25 +9718,25 @@ MAIL-SENDING (continued)
 MAIL-SENDING (continued)
 
   @mail/reply[/quote] <message>
-        This starts a working message to the person who sent you <msg>.
+	This starts a working message to the person who sent you <msg>.
 
   @mail/replyall[/quote]
-        This starts a working message to the person who sent you <msg>
-        and to every other recipient of <message>.
+	This starts a working message to the person who sent you <msg>
+	and to every other recipient of <message>.
 
   In both cases, because this is a reply, the subject line will be:
 
-        'Re: <subject line from original message>'
+	'Re: <subject line from original message>'
 
   Also, in both cases, if /quote is specified, the original message
   will be quoted into the working message with a header and footer much
   like the following:
 
-        On Thu Apr 27 21:33:04 2000, Gordon wrote:
+	On Thu Apr 27 21:33:04 2000, Gordon wrote:
 
-        <quoted message from original message>
+	<quoted message from original message>
 
-        ********** End of included message from Gordon
+	********** End of included message from Gordon
 
   You can add additional text above or below the quoted material with
   the post-pend ('-') and prepend ('~') @mail commands. Like, normal
@@ -9833,27 +9753,6 @@ MAILFROM()
 
   Related Topics:
 
-& MAILJ()
-MAILJ()
-
-  FUNCTION: mailj(<num>)
-            mailj(<player>)
-            mailj(<player>, <num>)
-            mailj()
-
-  First form returns message <num> from the executor's mail bag.  The second
-  form returns number of messages for <player>.  The third form return message
-  <num> for <player>.  The fourth form returns number of message for executor.
-
-  The difference between this and mail() is that this returns one number and
-  mail() returns three. Also, mail() only accounts for the messages in the
-  inbox, while mailj() accounts for all messages in all folders.
-
-  This function is only available with --enable-firanmux and is likely to be
-  deprecated in favor of mail().
-
-  Related Topics: mail()
-
 & MAILSIZE()
 MAILSIZE()
 
@@ -9867,7 +9766,7 @@ MAILSIZE()
 MAILSUBJ()
 
   FUNCTION: mailsubj(<num>)
-            mailsubj(<player>, <num>)
+	    mailsubj(<player>, <num>)
 
   First form returns the subject line from the executor's <num>'th mail item.
   Second form returns the subject line from the <player>'s <num>'th mail item.
@@ -10142,7 +10041,7 @@ MOD() (continued)
     You say, "0"
 
   Related Topics: floordiv(), iadd(), idiv(), imul(), isub(),
-                  remainder().
+		  remainder().
 
 & MONEY
 MONEY
@@ -10152,9 +10051,9 @@ MONEY
   players.  You can get money via one or more of these methods:
     1.  You receive a daily allowance for each day you connect.
     2.  You have a chance of finding money as you wander around areas that
-        other people have built.
+	other people have built.
     3.  Some MUXes may implement a place where you can sell valuable objects
-        for money.
+	for money.
 
   Related Topics: @list costs, COSTS.
 
@@ -10192,7 +10091,7 @@ MONIKER()
   attribute is returned instead of the decorated one.
 
   Related Topics: @name, ansi(), @moniker, chr(), ord(), ASCII,
-                  stripaccent(), stripansi(), UNICODE.
+		  stripaccent(), stripansi(), UNICODE.
 
 & MONITOR
 MONITOR
@@ -10226,9 +10125,9 @@ MOTD()
 MOVE
 
   COMMAND: move[/<switch>] <direction>
-           move[/<switch>] home
-           <direction>
-           home
+	   move[/<switch>] home
+	   <direction>
+	   home
 
   Moves you in the specified direction, assuming that the direction is not
   locked against you.  'move home' is a special command that returns you to
@@ -10237,8 +10136,8 @@ MOVE
   The following switch is recognized:
 
      /quiet   - Don't perform the @osucc/@asucc/@odrop/@adrop or @ofail/@afail
-                attributes on the exit being used.  This switch only works if
-                you control the exit.
+		attributes on the exit being used.  This switch only works if
+		you control the exit.
 
   'goto' is the same as 'move'.
 
@@ -10364,7 +10263,7 @@ MUL()
     You say, "-30"
 
   Related Topics: add(), fdiv(), iadd(), idiv(), imul(), isub(),
-            mod(), round(), sub(), trunc().
+	    mod(), round(), sub(), trunc().
 
 & MUNGE()
 MUNGE()
@@ -10714,7 +10613,7 @@ OUTPUTSUFFIX
 OWNER()
 
   FUNCTION: owner(<object>)
-            owner(<object>/<attrib>)
+	    owner(<object>/<attrib>)
 
   The first form of the owner() function returns the dbref of the owner of the
   object.  The object must either be yours or nearby.
@@ -10758,10 +10657,10 @@ PACK()
 PAGE
 
   COMMAND: page[/noeval] <players>=[<prefix>]<message>
-           page[/noeval] =[<prefix>]<message>
-           page[/noeval] [<prefix>]<message>
-           page <players>=
-           page
+	   page[/noeval] =[<prefix>]<message>
+	   page[/noeval] [<prefix>]<message>
+	   page <players>=
+	   page
 
   This command sends <message> to <players>.  The second and third form sends
   the given message to the same <players> given on the previous page command.
@@ -10831,19 +10730,6 @@ PAGE (continued)
 
   Related Topics: pose, say, whisper, :, ;, ", @pemit, @away, @idle,
       @idletimeout, @reject.
-
-& PARENT
-PARENT
-
-  FLAG: PARENT()  (+)
-
-  This flag is not associated with any hardcode behavior other than to record
-  that it is present or absent from an object. Softcode is free to use this
-  flag for any purpose it sees fit.
-
-  This flag is only available with --enable-firanmux.
-
-  Related Topics:
 
 & PARENT OBJECTS
 PARENT OBJECTS
@@ -11002,7 +10888,7 @@ PIPING
 
   Examples:
   > &MAILDESC me=$+maildesc *=*:look %0 ;| @mail/quick
-                  %1/Description=[translate(%|,1)]
+		  %1/Description=[translate(%|,1)]
   > &SAYDESC me=$+saydesc *:look %0 ;| say %r%|
   > +saydesc me
   You say, "
@@ -11109,9 +10995,9 @@ POSE
   The following switches are available:
 
      /default - (default) Put a space between your name and the message
-                (ie, display '<name> <message>').
+		(ie, display '<name> <message>').
      /nospace - Don't put a space between your name and the message
-                (ie, display '<name><message>').
+		(ie, display '<name><message>').
 
   Related Topics: page, say, whisper, :, ;, ".
 
@@ -11170,7 +11056,6 @@ POWERS LIST
   halt              Can @halt anything, and @halt/all.
   hide              DARK flag is effective for hiding.
   idle              No idle timeout.
-  immutable         No attributes may change (1).
   long_fingers      Can get, look, whisper, etc from a distance.
 
 { 'help powers list2' for more }
@@ -11192,10 +11077,6 @@ POWERS LIST (continued)
   tel_anywhere      Can teleport anywhere.
   tel_anything      Can teleport anything (includes tel_anywhere)
   unkillable        Cannot be killed with the 'kill' command.
-
-  Footnotes:
-
-    (1) The immutable power is only available with --enable-firanmux.
 
   Related Topics: @power
 
@@ -11249,25 +11130,6 @@ PUPPETS
 
   Related Topics: VERBOSE.
 
-& QUELL
-QUELL
-
-  FLAG: QUELL()  ()
-
-  Any object set QUELL will disregard any WIZARD flag it has.  That is, objects
-  that do not have a WIZARD flag are not affected by the QUELL flag, and
-  objects that do have a WIZARD flag act as if they do not have it. QUELL also
-  prevents objects from inheriting WIZARD abilities from their owners.
-
-  The main purpose of this flag is to allow Wizards to temporarily become
-  "mortal" (non-wizardly) for purposes of testing code or whatnot.  With the
-  QUELL flag set, they are for all intents and purposes just like a non-Wizard
-  character.  This allows a Wizard to turn her wizbit on and off, sorta.
-
-  This flag is only available with --enable-firanmux.
-
-  Related Topics:
-
 & QUIET
 QUIET
 
@@ -11307,7 +11169,7 @@ R()
 RAND()
 
   FUNCTION: rand(<num>)
-            rand(<lower>, <upper>)
+	    rand(<lower>, <upper>)
 
   In the first form, rand() returns an integer between 0 and num-1.  In the
   second form, rand() returns an integer between <lower> and <upper>,
@@ -11346,44 +11208,44 @@ REGEXP AMBIGUITY
 
   TOPIC: Regular Expression Ambiguity
 
-          If a regular expression could match two different parts of
-          the input string, it will match the one which begins
-          earliest.  If both begin in the same place but match
-          different lengths, or match the same length in different
-          ways, life gets messier, as follows.
+	  If a regular expression could match two different parts of
+	  the input string, it will match the one which begins
+	  earliest.  If both begin in the same place but match
+	  different lengths, or match the same length in different
+	  ways, life gets messier, as follows.
 
-          In general, the possibilities in a list of branches are
-          considered in left-to-right order, the possibilities for
-          `*', `+', and `?' are considered longest-first, nested
-          constructs are considered from the outermost in, and
-          concatenated constructs are considered leftmost-first.  The
-          match that will be chosen is the one that uses the earliest
-          possibility in the first choice that has to be made.  If
-          there is more than one choice, the next will be made in the
-          same manner (earliest possibility) subject to the decision
-          on the first choice.  And so forth.
+	  In general, the possibilities in a list of branches are
+	  considered in left-to-right order, the possibilities for
+	  `*', `+', and `?' are considered longest-first, nested
+	  constructs are considered from the outermost in, and
+	  concatenated constructs are considered leftmost-first.  The
+	  match that will be chosen is the one that uses the earliest
+	  possibility in the first choice that has to be made.  If
+	  there is more than one choice, the next will be made in the
+	  same manner (earliest possibility) subject to the decision
+	  on the first choice.  And so forth.
 
 { 'help regexp ambiguity2' for more }
 
 & REGEXP AMBIGUITY2
 REGEXP AMBIGUITY (continued)
 
-          For example, `(ab|a)b*c' could match `abc' in one of two
-          ways.  The first choice is between `ab' and `a'; since `ab'
-          is earlier, and does lead to a successful overall match, it
-          is chosen.  Since the `b' is already spoken for, the `b*'
-          must match its last possibility-the empty string-since it
-          must respect the earlier choice.
+	  For example, `(ab|a)b*c' could match `abc' in one of two
+	  ways.  The first choice is between `ab' and `a'; since `ab'
+	  is earlier, and does lead to a successful overall match, it
+	  is chosen.  Since the `b' is already spoken for, the `b*'
+	  must match its last possibility-the empty string-since it
+	  must respect the earlier choice.
 
-          In the particular case where no `|'s are present and there
-          is only one `*', `+', or `?', the net effect is that the
-          longest possible match will be chosen.  So `ab*', presented
-          with `xabbbby', will match `abbbb'.  Note that if `ab*' is
-          tried against `xabyabbbz', it will match `ab' just after
-          `x', due to the begins-earliest rule.  (In effect, the
-          decision on where to start the match is the first choice to
-          be made, hence subsequent choices must respect it even if
-          this leads them to less-preferred alternatives.)
+	  In the particular case where no `|'s are present and there
+	  is only one `*', `+', or `?', the net effect is that the
+	  longest possible match will be chosen.  So `ab*', presented
+	  with `xabbbby', will match `abbbb'.  Note that if `ab*' is
+	  tried against `xabyabbbz', it will match `ab' just after
+	  `x', due to the begins-earliest rule.  (In effect, the
+	  decision on where to start the match is the first choice to
+	  be made, hence subsequent choices must respect it even if
+	  this leads them to less-preferred alternatives.)
 
 & REGEXP EXAMPLES
 REGEXP EXAMPLES
@@ -11412,43 +11274,43 @@ REGEXP SYNTAX
   2.2. After that, the PCRE package is used, which has many more features.
   See a book that covers Perl's regular expressions for details.
 
-          A regular expression is zero or more branches, separated by
-          `|'.  It matches anything that matches one of the branches.
+	  A regular expression is zero or more branches, separated by
+	  `|'.  It matches anything that matches one of the branches.
 
-          A branch is zero or more pieces, concatenated.  It matches a
-          match for the first, followed by a match for the second,
-          etc.
+	  A branch is zero or more pieces, concatenated.  It matches a
+	  match for the first, followed by a match for the second,
+	  etc.
 
-          A piece is an atom possibly followed by `*', `+', or `?'.
-          An atom followed by `*' matches a sequence of 0 or more
-          matches of the atom.  An atom followed by `+' matches a
-          sequence of 1 or more matches of the atom.  An atom followed
-          by `?' matches a match of the atom, or the null string.
+	  A piece is an atom possibly followed by `*', `+', or `?'.
+	  An atom followed by `*' matches a sequence of 0 or more
+	  matches of the atom.  An atom followed by `+' matches a
+	  sequence of 1 or more matches of the atom.  An atom followed
+	  by `?' matches a match of the atom, or the null string.
 
 { 'help regexp syntax2' for more }
 
 & REGEXP SYNTAX2
 REGEXP SYNTAX (continued)
 
-          An atom is a regular expression in parentheses (matching a
-          match for the regular expression), a range (see below), `.'
-          (matching any single character), `^' (matching the null
-          string at the beginning of the input string), `$' (matching
-          the null string at the end of the input string), a `\'
-          followed by a single character (matching that character), or
-          a single character with no other significance (matching that
-          character).
+	  An atom is a regular expression in parentheses (matching a
+	  match for the regular expression), a range (see below), `.'
+	  (matching any single character), `^' (matching the null
+	  string at the beginning of the input string), `$' (matching
+	  the null string at the end of the input string), a `\'
+	  followed by a single character (matching that character), or
+	  a single character with no other significance (matching that
+	  character).
 
-          A range is a sequence of characters enclosed in `[]'.  It
-          normally matches any single character from the sequence.  If
-          the sequence begins with `^', it matches any single
-          character not from the rest of the sequence.  If two
-          characters in the sequence are separated by `-', this is
-          shorthand for the full list of ASCII characters between them
-          (e.g. `[0-9]' matches any decimal digit).  To include a
-          literal `]' in the sequence, make it the first character
-          (following a possible `^').  To include a literal `-', make
-          it the first or last character.
+	  A range is a sequence of characters enclosed in `[]'.  It
+	  normally matches any single character from the sequence.  If
+	  the sequence begins with `^', it matches any single
+	  character not from the rest of the sequence.  If two
+	  characters in the sequence are separated by `-', this is
+	  shorthand for the full list of ASCII characters between them
+	  (e.g. `[0-9]' matches any decimal digit).  To include a
+	  literal `]' in the sequence, make it the first character
+	  (following a possible `^').  To include a literal `-', make
+	  it the first or last character.
 
   Related Topics: regexp ambiguity, regexp examples.
 
@@ -11503,7 +11365,7 @@ REGMATCH()
 REGMATCHI()
 
   FUNCTION: regmatch(<string>,<regexp>[,<register list>])
-            regmatchi(<string>,<regexp>[,<register list>])
+	    regmatchi(<string>,<regexp>[,<register list>])
 
   This function matches the regular expression <regexp> against the
   entirety of <string>, returning 1 if it matches and 0 if it does not.
@@ -11531,9 +11393,9 @@ REGMATCHI()
 REGRAB()
 
   FUNCTION: regrab(<list>, <regexp>[, <separator>])
-            regrabi(<list>, <regexp>[, <separator>])
-            regraball(<list>, <regexp>[, <separator>])
-            regraballi(<list>, <regexp>[, <separator>])
+	    regrabi(<list>, <regexp>[, <separator>])
+	    regraball(<list>, <regexp>[, <separator>])
+	    regraballi(<list>, <regexp>[, <separator>])
 
   These functions act like grab() and graball(), respectively, except
   instead of matching with a wildcard pattern, they use a regular
@@ -11613,7 +11475,7 @@ REMAINDER()
     You say, "0"
 
   Related Topics: iadd(), idiv(), imul(), isub(), floordiv(), fmod(),
-                  mod().
+		  mod().
 
 & REMIT()
 REMIT()
@@ -11753,29 +11615,6 @@ RESTARTTIME()
 
   Related Topics: convtime(), starttime(), time().
 
-& RESTRICTED
-RESTRICTED
-
-  FLAG: RESTRICTED()  (!)
-
-  Any object set RESTRICTED will have the number of commands available to use
-  greatly limited.  Generally, this flag works in conjunction with the
-  no_restricted access permission (see 'wizhelp PERMISSIONS', 'wizhelp
-  access', etc.) which is used to mark which commands can not be used by
-  RESTRICTED players (or objects).
-
-  Command access permissions can be viewed by a wizard using the '@list
-  permissions' command.  Commands marked 'no_restricted' in this list cannot
-  be used by RESTRICTED players or objects.
-
-  Note that a RESTRICTED Wizard character who later sets herself QUELL will
-  not be able to set herself un-RESTRICTED!  Fixing this will require the help
-  of a fully-powered wizard.  Be careful with this combination.
-
-  This flag is only available with --enable-firanmux.
-
-  Related Topics: no_restricted
-
 & REVERSE()
 REVERSE()
 
@@ -11890,7 +11729,7 @@ RSERROR()
   query.
 
   Related Topics: @query, rsnext(), rsprev(), rsrelease(), rsrec(),
-                  rsrecnext(), rsrecprev(), rsrows(), sql().
+		  rsrecnext(), rsrecprev(), rsrows(), sql().
 
 & RSNEXT()
 RSNEXT()
@@ -11901,7 +11740,7 @@ RSNEXT()
   within the results set.
 
   Related Topics: @query, rserror(), rsprev(), rsrelease(), rsrec(),
-                  rsrecnext(), rsrecprev(), rsrows(), sql().
+		  rsrecnext(), rsrecprev(), rsrows(), sql().
 
 & RSPREV()
 RSPREV()
@@ -11912,7 +11751,7 @@ RSPREV()
   row within the results set.
 
   Related Topics: @query, rserror(), rsnext(), rsrelease(), rsrec(),
-                  rsrecnext(), rsrecprev(), rsrows(), sql().
+		  rsrecnext(), rsrecprev(), rsrows(), sql().
 
 & RSRELEASE()
 RSRELEASE()
@@ -11922,7 +11761,7 @@ RSRELEASE()
   This intentionally releases the memory for any results set.
 
   Related Topics: @query, rserror(), rsnext(), rsprev(), rsrec(), rsrecnext(),
-                  rsrecprev(), rsrows(), sql().
+		  rsrecprev(), rsrows(), sql().
 
 & RSREC()
 RSREC()
@@ -11934,7 +11773,7 @@ RSREC()
   columns in the returned row.
 
   Related Topics: @query, rserror(), rsnext(), rsprev(), rsrelease(),
-                  rsrecnext(), rsrecprev(), rsrows(), sql().
+		  rsrecnext(), rsrecprev(), rsrows(), sql().
 
 & RSRECNEXT()
 RSRECNEXT()
@@ -11946,7 +11785,7 @@ RSRECNEXT()
   delimiter will be used to separate the columns in the returned row.
 
   Related Topics: @query, rserror(), rsnext(), rsprev(), rsrelease(), rsrec(),
-                  rsrecprev(), rsrows(), sql().
+		  rsrecprev(), rsrows(), sql().
 
 & RSRECPREV()
 RSRECPREV()
@@ -11958,7 +11797,7 @@ RSRECPREV()
   delimiter will be used to separate the columns in the returned row.
 
   Related Topics: @query, rserror(), rsnext(), rsprev(), rsrelease(), rsrec(),
-                  rsrecnext(), rsrows(), sql().
+		  rsrecnext(), rsrows(), sql().
 
 & RSROWS()
 RSROWS()
@@ -11969,7 +11808,7 @@ RSROWS()
   resulting results set.
 
   Related Topics: @query, rserror(), rsnext(), rsprev(), rsrelease(), rsrec(),
-                  rsrecnext(), rsrecprev(), sql().
+		  rsrecnext(), rsrecprev(), sql().
 
 & ROBOT
 ROBOT
@@ -12156,8 +11995,8 @@ SAFE
 SAY
 
   COMMAND:  say[/noeval] <message>
-            nsay <message>
-            "<message>
+	    nsay <message>
+	    "<message>
 
   Says <message> out loud to everyone in your current location (usually
   a room).  If you use say/noeval or nsay, the message is not evaluated.
@@ -12201,7 +12040,7 @@ SEARCH CLASSES
   function calls:
 
   TYPE      - Restricts to objects of the indicated type (OBJECTS, ROOMS,
-              EXITS, PLAYERS).  THINGS may be used as an alias for OBJECTS.
+	      EXITS, PLAYERS).  THINGS may be used as an alias for OBJECTS.
   NAME      - Restricts to objects whose names start with <restriction>.
   OBJECTS   - A combination of TYPE=OBJECT and NAME=<restriction>.
   THINGS    - An alias for OBJECTS.
@@ -12209,11 +12048,11 @@ SEARCH CLASSES
   EXITS     - A combination of TYPE=EXIT and NAME=<restriction>.
   PLAYERS   - A combination of TYPE=PLAYER and NAME=<restriction>.
   FLAGS     - Restricts to objects which have the flags listed in
-              <restriction> set..
+	      <restriction> set..
   POWER     - Restricts to objects which have the specified power.
   EVAL      - Evaluates the restriction for each object, replacing ##
-              with the object's database number.  Evaluations that return
-              TRUE (ie, not 0 or #-1) are selected.
+	      with the object's database number.  Evaluations that return
+	      TRUE (ie, not 0 or #-1) are selected.
   ZONE      - Restricts to objects that are in the indicated zone.
 
 { 'help search classes2' for more }
@@ -12262,16 +12101,16 @@ SECS()
   <zonename> is given, "utc" is assumed.
 
     local - Returns an integer which corresponds to the current local
-            time on the machine running the MUX. This integer is
-            affected by time zones and daylight savings time and is
-            therefore primarily useful in conjunction with
-            convsecs(..,utc).
+	    time on the machine running the MUX. This integer is
+	    affected by time zones and daylight savings time and is
+	    therefore primarily useful in conjunction with
+	    convsecs(..,utc).
 
     utc   - Returns the number of seconds (not counting leap seconds)
-            since Jan 01 00:00:00 1970 UTC. This count of seconds is
-            not affected by timezone or daylight savings time and is
-            useful for calculating durations between two absolute
-            points in time.
+	    since Jan 01 00:00:00 1970 UTC. This count of seconds is
+	    not affected by timezone or daylight savings time and is
+	    useful for calculating durations between two absolute
+	    points in time.
 
   <precision> determines the number of fractional seconds shown.
   By default, no fractional seconds are shown.
@@ -12345,11 +12184,11 @@ SEMAPHORES (continued)
   semaphore had been notified.
 
   Examples: <simple>     @wait semaphore="Foo
-                         @notify semaphore
-            <mutex lock> @va mutex lock=@wait me=@trig me/vb
-                         @vb mutex lock="Got it!;@notify me
-                         @startup mutex lock=@notify me
-            <timed wait> @wait timer/60 = "Sixty Second Timer.
+			 @notify semaphore
+	    <mutex lock> @va mutex lock=@wait me=@trig me/vb
+			 @vb mutex lock="Got it!;@notify me
+			 @startup mutex lock=@notify me
+	    <timed wait> @wait timer/60 = "Sixty Second Timer.
 
   In the above examples you will say "Foo" after semaphore is notified,
   you will say "Got it" when you have the mutual exclusion lock mutex lock
@@ -12370,7 +12209,7 @@ SESSION
 
   Example:
     > session
-                                     Characters Input----  Characters Output---
+				     Characters Input----  Characters Output---
     Player Name     On For Idle Port Pend  Lost     Total  Pend  Lost     Total
     Mortal           00:06   0s   16    0     0        44   156     0      2679
     2 Players logged in.
@@ -12459,32 +12298,6 @@ SETINTER()
     You say, "bar gleep"
 
   Related Topics: setdiff(), setunion(), sort().
-
-& SETNAME()
-SETNAME()
-
-  FUNCTION: setname(<object>, <newname>)
-
-  Works the same as @name, <object> and <newname> are equivalent to what comes
-  before and after the '=' sign.  Returns nothing.  This is a side effect
-  function, and should only be used when necessary.
-
-  This function is only available with --enable-firanmux.
-
-  Related Topics: @name
-
-& SETPARENT()
-SETPARENT()
-
-  FUNCTION: setparent(<object>, <parent>)
-
-  Works the same as @parent, <object> and <parent> are equivalent to what
-  comes before and after the '=' sign.  Returns nothing.  This is a side
-  effect function, and should only be used when necessary.
-
-  This function is only available with --enable-firanmux.
-
-  Related Topics: @parent
 
 & SETQ()
 SETQ()
@@ -13164,7 +12977,7 @@ SUB()
     You say, "3"
 
   Related Topics: add(), dec(), iadd(), idiv(), imul(), inc(), isub(),
-            fdiv(), mod(), mul().
+	    fdiv(), mod(), mul().
 
 & SUBEVAL()
 SUBEVAL()
@@ -13253,17 +13066,17 @@ SUBSTITUTIONS (continued)
   Execution state substitutions (continued):
 
     %#      Database number of the object that caused the message to be
-            displayed or the action list to be run (Enactor).
+	    displayed or the action list to be run (Enactor).
 
     %@      Database number of the object immediately calling %! (Caller).
-            This number starts as the same as %#, but can be affected by
-            u()-type functions, zones, and @function.
+	    This number starts as the same as %#, but can be affected by
+	    u()-type functions, zones, and @function.
 
     %!      Database number of the object holding the message or running
-            the action list (Executor).
+	    the action list (Executor).
 
     %l      Database number of the location of the object that caused the
-            message to be displayed or the action list to be run.
+	    message to be displayed or the action list to be run.
 
     %|      A string piped from the previous command in a pipe.
 
@@ -13297,16 +13110,16 @@ SUCCESSES()
   <version>       Description:
 
      0            The first number passed to successes() is the number of dice
-                  (ten-sided dice ranging 1 to 10) to be rolled.  The second
-                  number is the difficulty target number that must be rolled
-                  to count that die as a "success".  The dice are rolled and
-                  each die that is equal to or greater than the target number
-                  is counted as a success.  Each die that rolls a '1' is
-                  counted as a failure.  The number returned from successes()
-                  is the successes minus the failures.
+		  (ten-sided dice ranging 1 to 10) to be rolled.  The second
+		  number is the difficulty target number that must be rolled
+		  to count that die as a "success".  The dice are rolled and
+		  each die that is equal to or greater than the target number
+		  is counted as a success.  Each die that rolls a '1' is
+		  counted as a failure.  The number returned from successes()
+		  is the successes minus the failures.
 
      1 (default)  Similar outcome to above, but expressed internally as a
-                  large table with some of the harsher edges smoothed over.
+		  large table with some of the harsher edges smoothed over.
 
   Related Topics: choose(), die(), distribute(), lrand(), and rand().
 
@@ -13364,7 +13177,7 @@ T()
 TABLE ()
 
   table(<list>,<field width>,<line length>,<delimiter>,
-        <output separator>,<padding>)
+	<output separator>,<padding>)
 
   This function returns the elements of <list> in a tabular format.
   All other parameters are optional.
@@ -13393,8 +13206,8 @@ TABLE ()
 TAKE
 
   COMMAND: take[/<switch>] <object>
-           take[/<switch>] <exit>
-           take[/<switch>] <object>'s <sub-object>
+	   take[/<switch>] <exit>
+	   take[/<switch>] <object>'s <sub-object>
 
   The first form picks up <object> from your location and adds it to your
   inventory.  It will fail if the object is locked against you, or if you
@@ -13417,8 +13230,8 @@ TAKE (continued)
 
   The following switch is recognized:
      /quiet   - Don't perform the @osucc/@asucc or @ofail/@afail attributes
-                on the target object.  This switch only works if you control
-                the object.
+		on the target object.  This switch only works if you control
+		the object.
 
   <object> and <sub-object> may be either players or things.
   'get' is the same as 'take'.
@@ -13500,30 +13313,6 @@ TERSE
 
   Related Topics: examine, look.
 
-& TEXT()
-TEXT()
-
-  FUNCTION: text(<filename>, <index>)
-
-  This function returns the text associated with an index from a file in a
-  help.txt format.  The exact path and name of the file should be specified,
-  and must match exactly the name of a file in game/textfiles.conf (for
-  security).
-
-  This allows you to, for example, create a file, game/text/rumors.txt, and
-  add an entry:
-
-    & beer
-    It is rumored that you can get free beer at the Rat in the Ale Tavern.
-
-  If textfiles.conf contains an entry for the file (text/rumors.txt), then you
-  can refer to the beer rumor using 'text(text/rumors.txt, beer)'.
-
-  This function is only available with --enable-firanmux and is likely to be
-  deprecated in favor of textfile().
-
-  Related Topics: textfile().
-
 & TEXTFILE()
 TEXTFILE()
 
@@ -13556,7 +13345,7 @@ THINK
 THROW
 
   COMMAND: throw[/<switch>] <object>
-           throw[/<switch>] <exit>
+	   throw[/<switch>] <exit>
 
   The first form removes <object> from your inventory and puts it in your
   location, except for the following special cases: Dropping a STICKY thing
@@ -13570,7 +13359,7 @@ THROW
 
   The following switch is recognized:
      /quiet   - Don't perform the @odrop/@adrop attributes on the dropped
-                 object.  This switch only works if you control the object.
+		 object.  This switch only works if you control the object.
 
   'drop' is the same as 'throw'.
 
@@ -13585,9 +13374,9 @@ TIME()
   <zonename> is given, "local" is assumed.
 
     local - Gives you the current local time string of the machine the
-            MUX is running on. This time is affected by the daylight
-            savings time (or 'summer') rules in force at the server's
-            location.
+	    MUX is running on. This time is affected by the daylight
+	    savings time (or 'summer') rules in force at the server's
+	    location.
 
     utc   - Gives you the time string for the UTC time zone.
 
@@ -14159,9 +13948,9 @@ VCROSS()
 
   Returns the cross product of two vectors. The cross product of two
   vectors is a vector.
-                          | a b c |
+			  | a b c |
   (a,b,c) X (d,e,f) = det | d e f | = i(bf-ce) + j(cd-af) + k(ae-bd)
-                          | i j k |
+			  | i j k |
 
   where i, j, and k are taken as unit vectors in Cartesian space.
 
@@ -14492,7 +14281,7 @@ WORDS()
 WRAP()
 
   FUNCTION: wrap(<text>,<width>[,<just>,[<lefttxt>[,<righttxt>
-                [,<hanging>[,<osep>[,<width1>]]]]]])
+		[,<hanging>[,<osep>[,<width1>]]]]]])
 
   This function word wraps the text to fit into a column of the specified
   width.  Words are separated by spaces. If a word in the text is longer than
@@ -14525,9 +14314,9 @@ WRAP() (continued)
 
   > @emit DESC: [wrap(get(me/desc), 10, left,,,6)]
   DESC: You see
-        before
-        you a
-        stranger.
+	before
+	you a
+	stranger.
 
   The width can not be above 4000 characters.
 
@@ -14692,4 +14481,3 @@ ZWHO()
     A chill falls over the room.
 
   Related Topics: @emit, @oemit, NOSPOOF.
-

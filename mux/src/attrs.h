@@ -222,13 +222,7 @@
 #define A_LATCP     232  // Lock for who may @pemit/atcp you
 
 // 233 - 235 unused
-
-#if defined(HAVE_FIRANMUX)
-#define A_COLOR      236 /* Color of name of object in look commands */
-#define A_ALEAD      237 /* Lead action list */
-#define A_LEAD       238 /* Invoker lead message */
-#define A_OLEAD      239 /* Others lead message */
-#endif // HAVE_FIRANMUX
+// 236 - 239 unused (were firan color, alead, lead, olead)
 
 #define A_IDLETMOUT  240 /* Idle message timeout */
 #define A_EXITFORMAT 241

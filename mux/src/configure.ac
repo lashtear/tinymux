@@ -73,22 +73,6 @@ AC_ARG_ENABLE(
   ])
 AC_SUBST(STUBSLAVE_TARGET)
 
-AC_MSG_CHECKING(whether to enable Firan MUX)
-AC_ARG_ENABLE(
-  [firanmux],
-  AS_HELP_STRING([--enable-firanmux],[enable Firan MUX (default is NO)]),
-  [
-    if test "x$enableval" = "xno"; then
-      AC_MSG_RESULT(no)
-    else
-      AC_MSG_RESULT(yes)
-      AC_DEFINE([HAVE_FIRANMUX],[1],[Define to enable Firan customizations])
-    fi
-  ],
-  [
-    AC_MSG_RESULT(no)
-  ])
-
 AC_MSG_CHECKING(whether to perform expensive self-checking)
 AC_ARG_ENABLE(
   [selfcheck],
@@ -151,17 +135,17 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[
     AC_DEFINE([HAVE_DLOPEN], [], [Define if dlopen exists.])
     case "$host" in
     *darwin*) DYNAMICLIB_EXT="dylib"
-              DYNAMICLIB_TARGET="libmux.dylib"
-              DYNAMICLIB_CPPFLAGS="-dynamiclib"
-              ;;
+	      DYNAMICLIB_TARGET="libmux.dylib"
+	      DYNAMICLIB_CPPFLAGS="-dynamiclib"
+	      ;;
     *cygwin*) DYNAMICLIB_EXT="dll"
-              DYNAMICLIB_TARGET="libmux.dll"
-              DYNAMICLIB_CPPFLAGS="-shared -fPIC"
-              ;;
+	      DYNAMICLIB_TARGET="libmux.dll"
+	      DYNAMICLIB_CPPFLAGS="-shared -fPIC"
+	      ;;
     *)        DYNAMICLIB_EXT="so"
-              DYNAMICLIB_TARGET="libmux.so"
-              DYNAMICLIB_CPPFLAGS="-shared -fPIC"
-              ;;
+	      DYNAMICLIB_TARGET="libmux.so"
+	      DYNAMICLIB_CPPFLAGS="-shared -fPIC"
+	      ;;
     esac
     MUX_LIBS="-lmux"
     ],[])
@@ -200,9 +184,9 @@ if test $ac_cv_header_ieeefp_h = yes; then
     ]],[[
     int main(int argc, char *argv[])
     {
-        fp_prec_t a = fpgetprec();
-        fpsetprec(FP_PD);
-        return 0;
+	fp_prec_t a = fpgetprec();
+	fpsetprec(FP_PD);
+	return 0;
     }
     ]])],[AC_DEFINE([IEEEFP_H_USEABLE], [], [Define is ieeefp.h is useable.])],[])
 fi

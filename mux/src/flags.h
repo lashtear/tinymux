@@ -89,11 +89,6 @@
 
 // Third word of flags
 //
-#if defined(HAVE_WOD_REALMS) || defined(HAVE_REALITY_LVLS)
-#if defined(HAVE_FIRANMUX)
-#error "HAVE_FIRANMUX is incompatible with both HAVE_WOD_REALMS and HAVE_REALITY_LVLS"
-#endif // HAVE_FIRANMUX
-#endif // HAVE_WOD_REALMS || HAVE_REALITY_LVLS
 #if defined(HAVE_WOD_REALMS)
 #define OBF          0x00000001      // Obfuscate Flag
 #define HSS          0x00000002      // Auspex/Heightened Senses Flag
@@ -107,15 +102,6 @@
 #define PEERING      0x00000200      // Means the a looker is seeing a
                                      // different realm than they are in.
 #endif // WOD_REALMS
-#if defined(HAVE_FIRANMUX)
-#define LINEWRAP     0x00000001      // Player linewraps.
-#define IMMOBILE     0x00000002      // Player immobile.
-#define QUELL        0x00000004      // Temporarily discard wizardry.
-#define WINTELNET    0x00000008      // Add extra \n for Win/Mac Telnet.
-#define REMOTEECHO   0x00000010      // Adds remote echo!
-#define RESTRICTED   0x00000020      // Player uses restricted commandset.
-#define PARENT       0x00000040      // Object is an official parent obj.
-#endif // HAVE_FIRANMUX
 
 #define SITEMON      0x00000400      // Sitemonitor Flag
 #define CMDCHECK     0x00000800      // Has @icmd set
@@ -245,10 +231,6 @@ UTF8 *MakeCanonicalFlagName
 /* Marked(x)            - Check marked flag on X */
 /* See_attr(P,X.A,O,F)  - Can P see text attr A on X if attr has owner O */
 /* KeepAlive(x)         - Does the user want keepalives? */
-#if defined(HAVE_FIRANMUX)
-/* Linewrap(x)          - Is X set Linewrap? */
-/* Restricted(x)        - Is X restricted to the restricted commandset? */
-#endif // HAVE_FIRANMUX
 
 #define Typeof(x)           (Flags(x) & TYPE_MASK)
 #define God(x)              ((x) == GOD)
@@ -272,29 +254,12 @@ UTF8 *MakeCanonicalFlagName
 #define Good_owner(x)       (Good_obj(x) && OwnsOthers(x))
 
 #define Staff(x)            (Wizard(x) || Royalty(x) || ((Flags2(x) & STAFF) != 0))
-#if defined(HAVE_FIRANMUX)
-#define Royalty(x)          (  (  (Flags(x) & ROYALTY) \
-                               && (Flags3(x) & QUELL) == 0 \
-                               ) \
-                            || (  (  (Flags(Owner(x)) & ROYALTY) \
-                                  && (Flags3(Owner(x)) & QUELL) == 0 \
-                                  ) \
-                               && Inherits(x) \
-                               ) \
-                            )
-#define RealRoyalty(x)      (  (Flags(x) & ROYALTY) \
-                            || (  (Flags(Owner(x)) & ROYALTY) \
-                               && Inherits(x) \
-                               ) \
-                            )
-#else // HAVE_FIRANMUX
 #define Royalty(x)          (  (Flags(x) & ROYALTY) \
                             || (  (Flags(Owner(x)) & ROYALTY) \
                                && Inherits(x) \
                                ) \
                             )
 #define RealRoyalty(x)      (Royalty(x))
-#endif // HAVE_FIRANMUX
 #define WizRoy(x)           (Royalty(x) || Wizard(x))
 #define RealWizRoy(x)       (RealRoyalty(x) || RealWizard(x))
 #define Head(x)             ((Flags2(x) & HEAD_FLAG) != 0)
@@ -310,22 +275,6 @@ UTF8 *MakeCanonicalFlagName
 #define Transparent(x)      ((Flags(x) & SEETHRU) != 0)
 #define Link_ok(x)          (((Flags(x) & LINK_OK) != 0) && Has_contents(x))
 #define Open_ok(x)          (((Flags2(x) & OPEN_OK) != 0) && Has_exits(x))
-#if defined(HAVE_FIRANMUX)
-#define Wizard(x)           (  (Flags3(x) & QUELL) == 0 \
-                            && (  (Flags(x) & WIZARD) \
-                               || (  (Flags(Owner(x)) & WIZARD) \
-                                  && (Flags3(Owner(x)) & QUELL) == 0 \
-                                  && Inherits(x) \
-                                  ) \
-                               ) \
-                            )
-#define RealWizard(x)       (  (Flags(x) & WIZARD) \
-                            || (  (Flags(Owner(x)) & WIZARD) \
-                               && Inherits(x) \
-                               ) \
-                            )
-#define Dark(x)             ((Flags(x) & DARK) != 0)
-#else // HAVE_FIRANMUX
 #define Wizard(x)           (  (Flags(x) & WIZARD) \
                             || (  (Flags(Owner(x)) & WIZARD) \
                                && Inherits(x) \
@@ -334,7 +283,6 @@ UTF8 *MakeCanonicalFlagName
 #define RealWizard(x)       (Wizard(x))
 #define Dark(x)             (((Flags(x) & DARK) != 0) && (Wizard(x) || \
                             !(isPlayer(x) || (Puppet(x) && Has_contents(x)))))
-#endif // HAVE_FIRANMUX
 #define Jump_ok(x)          (((Flags(x) & JUMP_OK) != 0) && Has_contents(x))
 #define Sticky(x)           ((Flags(x) & STICKY) != 0)
 #define Destroy_ok(x)       ((Flags(x) & DESTROY_OK) != 0)
@@ -454,11 +402,5 @@ UTF8 *MakeCanonicalFlagName
 #define Atcp(x)             ((Flags3(x) & ATCP) != 0)
 #define s_Atcp(x)           s_Flags((x), FLAG_WORD3, Flags3(x) | ATCP)
 #define c_Atcp(x)           s_Flags((x), FLAG_WORD3, Flags3(x) & ~ATCP)
-
-#if defined(HAVE_FIRANMUX)
-#define Linewrap(x)   ((Flags3(x) & LINEWRAP) != 0)
-#define Immobile(x)   ((Flags3(x) & IMMOBILE) != 0)
-#define Restricted(x) ((Flags3(x) & RESTRICTED) != 0)
-#endif // HAVE_FIRANMUX
 
 #endif // !__FLAGS_H

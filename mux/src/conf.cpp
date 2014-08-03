@@ -112,9 +112,6 @@ void cf_init(void)
     mux_strncpy(mudconf.guests_channel, T("Guests"), sizeof(mudconf.guests_channel)-1);
     mux_strncpy(mudconf.guests_channel_alias, T("g"), sizeof(mudconf.guests_channel_alias)-1);
     mux_strncpy(mudconf.pueblo_msg, T("</xch_mudtext><img xch_mode=html>"), sizeof(mudconf.pueblo_msg)-1);
-#if defined(HAVE_FIRANMUX)
-    mux_strncpy(mudconf.immobile_msg, T("You have been set immobile."), sizeof(mudconf.immobile_msg)-1);
-#endif // HAVE_FIRANMUX
 #if defined(INLINESQL) || defined(TINYMUX_MODULES)
     mudconf.sql_server[0]   = '\0';
     mudconf.sql_user[0]     = '\0';
@@ -2006,9 +2003,6 @@ static CONFPARM conftable[] =
     {T("def_thing_tx"),              cf_int,         CA_WIZARD, CA_PUBLIC,   (int *)&mudconf.def_thing_tx,    NULL,               0},
 #endif // HAVE_REALITY_LVLS
 
-#ifdef HAVE_FIRANMUX
-    {T("immobile_message"),          cf_string,      CA_WIZARD, CA_PUBLIC,   (int *)mudconf.immobile_msg,     NULL,             128},
-#endif // HAVE_FIRANMUX
 #if defined(INLINESQL) || defined(TINYMUX_MODULES)
     {T("sql_server"),                cf_string,      CA_STATIC, CA_DISABLED, (int *)mudconf.sql_server,       NULL,             128},
     {T("sql_user"),                  cf_string,      CA_STATIC, CA_DISABLED, (int *)mudconf.sql_user,         NULL,             128},

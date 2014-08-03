@@ -2124,9 +2124,6 @@ bool bCanSetAttr(dbref executor, dbref target, ATTR *tattr)
     dbref aowner;
     int aflags;
     if (  (tattr->flags & mDeny)
-#ifdef HAVE_FIRANMUX
-       || Immutable(target)
-#endif
        || (  atr_get_info(target, tattr->number, &aowner, &aflags)
           && (aflags & mDeny)))
     {
@@ -2484,19 +2481,6 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
                 *bp = '\0';
                 notify_html(player, buff);
             }
-#if defined(HAVE_FIRANMUX)
-            else if (  A_DESC == what
-                    && Linewrap(player)
-                    && isPlayer(player)
-                    && (  !Linewrap(thing)
-                       || isPlayer(thing)))
-            {
-                UTF8 *p = alloc_lbuf("did_it.2");
-                linewrap_general(buff, 71, p, LBUF_SIZE-1, T("     "), 5);
-                notify(player, p);
-                free_lbuf(p);
-            }
-#endif // HAVE_FIRANMUX
             else
             {
                 notify(player, buff);
@@ -2534,9 +2518,7 @@ void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
                  AttrTrace(aflags, EV_EVAL|EV_FIGNORE|EV_FCHECK|EV_TOP),
                  args, nargs);
             *bp = '\0';
-#if !defined(HAVE_FIRANMUX)
             if (*buff)
-#endif // HAVE_FIRANMUX
             {
 #ifdef HAVE_REALITY_LVLS
                 if (aflags & AF_NONAME)

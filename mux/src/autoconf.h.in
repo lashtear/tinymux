@@ -72,9 +72,6 @@
 /* Define if fesetprec is available. */
 #undef HAVE_FESETPREC
 
-/* Define to enable Firan customizations */
-#undef HAVE_FIRANMUX
-
 /* Define to 1 if you have the <float.h> header file. */
 #undef HAVE_FLOAT_H
 

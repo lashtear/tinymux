@@ -666,11 +666,7 @@ static CMDENT_ONE_ARG command_table_one_arg[] =
     {T("enter"),         enter_sw,   CA_LOCATION,                0,  CS_ONE_ARG|CS_INTERP, 0, do_enter},
     {T("examine"),       examine_sw, CA_PUBLIC,                  0,  CS_ONE_ARG|CS_INTERP, 0, do_examine},
     {T("get"),           get_sw,     CA_LOCATION|CA_NO_GUEST,    0,  CS_ONE_ARG|CS_INTERP, 0, do_get},
-#if defined(HAVE_FIRANMUX)
-    {T("goto"),          goto_sw,    CA_LOCATION|CA_NO_IMMOBILE, 0,  CS_ONE_ARG|CS_INTERP, 0, do_move},
-#else
     {T("goto"),          goto_sw,    CA_LOCATION,                0,  CS_ONE_ARG|CS_INTERP, 0, do_move},
-#endif // HAVE_FIRANMUX
     {T("look"),          look_sw,    CA_LOCATION,        LOOK_LOOK,  CS_ONE_ARG|CS_INTERP, 0, do_look},
     {T("outputprefix"),  NULL,       CA_PUBLIC,         CMD_PREFIX,  CS_ONE_ARG,           0, logged_out1},
     {T("outputsuffix"),  NULL,       CA_PUBLIC,         CMD_SUFFIX,  CS_ONE_ARG,           0, logged_out1},
@@ -1097,10 +1093,6 @@ bool check_access(dbref player, int mask)
            || ((mask & CA_NO_SLAVE)   && Slave(player))
            || ((mask & CA_NO_SUSPECT) && Suspect(player))
            || ((mask & CA_NO_GUEST)   && Guest(player))
-#if defined(HAVE_FIRANMUX)
-           // || ((mask & CA_NO_IMMOBILE) && Immobile(player))
-           || ((mask & CA_NO_RESTRICTED) && Restricted(player))
-#endif // HAVE_FIRANMUX
            || ((mask & CA_NO_UNINS)   && Uninspected(player)))
         {
             return false;
@@ -2821,9 +2813,7 @@ static void list_attrtable(dbref player)
 NAMETAB access_nametab[] =
 {
     {T("builder"),               6, CA_WIZARD, CA_BUILDER},
-#if !defined(HAVE_FIRANMUX)
     {T("dark"),                  4, CA_GOD,    CF_DARK},
-#endif // HAVE_FIRANMUX
     {T("disabled"),              4, CA_GOD,    CA_DISABLED},
     {T("global_build"),          8, CA_PUBLIC, CA_GBL_BUILD},
     {T("global_interp"),         8, CA_PUBLIC, CA_GBL_INTERP},
@@ -2834,10 +2824,6 @@ NAMETAB access_nametab[] =
     {T("need_contents"),         6, CA_PUBLIC, CA_CONTENTS},
     {T("need_player"),           6, CA_PUBLIC, CA_PLAYER},
     {T("no_haven"),              4, CA_PUBLIC, CA_NO_HAVEN},
-#if defined(HAVE_FIRANMUX)
-    {T("no_immobile"),           5, CA_WIZARD, CA_NO_IMMOBILE},
-    {T("no_restricted"),         6, CA_WIZARD, CA_NO_RESTRICTED},
-#endif // HAVE_FIRANMUX
     {T("no_robot"),              4, CA_WIZARD, CA_NO_ROBOT},
     {T("no_slave"),              5, CA_PUBLIC, CA_NO_SLAVE},
     {T("no_suspect"),            5, CA_WIZARD, CA_NO_SUSPECT},

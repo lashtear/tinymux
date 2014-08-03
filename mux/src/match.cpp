@@ -594,11 +594,7 @@ dbref match_result(void)
         return md.match;
 
     default:
-#if defined(HAVE_FIRANMUX)
-        return md.match;
-#else
         return AMBIGUOUS;
-#endif // HAVE_FIRANMUX
     }
 }
 
