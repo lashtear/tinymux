@@ -380,14 +380,14 @@ int NearestIndex(YUV &yuv)
 
     for (int i = 1; i < NUM_ENTRIES; i++)
     {
-        if (table[i].fDisable) continue;
+	if (table[i].fDisable) continue;
 
-        INT64 r = diff(yuv, table[i].yuv);
-        if (r < rNearest)
-        {
-            rNearest = r;
-            iNearest = i;
-        }
+	INT64 r = diff(yuv, table[i].yuv);
+	if (r < rNearest)
+	{
+	    rNearest = r;
+	    iNearest = i;
+	}
     }
     return iNearest;
 }
@@ -399,25 +399,25 @@ void validateyuv()
     RGB rgb;
     for (rgb.r = 0; rgb.r < 256; rgb.r++)
     {
-        for (rgb.g = 0; rgb.g < 256; rgb.g++)
-        {
-            for (rgb.b = 0; rgb.b < 256; rgb.b++)
-            {
-                YUV yuv8, yuv16;
-                rgb2yuv8(&rgb, &yuv8);
-                rgb2yuv16(&rgb, &yuv16);
+	for (rgb.g = 0; rgb.g < 256; rgb.g++)
+	{
+	    for (rgb.b = 0; rgb.b < 256; rgb.b++)
+	    {
+		YUV yuv8, yuv16;
+		rgb2yuv8(&rgb, &yuv8);
+		rgb2yuv16(&rgb, &yuv16);
 
-                // The two methods above should not be too different.
-                //
-                if (  8 < abs(yuv8.y - yuv16.y)
-                   || 4 < abs(yuv8.u - yuv16.u)
-                   || 4 < abs(yuv8.v - yuv16.v))
-                {
-                    printf("Line: %d\n", __LINE__);
-                    abort();
-                }
-            }
-        }
+		// The two methods above should not be too different.
+		//
+		if (  8 < abs(yuv8.y - yuv16.y)
+		   || 4 < abs(yuv8.u - yuv16.u)
+		   || 4 < abs(yuv8.v - yuv16.v))
+		{
+		    printf("Line: %d\n", __LINE__);
+		    abort();
+		}
+	    }
+	}
     }
 }
 
@@ -426,18 +426,18 @@ void OutputList()
     RGB rgb;
     for (rgb.r = 0; rgb.r < 256; rgb.r++)
     {
-        for (rgb.g = 0; rgb.g < 256; rgb.g++)
-        {
-            for (rgb.b = 0; rgb.b < 256; rgb.b++)
-            {
-                YUV yuv16;
-                rgb2yuv16(&rgb, &yuv16);
+	for (rgb.g = 0; rgb.g < 256; rgb.g++)
+	{
+	    for (rgb.b = 0; rgb.b < 256; rgb.b++)
+	    {
+		YUV yuv16;
+		rgb2yuv16(&rgb, &yuv16);
 
-                int i = NearestIndex(yuv16);
+		int i = NearestIndex(yuv16);
 
-                printf("%02X%02X%02X;%d;RGB(%d,%d,%d)\n", rgb.r, rgb.g, rgb.b, i, rgb.r, rgb.g, rgb.b);
-            }
-        }
+		printf("%02X%02X%02X;%d;RGB(%d,%d,%d)\n", rgb.r, rgb.g, rgb.b, i, rgb.r, rgb.g, rgb.b);
+	    }
+	}
     }
 }
 
@@ -447,11 +447,11 @@ int y_comp(const void *s1, const void *s2)
     ENTRY *pb = &table[*(int *)s2];
     if (pa->yuv.y2 > pb->yuv.y2)
     {
-        return 1;
+	return 1;
     }
     else if (pa->yuv.y2 < pb->yuv.y2)
     {
-        return -1;
+	return -1;
     }
     return 0;
 }
@@ -462,11 +462,11 @@ int u_comp(const void *s1, const void *s2)
     ENTRY *pb = &table[*(int *)s2];
     if (pa->yuv.u > pb->yuv.u)
     {
-        return 1;
+	return 1;
     }
     else if (pa->yuv.u < pb->yuv.u)
     {
-        return -1;
+	return -1;
     }
     return 0;
 }
@@ -477,11 +477,11 @@ int v_comp(const void *s1, const void *s2)
     ENTRY *pb = &table[*(int *)s2];
     if (pa->yuv.v > pb->yuv.v)
     {
-        return 1;
+	return 1;
     }
     else if (pa->yuv.v < pb->yuv.v)
     {
-        return -1;
+	return -1;
     }
     return 0;
 }
@@ -493,21 +493,21 @@ int kdtree(int npts_arg, int pts_arg[], int depth)
     int *pts = new int[npts_arg];
     for (int i = 0; i < npts_arg; i++)
     {
-        pts[i] = pts_arg[i];
+	pts[i] = pts_arg[i];
     }
 
     int axis = depth % 3;
     if (0 == axis)
     {
-        qsort(pts, npts_arg, sizeof(int), y_comp);
+	qsort(pts, npts_arg, sizeof(int), y_comp);
     }
     else if (1 == axis)
     {
-        qsort(pts, npts_arg, sizeof(int), u_comp);
+	qsort(pts, npts_arg, sizeof(int), u_comp);
     }
     else
     {
-        qsort(pts, npts_arg, sizeof(int), v_comp);
+	qsort(pts, npts_arg, sizeof(int), v_comp);
     }
     int iMedian = npts_arg/2;
     int median = pts[iMedian];
@@ -534,20 +534,20 @@ void NearestIndex_tree_y(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
 {
     if (-1 == iHere)
     {
-        return;
+	return;
     }
 
     if (-1 == iBest)
     {
-        iBest = iHere;
-        rBest = diff_tree(yuv, table[iBest].yuv);
+	iBest = iHere;
+	rBest = diff_tree(yuv, table[iBest].yuv);
     }
 
     INT64 rHere = diff_tree(yuv, table[iHere].yuv);
     if (rHere < rBest)
     {
-        iBest = iHere;
-        rBest = rHere;
+	iBest = iHere;
+	rBest = rHere;
     }
 
     INT64 d = yuv.y2 - table[iHere].yuv.y2;
@@ -557,7 +557,7 @@ void NearestIndex_tree_y(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
     INT64 rAxis = d*d;
     if (rAxis < rBest)
     {
-        NearestIndex_tree_u(table[iHere].child[1-iNearChild], yuv, iBest, rBest);
+	NearestIndex_tree_u(table[iHere].child[1-iNearChild], yuv, iBest, rBest);
     }
 }
 
@@ -565,20 +565,20 @@ void NearestIndex_tree_u(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
 {
     if (-1 == iHere)
     {
-        return;
+	return;
     }
 
     if (-1 == iBest)
     {
-        iBest = iHere;
-        rBest = diff_tree(yuv, table[iBest].yuv);
+	iBest = iHere;
+	rBest = diff_tree(yuv, table[iBest].yuv);
     }
 
     INT64 rHere = diff_tree(yuv, table[iHere].yuv);
     if (rHere < rBest)
     {
-        iBest = iHere;
-        rBest = rHere;
+	iBest = iHere;
+	rBest = rHere;
     }
 
     INT64 d = yuv.u - table[iHere].yuv.u;
@@ -588,7 +588,7 @@ void NearestIndex_tree_u(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
     INT64 rAxis = d*d;
     if (rAxis < rBest)
     {
-        NearestIndex_tree_v(table[iHere].child[1-iNearChild], yuv, iBest, rBest);
+	NearestIndex_tree_v(table[iHere].child[1-iNearChild], yuv, iBest, rBest);
     }
 }
 
@@ -596,20 +596,20 @@ void NearestIndex_tree_v(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
 {
     if (-1 == iHere)
     {
-        return;
+	return;
     }
 
     if (-1 == iBest)
     {
-        iBest = iHere;
-        rBest = diff_tree(yuv, table[iBest].yuv);
+	iBest = iHere;
+	rBest = diff_tree(yuv, table[iBest].yuv);
     }
 
     INT64 rHere = diff_tree(yuv, table[iHere].yuv);
     if (rHere < rBest)
     {
-        iBest = iHere;
-        rBest = rHere;
+	iBest = iHere;
+	rBest = rHere;
     }
 
     INT64 d = yuv.v - table[iHere].yuv.v;
@@ -619,7 +619,7 @@ void NearestIndex_tree_v(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
     INT64 rAxis = d*d;
     if (rAxis < rBest)
     {
-        NearestIndex_tree_y(table[iHere].child[1-iNearChild], yuv, iBest, rBest);
+	NearestIndex_tree_y(table[iHere].child[1-iNearChild], yuv, iBest, rBest);
     }
 }
 
@@ -628,28 +628,28 @@ void ValidateTree(int iRoot)
     RGB rgb;
     for (rgb.r = 0; rgb.r < 256; rgb.r++)
     {
-        for (rgb.g = 0; rgb.g < 256; rgb.g++)
-        {
-            for (rgb.b = 0; rgb.b < 256; rgb.b++)
-            {
-                YUV yuv16;
-                rgb2yuv16(&rgb, &yuv16);
+	for (rgb.g = 0; rgb.g < 256; rgb.g++)
+	{
+	    for (rgb.b = 0; rgb.b < 256; rgb.b++)
+	    {
+		YUV yuv16;
+		rgb2yuv16(&rgb, &yuv16);
 
-                int i = NearestIndex(yuv16);
-                INT64 d;
-                int j = -1;
-                NearestIndex_tree_y(iRoot, yuv16, j, d);
-                if (  i != j
-                   && diff(yuv16, table[i].yuv) != diff_tree(yuv16, table[j].yuv))
-                {
-                    printf("(%d,%d,%d) gives %d (%d,%d,%d)(%lld) versus %d (%d,%d,%d)(%lld)\n",
-                        yuv16.y, yuv16.u, yuv16.v,
-                        i, table[i].yuv.y, table[i].yuv.u, table[i].yuv.v, diff(yuv16, table[i].yuv),
-                        j, table[j].yuv.y, table[j].yuv.u, table[j].yuv.v, diff(yuv16, table[j].yuv));
-                    //abort();
-                }
-            }
-        }
+		int i = NearestIndex(yuv16);
+		INT64 d;
+		int j = -1;
+		NearestIndex_tree_y(iRoot, yuv16, j, d);
+		if (  i != j
+		   && diff(yuv16, table[i].yuv) != diff_tree(yuv16, table[j].yuv))
+		{
+		    printf("(%d,%d,%d) gives %d (%d,%d,%d)(%lld) versus %d (%d,%d,%d)(%lld)\n",
+			yuv16.y, yuv16.u, yuv16.v,
+			i, table[i].yuv.y, table[i].yuv.u, table[i].yuv.v, diff(yuv16, table[i].yuv),
+			j, table[j].yuv.y, table[j].yuv.u, table[j].yuv.v, diff(yuv16, table[j].yuv));
+		    //abort();
+		}
+	    }
+	}
     }
 }
 
@@ -671,19 +671,19 @@ void DumpTable(int iRoot16, int iRoot256)
     printf("{\n");
     for (int i = 0; i < NUM_ENTRIES; i++)
     {
-        printf("    { { %3d, %3d, %3d }, { %3d, %3d, %3d, %3d }, { %3d, %3d }, %2d, %2d},\n",
-            table[i].rgb.r,
-            table[i].rgb.g,
-            table[i].rgb.b,
-            table[i].yuv.y,
-            table[i].yuv.u,
-            table[i].yuv.v,
-            table[i].yuv.y2,
-            table[i].child[0],
-            table[i].child[1],
-            table[i].color8,
-            table[i].color16
-        );
+	printf("    { { %3d, %3d, %3d }, { %3d, %3d, %3d, %3d }, { %3d, %3d }, %2d, %2d},\n",
+	    table[i].rgb.r,
+	    table[i].rgb.g,
+	    table[i].rgb.b,
+	    table[i].yuv.y,
+	    table[i].yuv.u,
+	    table[i].yuv.v,
+	    table[i].yuv.y2,
+	    table[i].child[0],
+	    table[i].child[1],
+	    table[i].color8,
+	    table[i].color16
+	);
     }
     printf("};\n");
 }
@@ -698,7 +698,7 @@ int main(int argc, char *argv[])
     //
     for (int i = 0; i < NUM_ENTRIES; i++)
     {
-        rgb2yuv16(&table[i].rgb, &table[i].yuv);
+	rgb2yuv16(&table[i].rgb, &table[i].yuv);
     }
 
     //OutpuList();
@@ -707,49 +707,49 @@ int main(int argc, char *argv[])
     int pts[NUM_ENTRIES];
     for (int i = 0; i < NUM_ENTRIES; i++)
     {
-        if (table[i].fDisable)
-        {
-            pts[npts++] = i;
-        }
+	if (table[i].fDisable)
+	{
+	    pts[npts++] = i;
+	}
     }
     int kdroot16 = kdtree(npts, pts, 0);
     npts = 0;
     for (int i = 0; i < NUM_ENTRIES; i++)
     {
-        if (!table[i].fDisable)
-        {
-            pts[npts++] = i;
-        }
+	if (!table[i].fDisable)
+	{
+	    pts[npts++] = i;
+	}
     }
     int kdroot256 = kdtree(npts, pts, 0);
     for (int i = 0; i < NUM_ENTRIES; i++)
     {
-        YUV yuv16;
-        rgb2yuv16(&table[i].rgb, &yuv16);
+	YUV yuv16;
+	rgb2yuv16(&table[i].rgb, &yuv16);
 
-        INT64 d;
-        int j = -1;
-        NearestIndex_tree_y(kdroot16, yuv16, j, d);
-        table[i].color16 = j;
+	INT64 d;
+	int j = -1;
+	NearestIndex_tree_y(kdroot16, yuv16, j, d);
+	table[i].color16 = j;
     }
     for (int i = 0; i < NUM_ENTRIES; i++)
     {
-        YUV yuv16;
-        rgb2yuv16(&table[i].rgb, &yuv16);
+	YUV yuv16;
+	rgb2yuv16(&table[i].rgb, &yuv16);
 
-        int iNearest = 0;
-        INT64 rNearest = diff(yuv16, table[0].yuv);
+	int iNearest = 0;
+	INT64 rNearest = diff(yuv16, table[0].yuv);
 
-        for (int j = 1; j < 8; j++)
-        {
-            INT64 r = diff(yuv16, table[j].yuv);
-            if (r < rNearest)
-            {
-                rNearest = r;
-                iNearest = j;
-            }
-        }
-        table[i].color8 = iNearest;
+	for (int j = 1; j < 8; j++)
+	{
+	    INT64 r = diff(yuv16, table[j].yuv);
+	    if (r < rNearest)
+	    {
+		rNearest = r;
+		iNearest = j;
+	    }
+	}
+	table[i].color8 = iNearest;
     }
     //DumpTree(kdroot, 0);
     //ValidateTree(kdroot256);

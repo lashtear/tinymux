@@ -221,8 +221,8 @@ typedef struct
     unsigned int flags;
     union
     {
-        void (*handler)(void);
-        ADDENT *addent;
+	void (*handler)(void);
+	ADDENT *addent;
     };
 } CMDENT;
 
@@ -310,7 +310,7 @@ extern NAMETAB allow_charset_nametab[];
 #define SW_MULTIPLE   0x80000000  /* This sw may be spec'd w/others */
 #define SW_GOT_UNIQUE 0x40000000  /* Already have a unique option */
 #define SW_NOEVAL     0x20000000  /* Don't parse args before calling */
-                                  /* handler (typically via a switch */
-                                  /* alias) */
+				  /* handler (typically via a switch */
+				  /* alias) */
 
 #endif // !__COMMAND_H

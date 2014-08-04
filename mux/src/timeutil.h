@@ -12,7 +12,7 @@
 
 typedef struct
 {
-             short iYear;       // 1900 would be stored as 1900.
+	     short iYear;       // 1900 would be stored as 1900.
     unsigned short iMonth;      // January is 1. December is 12.
     unsigned short iDayOfWeek;  // 0 is Sunday, 1 is Monday, etc.
     unsigned short iDayOfMonth; // Day of Month, 1..31
@@ -204,7 +204,7 @@ int iFloorDivision(int x, int y);
 INT64 i64FloorDivisionMod(INT64 x, INT64 y, INT64 *piMod);
 bool ParseDate(CLinearTimeAbsolute &lta, UTF8 *pDateString, bool *pbZoneSpecified);
 void ParseDecimalSeconds(size_t n, const UTF8 *p, unsigned short *iMilli,
-                         unsigned short *iMicro, unsigned short *iNano);
+			 unsigned short *iMicro, unsigned short *iNano);
 bool isLeapYear(long iYear);
 void ConvertToSecondsString(UTF8 *buffer, INT64 n64, int nFracDigits);
 bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str);

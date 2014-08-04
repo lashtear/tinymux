@@ -22,34 +22,34 @@ These numbers will be reflected by the result of typing 'VERSION' on
 the game
 
 2.x.x       Major or potentially major change in project direction such as a
-            new primary maintainer.  For example, David Passmore was
-            responsible for the 1.x series, and Stephen Dennis is responsible
-            for the 2.x series.
+	    new primary maintainer.  For example, David Passmore was
+	    responsible for the 1.x series, and Stephen Dennis is responsible
+	    for the 2.x series.
 
 2.1.x       A single release cycle of a set of features.  Typically, there is
-            one every year and the version number corresponds to the year in
-            which the development occurred.  For example,
+	    one every year and the version number corresponds to the year in
+	    which the development occurred.  For example,
 
-                  Years       Version
-                1998-2000       2.0
-                   2001         2.1
-                   2002         2.2
-                   2003         2.3
-                   2004         2.4
-                2005-2006       2.6
-                   2007         2.7
-                2008-2009       2.9
-                2010-2011       2.10
-                   2012         2.12
+		  Years       Version
+		1998-2000       2.0
+		   2001         2.1
+		   2002         2.2
+		   2003         2.3
+		   2004         2.4
+		2005-2006       2.6
+		   2007         2.7
+		2008-2009       2.9
+		2010-2011       2.10
+		   2012         2.12
 
 2.x.1       Feature Change.  After Beta has started, the third number
-            indicates a change in the feature set -- usually the addition of
-            features, but it could also be the removal of a feature.  During
-            development, the third number is zero (0).
+	    indicates a change in the feature set -- usually the addition of
+	    features, but it could also be the removal of a feature.  During
+	    development, the third number is zero (0).
 
 2.x.x.x     Bug release, build number, or patch to an existing release.  These
-            will be released as needed to fix bugs in a format useable to the
-            'applypatch', 'patch', and 'dopatch' utilities.
+	    will be released as needed to fix bugs in a format useable to the
+	    'applypatch', 'patch', and 'dopatch' utilities.
 
 
 Typically, development for each release cycle begins in January.  After twelve

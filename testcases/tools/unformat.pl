@@ -122,12 +122,12 @@ $donecommand = "think Uploaded.";
 $numargs = $#ARGV+1;
 
 if ($numargs) {
-        foreach $file (@ARGV) {
-                &command( $file, 'filehandle00');
-                print "\n";
-        }
+	foreach $file (@ARGV) {
+		&command( $file, 'filehandle00');
+		print "\n";
+	}
 } else {
-        &command( '', 'file');
+	&command( '', 'file');
 }
 
 print "\n", $donecommand, "\n";         # print the $donecommand
@@ -138,76 +138,76 @@ exit 0;                                 # and finish
 #############################################################################
 
 sub command {
-        local($file, $input) = @_;
+	local($file, $input) = @_;
 
-        $input++;                       # string increment for filename;
+	$input++;                       # string increment for filename;
 
-        if (!$file) {
-                if ( ! open($input, ">&STDIN") ) {
-                        print "$outputcommand Can't open stdin.";
-                        die "Can't open stdin\n";
-                }
-        } else {
-                unless(open($input, $file)) {
-                        print "$outputcommand Can't open $file: $!\n";
-                        return;
-                }
-        }
+	if (!$file) {
+		if ( ! open($input, ">&STDIN") ) {
+			print "$outputcommand Can't open stdin.";
+			die "Can't open stdin\n";
+		}
+	} else {
+		unless(open($input, $file)) {
+			print "$outputcommand Can't open $file: $!\n";
+			return;
+		}
+	}
 
-        GETTEXT:
-        while (<$input>) {
-                chop;
-                next GETTEXT if /^\s*$/;        # skip empty lines
+	GETTEXT:
+	while (<$input>) {
+		chop;
+		next GETTEXT if /^\s*$/;        # skip empty lines
 
-                # handle includes
-                if ( /^#include\s+(\S.*)/ ) {
-                        if ( !$filetable{$1} ) {
-                                $filetable{$1} ++;
-                                &command($1, $input);
-                        } else {
-                                print "$outputcommand Attempted to include file
+		# handle includes
+		if ( /^#include\s+(\S.*)/ ) {
+			if ( !$filetable{$1} ) {
+				$filetable{$1} ++;
+				&command($1, $input);
+			} else {
+				print "$outputcommand Attempted to include file
  '$1' more than once. Ignored.\n";
-                                next;
-                        }
-                }
+				next;
+			}
+		}
 
-                if ( /^#.*/ ) {
-                        next GETTEXT;   # skip comments
-                }
-                elsif ( /^\S/ ) {       # start reading a command
-                        print;          # print the first part of it
+		if ( /^#.*/ ) {
+			next GETTEXT;   # skip comments
+		}
+		elsif ( /^\S/ ) {       # start reading a command
+			print;          # print the first part of it
 
-                        GETCOMMAND:     # process the rest of a command
-                        while (<$input>) {
+			GETCOMMAND:     # process the rest of a command
+			while (<$input>) {
 
-                                chop;
+				chop;
 
-                                # end if '-'
-                                last GETCOMMAND if /^-$/;
+				# end if '-'
+				last GETCOMMAND if /^-$/;
 
-                                # skip comments
-                                next GETCOMMAND if /^#/;
+				# skip comments
+				next GETCOMMAND if /^#/;
 
-                                # handle includes
-                                if ( /^#include\s+(\S.*)/ ) {
-                                        if ( !$filetable{$1} ) {
-                                                $filetable{$1} ++;
-                                                &command($1, $input);
-                                        } else {
-                                                print "$outputcommand Attempted
+				# handle includes
+				if ( /^#include\s+(\S.*)/ ) {
+					if ( !$filetable{$1} ) {
+						$filetable{$1} ++;
+						&command($1, $input);
+					} else {
+						print "$outputcommand Attempted
  to include file '$1' more than once. Ignored.\n";
-                                                next;
-                                        }
-                                }
+						next;
+					}
+				}
 
-                                # remove leading space and print the rest
-                                /^\s*(.*)/ && print $1;
-                        }
-                        print "\n";                     # flush with a newline
-                        print "\n" if $extraspace;      # or two
-                }
-        }
-        close $input;
+				# remove leading space and print the rest
+				/^\s*(.*)/ && print $1;
+			}
+			print "\n";                     # flush with a newline
+			print "\n" if $extraspace;      # or two
+		}
+	}
+	close $input;
 }
 
 

@@ -113,21 +113,21 @@ Configuring SGP +finger:
 +cnotes
 
   SYNTAX: +cnotelist <name>               - Gives you a list of all cnotes on
-                                            a character object.
-          +cnoteview <name> <notename>    - Gives you the contents of the
-                                            <notename> note on named player
-                                            or dbref for objects.
-          +cnote/<notename> <name>=<text> - Sets a cnote on a player or
-                                            object(use dbref) to the value of
-                                            the text with person and time
-                                            added. (WIZ ONLY)
-          +cnoteapp <pcname> <notename>   - Approves and timestamps a player-
-                                            set cnotes, sets the attribute
-                                            wizard so the player can't change
-                                            it.  Approved notes bear the line:
-                                            "Approved by XXX on date YYY"
-          +cnotedel <pcname> <notename>   - Deletes a given note from a
-                                            character.
+					    a character object.
+	  +cnoteview <name> <notename>    - Gives you the contents of the
+					    <notename> note on named player
+					    or dbref for objects.
+	  +cnote/<notename> <name>=<text> - Sets a cnote on a player or
+					    object(use dbref) to the value of
+					    the text with person and time
+					    added. (WIZ ONLY)
+	  +cnoteapp <pcname> <notename>   - Approves and timestamps a player-
+					    set cnotes, sets the attribute
+					    wizard so the player can't change
+					    it.  Approved notes bear the line:
+					    "Approved by XXX on date YYY"
+	  +cnotedel <pcname> <notename>   - Deletes a given note from a
+					    character.
 
   Players may set notes on objects other than themselves by setting an
   attribute &CNOTE_<notename> <object>=<text>.  Staff approved notes will
@@ -197,17 +197,17 @@ Softcoded Functions:
 
     Returns 1 or 0 when player matches the flags defined as 'staff'
 
-             ostaff(<dbref>)
+	     ostaff(<dbref>)
 
     Softcoded function that checks to see if <dbref> against the official
     staff list as listed on the Global Parent.
 
-             andlist(<string>,<delimiter>)
+	     andlist(<string>,<delimiter>)
 
     Returns a string as a comma separated list with 'and' between second to
     last and last elements.
 
-             mmm-dd-yyyy()
+	     mmm-dd-yyyy()
 
     Returns time() output in terms of MMM DD YYYY.
 
@@ -218,10 +218,10 @@ Softcoded Functions:
 +motd
 
   SYNTAX: +motd/list
-          +motd/set <type>=<message>
-          +motd/del <type>=<MOTD #>
-          +motd/clear <type>
-          +motd/reset
+	  +motd/set <type>=<message>
+	  +motd/del <type>=<MOTD #>
+	  +motd/clear <type>
+	  +motd/reset
 
   This code allows for easier manipulation of the @motd command and the use of
   softcoded MOTD to create semi-permanent MOTD.
@@ -267,11 +267,11 @@ Softcoded Functions:
 Project Status Tracker Help
 
   SYNTAX:  +setproject <project name>/<coder name>/<status>
-           +viewprojects
-           +editproject <project name>/who=<coder name>
-           +editproject <project name>/status=<status>
-           +deleteproject <project name>
-           +trackerhelp -- Gets this screen.
+	   +viewprojects
+	   +editproject <project name>/who=<coder name>
+	   +editproject <project name>/status=<status>
+	   +deleteproject <project name>
+	   +trackerhelp -- Gets this screen.
 
   This code assists in the management of game-related projects.  The project
   name, and the other fields, can have spaces in them.
@@ -315,7 +315,7 @@ Project Status Tracker Help
 Notes on +staff:
 
   SYNTAX: +staff/add <player>
-          +staff/remove <player>
+	  +staff/remove <player>
 
   These two commands modify the contents of &STAFF-LIST on the global parent
   and affect whether or not a given person appears on the +staff and
@@ -329,9 +329,9 @@ Notes on +staff:
 STNOTES
 
   SYNTAX: +stnotes
-          +stnotes <object>
-          +setnote <object>/<note>=<text> (Wiz Only)
-          +setnote/vis <object>/<note>=<text> (Wiz Only)
+	  +stnotes <object>
+	  +setnote <object>/<note>=<text> (Wiz Only)
+	  +setnote/vis <object>/<note>=<text> (Wiz Only)
 
   The first form searches the current local and lists out any players,
   objects, or exits that have STnotes set on them (the room is checked as
@@ -362,14 +362,14 @@ STNOTES
 +timestamp
 
   SYNTAX:  +timestamp <name>/<topic>=<note>  - Sets a timestamp on a given
-                                               player for a given topic and
-                                               reason.
-           +timestamp/read <name>            - Lets staff read all timestamps
-                                               on a given player.
-           +timestamp/rem <name>/<topic>     - Removes a given timestamp
-                                               attribute from a player.
-           +timestamp/showall                - Shows all currently set
-                                               timestamps.  Can be spammy.
+					       player for a given topic and
+					       reason.
+	   +timestamp/read <name>            - Lets staff read all timestamps
+					       on a given player.
+	   +timestamp/rem <name>/<topic>     - Removes a given timestamp
+					       attribute from a player.
+	   +timestamp/showall                - Shows all currently set
+					       timestamps.  Can be spammy.
 -----------------------------------------------------------------------------
 
 & +version
@@ -377,7 +377,7 @@ STNOTES
 +version
 
   SYNTAX:  +version
-           +version <dbref>
+	   +version <dbref>
 
   This code is in place to aid the user in the tracking of version history of
   SGP objects.  The first form of this command returns a list of all SGP and
@@ -397,8 +397,8 @@ STNOTES
 +version (continued)
 
   SYNTAX:  +version/add <dbref>
-           +version/remove <dbref>
-           +version/update <dbref>/<field>=<data>
+	   +version/remove <dbref>
+	   +version/update <dbref>/<field>=<data>
 
   The first form of this command adds new objects to the +version listing.
   The second form removes an object from +version. The third form edits

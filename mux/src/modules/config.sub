@@ -1169,8 +1169,8 @@ esac
 if [ x"$os" != x"" ]
 then
 case $os in
-        # First match some system type aliases
-        # that might get confused with valid system types.
+	# First match some system type aliases
+	# that might get confused with valid system types.
 	# -solaris* is a basic system type, with this one exception.
 	-solaris1 | -solaris1.*)
 		os=`echo $os | sed -e 's|solaris1|sunos4|'`
@@ -1253,7 +1253,7 @@ case $os in
 	-opened*)
 		os=-openedition
 		;;
-        -os400*)
+	-os400*)
 		os=-os400
 		;;
 	-wince*)
@@ -1302,7 +1302,7 @@ case $os in
 	-sinix*)
 		os=-sysv4
 		;;
-        -tpf*)
+	-tpf*)
 		os=-tpf
 		;;
 	-triton*)
@@ -1366,7 +1366,7 @@ else
 # system, and we'll never get to this point.
 
 case $basic_machine in
-        spu-*)
+	spu-*)
 		os=-elf
 		;;
 	*-acorn)
@@ -1378,8 +1378,8 @@ case $basic_machine in
 	arm*-semi)
 		os=-aout
 		;;
-        c4x-* | tic4x-*)
-        	os=-coff
+	c4x-* | tic4x-*)
+		os=-coff
 		;;
 	# This must come before the *-dec entry.
 	pdp10-*)

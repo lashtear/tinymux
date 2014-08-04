@@ -37,15 +37,15 @@ ATTR *vattr_find_LEN(const UTF8 *pAttrName, size_t nAttrName)
     UINT32 iDir = pht->FindFirstKey(nHash);
     while (iDir != HF_FIND_END)
     {
-        HP_HEAPLENGTH nRecord;
-        int anum;
-        pht->Copy(iDir, &nRecord, &anum);
-        ATTR *va = (ATTR *)anum_table[anum];
-        if (strcmp((char *)pAttrName, (char *)va->name) == 0)
-        {
-            return va;
-        }
-        iDir = pht->FindNextKey(iDir, nHash);
+	HP_HEAPLENGTH nRecord;
+	int anum;
+	pht->Copy(iDir, &nRecord, &anum);
+	ATTR *va = (ATTR *)anum_table[anum];
+	if (strcmp((char *)pAttrName, (char *)va->name) == 0)
+	{
+	    return va;
+	}
+	iDir = pht->FindNextKey(iDir, nHash);
     }
     return NULL;
 }
@@ -62,32 +62,32 @@ ATTR *vattr_define_LEN(const UTF8 *pName, size_t nName, int number, int flags)
     ATTR *vp = vattr_find_LEN(pName, nName);
     if (vp)
     {
-        return vp;
+	return vp;
     }
 
     vp = (ATTR *)MEMALLOC(sizeof(ATTR));
     if (vp)
     {
-        // NOTE: By using store_string, the only way to release the
-        // memory associated with a user attribute name is to @restart
-        // the game.
-        //
-        vp->name = store_string(pName);
-        vp->flags = flags;
-        vp->number = number;
+	// NOTE: By using store_string, the only way to release the
+	// memory associated with a user attribute name is to @restart
+	// the game.
+	//
+	vp->name = store_string(pName);
+	vp->flags = flags;
+	vp->number = number;
 
-        // This entry cannot already be in the hash table because we've checked it
-        // above with vattr_find_LEN.
-        //
-        UINT32 nHash = HASH_ProcessBuffer(0, pName, nName);
-        mudstate.vattr_name_htab.Insert(sizeof(number), nHash, &number);
+	// This entry cannot already be in the hash table because we've checked it
+	// above with vattr_find_LEN.
+	//
+	UINT32 nHash = HASH_ProcessBuffer(0, pName, nName);
+	mudstate.vattr_name_htab.Insert(sizeof(number), nHash, &number);
 
-        anum_extend(vp->number);
-        anum_set(vp->number, (ATTR *) vp);
+	anum_extend(vp->number);
+	anum_set(vp->number, (ATTR *) vp);
     }
     else
     {
-        ISOUTOFMEMORY(vp);
+	ISOUTOFMEMORY(vp);
     }
     return vp;
 }
@@ -110,59 +110,59 @@ static void dbclean_CheckANHtoAT(dbref executor)
     int nInvalid = 0;
 
     for (ATTR *pa = (ATTR *)hash_firstentry(&mudstate.attr_name_htab);
-         pa;
-         pa = (ATTR *)hash_nextentry(&mudstate.attr_name_htab))
+	 pa;
+	 pa = (ATTR *)hash_nextentry(&mudstate.attr_name_htab))
     {
-        nAttributes++;
-        int iAttr = pa->number;
-        if (iAttr <= 0 || iAttr > anum_alc_top)
-        {
-            nOutOfBounds++;
-        }
-        else
-        {
-            if (iAttr < A_USER_START)
-            {
-                nPredefined++;
-            }
-            else
-            {
-                nInvalid++;
-            }
+	nAttributes++;
+	int iAttr = pa->number;
+	if (iAttr <= 0 || iAttr > anum_alc_top)
+	{
+	    nOutOfBounds++;
+	}
+	else
+	{
+	    if (iAttr < A_USER_START)
+	    {
+		nPredefined++;
+	    }
+	    else
+	    {
+		nInvalid++;
+	    }
 
-            ATTR *pb = (ATTR *) anum_get(iAttr);
-            if (pb != pa)
-            {
-                nInvalid++;
-            }
-        }
+	    ATTR *pb = (ATTR *) anum_get(iAttr);
+	    if (pb != pa)
+	    {
+		nInvalid++;
+	    }
+	}
     }
 
     for (ATTR *va = vattr_first(); va; va = vattr_next(va))
     {
-        nAttributes++;
-        int iAttr = va->number;
-        if (iAttr <= 0 || iAttr > anum_alc_top)
-        {
-            nOutOfBounds++;
-        }
-        else
-        {
-            if (iAttr < A_USER_START)
-            {
-                nInvalid++;
-            }
-            else
-            {
-                nUserDefined++;
-            }
+	nAttributes++;
+	int iAttr = va->number;
+	if (iAttr <= 0 || iAttr > anum_alc_top)
+	{
+	    nOutOfBounds++;
+	}
+	else
+	{
+	    if (iAttr < A_USER_START)
+	    {
+		nInvalid++;
+	    }
+	    else
+	    {
+		nUserDefined++;
+	    }
 
-            ATTR *vb = (ATTR *) anum_get(iAttr);
-            if (vb != va)
-            {
-                nInvalid++;
-            }
-        }
+	    ATTR *vb = (ATTR *) anum_get(iAttr);
+	    if (vb != va)
+	    {
+		nInvalid++;
+	    }
+	}
     }
 
     notify(executor, tprintf(T("   Total Attributes: %d"), nAttributes));
@@ -187,51 +187,51 @@ static void dbclean_CheckATtoANH(dbref executor)
     int nEmpty = 0;
     for (int iAttr = 1; iAttr <= anum_alc_top; iAttr++)
     {
-        if (iAttr < A_USER_START)
-        {
-            ATTR *pa = (ATTR *) anum_get(iAttr);
-            if (pa)
-            {
-                nPredefined++;
-                nAttributes++;
+	if (iAttr < A_USER_START)
+	{
+	    ATTR *pa = (ATTR *) anum_get(iAttr);
+	    if (pa)
+	    {
+		nPredefined++;
+		nAttributes++;
 
-                // Convert name to upper case.
-                //
-                size_t nCased;
-                UTF8 *pCased = mux_strupr(pa->name, nCased);
+		// Convert name to upper case.
+		//
+		size_t nCased;
+		UTF8 *pCased = mux_strupr(pa->name, nCased);
 
-                // Fetch the attribute structure pointer -- which should match the one
-                // from the corresponding table entry.
-                //
-                ATTR *pb = (ATTR *) hashfindLEN(pCased, nCased, &mudstate.attr_name_htab);
-                if (pb != pa)
-                {
-                    nInvalid++;
-                }
-            }
-            else
-            {
-                nEmpty++;
-            }
-        }
-        else
-        {
-            ATTR *va = (ATTR *) anum_get(iAttr);
-            if (va)
-            {
-                nUserDefined++;
-                nAttributes++;
-                ATTR *vb = vattr_find_LEN(va->name, strlen((char *)va->name));
-                if (vb != va)
-                {
-                    nInvalid++;
-                }
-            }
-            else
-            {
-                nEmpty++;
-            }
-        }
+		// Fetch the attribute structure pointer -- which should match the one
+		// from the corresponding table entry.
+		//
+		ATTR *pb = (ATTR *) hashfindLEN(pCased, nCased, &mudstate.attr_name_htab);
+		if (pb != pa)
+		{
+		    nInvalid++;
+		}
+	    }
+	    else
+	    {
+		nEmpty++;
+	    }
+	}
+	else
+	{
+	    ATTR *va = (ATTR *) anum_get(iAttr);
+	    if (va)
+	    {
+		nUserDefined++;
+		nAttributes++;
+		ATTR *vb = vattr_find_LEN(va->name, strlen((char *)va->name));
+		if (vb != va)
+		{
+		    nInvalid++;
+		}
+	    }
+	    else
+	    {
+		nEmpty++;
+	    }
+	}
     }
 
     notify(executor, tprintf(T("   Total Attributes: %d"), nAttributes));
@@ -256,54 +256,54 @@ static void dbclean_CheckALISTtoAT(dbref executor)
     atr_push();
     DO_WHOLE_DB(iObject)
     {
-        unsigned char *as;
-        for (int iAttr = atr_head(iObject, &as); iAttr; iAttr = atr_next(&as))
-        {
-            if (iAttr <= 0)
-            {
-                nInvalid++;
-            }
-            else if (iAttr < A_USER_START)
-            {
-                ATTR *pa = (ATTR *) anum_get(iAttr);
-                if (pa == NULL)
-                {
-                    nInvalid++;
-                }
-            }
-            else if (iAttr <= anum_alc_top)
-            {
-                ATTR *va = (ATTR *) anum_get(iAttr);
-                if (va == NULL)
-                {
-                    // We can try to fix this one.
-                    //
-                    const UTF8 *pRecord = atr_get_raw(iObject, iAttr);
-                    if (pRecord)
-                    {
-                        // If the attribute exists in the DB, then the easiest thing to do
-                        // is add a dummy attribute name. Note: The following attribute
-                        // is already in Canonical form, otherwise, we would need to
-                        // call MakeCanonicalAttributeName.
-                        //
-                        UTF8 *p = tprintf(T("DANGLINGATTR-%08d"), iAttr);
-                        vattr_define_LEN(p, strlen((char *)p), iAttr, 0);
-                        nDangle++;
-                    }
-                    else
-                    {
-                        // Otherwise, the easiest thing to do is remove it from the ALIST.
-                        //
-                        atr_clr(iObject, iAttr);
-                        nALIST++;
-                    }
-                }
-            }
-            else
-            {
-                nInvalid++;
-            }
-        }
+	unsigned char *as;
+	for (int iAttr = atr_head(iObject, &as); iAttr; iAttr = atr_next(&as))
+	{
+	    if (iAttr <= 0)
+	    {
+		nInvalid++;
+	    }
+	    else if (iAttr < A_USER_START)
+	    {
+		ATTR *pa = (ATTR *) anum_get(iAttr);
+		if (pa == NULL)
+		{
+		    nInvalid++;
+		}
+	    }
+	    else if (iAttr <= anum_alc_top)
+	    {
+		ATTR *va = (ATTR *) anum_get(iAttr);
+		if (va == NULL)
+		{
+		    // We can try to fix this one.
+		    //
+		    const UTF8 *pRecord = atr_get_raw(iObject, iAttr);
+		    if (pRecord)
+		    {
+			// If the attribute exists in the DB, then the easiest thing to do
+			// is add a dummy attribute name. Note: The following attribute
+			// is already in Canonical form, otherwise, we would need to
+			// call MakeCanonicalAttributeName.
+			//
+			UTF8 *p = tprintf(T("DANGLINGATTR-%08d"), iAttr);
+			vattr_define_LEN(p, strlen((char *)p), iAttr, 0);
+			nDangle++;
+		    }
+		    else
+		    {
+			// Otherwise, the easiest thing to do is remove it from the ALIST.
+			//
+			atr_clr(iObject, iAttr);
+			nALIST++;
+		    }
+		}
+	    }
+	    else
+	    {
+		nInvalid++;
+	    }
+	}
     }
     notify(executor, tprintf(T("   Invalid: %d"), nInvalid));
     notify(executor, tprintf(T("   DANGLINGATTR-99999999 added: %d"), nDangle));
@@ -324,29 +324,29 @@ static void dbclean_CheckALISTtoDB(dbref executor)
     atr_push();
     DO_WHOLE_DB(iObject)
     {
-        unsigned char *as;
-        for (int iAttr = atr_head(iObject, &as); iAttr; iAttr = atr_next(&as))
-        {
-            if (iAttr <= 0)
-            {
-                nInvalid++;
-            }
-            else if (iAttr <= anum_alc_top)
-            {
-                const UTF8 *pRecord = atr_get_raw(iObject, iAttr);
-                if (!pRecord)
-                {
-                    // The contents are gone. The easiest thing to do is remove it from the ALIST.
-                    //
-                    atr_clr(iObject, iAttr);
-                    nMissing++;
-                }
-            }
-            else
-            {
-                nInvalid++;
-            }
-        }
+	unsigned char *as;
+	for (int iAttr = atr_head(iObject, &as); iAttr; iAttr = atr_next(&as))
+	{
+	    if (iAttr <= 0)
+	    {
+		nInvalid++;
+	    }
+	    else if (iAttr <= anum_alc_top)
+	    {
+		const UTF8 *pRecord = atr_get_raw(iObject, iAttr);
+		if (!pRecord)
+		{
+		    // The contents are gone. The easiest thing to do is remove it from the ALIST.
+		    //
+		    atr_clr(iObject, iAttr);
+		    nMissing++;
+		}
+	    }
+	    else
+	    {
+		nInvalid++;
+	    }
+	}
     }
     notify(executor, tprintf(T("   Invalid: %d"), nInvalid));
     notify(executor, tprintf(T("   DB prunes: %d"), nMissing));
@@ -370,11 +370,11 @@ static int dbclean_RemoveStaleAttributeNames(void)
     int iAttr;
     for (iAttr = A_USER_START; iAttr <= anum_alc_top; iAttr++)
     {
-        va = (ATTR *) anum_get(iAttr);
-        if (va != NULL)
-        {
-            va->flags &= ~AF_ISUSED;
-        }
+	va = (ATTR *) anum_get(iAttr);
+	if (va != NULL)
+	{
+	    va->flags &= ~AF_ISUSED;
+	}
     }
 
     // Traverse every attribute on every object and mark it's attribute as AF_ISUSED.
@@ -383,18 +383,18 @@ static int dbclean_RemoveStaleAttributeNames(void)
     atr_push();
     DO_WHOLE_DB(iObject)
     {
-        unsigned char *as;
-        for (int atr = atr_head(iObject, &as); atr; atr = atr_next(&as))
-        {
-            if (atr >= A_USER_START)
-            {
-                va = (ATTR *) anum_get(atr);
-                if (va != NULL)
-                {
-                    va->flags |= AF_ISUSED;
-                }
-            }
-        }
+	unsigned char *as;
+	for (int atr = atr_head(iObject, &as); atr; atr = atr_next(&as))
+	{
+	    if (atr >= A_USER_START)
+	    {
+		va = (ATTR *) anum_get(atr);
+		if (va != NULL)
+		{
+		    va->flags |= AF_ISUSED;
+		}
+	    }
+	}
     }
     atr_pop();
 
@@ -404,39 +404,39 @@ static int dbclean_RemoveStaleAttributeNames(void)
     int cVAttributes = 0;
     for (iAttr = A_USER_START; iAttr <= anum_alc_top; iAttr++)
     {
-        va = (ATTR *) anum_get(iAttr);
-        if (va != NULL)
-        {
-            if ((AF_ISUSED & (va->flags)) != AF_ISUSED)
-            {
-                anum_set(iAttr, NULL);
+	va = (ATTR *) anum_get(iAttr);
+	if (va != NULL)
+	{
+	    if ((AF_ISUSED & (va->flags)) != AF_ISUSED)
+	    {
+		anum_set(iAttr, NULL);
 
-                // Delete from hashtable.
-                //
-                UINT32 nHash = HASH_ProcessBuffer(0, va->name, strlen((char *)va->name));
-                CHashTable *pht = &mudstate.vattr_name_htab;
-                UINT32 iDir = pht->FindFirstKey(nHash);
-                while (iDir != HF_FIND_END)
-                {
-                    HP_HEAPLENGTH nRecord;
-                    int anum;
-                    pht->Copy(iDir, &nRecord, &anum);
-                    if (iAttr == anum)
-                    {
-                        pht->Remove(iDir);
-                    }
-                    iDir = pht->FindNextKey(iDir, nHash);
-                }
+		// Delete from hashtable.
+		//
+		UINT32 nHash = HASH_ProcessBuffer(0, va->name, strlen((char *)va->name));
+		CHashTable *pht = &mudstate.vattr_name_htab;
+		UINT32 iDir = pht->FindFirstKey(nHash);
+		while (iDir != HF_FIND_END)
+		{
+		    HP_HEAPLENGTH nRecord;
+		    int anum;
+		    pht->Copy(iDir, &nRecord, &anum);
+		    if (iAttr == anum)
+		    {
+			pht->Remove(iDir);
+		    }
+		    iDir = pht->FindNextKey(iDir, nHash);
+		}
 
-                MEMFREE(va);
-                va = NULL;
-            }
-            else
-            {
-                cVAttributes++;
-                va->flags &= ~AF_ISUSED;
-            }
-        }
+		MEMFREE(va);
+		va = NULL;
+	    }
+	    else
+	    {
+		cVAttributes++;
+		va->flags &= ~AF_ISUSED;
+	    }
+	}
     }
     return cVAttributes;
 }
@@ -463,42 +463,42 @@ static void dbclean_RenumberAttributes(int cVAttributes)
     memset(aMap, 0, sizeof(int) * nMap);
     for (int i = nMap - 1; i >= 0 && iSweep < iMapStart; i--)
     {
-        int iAttr = iMapStart + i;
-        va = (ATTR *) anum_get(iAttr);
-        if (va != NULL)
-        {
-            while (anum_get(iSweep))
-            {
-                iSweep++;
-            }
-            int iAllocated = iSweep++;
-            aMap[i] = iAllocated;
+	int iAttr = iMapStart + i;
+	va = (ATTR *) anum_get(iAttr);
+	if (va != NULL)
+	{
+	    while (anum_get(iSweep))
+	    {
+		iSweep++;
+	    }
+	    int iAllocated = iSweep++;
+	    aMap[i] = iAllocated;
 
 
-            // Change vattr_name_htab mapping as well to point to
-            // iAllocated instead of iAttr.
-            //
-            UINT32 nHash = HASH_ProcessBuffer(0, va->name, strlen((char *)va->name));
-            CHashTable *pht = &mudstate.vattr_name_htab;
-            UINT32 iDir = pht->FindFirstKey(nHash);
-            while (iDir != HF_FIND_END)
-            {
-                HP_HEAPLENGTH nRecord;
-                int anum;
-                pht->Copy(iDir, &nRecord, &anum);
-                if (anum == iAttr)
-                {
-                    pht->Update(iDir, sizeof(int), &iAllocated);
-                    break;
-                }
-                iDir = pht->FindNextKey(iDir, nHash);
-            }
+	    // Change vattr_name_htab mapping as well to point to
+	    // iAllocated instead of iAttr.
+	    //
+	    UINT32 nHash = HASH_ProcessBuffer(0, va->name, strlen((char *)va->name));
+	    CHashTable *pht = &mudstate.vattr_name_htab;
+	    UINT32 iDir = pht->FindFirstKey(nHash);
+	    while (iDir != HF_FIND_END)
+	    {
+		HP_HEAPLENGTH nRecord;
+		int anum;
+		pht->Copy(iDir, &nRecord, &anum);
+		if (anum == iAttr)
+		{
+		    pht->Update(iDir, sizeof(int), &iAllocated);
+		    break;
+		}
+		iDir = pht->FindNextKey(iDir, nHash);
+	    }
 
-            va->number = iAllocated;
-            anum_set(iAllocated, (ATTR *)va);
-            anum_set(iAttr, NULL);
-            mudstate.attr_next = iAttr;
-        }
+	    va->number = iAllocated;
+	    anum_set(iAllocated, (ATTR *)va);
+	    anum_set(iAttr, NULL);
+	    mudstate.attr_next = iAttr;
+	}
     }
 
     // aMap contains a unique map from old, high-numbered attribute
@@ -514,37 +514,37 @@ static void dbclean_RenumberAttributes(int cVAttributes)
     UTF8 *tbuff = alloc_lbuf("dbclean_RenumberAttributes.534");
     DO_WHOLE_DB(iObject)
     {
-        unsigned char *as;
-        for ( int iAttr = atr_head(iObject, &as);
-              iAttr;
-              iAttr = atr_next(&as)
-            )
-        {
-            if (iMapStart <= iAttr && iAttr <= iMapEnd)
-            {
-                int iNew = aMap[iAttr-iMapStart];
-                if (iNew)
-                {
-                    // Copy value from old attribute number to new attribute
-                    // number. Raw access does not support using returned
-                    // pointer for any other database access, so value must be
-                    // copied to a temporary buffer.  Encoded attribute flags
-                    // and encoded attribute owner are copied in encoded form.
-                    //
-                    size_t n;
-                    const UTF8 *p = atr_get_raw_LEN(iObject, iAttr, &n);
-                    if (NULL != p)
-                    {
-                        memcpy(tbuff, p, n);
-                        atr_add_raw_LEN(iObject, iNew, tbuff, n);
-                    }
+	unsigned char *as;
+	for ( int iAttr = atr_head(iObject, &as);
+	      iAttr;
+	      iAttr = atr_next(&as)
+	    )
+	{
+	    if (iMapStart <= iAttr && iAttr <= iMapEnd)
+	    {
+		int iNew = aMap[iAttr-iMapStart];
+		if (iNew)
+		{
+		    // Copy value from old attribute number to new attribute
+		    // number. Raw access does not support using returned
+		    // pointer for any other database access, so value must be
+		    // copied to a temporary buffer.  Encoded attribute flags
+		    // and encoded attribute owner are copied in encoded form.
+		    //
+		    size_t n;
+		    const UTF8 *p = atr_get_raw_LEN(iObject, iAttr, &n);
+		    if (NULL != p)
+		    {
+			memcpy(tbuff, p, n);
+			atr_add_raw_LEN(iObject, iNew, tbuff, n);
+		    }
 
-                    // Delete value at old attribute number.
-                    //
-                    atr_add_raw_LEN(iObject, iAttr, NULL, 0);
-                }
-            }
-        }
+		    // Delete value at old attribute number.
+		    //
+		    atr_add_raw_LEN(iObject, iAttr, NULL, 0);
+		}
+	    }
+	}
     }
     free_lbuf(tbuff);
     tbuff = NULL;
@@ -555,30 +555,30 @@ static void dbclean_RenumberAttributes(int cVAttributes)
     UTF8 *pKeyName;
     CMDENT *old;
     for (old = (CMDENT *)hash_firstkey(&mudstate.command_htab, &nKeyLength, &pKeyName);
-         old != NULL;
-         old = (CMDENT *)hash_nextkey(&mudstate.command_htab, &nKeyLength, &pKeyName))
+	 old != NULL;
+	 old = (CMDENT *)hash_nextkey(&mudstate.command_htab, &nKeyLength, &pKeyName))
     {
-        if (old && (old->callseq & CS_ADDED))
-        {
-            pKeyName[nKeyLength] = '\0';
-            ADDENT *nextp;
-            for (nextp = old->addent; nextp != NULL; nextp = nextp->next)
-            {
-                if (strcmp((char *)pKeyName, (char *)nextp->name) != 0)
-                {
-                    continue;
-                }
-                int iAttr = nextp->atr;
-                if (iMapStart <= iAttr && iAttr <= iMapEnd)
-                {
-                    int iNew = aMap[iAttr-iMapStart];
-                    if (iNew)
-                    {
-                        nextp->atr = iNew;
-                    }
-                }
-            }
-        }
+	if (old && (old->callseq & CS_ADDED))
+	{
+	    pKeyName[nKeyLength] = '\0';
+	    ADDENT *nextp;
+	    for (nextp = old->addent; nextp != NULL; nextp = nextp->next)
+	    {
+		if (strcmp((char *)pKeyName, (char *)nextp->name) != 0)
+		{
+		    continue;
+		}
+		int iAttr = nextp->atr;
+		if (iMapStart <= iAttr && iAttr <= iMapEnd)
+		{
+		    int iNew = aMap[iAttr-iMapStart];
+		    if (iNew)
+		    {
+			nextp->atr = iNew;
+		    }
+		}
+	    }
+	}
     }
 
     // Traverse entire @function data structure.
@@ -586,15 +586,15 @@ static void dbclean_RenumberAttributes(int cVAttributes)
     UFUN *ufp2;
     for (ufp2 = ufun_head; ufp2; ufp2 = ufp2->next)
     {
-        int iAttr = ufp2->atr;
-        if (iMapStart <= iAttr && iAttr <= iMapEnd)
-        {
-            int iNew = aMap[iAttr-iMapStart];
-            if (iNew)
-            {
-                ufp2->atr = iNew;
-            }
-        }
+	int iAttr = ufp2->atr;
+	if (iMapStart <= iAttr && iAttr <= iMapEnd)
+	{
+	    int iNew = aMap[iAttr-iMapStart];
+	    if (iNew)
+	    {
+		ufp2->atr = iNew;
+	    }
+	}
     }
     atr_pop();
 
@@ -612,8 +612,8 @@ void do_dbclean(dbref executor, dbref caller, dbref enactor, int eval, int key)
 #if defined(HAVE_WORKING_FORK)
     if (mudstate.dumping)
     {
-        notify(executor, T("Dumping in progress. Try again later."));
-        return;
+	notify(executor, T("Dumping in progress. Try again later."));
+	return;
     }
 #endif // HAVE_WORKING_FORK
 #ifndef HAVE_MEMORY_BASED
@@ -644,18 +644,18 @@ void vattr_delete_LEN(UTF8 *pName, size_t nName)
     UINT32 iDir = pht->FindFirstKey(nHash);
     while (iDir != HF_FIND_END)
     {
-        HP_HEAPLENGTH nRecord;
-        int anum;
-        pht->Copy(iDir, &nRecord, &anum);
-        if (strcmp((char *)pName, (char *)anum_table[anum]->name) == 0)
-        {
-            ATTR *vp = (ATTR *)anum_table[anum];
-            anum_set(anum, NULL);
-            pht->Remove(iDir);
-            MEMFREE(vp);
-            vp = NULL;
-        }
-        iDir = pht->FindNextKey(iDir, nHash);
+	HP_HEAPLENGTH nRecord;
+	int anum;
+	pht->Copy(iDir, &nRecord, &anum);
+	if (strcmp((char *)pName, (char *)anum_table[anum]->name) == 0)
+	{
+	    ATTR *vp = (ATTR *)anum_table[anum];
+	    anum_set(anum, NULL);
+	    pht->Remove(iDir);
+	    MEMFREE(vp);
+	    vp = NULL;
+	}
+	iDir = pht->FindNextKey(iDir, nHash);
     }
 }
 
@@ -668,23 +668,23 @@ ATTR *vattr_rename_LEN(UTF8 *pOldName, size_t nOldName, UTF8 *pNewName, size_t n
     UINT32 iDir = pht->FindFirstKey(nHash);
     while (iDir != HF_FIND_END)
     {
-        HP_HEAPLENGTH nRecord;
-        int anum;
-        pht->Copy(iDir, &nRecord, &anum);
-        ATTR *vp = (ATTR *)anum_table[anum];
-        if (strcmp((char *)pOldName, (char *)vp->name) == 0)
-        {
-            pht->Remove(iDir);
+	HP_HEAPLENGTH nRecord;
+	int anum;
+	pht->Copy(iDir, &nRecord, &anum);
+	ATTR *vp = (ATTR *)anum_table[anum];
+	if (strcmp((char *)pOldName, (char *)vp->name) == 0)
+	{
+	    pht->Remove(iDir);
 
-            // Add in new name. After the Insert call, iDir is no longer
-            // valid, so don't write code that uses it.
-            //
-            vp->name = store_string(pNewName);
-            nHash = HASH_ProcessBuffer(0, pNewName, nNewName);
-            pht->Insert(sizeof(int), nHash, &anum);
-            return (ATTR *)anum_table[anum];
-        }
-        iDir = pht->FindNextKey(iDir, nHash);
+	    // Add in new name. After the Insert call, iDir is no longer
+	    // valid, so don't write code that uses it.
+	    //
+	    vp->name = store_string(pNewName);
+	    nHash = HASH_ProcessBuffer(0, pNewName, nNewName);
+	    pht->Insert(sizeof(int), nHash, &anum);
+	    return (ATTR *)anum_table[anum];
+	}
+	iDir = pht->FindNextKey(iDir, nHash);
     }
     return NULL;
 }
@@ -696,7 +696,7 @@ ATTR *vattr_first(void)
     UINT32 iDir = mudstate.vattr_name_htab.FindFirst(&nRecord, &anum);
     if (iDir != HF_FIND_END)
     {
-        return (ATTR *)anum_table[anum];
+	return (ATTR *)anum_table[anum];
     }
     return NULL;
 
@@ -705,14 +705,14 @@ ATTR *vattr_first(void)
 ATTR *vattr_next(ATTR *vp)
 {
     if (vp == NULL)
-        return vattr_first();
+	return vattr_first();
 
     HP_HEAPLENGTH nRecord;
     int anum;
     UINT32 iDir = mudstate.vattr_name_htab.FindNext(&nRecord, &anum);
     if (iDir != HF_FIND_END)
     {
-        return (ATTR *)anum_table[anum];
+	return (ATTR *)anum_table[anum];
     }
     return NULL;
 }
@@ -730,12 +730,12 @@ static UTF8 *store_string(const UTF8 *str)
     if (  !stringblock
        || (STRINGBLOCK - stringblock_hwm) < nSize)
     {
-        // NOTE: These allocations are -never- freed, and this is
-        // intentional.
-        //
-        stringblock = (UTF8 *)MEMALLOC(STRINGBLOCK);
-        ISOUTOFMEMORY(stringblock);
-        stringblock_hwm = 0;
+	// NOTE: These allocations are -never- freed, and this is
+	// intentional.
+	//
+	stringblock = (UTF8 *)MEMALLOC(STRINGBLOCK);
+	ISOUTOFMEMORY(stringblock);
+	stringblock_hwm = 0;
     }
     UTF8 *ret = stringblock + stringblock_hwm;
     memcpy(ret, str, nSize);

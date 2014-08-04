@@ -675,23 +675,23 @@ bool utf8_strlen(const UTF8 *pString, size_t &nString)
     int i = 0;
     while ('\0' != pString[i])
     {
-        unsigned char t = utf8_FirstByte[pString[i]];
-        if (UTF8_CONTINUE <= t)
-        {
-            return false;
-        }
+	unsigned char t = utf8_FirstByte[pString[i]];
+	if (UTF8_CONTINUE <= t)
+	{
+	    return false;
+	}
 
-        int j;
-        for (j = i + 1; j < i + t; j++)
-        {
-            if (  '\0' == pString[j]
-               || UTF8_CONTINUE != utf8_FirstByte[pString[j]])
-            {
-                return false;
-            }
-        }
-        nString++;
-        i = i + t;
+	int j;
+	for (j = i + 1; j < i + t; j++)
+	{
+	    if (  '\0' == pString[j]
+	       || UTF8_CONTINUE != utf8_FirstByte[pString[j]])
+	    {
+		return false;
+	    }
+	}
+	nString++;
+	i = i + t;
     }
     return true;
 }
@@ -702,25 +702,25 @@ bool utf8_strlen(const UTF8 *pString, mux_cursor &nString)
     LBUF_OFFSET nBytes  = 0;
     while ('\0' != pString[nBytes])
     {
-        unsigned char t = utf8_FirstByte[pString[nBytes]];
-        if (UTF8_CONTINUE <= t)
-        {
-            nString(nBytes, nPoints);
-            return false;
-        }
+	unsigned char t = utf8_FirstByte[pString[nBytes]];
+	if (UTF8_CONTINUE <= t)
+	{
+	    nString(nBytes, nPoints);
+	    return false;
+	}
 
-        int j;
-        for (j = nBytes + 1; j < nBytes + t; j++)
-        {
-            if (  '\0' == pString[j]
-               || UTF8_CONTINUE != utf8_FirstByte[pString[j]])
-            {
-                nString(nBytes, nPoints);
-                return false;
-            }
-        }
-        nPoints++;
-        nBytes = nBytes + t;
+	int j;
+	for (j = nBytes + 1; j < nBytes + t; j++)
+	{
+	    if (  '\0' == pString[j]
+	       || UTF8_CONTINUE != utf8_FirstByte[pString[j]])
+	    {
+		nString(nBytes, nPoints);
+		return false;
+	    }
+	}
+	nPoints++;
+	nBytes = nBytes + t;
     }
     nString(nBytes, nPoints);
     return true;
@@ -747,51 +747,51 @@ const unsigned char *ConvertToAscii(const UTF8 *pString)
 
     while ('\0' != *pString)
     {
-        const UTF8 *p = pString;
-        int iState = TR_ASCII_START_STATE;
-        do
-        {
-            unsigned char ch = *p++;
-            unsigned char iColumn = tr_ascii_itt[(unsigned char)ch];
-            unsigned short iOffset = tr_ascii_sot[iState];
-            for (;;)
-            {
-                int y = tr_ascii_sbt[iOffset];
-                if (y < 128)
-                {
-                    // RUN phrase.
-                    //
-                    if (iColumn < y)
-                    {
-                        iState = tr_ascii_sbt[iOffset+1];
-                        break;
-                    }
-                    else
-                    {
-                        iColumn = static_cast<unsigned char>(iColumn - y);
-                        iOffset += 2;
-                    }
-                }
-                else
-                {
-                    // COPY phrase.
-                    //
-                    y = 256-y;
-                    if (iColumn < y)
-                    {
-                        iState = tr_ascii_sbt[iOffset+iColumn+1];
-                        break;
-                    }
-                    else
-                    {
-                        iColumn = static_cast<unsigned char>(iColumn - y);
-                        iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                    }
-                }
-            }
-        } while (iState < TR_ASCII_ACCEPTING_STATES_START);
-        *q++ = (char)(iState - TR_ASCII_ACCEPTING_STATES_START);
-        pString = utf8_NextCodePoint(pString);
+	const UTF8 *p = pString;
+	int iState = TR_ASCII_START_STATE;
+	do
+	{
+	    unsigned char ch = *p++;
+	    unsigned char iColumn = tr_ascii_itt[(unsigned char)ch];
+	    unsigned short iOffset = tr_ascii_sot[iState];
+	    for (;;)
+	    {
+		int y = tr_ascii_sbt[iOffset];
+		if (y < 128)
+		{
+		    // RUN phrase.
+		    //
+		    if (iColumn < y)
+		    {
+			iState = tr_ascii_sbt[iOffset+1];
+			break;
+		    }
+		    else
+		    {
+			iColumn = static_cast<unsigned char>(iColumn - y);
+			iOffset += 2;
+		    }
+		}
+		else
+		{
+		    // COPY phrase.
+		    //
+		    y = 256-y;
+		    if (iColumn < y)
+		    {
+			iState = tr_ascii_sbt[iOffset+iColumn+1];
+			break;
+		    }
+		    else
+		    {
+			iColumn = static_cast<unsigned char>(iColumn - y);
+			iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		    }
+		}
+	    }
+	} while (iState < TR_ASCII_ACCEPTING_STATES_START);
+	*q++ = (char)(iState - TR_ASCII_ACCEPTING_STATES_START);
+	pString = utf8_NextCodePoint(pString);
     }
     *q = '\0';
     return buffer;
@@ -809,53 +809,53 @@ const unsigned char *ConvertToCp437(const UTF8 *pString)
     unsigned char *q = buffer;
 
     while (  '\0' != *pString
-          && q < buffer + sizeof(buffer) - 1)
+	  && q < buffer + sizeof(buffer) - 1)
     {
-        const UTF8 *p = pString;
-        int iState = TR_CP437_START_STATE;
-        do
-        {
-            unsigned char ch = *p++;
-            unsigned char iColumn = tr_cp437_itt[(unsigned char)ch];
-            unsigned short iOffset = tr_cp437_sot[iState];
-            for (;;)
-            {
-                int y = tr_cp437_sbt[iOffset];
-                if (y < 128)
-                {
-                    // RUN phrase.
-                    //
-                    if (iColumn < y)
-                    {
-                        iState = tr_cp437_sbt[iOffset+1];
-                        break;
-                    }
-                    else
-                    {
-                        iColumn = static_cast<unsigned char>(iColumn - y);
-                        iOffset += 2;
-                    }
-                }
-                else
-                {
-                    // COPY phrase.
-                    //
-                    y = 256-y;
-                    if (iColumn < y)
-                    {
-                        iState = tr_cp437_sbt[iOffset+iColumn+1];
-                        break;
-                    }
-                    else
-                    {
-                        iColumn = static_cast<unsigned char>(iColumn - y);
-                        iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                    }
-                }
-            }
-        } while (iState < TR_CP437_ACCEPTING_STATES_START);
-        *q++ = (unsigned char)(iState - TR_CP437_ACCEPTING_STATES_START);
-        pString = utf8_NextCodePoint(pString);
+	const UTF8 *p = pString;
+	int iState = TR_CP437_START_STATE;
+	do
+	{
+	    unsigned char ch = *p++;
+	    unsigned char iColumn = tr_cp437_itt[(unsigned char)ch];
+	    unsigned short iOffset = tr_cp437_sot[iState];
+	    for (;;)
+	    {
+		int y = tr_cp437_sbt[iOffset];
+		if (y < 128)
+		{
+		    // RUN phrase.
+		    //
+		    if (iColumn < y)
+		    {
+			iState = tr_cp437_sbt[iOffset+1];
+			break;
+		    }
+		    else
+		    {
+			iColumn = static_cast<unsigned char>(iColumn - y);
+			iOffset += 2;
+		    }
+		}
+		else
+		{
+		    // COPY phrase.
+		    //
+		    y = 256-y;
+		    if (iColumn < y)
+		    {
+			iState = tr_cp437_sbt[iOffset+iColumn+1];
+			break;
+		    }
+		    else
+		    {
+			iColumn = static_cast<unsigned char>(iColumn - y);
+			iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		    }
+		}
+	    }
+	} while (iState < TR_CP437_ACCEPTING_STATES_START);
+	*q++ = (unsigned char)(iState - TR_CP437_ACCEPTING_STATES_START);
+	pString = utf8_NextCodePoint(pString);
     }
     *q = '\0';
     return buffer;
@@ -873,53 +873,53 @@ const unsigned char *ConvertToLatin1(const UTF8 *pString)
     unsigned char *q = buffer;
 
     while (  '\0' != *pString
-          && q < buffer + sizeof(buffer) - 1)
+	  && q < buffer + sizeof(buffer) - 1)
     {
-        const UTF8 *p = pString;
-        int iState = TR_LATIN1_START_STATE;
-        do
-        {
-            unsigned char ch = *p++;
-            unsigned char iColumn = tr_latin1_itt[(unsigned char)ch];
-            unsigned short iOffset = tr_latin1_sot[iState];
-            for (;;)
-            {
-                int y = tr_latin1_sbt[iOffset];
-                if (y < 128)
-                {
-                    // RUN phrase.
-                    //
-                    if (iColumn < y)
-                    {
-                        iState = tr_latin1_sbt[iOffset+1];
-                        break;
-                    }
-                    else
-                    {
-                        iColumn = static_cast<unsigned char>(iColumn - y);
-                        iOffset += 2;
-                    }
-                }
-                else
-                {
-                    // COPY phrase.
-                    //
-                    y = 256-y;
-                    if (iColumn < y)
-                    {
-                        iState = tr_latin1_sbt[iOffset+iColumn+1];
-                        break;
-                    }
-                    else
-                    {
-                        iColumn = static_cast<unsigned char>(iColumn - y);
-                        iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                    }
-                }
-            }
-        } while (iState < TR_LATIN1_ACCEPTING_STATES_START);
-        *q++ = (char)(iState - TR_LATIN1_ACCEPTING_STATES_START);
-        pString = utf8_NextCodePoint(pString);
+	const UTF8 *p = pString;
+	int iState = TR_LATIN1_START_STATE;
+	do
+	{
+	    unsigned char ch = *p++;
+	    unsigned char iColumn = tr_latin1_itt[(unsigned char)ch];
+	    unsigned short iOffset = tr_latin1_sot[iState];
+	    for (;;)
+	    {
+		int y = tr_latin1_sbt[iOffset];
+		if (y < 128)
+		{
+		    // RUN phrase.
+		    //
+		    if (iColumn < y)
+		    {
+			iState = tr_latin1_sbt[iOffset+1];
+			break;
+		    }
+		    else
+		    {
+			iColumn = static_cast<unsigned char>(iColumn - y);
+			iOffset += 2;
+		    }
+		}
+		else
+		{
+		    // COPY phrase.
+		    //
+		    y = 256-y;
+		    if (iColumn < y)
+		    {
+			iState = tr_latin1_sbt[iOffset+iColumn+1];
+			break;
+		    }
+		    else
+		    {
+			iColumn = static_cast<unsigned char>(iColumn - y);
+			iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		    }
+		}
+	    }
+	} while (iState < TR_LATIN1_ACCEPTING_STATES_START);
+	*q++ = (char)(iState - TR_LATIN1_ACCEPTING_STATES_START);
+	pString = utf8_NextCodePoint(pString);
     }
     *q = '\0';
     return buffer;
@@ -937,53 +937,53 @@ const unsigned char *ConvertToLatin2(const UTF8 *pString)
     unsigned char *q = buffer;
 
     while (  '\0' != *pString
-          && q < buffer + sizeof(buffer) - 1)
+	  && q < buffer + sizeof(buffer) - 1)
     {
-        const UTF8 *p = pString;
-        int iState = TR_LATIN2_START_STATE;
-        do
-        {
-            unsigned char ch = *p++;
-            unsigned char iColumn = tr_latin2_itt[(unsigned char)ch];
-            unsigned short iOffset = tr_latin2_sot[iState];
-            for (;;)
-            {
-                int y = tr_latin2_sbt[iOffset];
-                if (y < 128)
-                {
-                    // RUN phrase.
-                    //
-                    if (iColumn < y)
-                    {
-                        iState = tr_latin2_sbt[iOffset+1];
-                        break;
-                    }
-                    else
-                    {
-                        iColumn = static_cast<unsigned char>(iColumn - y);
-                        iOffset += 2;
-                    }
-                }
-                else
-                {
-                    // COPY phrase.
-                    //
-                    y = 256-y;
-                    if (iColumn < y)
-                    {
-                        iState = tr_latin2_sbt[iOffset+iColumn+1];
-                        break;
-                    }
-                    else
-                    {
-                        iColumn = static_cast<unsigned char>(iColumn - y);
-                        iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                    }
-                }
-            }
-        } while (iState < TR_LATIN2_ACCEPTING_STATES_START);
-        *q++ = (char)(iState - TR_LATIN2_ACCEPTING_STATES_START);
-        pString = utf8_NextCodePoint(pString);
+	const UTF8 *p = pString;
+	int iState = TR_LATIN2_START_STATE;
+	do
+	{
+	    unsigned char ch = *p++;
+	    unsigned char iColumn = tr_latin2_itt[(unsigned char)ch];
+	    unsigned short iOffset = tr_latin2_sot[iState];
+	    for (;;)
+	    {
+		int y = tr_latin2_sbt[iOffset];
+		if (y < 128)
+		{
+		    // RUN phrase.
+		    //
+		    if (iColumn < y)
+		    {
+			iState = tr_latin2_sbt[iOffset+1];
+			break;
+		    }
+		    else
+		    {
+			iColumn = static_cast<unsigned char>(iColumn - y);
+			iOffset += 2;
+		    }
+		}
+		else
+		{
+		    // COPY phrase.
+		    //
+		    y = 256-y;
+		    if (iColumn < y)
+		    {
+			iState = tr_latin2_sbt[iOffset+iColumn+1];
+			break;
+		    }
+		    else
+		    {
+			iColumn = static_cast<unsigned char>(iColumn - y);
+			iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		    }
+		}
+	    }
+	} while (iState < TR_LATIN2_ACCEPTING_STATES_START);
+	*q++ = (char)(iState - TR_LATIN2_ACCEPTING_STATES_START);
+	pString = utf8_NextCodePoint(pString);
     }
     *q = '\0';
     return buffer;
@@ -1001,44 +1001,44 @@ int ConsoleWidth(__in const UTF8 *pCodePoint)
     int iState = TR_WIDTHS_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = tr_widths_itt[(unsigned char)ch];
-        unsigned short iOffset = tr_widths_sot[iState];
-        for (;;)
-        {
-            int y = tr_widths_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = tr_widths_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = tr_widths_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = tr_widths_itt[(unsigned char)ch];
+	unsigned short iOffset = tr_widths_sot[iState];
+	for (;;)
+	{
+	    int y = tr_widths_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = tr_widths_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = tr_widths_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < TR_WIDTHS_ACCEPTING_STATES_START);
     return (iState - TR_WIDTHS_ACCEPTING_STATES_START);
 }
@@ -1377,20 +1377,20 @@ void NearestIndex_tree_y(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
 {
     if (-1 == iHere)
     {
-        return;
+	return;
     }
 
     if (-1 == iBest)
     {
-        iBest = iHere;
-        rBest = diff(yuv, palette[iBest].yuv);
+	iBest = iHere;
+	rBest = diff(yuv, palette[iBest].yuv);
     }
 
     INT64 rHere = diff(yuv, palette[iHere].yuv);
     if (rHere < rBest)
     {
-        iBest = iHere;
-        rBest = rHere;
+	iBest = iHere;
+	rBest = rHere;
     }
 
     INT64 d = yuv.y2 - palette[iHere].yuv.y2;
@@ -1400,7 +1400,7 @@ void NearestIndex_tree_y(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
     INT64 rAxis = d*d;
     if (rAxis < rBest)
     {
-        NearestIndex_tree_u(palette[iHere].child[1-iNearChild], yuv, iBest, rBest);
+	NearestIndex_tree_u(palette[iHere].child[1-iNearChild], yuv, iBest, rBest);
     }
 }
 
@@ -1408,20 +1408,20 @@ void NearestIndex_tree_u(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
 {
     if (-1 == iHere)
     {
-        return;
+	return;
     }
 
     if (-1 == iBest)
     {
-        iBest = iHere;
-        rBest = diff(yuv, palette[iBest].yuv);
+	iBest = iHere;
+	rBest = diff(yuv, palette[iBest].yuv);
     }
 
     INT64 rHere = diff(yuv, palette[iHere].yuv);
     if (rHere < rBest)
     {
-        iBest = iHere;
-        rBest = rHere;
+	iBest = iHere;
+	rBest = rHere;
     }
 
     INT64 d = yuv.u - palette[iHere].yuv.u;
@@ -1431,7 +1431,7 @@ void NearestIndex_tree_u(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
     INT64 rAxis = d*d;
     if (rAxis < rBest)
     {
-        NearestIndex_tree_v(palette[iHere].child[1-iNearChild], yuv, iBest, rBest);
+	NearestIndex_tree_v(palette[iHere].child[1-iNearChild], yuv, iBest, rBest);
     }
 }
 
@@ -1439,20 +1439,20 @@ void NearestIndex_tree_v(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
 {
     if (-1 == iHere)
     {
-        return;
+	return;
     }
 
     if (-1 == iBest)
     {
-        iBest = iHere;
-        rBest = diff(yuv, palette[iBest].yuv);
+	iBest = iHere;
+	rBest = diff(yuv, palette[iBest].yuv);
     }
 
     INT64 rHere = diff(yuv, palette[iHere].yuv);
     if (rHere < rBest)
     {
-        iBest = iHere;
-        rBest = rHere;
+	iBest = iHere;
+	rBest = rHere;
     }
 
     INT64 d = yuv.v - palette[iHere].yuv.v;
@@ -1462,7 +1462,7 @@ void NearestIndex_tree_v(int iHere, const YUV &yuv, int &iBest, INT64 &rBest)
     INT64 rAxis = d*d;
     if (rAxis < rBest)
     {
-        NearestIndex_tree_y(palette[iHere].child[1-iNearChild], yuv, iBest, rBest);
+	NearestIndex_tree_y(palette[iHere].child[1-iNearChild], yuv, iBest, rBest);
     }
 }
 
@@ -1487,12 +1487,12 @@ int FindNearestPalette8Entry(RGB &rgb)
 
     for (int i = 1; i < 8; i++)
     {
-        INT64 r = diff(yuv16, palette[i].yuv);
-        if (r < rNearest)
-        {
-            rNearest = r;
-            iNearest = i;
-        }
+	INT64 r = diff(yuv16, palette[i].yuv);
+	if (r < rNearest)
+	{
+	    rNearest = r;
+	    iNearest = i;
+	}
     }
     return iNearest;
 }
@@ -2088,51 +2088,51 @@ inline ColorState UpdateColorState(ColorState cs, unsigned int iColorCode)
     mux_assert(iColorCode <= COLOR_INDEX_LAST);
     if (COLOR_INDEX_FG_24 <= iColorCode)
     {
-        // In order to apply an RGB 24-bit modification, we need to translate
-        // any indexed color to a value color.
-        //
-        if (iColorCode < COLOR_INDEX_BG_24)
-        {
-            if (CS_FG_INDEXED & cs)
-            {
-                cs = (cs & ~CS_FOREGROUND) | rgb2cs(&palette[CS_FG_FIELD(cs)].rgb);
-            }
+	// In order to apply an RGB 24-bit modification, we need to translate
+	// any indexed color to a value color.
+	//
+	if (iColorCode < COLOR_INDEX_BG_24)
+	{
+	    if (CS_FG_INDEXED & cs)
+	    {
+		cs = (cs & ~CS_FOREGROUND) | rgb2cs(&palette[CS_FG_FIELD(cs)].rgb);
+	    }
 
-            if (iColorCode < COLOR_INDEX_FG_24_GREEN)
-            {
-                cs = (cs & ~CS_FOREGROUND_RED) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_FG_24_RED) << 16);
-            }
-            else if (iColorCode < COLOR_INDEX_FG_24_BLUE)
-            {
-                cs = (cs & ~CS_FOREGROUND_GREEN) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_FG_24_GREEN) << 8);
-            }
-            else
-            {
-                cs = (cs & ~CS_FOREGROUND_BLUE) | static_cast<ColorState>(iColorCode - COLOR_INDEX_FG_24_BLUE);
-            }
-        }
-        else
-        {
-            if (CS_BG_INDEXED & cs)
-            {
-                cs = (cs & ~CS_BACKGROUND) | (rgb2cs(&palette[CS_BG_FIELD(cs)].rgb) << 32);
-            }
+	    if (iColorCode < COLOR_INDEX_FG_24_GREEN)
+	    {
+		cs = (cs & ~CS_FOREGROUND_RED) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_FG_24_RED) << 16);
+	    }
+	    else if (iColorCode < COLOR_INDEX_FG_24_BLUE)
+	    {
+		cs = (cs & ~CS_FOREGROUND_GREEN) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_FG_24_GREEN) << 8);
+	    }
+	    else
+	    {
+		cs = (cs & ~CS_FOREGROUND_BLUE) | static_cast<ColorState>(iColorCode - COLOR_INDEX_FG_24_BLUE);
+	    }
+	}
+	else
+	{
+	    if (CS_BG_INDEXED & cs)
+	    {
+		cs = (cs & ~CS_BACKGROUND) | (rgb2cs(&palette[CS_BG_FIELD(cs)].rgb) << 32);
+	    }
 
-            if (iColorCode < COLOR_INDEX_BG_24_GREEN)
-            {
-                cs = (cs & ~CS_BACKGROUND_RED) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_BG_24_RED) << 48);
-            }
-            else if (iColorCode < COLOR_INDEX_BG_24_BLUE)
-            {
-                cs = (cs & ~CS_BACKGROUND_GREEN) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_BG_24_GREEN) << 40);
-            }
-            else
-            {
-                cs = (cs & ~CS_BACKGROUND_BLUE) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_BG_24_BLUE) << 32);
-            }
-        }
-        mux_assert((cs & ~CS_ALLBITS) == 0);
-        return cs;
+	    if (iColorCode < COLOR_INDEX_BG_24_GREEN)
+	    {
+		cs = (cs & ~CS_BACKGROUND_RED) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_BG_24_RED) << 48);
+	    }
+	    else if (iColorCode < COLOR_INDEX_BG_24_BLUE)
+	    {
+		cs = (cs & ~CS_BACKGROUND_GREEN) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_BG_24_GREEN) << 40);
+	    }
+	    else
+	    {
+		cs = (cs & ~CS_BACKGROUND_BLUE) | (static_cast<ColorState>(iColorCode - COLOR_INDEX_BG_24_BLUE) << 32);
+	    }
+	}
+	mux_assert((cs & ~CS_ALLBITS) == 0);
+	return cs;
     }
     mux_assert(iColorCode < sizeof(aColors)/sizeof(aColors[0]));
     return (cs & ~aColors[iColorCode].csMask) | aColors[iColorCode].cs;
@@ -2169,9 +2169,9 @@ static UTF8 *ColorTransitionBinary
 
     if (csCurrent == csNext)
     {
-        *nTransition = 0;
-        Buffer[0] = '\0';
-        return Buffer;
+	*nTransition = 0;
+	Buffer[0] = '\0';
+	return Buffer;
     }
     size_t i = 0;
 
@@ -2179,110 +2179,110 @@ static UTF8 *ColorTransitionBinary
     //
     if (  ((csCurrent & ~csNext) & CS_ATTRS)
        || (  (csNext & CS_BACKGROUND) == CS_BG_DEFAULT
-          && (csCurrent & CS_BACKGROUND) != CS_BG_DEFAULT)
+	  && (csCurrent & CS_BACKGROUND) != CS_BG_DEFAULT)
        || (  (csNext & CS_FOREGROUND) == CS_FG_DEFAULT
-          && (csCurrent & CS_FOREGROUND) != CS_FG_DEFAULT))
+	  && (csCurrent & CS_FOREGROUND) != CS_FG_DEFAULT))
     {
-        memcpy(Buffer + i, COLOR_RESET, sizeof(COLOR_RESET)-1);
-        i += sizeof(COLOR_RESET)-1;
-        csCurrent = CS_NORMAL;
+	memcpy(Buffer + i, COLOR_RESET, sizeof(COLOR_RESET)-1);
+	i += sizeof(COLOR_RESET)-1;
+	csCurrent = CS_NORMAL;
     }
 
     ColorState tmp = csCurrent ^ csNext;
     if (CS_ATTRS & tmp)
     {
-        for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG; iAttr++)
-        {
-            if (aColors[iAttr].cs == (aColors[iAttr].csMask & tmp))
-            {
-                memcpy(Buffer + i, aColors[iAttr].pUTF, aColors[iAttr].nUTF);
-                i += aColors[iAttr].nUTF;
-            }
-        }
+	for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG; iAttr++)
+	{
+	    if (aColors[iAttr].cs == (aColors[iAttr].csMask & tmp))
+	    {
+		memcpy(Buffer + i, aColors[iAttr].pUTF, aColors[iAttr].nUTF);
+		i += aColors[iAttr].nUTF;
+	    }
+	}
     }
 
     RGB rgb;
     unsigned int iColor;
     if (CS_FOREGROUND & tmp)
     {
-        bool fExact;
-        if (CS_FG_INDEXED & csNext)
-        {
-            iColor = static_cast<unsigned int>(CS_FG_FIELD(csNext));
-            fExact = true;
-        }
-        else
-        {
-            cs2rgb(CS_FG_FIELD(csNext), &rgb);
-            iColor = FindNearestPaletteEntry(rgb, true);
-            fExact = (  palette[iColor].rgb.r == rgb.r
-                     && palette[iColor].rgb.g == rgb.g
-                     && palette[iColor].rgb.b == rgb.b);
-        }
-        if (iColor < COLOR_INDEX_DEFAULT)
-        {
-            memcpy(Buffer + i, aColors[COLOR_INDEX_FG + iColor].pUTF, aColors[COLOR_INDEX_FG + iColor].nUTF);
-            i += aColors[COLOR_INDEX_FG + iColor].nUTF;
-            if (!fExact)
-            {
-                if (palette[iColor].rgb.r != rgb.r)
-                {
-                    memcpy(Buffer + i, ConvertToUTF8(rgb.r + 0xF0000), 4);
-                    i += 4;
-                }
-                if (palette[iColor].rgb.g != rgb.g)
-                {
-                    memcpy(Buffer + i, ConvertToUTF8(rgb.g + 0xF0100), 4);
-                    i += 4;
-                }
-                if (palette[iColor].rgb.b != rgb.b)
-                {
-                    memcpy(Buffer + i, ConvertToUTF8(rgb.b + 0xF0200), 4);
-                    i += 4;
-                }
-            }
-        }
+	bool fExact;
+	if (CS_FG_INDEXED & csNext)
+	{
+	    iColor = static_cast<unsigned int>(CS_FG_FIELD(csNext));
+	    fExact = true;
+	}
+	else
+	{
+	    cs2rgb(CS_FG_FIELD(csNext), &rgb);
+	    iColor = FindNearestPaletteEntry(rgb, true);
+	    fExact = (  palette[iColor].rgb.r == rgb.r
+		     && palette[iColor].rgb.g == rgb.g
+		     && palette[iColor].rgb.b == rgb.b);
+	}
+	if (iColor < COLOR_INDEX_DEFAULT)
+	{
+	    memcpy(Buffer + i, aColors[COLOR_INDEX_FG + iColor].pUTF, aColors[COLOR_INDEX_FG + iColor].nUTF);
+	    i += aColors[COLOR_INDEX_FG + iColor].nUTF;
+	    if (!fExact)
+	    {
+		if (palette[iColor].rgb.r != rgb.r)
+		{
+		    memcpy(Buffer + i, ConvertToUTF8(rgb.r + 0xF0000), 4);
+		    i += 4;
+		}
+		if (palette[iColor].rgb.g != rgb.g)
+		{
+		    memcpy(Buffer + i, ConvertToUTF8(rgb.g + 0xF0100), 4);
+		    i += 4;
+		}
+		if (palette[iColor].rgb.b != rgb.b)
+		{
+		    memcpy(Buffer + i, ConvertToUTF8(rgb.b + 0xF0200), 4);
+		    i += 4;
+		}
+	    }
+	}
     }
 
     if (CS_BACKGROUND & tmp)
     {
-        bool fExact;
-        if (CS_BG_INDEXED & csNext)
-        {
-            iColor = static_cast<unsigned int>(CS_BG_FIELD(csNext));
-            fExact = true;
-        }
-        else
-        {
-            cs2rgb(CS_BG_FIELD(csNext), &rgb);
-            iColor = FindNearestPaletteEntry(rgb, true);
-            fExact = (  palette[iColor].rgb.r == rgb.r
-                     && palette[iColor].rgb.g == rgb.g
-                     && palette[iColor].rgb.b == rgb.b);
-        }
-        if (iColor < COLOR_INDEX_DEFAULT)
-        {
-            memcpy(Buffer + i, aColors[COLOR_INDEX_BG + iColor].pUTF, aColors[COLOR_INDEX_BG + iColor].nUTF);
-            i += aColors[COLOR_INDEX_BG + iColor].nUTF;
-            if (!fExact)
-            {
-                if (palette[iColor].rgb.r != rgb.r)
-                {
-                    memcpy(Buffer + i, ConvertToUTF8(rgb.r + 0xF0300), 4);
-                    i += 4;
-                }
-                if (palette[iColor].rgb.g != rgb.g)
-                {
-                    memcpy(Buffer + i, ConvertToUTF8(rgb.g + 0xF0400), 4);
-                    i += 4;
-                }
-                if (palette[iColor].rgb.b != rgb.b)
-                {
-                    memcpy(Buffer + i, ConvertToUTF8(rgb.b + 0xF0500), 4);
-                    i += 4;
-                }
-            }
-        }
+	bool fExact;
+	if (CS_BG_INDEXED & csNext)
+	{
+	    iColor = static_cast<unsigned int>(CS_BG_FIELD(csNext));
+	    fExact = true;
+	}
+	else
+	{
+	    cs2rgb(CS_BG_FIELD(csNext), &rgb);
+	    iColor = FindNearestPaletteEntry(rgb, true);
+	    fExact = (  palette[iColor].rgb.r == rgb.r
+		     && palette[iColor].rgb.g == rgb.g
+		     && palette[iColor].rgb.b == rgb.b);
+	}
+	if (iColor < COLOR_INDEX_DEFAULT)
+	{
+	    memcpy(Buffer + i, aColors[COLOR_INDEX_BG + iColor].pUTF, aColors[COLOR_INDEX_BG + iColor].nUTF);
+	    i += aColors[COLOR_INDEX_BG + iColor].nUTF;
+	    if (!fExact)
+	    {
+		if (palette[iColor].rgb.r != rgb.r)
+		{
+		    memcpy(Buffer + i, ConvertToUTF8(rgb.r + 0xF0300), 4);
+		    i += 4;
+		}
+		if (palette[iColor].rgb.g != rgb.g)
+		{
+		    memcpy(Buffer + i, ConvertToUTF8(rgb.g + 0xF0400), 4);
+		    i += 4;
+		}
+		if (palette[iColor].rgb.b != rgb.b)
+		{
+		    memcpy(Buffer + i, ConvertToUTF8(rgb.b + 0xF0500), 4);
+		    i += 4;
+		}
+	    }
+	}
     }
     Buffer[i] = '\0';
     *nTransition = i;
@@ -2310,13 +2310,13 @@ static const UTF8 *ColorBinaryNormal
 
     if (csCurrent == CS_NORMAL)
     {
-        *nTransition = 0;
-        return T("");
+	*nTransition = 0;
+	return T("");
     }
     else
     {
-        *nTransition = sizeof(COLOR_RESET) - 1;
-        return T(COLOR_RESET);
+	*nTransition = sizeof(COLOR_RESET) - 1;
+	return T(COLOR_RESET);
     }
 }
 
@@ -2351,9 +2351,9 @@ static UTF8 *ColorTransitionEscape
 
     if (csCurrent == csNext)
     {
-        *nTransition = 0;
-        Buffer[0] = '\0';
-        return Buffer;
+	*nTransition = 0;
+	Buffer[0] = '\0';
+	return Buffer;
     }
     size_t i = 0;
 
@@ -2361,66 +2361,66 @@ static UTF8 *ColorTransitionEscape
     //
     if (  ((csCurrent & ~csNext) & CS_ATTRS)
        || (  (csNext & CS_BACKGROUND) == CS_BG_DEFAULT
-          && (csCurrent & CS_BACKGROUND) != CS_BG_DEFAULT)
+	  && (csCurrent & CS_BACKGROUND) != CS_BG_DEFAULT)
        || (  (csNext & CS_FOREGROUND) == CS_FG_DEFAULT
-          && (csCurrent & CS_FOREGROUND) != CS_FG_DEFAULT))
+	  && (csCurrent & CS_FOREGROUND) != CS_FG_DEFAULT))
     {
-        memcpy(Buffer + i, aColors[COLOR_INDEX_RESET].pEscape, aColors[COLOR_INDEX_RESET].nEscape);
-        i += aColors[COLOR_INDEX_RESET].nEscape;
-        csCurrent = CS_NORMAL;
+	memcpy(Buffer + i, aColors[COLOR_INDEX_RESET].pEscape, aColors[COLOR_INDEX_RESET].nEscape);
+	i += aColors[COLOR_INDEX_RESET].nEscape;
+	csCurrent = CS_NORMAL;
     }
 
     ColorState tmp = csCurrent ^ csNext;
     if (CS_ATTRS & tmp)
     {
-        for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG; iAttr++)
-        {
-            if (aColors[iAttr].cs == (aColors[iAttr].csMask & tmp))
-            {
-                memcpy(Buffer + i, aColors[iAttr].pEscape, aColors[iAttr].nEscape);
-                i += aColors[iAttr].nEscape;
-            }
-        }
+	for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG; iAttr++)
+	{
+	    if (aColors[iAttr].cs == (aColors[iAttr].csMask & tmp))
+	    {
+		memcpy(Buffer + i, aColors[iAttr].pEscape, aColors[iAttr].nEscape);
+		i += aColors[iAttr].nEscape;
+	    }
+	}
     }
 
     RGB rgb;
     unsigned int iColor;
     if (CS_FOREGROUND & tmp)
     {
-        if (CS_FG_INDEXED & csNext)
-        {
-            iColor = COLOR_INDEX_FG + static_cast<unsigned int>(CS_FG_FIELD(csNext));
-            if (iColor < COLOR_INDEX_FG + COLOR_INDEX_DEFAULT)
-            {
-                memcpy(Buffer + i, aColors[iColor].pEscape, aColors[iColor].nEscape);
-                i += aColors[iColor].nEscape;
-            }
-        }
-        else
-        {
-            cs2rgb(CS_FG_FIELD(csNext), &rgb);
-            mux_sprintf(Buffer + i, 12, T("%%x<#%02X%02X%02X>"), rgb.r, rgb.g, rgb.b);
-            i += 11;
-        }
+	if (CS_FG_INDEXED & csNext)
+	{
+	    iColor = COLOR_INDEX_FG + static_cast<unsigned int>(CS_FG_FIELD(csNext));
+	    if (iColor < COLOR_INDEX_FG + COLOR_INDEX_DEFAULT)
+	    {
+		memcpy(Buffer + i, aColors[iColor].pEscape, aColors[iColor].nEscape);
+		i += aColors[iColor].nEscape;
+	    }
+	}
+	else
+	{
+	    cs2rgb(CS_FG_FIELD(csNext), &rgb);
+	    mux_sprintf(Buffer + i, 12, T("%%x<#%02X%02X%02X>"), rgb.r, rgb.g, rgb.b);
+	    i += 11;
+	}
     }
 
     if (CS_BACKGROUND & tmp)
     {
-        if (CS_BG_INDEXED & csNext)
-        {
-            iColor = COLOR_INDEX_BG + static_cast<unsigned int>(CS_BG_FIELD(csNext));
-            if (iColor < COLOR_INDEX_BG + COLOR_INDEX_DEFAULT)
-            {
-                memcpy(Buffer + i, aColors[iColor].pEscape, aColors[iColor].nEscape);
-                i += aColors[iColor].nEscape;
-            }
-        }
-        else
-        {
-            cs2rgb(CS_BG_FIELD(csNext), &rgb);
-            mux_sprintf(Buffer + i, 12, T("%%X<#%02X%02X%02X>"), rgb.r, rgb.g, rgb.b);
-            i += 11;
-        }
+	if (CS_BG_INDEXED & csNext)
+	{
+	    iColor = COLOR_INDEX_BG + static_cast<unsigned int>(CS_BG_FIELD(csNext));
+	    if (iColor < COLOR_INDEX_BG + COLOR_INDEX_DEFAULT)
+	    {
+		memcpy(Buffer + i, aColors[iColor].pEscape, aColors[iColor].nEscape);
+		i += aColors[iColor].nEscape;
+	    }
+	}
+	else
+	{
+	    cs2rgb(CS_BG_FIELD(csNext), &rgb);
+	    mux_sprintf(Buffer + i, 12, T("%%X<#%02X%02X%02X>"), rgb.r, rgb.g, rgb.b);
+	    i += 11;
+	}
     }
     Buffer[i] = '\0';
     *nTransition = i;
@@ -2463,7 +2463,7 @@ static UTF8 *ColorTransitionANSI
     if (  fNoBleed
        && (csNext & CS_FOREGROUND) == CS_FG_DEFAULT)
     {
-        csNext = (csNext & ~CS_FOREGROUND) | CS_FG_WHITE;
+	csNext = (csNext & ~CS_FOREGROUND) | CS_FG_WHITE;
     }
 
     // Approximate Foreground Color
@@ -2472,109 +2472,109 @@ static UTF8 *ColorTransitionANSI
     unsigned int iColor;
     if (fColor256)
     {
-        if (CS_FG_INDEXED & csNext)
-        {
-            if (CS_FG_FIELD(csNext) < COLOR_INDEX_DEFAULT)
-            {
-                iColor = COLOR_INDEX_FG + static_cast<unsigned int>(CS_FG_FIELD(csNext));
-            }
-            else
-            {
-                iColor = COLOR_INDEX_FG + COLOR_INDEX_DEFAULT;
-            }
-        }
-        else
-        {
-            cs2rgb(CS_FG_FIELD(csNext), &rgb);
-            iColor = COLOR_INDEX_FG + FindNearestPaletteEntry(rgb, true);
-        }
+	if (CS_FG_INDEXED & csNext)
+	{
+	    if (CS_FG_FIELD(csNext) < COLOR_INDEX_DEFAULT)
+	    {
+		iColor = COLOR_INDEX_FG + static_cast<unsigned int>(CS_FG_FIELD(csNext));
+	    }
+	    else
+	    {
+		iColor = COLOR_INDEX_FG + COLOR_INDEX_DEFAULT;
+	    }
+	}
+	else
+	{
+	    cs2rgb(CS_FG_FIELD(csNext), &rgb);
+	    iColor = COLOR_INDEX_FG + FindNearestPaletteEntry(rgb, true);
+	}
     }
     else
     {
-        if (CS_FG_INDEXED & csNext)
-        {
-            if (CS_FG_FIELD(csNext) < COLOR_INDEX_DEFAULT)
-            {
-                iColor = COLOR_INDEX_FG + palette[CS_FG_FIELD(csNext)].color16;
-            }
-            else
-            {
-                iColor = COLOR_INDEX_FG + COLOR_INDEX_DEFAULT;
-            }
-        }
-        else
-        {
-            cs2rgb(CS_FG_FIELD(csNext), &rgb);
-            iColor = COLOR_INDEX_FG + FindNearestPaletteEntry(rgb, false);
-        }
+	if (CS_FG_INDEXED & csNext)
+	{
+	    if (CS_FG_FIELD(csNext) < COLOR_INDEX_DEFAULT)
+	    {
+		iColor = COLOR_INDEX_FG + palette[CS_FG_FIELD(csNext)].color16;
+	    }
+	    else
+	    {
+		iColor = COLOR_INDEX_FG + COLOR_INDEX_DEFAULT;
+	    }
+	}
+	else
+	{
+	    cs2rgb(CS_FG_FIELD(csNext), &rgb);
+	    iColor = COLOR_INDEX_FG + FindNearestPaletteEntry(rgb, false);
+	}
 
-        // For foreground 256-to-16-color down-conversion, we 'borrow' the
-        // highlite capability.  We don't need or want it if the client supports
-        // 256-color, and there is no highlite capability we can borrow for
-        // background color.  This decision is a prerequisite to the 'return
-        // to normal' decision below.
-        //
-        if (COLOR_INDEX_FG + 8 <= iColor && iColor <= COLOR_INDEX_FG + 15)
-        {
-            csNext |= CS_INTENSE;
-            iColor -= 8;
-        }
+	// For foreground 256-to-16-color down-conversion, we 'borrow' the
+	// highlite capability.  We don't need or want it if the client supports
+	// 256-color, and there is no highlite capability we can borrow for
+	// background color.  This decision is a prerequisite to the 'return
+	// to normal' decision below.
+	//
+	if (COLOR_INDEX_FG + 8 <= iColor && iColor <= COLOR_INDEX_FG + 15)
+	{
+	    csNext |= CS_INTENSE;
+	    iColor -= 8;
+	}
     }
     if (iColor < COLOR_INDEX_FG + COLOR_INDEX_DEFAULT)
     {
-        csNext = UpdateColorState(csNext, iColor);
+	csNext = UpdateColorState(csNext, iColor);
     }
 
     // Aproximate Background Color
     //
     if (fColor256)
     {
-        if (CS_BG_INDEXED & csNext)
-        {
-            if (CS_BG_FIELD(csNext) < COLOR_INDEX_DEFAULT)
-            {
-                iColor = COLOR_INDEX_BG + static_cast<unsigned int>(CS_BG_FIELD(csNext));
-            }
-            else
-            {
-                iColor = COLOR_INDEX_BG + COLOR_INDEX_DEFAULT;
-            }
-        }
-        else
-        {
-            cs2rgb(CS_BG_FIELD(csNext), &rgb);
-            iColor = COLOR_INDEX_BG + FindNearestPaletteEntry(rgb, true);
-        }
+	if (CS_BG_INDEXED & csNext)
+	{
+	    if (CS_BG_FIELD(csNext) < COLOR_INDEX_DEFAULT)
+	    {
+		iColor = COLOR_INDEX_BG + static_cast<unsigned int>(CS_BG_FIELD(csNext));
+	    }
+	    else
+	    {
+		iColor = COLOR_INDEX_BG + COLOR_INDEX_DEFAULT;
+	    }
+	}
+	else
+	{
+	    cs2rgb(CS_BG_FIELD(csNext), &rgb);
+	    iColor = COLOR_INDEX_BG + FindNearestPaletteEntry(rgb, true);
+	}
     }
     else
     {
-        if (CS_BG_INDEXED & csNext)
-        {
-            if (CS_BG_FIELD(csNext) < COLOR_INDEX_DEFAULT)
-            {
-                iColor = COLOR_INDEX_BG + palette[CS_BG_FIELD(csNext)].color8;
-            }
-            else
-            {
-                iColor = COLOR_INDEX_BG + COLOR_INDEX_DEFAULT;
-            }
-        }
-        else
-        {
-            cs2rgb(CS_BG_FIELD(csNext), &rgb);
-            iColor = COLOR_INDEX_BG + FindNearestPalette8Entry(rgb);
-        }
+	if (CS_BG_INDEXED & csNext)
+	{
+	    if (CS_BG_FIELD(csNext) < COLOR_INDEX_DEFAULT)
+	    {
+		iColor = COLOR_INDEX_BG + palette[CS_BG_FIELD(csNext)].color8;
+	    }
+	    else
+	    {
+		iColor = COLOR_INDEX_BG + COLOR_INDEX_DEFAULT;
+	    }
+	}
+	else
+	{
+	    cs2rgb(CS_BG_FIELD(csNext), &rgb);
+	    iColor = COLOR_INDEX_BG + FindNearestPalette8Entry(rgb);
+	}
     }
     if (iColor < COLOR_INDEX_BG + COLOR_INDEX_DEFAULT)
     {
-        csNext = UpdateColorState(csNext, iColor);
+	csNext = UpdateColorState(csNext, iColor);
     }
 
     if (csClient == csNext)
     {
-        *nTransition = 0;
-        Buffer[0] = '\0';
-        return Buffer;
+	*nTransition = 0;
+	Buffer[0] = '\0';
+	return Buffer;
     }
     size_t i = 0;
 
@@ -2582,48 +2582,48 @@ static UTF8 *ColorTransitionANSI
     //
     if (  ((csClient & ~csNext) & CS_ATTRS)
        || (  (csNext & CS_BACKGROUND) == CS_BG_DEFAULT
-          && (csClient & CS_BACKGROUND) != CS_BG_DEFAULT)
+	  && (csClient & CS_BACKGROUND) != CS_BG_DEFAULT)
        || (  (csNext & CS_FOREGROUND) == CS_FG_DEFAULT
-          && (csClient & CS_FOREGROUND) != CS_FG_DEFAULT))
+	  && (csClient & CS_FOREGROUND) != CS_FG_DEFAULT))
     {
-        memcpy(Buffer + i, ANSI_NORMAL, sizeof(ANSI_NORMAL)-1);
-        i += sizeof(ANSI_NORMAL)-1;
-        csClient = CS_NORMAL;
+	memcpy(Buffer + i, ANSI_NORMAL, sizeof(ANSI_NORMAL)-1);
+	i += sizeof(ANSI_NORMAL)-1;
+	csClient = CS_NORMAL;
     }
 
     ColorState tmp = csClient ^ csNext;
     if (CS_ATTRS & tmp)
     {
-        for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG; iAttr++)
-        {
-            if (aColors[iAttr].cs == (aColors[iAttr].csMask & tmp))
-            {
-                memcpy(Buffer + i, aColors[iAttr].pAnsi, aColors[iAttr].nAnsi);
-                i += aColors[iAttr].nAnsi;
-            }
-        }
+	for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG; iAttr++)
+	{
+	    if (aColors[iAttr].cs == (aColors[iAttr].csMask & tmp))
+	    {
+		memcpy(Buffer + i, aColors[iAttr].pAnsi, aColors[iAttr].nAnsi);
+		i += aColors[iAttr].nAnsi;
+	    }
+	}
     }
 
     // At this point, all colors are indexed.
     //
     if (CS_FOREGROUND & tmp)
     {
-        iColor = COLOR_INDEX_FG + static_cast<unsigned int>(CS_FG_FIELD(csNext));
-        if (iColor < COLOR_INDEX_FG + COLOR_INDEX_DEFAULT)
-        {
-            memcpy(Buffer + i, aColors[iColor].pAnsi, aColors[iColor].nAnsi);
-            i += aColors[iColor].nAnsi;
-        }
+	iColor = COLOR_INDEX_FG + static_cast<unsigned int>(CS_FG_FIELD(csNext));
+	if (iColor < COLOR_INDEX_FG + COLOR_INDEX_DEFAULT)
+	{
+	    memcpy(Buffer + i, aColors[iColor].pAnsi, aColors[iColor].nAnsi);
+	    i += aColors[iColor].nAnsi;
+	}
     }
 
     if (CS_BACKGROUND & tmp)
     {
-        iColor = COLOR_INDEX_BG + static_cast<unsigned int>(CS_BG_FIELD(csNext));
-        if (iColor < COLOR_INDEX_BG + COLOR_INDEX_DEFAULT)
-        {
-            memcpy(Buffer + i, aColors[iColor].pAnsi, aColors[iColor].nAnsi);
-            i += aColors[iColor].nAnsi;
-        }
+	iColor = COLOR_INDEX_BG + static_cast<unsigned int>(CS_BG_FIELD(csNext));
+	if (iColor < COLOR_INDEX_BG + COLOR_INDEX_DEFAULT)
+	{
+	    memcpy(Buffer + i, aColors[iColor].pAnsi, aColors[iColor].nAnsi);
+	    i += aColors[iColor].nAnsi;
+	}
     }
     Buffer[i] = '\0';
     *nTransition = i;
@@ -2638,54 +2638,54 @@ void LettersToColorState(ColorState &cs, UTF8 *pIn)
     size_t i = 0;
     while ('\0' != pIn[i])
     {
-        unsigned int iColor;
-        unsigned ch = pIn[i];
-        if ('<' == ch)
-        {
-            i++;
-            size_t j = i;
-            while (  '\0' != (ch = pIn[i])
-                  && '>' != ch)
-            {
-                i++;
-            }
-            RGB rgb;
-            if ('>' == ch)
-            {
-                if (parse_rgb(i - j, pIn + j, rgb))
-                {
-                    iColor = FindNearestPaletteEntry(rgb, true);
-                    bool fExact = (  palette[iColor].rgb.r == rgb.r
-                                  && palette[iColor].rgb.g == rgb.g
-                                  && palette[iColor].rgb.b == rgb.b);
-                    if (fBackground)
-                    {
-                        cs = (cs & ~CS_BACKGROUND) | (fExact ? CS_BG(iColor) : (rgb2cs(&rgb) << 32));
-                    }
-                    else
-                    {
-                        cs = (cs & ~CS_FOREGROUND) | (fExact ? CS_FG(iColor) : rgb2cs(&rgb));
-                    }
-                }
-                i++;
-            }
-            fBackground = false;
-        }
-        else if ('/' == ch)
-        {
-            fBackground = true;
-            i++;
-        }
-        else
-        {
-            iColor = ColorTable[pIn[i]];
-            if (iColor)
-            {
-                cs = UpdateColorState(cs, iColor);
-            }
-            fBackground = false;
-            i++;
-        }
+	unsigned int iColor;
+	unsigned ch = pIn[i];
+	if ('<' == ch)
+	{
+	    i++;
+	    size_t j = i;
+	    while (  '\0' != (ch = pIn[i])
+		  && '>' != ch)
+	    {
+		i++;
+	    }
+	    RGB rgb;
+	    if ('>' == ch)
+	    {
+		if (parse_rgb(i - j, pIn + j, rgb))
+		{
+		    iColor = FindNearestPaletteEntry(rgb, true);
+		    bool fExact = (  palette[iColor].rgb.r == rgb.r
+				  && palette[iColor].rgb.g == rgb.g
+				  && palette[iColor].rgb.b == rgb.b);
+		    if (fBackground)
+		    {
+			cs = (cs & ~CS_BACKGROUND) | (fExact ? CS_BG(iColor) : (rgb2cs(&rgb) << 32));
+		    }
+		    else
+		    {
+			cs = (cs & ~CS_FOREGROUND) | (fExact ? CS_FG(iColor) : rgb2cs(&rgb));
+		    }
+		}
+		i++;
+	    }
+	    fBackground = false;
+	}
+	else if ('/' == ch)
+	{
+	    fBackground = true;
+	    i++;
+	}
+	else
+	{
+	    iColor = ColorTable[pIn[i]];
+	    if (iColor)
+	    {
+		cs = UpdateColorState(cs, iColor);
+	    }
+	    fBackground = false;
+	    i++;
+	}
     }
 }
 
@@ -2736,248 +2736,248 @@ UTF8 *convert_to_html(const UTF8 *pString)
 
     if ('\0' != pString[i])
     {
-        iCode = mux_color(pString + i);
-        if (COLOR_NOTCOLOR == iCode)
-        {
-            List[nList].fBeginEnd = true;
-            List[nList].kTag = kNormal;
-            List[nList].cs = CS_NORMAL;
-            List[nList].iStart = -1;
-            nList++;
-        }
+	iCode = mux_color(pString + i);
+	if (COLOR_NOTCOLOR == iCode)
+	{
+	    List[nList].fBeginEnd = true;
+	    List[nList].kTag = kNormal;
+	    List[nList].cs = CS_NORMAL;
+	    List[nList].iStart = -1;
+	    nList++;
+	}
     }
 
     while ( '\0' != pString[i]
-          || csNext != csPrev)
+	  || csNext != csPrev)
     {
-        iCopy = i;
-        while (  '\0' != pString[i]
-              && COLOR_NOTCOLOR == iCode)
-        {
-            i += utf8_FirstByte[pString[i]];
-            iCode = mux_color(pString + i);
-        }
+	iCopy = i;
+	while (  '\0' != pString[i]
+	      && COLOR_NOTCOLOR == iCode)
+	{
+	    i += utf8_FirstByte[pString[i]];
+	    iCode = mux_color(pString + i);
+	}
 
-        while (csNext != csPrev)
-        {
-            for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG + 1; iAttr++)
-            {
-                ColorState tmp = csNext ^ csPrev;
-                HTMLtag kNext = tagmap[iAttr - COLOR_INDEX_ATTR];
-                bool fOpen = false;
-                bool fClose = false;
+	while (csNext != csPrev)
+	{
+	    for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG + 1; iAttr++)
+	    {
+		ColorState tmp = csNext ^ csPrev;
+		HTMLtag kNext = tagmap[iAttr - COLOR_INDEX_ATTR];
+		bool fOpen = false;
+		bool fClose = false;
 
-                if (iAttr < COLOR_INDEX_FG)
-                {
-                    // Attribute
-                    //
-                    if (tmp & aColors[iAttr].csMask)
-                    {
-                        if (csNext & aColors[iAttr].csMask)
-                        {
-                            fOpen = true;
-                        }
-                        else
-                        {
-                            fClose = true;
-                        }
-                    }
-                }
-                else
-                {
-                    // Color
-                    //
-                    if (tmp & CS_FOREGROUND)
-                    {
-                        if (  (csPrev & CS_FOREGROUND) == CS_FG_DEFAULT
-                           && (csNext & CS_FOREGROUND) != CS_FG_DEFAULT)
-                        {
-                            fOpen = true;
-                        }
-                        else if (  (csPrev & CS_FOREGROUND) != CS_FG_DEFAULT
-                                && (csNext & CS_FOREGROUND) == CS_FG_DEFAULT)
-                        {
-                            fClose = true;
-                        }
-                        else
-                        {
-                            fOpen = true;
-                            fClose = true;
-                        }
-                    }
-                    if (tmp & CS_BACKGROUND)
-                    {
-                        if (  (csPrev & CS_BACKGROUND) == CS_BG_DEFAULT
-                           && (csNext & CS_BACKGROUND) != CS_BG_DEFAULT)
-                        {
-                            fOpen = true;
-                        }
-                        else if (  (csPrev & CS_BACKGROUND) != CS_BG_DEFAULT
-                                && (csNext & CS_BACKGROUND) == CS_BG_DEFAULT)
-                        {
-                            fClose = true;
-                        }
-                        else
-                        {
-                            fOpen = true;
-                            fClose = true;
-                        }
-                    }
-                }
+		if (iAttr < COLOR_INDEX_FG)
+		{
+		    // Attribute
+		    //
+		    if (tmp & aColors[iAttr].csMask)
+		    {
+			if (csNext & aColors[iAttr].csMask)
+			{
+			    fOpen = true;
+			}
+			else
+			{
+			    fClose = true;
+			}
+		    }
+		}
+		else
+		{
+		    // Color
+		    //
+		    if (tmp & CS_FOREGROUND)
+		    {
+			if (  (csPrev & CS_FOREGROUND) == CS_FG_DEFAULT
+			   && (csNext & CS_FOREGROUND) != CS_FG_DEFAULT)
+			{
+			    fOpen = true;
+			}
+			else if (  (csPrev & CS_FOREGROUND) != CS_FG_DEFAULT
+				&& (csNext & CS_FOREGROUND) == CS_FG_DEFAULT)
+			{
+			    fClose = true;
+			}
+			else
+			{
+			    fOpen = true;
+			    fClose = true;
+			}
+		    }
+		    if (tmp & CS_BACKGROUND)
+		    {
+			if (  (csPrev & CS_BACKGROUND) == CS_BG_DEFAULT
+			   && (csNext & CS_BACKGROUND) != CS_BG_DEFAULT)
+			{
+			    fOpen = true;
+			}
+			else if (  (csPrev & CS_BACKGROUND) != CS_BG_DEFAULT
+				&& (csNext & CS_BACKGROUND) == CS_BG_DEFAULT)
+			{
+			    fClose = true;
+			}
+			else
+			{
+			    fOpen = true;
+			    fClose = true;
+			}
+		    }
+		}
 
-                if (fClose)
-                {
-                    for (int j = nStack - 1; 0 <= j; j--)
-                    {
-                        if (List[Stack[j]].kTag == kNext)
-                        {
-                            if (List[Stack[j]].iStart != List[Stack[nStack-1]].iStart)
-                            {
-                                // Pop other tags and mark in csPrev that they are gone.  We'll add them back in the next
-                                // iteration of the loop.  We stop at the point where tags can be swapped with the one
-                                // we're interested in.
-                                //
-                                for (int k = nStack - 1; j < k  && List[Stack[j]].iStart != List[Stack[nStack-1]].iStart; k--)
-                                {
-                                    List[nList] = List[Stack[k]];
-                                    List[nList].fBeginEnd = false;
-                                    List[nList].iStart = -1;
+		if (fClose)
+		{
+		    for (int j = nStack - 1; 0 <= j; j--)
+		    {
+			if (List[Stack[j]].kTag == kNext)
+			{
+			    if (List[Stack[j]].iStart != List[Stack[nStack-1]].iStart)
+			    {
+				// Pop other tags and mark in csPrev that they are gone.  We'll add them back in the next
+				// iteration of the loop.  We stop at the point where tags can be swapped with the one
+				// we're interested in.
+				//
+				for (int k = nStack - 1; j < k  && List[Stack[j]].iStart != List[Stack[nStack-1]].iStart; k--)
+				{
+				    List[nList] = List[Stack[k]];
+				    List[nList].fBeginEnd = false;
+				    List[nList].iStart = -1;
 
-                                    switch (List[nList].kTag)
-                                    {
-                                    case kIntense:
-                                        csPrev &= ~CS_INTENSE;
-                                        break;
+				    switch (List[nList].kTag)
+				    {
+				    case kIntense:
+					csPrev &= ~CS_INTENSE;
+					break;
 
-                                    case kUnderline:
-                                        csPrev &= ~CS_UNDERLINE;
-                                        break;
+				    case kUnderline:
+					csPrev &= ~CS_UNDERLINE;
+					break;
 
-                                    case kBlink:
-                                        csPrev &= ~CS_BLINK;
-                                        break;
+				    case kBlink:
+					csPrev &= ~CS_BLINK;
+					break;
 
-                                    case kInverse:
-                                        csPrev &= ~CS_INVERSE;
-                                        break;
+				    case kInverse:
+					csPrev &= ~CS_INVERSE;
+					break;
 
-                                    case kColor:
-                                        csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
-                                        break;
+				    case kColor:
+					csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
+					break;
 
-                                    default:
-                                        break;
-                                    }
-                                    nList++;
-                                    nStack--;
-                                }
-                            }
+				    default:
+					break;
+				    }
+				    nList++;
+				    nStack--;
+				}
+			    }
 
-                            if (j != nStack - 1)
-                            {
-                                // Change the order of tags which open at the
-                                // same position so that the one we want to
-                                // close can be popped.
-                                //
-                                tag_node t = List[Stack[j]];
-                                List[Stack[j]] = List[Stack[nStack-1]];
-                                List[Stack[nStack-1]] = t;
-                                j = nStack - 1;
-                            }
+			    if (j != nStack - 1)
+			    {
+				// Change the order of tags which open at the
+				// same position so that the one we want to
+				// close can be popped.
+				//
+				tag_node t = List[Stack[j]];
+				List[Stack[j]] = List[Stack[nStack-1]];
+				List[Stack[nStack-1]] = t;
+				j = nStack - 1;
+			    }
 
-                            List[nList] = List[Stack[j]];
-                            List[nList].fBeginEnd = false;
-                            List[nList].iStart = -1;
-                            switch (List[nList].kTag)
-                            {
-                            case kIntense:
-                                csPrev &= ~CS_INTENSE;
-                                break;
+			    List[nList] = List[Stack[j]];
+			    List[nList].fBeginEnd = false;
+			    List[nList].iStart = -1;
+			    switch (List[nList].kTag)
+			    {
+			    case kIntense:
+				csPrev &= ~CS_INTENSE;
+				break;
 
-                            case kUnderline:
-                                csPrev &= ~CS_UNDERLINE;
-                                break;
+			    case kUnderline:
+				csPrev &= ~CS_UNDERLINE;
+				break;
 
-                            case kBlink:
-                                csPrev &= ~CS_BLINK;
-                                break;
+			    case kBlink:
+				csPrev &= ~CS_BLINK;
+				break;
 
-                            case kInverse:
-                                csPrev &= ~CS_INVERSE;
-                                break;
+			    case kInverse:
+				csPrev &= ~CS_INVERSE;
+				break;
 
-                            case kColor:
-                                csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
-                                break;
+			    case kColor:
+				csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
+				break;
 
-                            default:
-                                break;
-                            }
-                            nList++;
+			    default:
+				break;
+			    }
+			    nList++;
 
-                            nStack--;
-                            if (0 == nStack)
-                            {
-                                List[nList].fBeginEnd = true;
-                                List[nList].kTag = kNormal;
-                                List[nList].cs = CS_NORMAL;
-                                List[nList].iStart = -1;
-                                nList++;
-                            }
-                            break;
-                        }
-                    }
-                }
+			    nStack--;
+			    if (0 == nStack)
+			    {
+				List[nList].fBeginEnd = true;
+				List[nList].kTag = kNormal;
+				List[nList].cs = CS_NORMAL;
+				List[nList].iStart = -1;
+				nList++;
+			    }
+			    break;
+			}
+		    }
+		}
 
-                if (fOpen)
-                {
-                    List[nList].fBeginEnd = true;
-                    List[nList].cs = csNext;
-                    List[nList].kTag = kNext;
-                    List[nList].iStart = -1;
-                    switch (List[nList].kTag)
-                    {
-                    case kIntense:
-                        csPrev |= CS_INTENSE;
-                        break;
+		if (fOpen)
+		{
+		    List[nList].fBeginEnd = true;
+		    List[nList].cs = csNext;
+		    List[nList].kTag = kNext;
+		    List[nList].iStart = -1;
+		    switch (List[nList].kTag)
+		    {
+		    case kIntense:
+			csPrev |= CS_INTENSE;
+			break;
 
-                    case kUnderline:
-                        csPrev |= CS_UNDERLINE;
-                        break;
+		    case kUnderline:
+			csPrev |= CS_UNDERLINE;
+			break;
 
-                    case kBlink:
-                        csPrev |= CS_BLINK;
-                        break;
+		    case kBlink:
+			csPrev |= CS_BLINK;
+			break;
 
-                    case kInverse:
-                        csPrev |= CS_INVERSE;
-                        break;
+		    case kInverse:
+			csPrev |= CS_INVERSE;
+			break;
 
-                    case kColor:
-                        csPrev &= ~(CS_FOREGROUND|CS_BACKGROUND);
-                        csPrev |= (CS_FOREGROUND|CS_BACKGROUND) & csNext;;
-                        break;
+		    case kColor:
+			csPrev &= ~(CS_FOREGROUND|CS_BACKGROUND);
+			csPrev |= (CS_FOREGROUND|CS_BACKGROUND) & csNext;;
+			break;
 
-                    default:
-                        break;
-                    }
-                    Stack[nStack++] = nList++;
-                }
-            }
-        }
+		    default:
+			break;
+		    }
+		    Stack[nStack++] = nList++;
+		}
+	    }
+	}
 
-        if (0 < nList)
-        {
-            List[nList-1].iStart = iCopy;
-        }
+	if (0 < nList)
+	{
+	    List[nList-1].iStart = iCopy;
+	}
 
-        while (  '\0' != pString[i]
-              && COLOR_NOTCOLOR != iCode)
-        {
-            csNext = UpdateColorState(csNext, iCode);
-            i += utf8_FirstByte[pString[i]];
-            iCode = mux_color(pString + i);
-        }
+	while (  '\0' != pString[i]
+	      && COLOR_NOTCOLOR != iCode)
+	{
+	    csNext = UpdateColorState(csNext, iCode);
+	    i += utf8_FirstByte[pString[i]];
+	    iCode = mux_color(pString + i);
+	}
     }
 
     static UTF8 aBuffer[2*LBUF_SIZE];
@@ -2985,104 +2985,104 @@ UTF8 *convert_to_html(const UTF8 *pString)
 
     for (int iList = 0; iList < nList; iList++)
     {
-        if (kNormal != List[iList].kTag)
-        {
-            *pBuffer++ = '<';
-            if (!List[iList].fBeginEnd)
-            {
-                *pBuffer++ = '/';
-            }
+	if (kNormal != List[iList].kTag)
+	{
+	    *pBuffer++ = '<';
+	    if (!List[iList].fBeginEnd)
+	    {
+		*pBuffer++ = '/';
+	    }
 
-            switch (List[iList].kTag)
-            {
-            case kIntense:
-                *pBuffer++ = 'B';
-                break;
+	    switch (List[iList].kTag)
+	    {
+	    case kIntense:
+		*pBuffer++ = 'B';
+		break;
 
-            case kUnderline:
-                *pBuffer++ = 'U';
-                break;
+	    case kUnderline:
+		*pBuffer++ = 'U';
+		break;
 
-            case kBlink:
-                *pBuffer++ = 'I';
-                break;
+	    case kBlink:
+		*pBuffer++ = 'I';
+		break;
 
-            case kInverse:
-                *pBuffer++ = 'S';
-                break;
+	    case kInverse:
+		*pBuffer++ = 'S';
+		break;
 
-            case kColor:
-                if (List[iList].fBeginEnd)
-                {
-                    ColorState cs = List[iList].cs;
-                    if (  (CS_FOREGROUND & cs) != CS_FG_DEFAULT
-                       && (CS_FG_INDEXED & cs))
-                    {
-                       cs = (cs & ~CS_FOREGROUND) | rgb2cs(&palette[CS_FG_FIELD(cs)].rgb);
-                    }
+	    case kColor:
+		if (List[iList].fBeginEnd)
+		{
+		    ColorState cs = List[iList].cs;
+		    if (  (CS_FOREGROUND & cs) != CS_FG_DEFAULT
+		       && (CS_FG_INDEXED & cs))
+		    {
+		       cs = (cs & ~CS_FOREGROUND) | rgb2cs(&palette[CS_FG_FIELD(cs)].rgb);
+		    }
 
-                    if (  (CS_BACKGROUND & cs) != CS_BG_DEFAULT
-                       && (CS_BG_INDEXED & cs))
-                    {
-                        cs = (cs & ~CS_BACKGROUND) | (rgb2cs(&palette[CS_BG_FIELD(cs)].rgb) << 32);
-                    }
+		    if (  (CS_BACKGROUND & cs) != CS_BG_DEFAULT
+		       && (CS_BG_INDEXED & cs))
+		    {
+			cs = (cs & ~CS_BACKGROUND) | (rgb2cs(&palette[CS_BG_FIELD(cs)].rgb) << 32);
+		    }
 
-                    if ((CS_FOREGROUND & cs) == CS_FG_DEFAULT)
-                    {
-                        if ((CS_BACKGROUND & cs) != CS_BG_DEFAULT)
-                        {
-                            mux_sprintf(pBuffer, sizeof(aBuffer) - (pBuffer - aBuffer) - 1, T("COLOR BACK=#%06llX"), CS_BG_FIELD(cs));
-                            pBuffer += strlen((char *)pBuffer);
-                        }
-                    }
-                    else
-                    {
-                        if ((CS_BACKGROUND & cs) == CS_BG_DEFAULT)
-                        {
-                            mux_sprintf(pBuffer, sizeof(aBuffer) - (pBuffer - aBuffer) - 1, T("COLOR #%06llX"), CS_FG_FIELD(cs));
-                            pBuffer += strlen((char *)pBuffer);
-                        }
-                        else
-                        {
-                            mux_sprintf(pBuffer, sizeof(aBuffer) - (pBuffer - aBuffer) - 1, T("COLOR #%06llX #%06llX"), CS_FG_FIELD(cs), CS_BG_FIELD(cs));
-                            pBuffer += strlen((char *)pBuffer);
-                        }
-                    }
-                }
-                else
-                {
-                    mux_sprintf(pBuffer, sizeof(aBuffer) - (pBuffer - aBuffer) - 1, T("COLOR"));
-                    pBuffer += strlen((char *)pBuffer);
-                }
-                break;
+		    if ((CS_FOREGROUND & cs) == CS_FG_DEFAULT)
+		    {
+			if ((CS_BACKGROUND & cs) != CS_BG_DEFAULT)
+			{
+			    mux_sprintf(pBuffer, sizeof(aBuffer) - (pBuffer - aBuffer) - 1, T("COLOR BACK=#%06llX"), CS_BG_FIELD(cs));
+			    pBuffer += strlen((char *)pBuffer);
+			}
+		    }
+		    else
+		    {
+			if ((CS_BACKGROUND & cs) == CS_BG_DEFAULT)
+			{
+			    mux_sprintf(pBuffer, sizeof(aBuffer) - (pBuffer - aBuffer) - 1, T("COLOR #%06llX"), CS_FG_FIELD(cs));
+			    pBuffer += strlen((char *)pBuffer);
+			}
+			else
+			{
+			    mux_sprintf(pBuffer, sizeof(aBuffer) - (pBuffer - aBuffer) - 1, T("COLOR #%06llX #%06llX"), CS_FG_FIELD(cs), CS_BG_FIELD(cs));
+			    pBuffer += strlen((char *)pBuffer);
+			}
+		    }
+		}
+		else
+		{
+		    mux_sprintf(pBuffer, sizeof(aBuffer) - (pBuffer - aBuffer) - 1, T("COLOR"));
+		    pBuffer += strlen((char *)pBuffer);
+		}
+		break;
 
-            default:
-                break;
-            }
-            *pBuffer++ = '>';
-        }
+	    default:
+		break;
+	    }
+	    *pBuffer++ = '>';
+	}
 
-        iCopy = i = List[iList].iStart;
-        if (0 <= iCopy)
-        {
-            if ('\0' != pString[i])
-            {
-                iCode = mux_color(pString + i);
-            }
-            while (  '\0' != pString[i]
-                  && COLOR_NOTCOLOR == iCode)
-            {
-                i += utf8_FirstByte[pString[i]];
-                iCode = mux_color(pString + i);
-            }
-            size_t n = i - iCopy;
+	iCopy = i = List[iList].iStart;
+	if (0 <= iCopy)
+	{
+	    if ('\0' != pString[i])
+	    {
+		iCode = mux_color(pString + i);
+	    }
+	    while (  '\0' != pString[i]
+		  && COLOR_NOTCOLOR == iCode)
+	    {
+		i += utf8_FirstByte[pString[i]];
+		iCode = mux_color(pString + i);
+	    }
+	    size_t n = i - iCopy;
 
-            if (0 < n)
-            {
-                memcpy(pBuffer, pString + List[iList].iStart, n);
-                pBuffer += n;
-            }
-        }
+	    if (0 < n)
+	    {
+		memcpy(pBuffer, pString + List[iList].iStart, n);
+		pBuffer += n;
+	    }
+	}
     }
 
     *pBuffer = '\0';
@@ -3115,7 +3115,7 @@ UTF8 *convert_color(const UTF8 *pString, bool fNoBleed, bool fColor256)
     size_t nNormal = sizeof(ANSI_NORMAL)-1;
     if (fNoBleed)
     {
-        nNormal += sizeof(ANSI_WHITE)-1;
+	nNormal += sizeof(ANSI_WHITE)-1;
     }
 
     ColorState csClient = (fNoBleed)?CS_FG_WHITE:CS_NORMAL;
@@ -3127,59 +3127,59 @@ UTF8 *convert_color(const UTF8 *pString, bool fNoBleed, bool fColor256)
     unsigned int iCode = COLOR_NOTCOLOR;
     if ('\0' != pString[i])
     {
-        iCode = mux_color(pString + i);
+	iCode = mux_color(pString + i);
     }
     while ('\0' != pString[i])
     {
-        iCopy = i;
-        while (  '\0' != pString[i]
-              && COLOR_NOTCOLOR == iCode)
-        {
-            i += utf8_FirstByte[pString[i]];
-            iCode = mux_color(pString + i);
-        }
+	iCopy = i;
+	while (  '\0' != pString[i]
+	      && COLOR_NOTCOLOR == iCode)
+	{
+	    i += utf8_FirstByte[pString[i]];
+	    iCode = mux_color(pString + i);
+	}
 
-        if (iCopy < i)
-        {
-            if (csNext != csPrev)
-            {
-                UTF8 *pTransition = NULL;
-                size_t nTransition;
-                pTransition = ColorTransitionANSI( csClient, csNext,
-                                                   &nTransition, fNoBleed, fColor256);
-                if (nTransition)
-                {
-                    if (sizeof(aBuffer) - (pBuffer - aBuffer) - nNormal - 1 < nTransition)
-                    {
-                        break;
-                    }
-                    memcpy(pBuffer, pTransition, nTransition);
-                    pBuffer += nTransition;
-                }
-                csPrev = csNext;
-            }
+	if (iCopy < i)
+	{
+	    if (csNext != csPrev)
+	    {
+		UTF8 *pTransition = NULL;
+		size_t nTransition;
+		pTransition = ColorTransitionANSI( csClient, csNext,
+						   &nTransition, fNoBleed, fColor256);
+		if (nTransition)
+		{
+		    if (sizeof(aBuffer) - (pBuffer - aBuffer) - nNormal - 1 < nTransition)
+		    {
+			break;
+		    }
+		    memcpy(pBuffer, pTransition, nTransition);
+		    pBuffer += nTransition;
+		}
+		csPrev = csNext;
+	    }
 
-            if (sizeof(aBuffer) - (pBuffer - aBuffer) - nNormal - 1 < i - iCopy)
-            {
-                break;
-            }
-            memcpy(pBuffer, pString + iCopy, i - iCopy);
-            pBuffer += i - iCopy;
-            iCopy = i;
-        }
+	    if (sizeof(aBuffer) - (pBuffer - aBuffer) - nNormal - 1 < i - iCopy)
+	    {
+		break;
+	    }
+	    memcpy(pBuffer, pString + iCopy, i - iCopy);
+	    pBuffer += i - iCopy;
+	    iCopy = i;
+	}
 
-        while (  '\0' != pString[i]
-              && COLOR_NOTCOLOR != iCode)
-        {
-            csNext = UpdateColorState(csNext, iCode);
-            i += utf8_FirstByte[pString[i]];
-            iCode = mux_color(pString + i);
-        }
+	while (  '\0' != pString[i]
+	      && COLOR_NOTCOLOR != iCode)
+	{
+	    csNext = UpdateColorState(csNext, iCode);
+	    i += utf8_FirstByte[pString[i]];
+	    iCode = mux_color(pString + i);
+	}
     }
     if (csPrev != CS_NORMAL)
     {
-        memcpy(pBuffer, pNormal, nNormal);
-        pBuffer += nNormal;
+	memcpy(pBuffer, pNormal, nNormal);
+	pBuffer += nNormal;
     }
     *pBuffer = '\0';
     return aBuffer;
@@ -3192,36 +3192,36 @@ UTF8 *strip_color(const UTF8 *pString, size_t *pnBytes, size_t *pnPoints)
 
     if (NULL == pString)
     {
-        if (NULL != pnBytes)
-        {
-            *pnBytes = 0;
-        }
-        if (NULL != pnPoints)
-        {
-            *pnPoints = 0;
-        }
-        *pBuffer = '\0';
-        return aBuffer;
+	if (NULL != pnBytes)
+	{
+	    *pnBytes = 0;
+	}
+	if (NULL != pnPoints)
+	{
+	    *pnPoints = 0;
+	}
+	*pBuffer = '\0';
+	return aBuffer;
     }
 
     size_t nPoints = 0;
     while ('\0' != *pString)
     {
-        if (COLOR_NOTCOLOR == mux_color(pString))
-        {
-            utf8_safe_chr(pString, aBuffer, &pBuffer);
-            nPoints++;
-        }
-        pString = utf8_NextCodePoint(pString);
+	if (COLOR_NOTCOLOR == mux_color(pString))
+	{
+	    utf8_safe_chr(pString, aBuffer, &pBuffer);
+	    nPoints++;
+	}
+	pString = utf8_NextCodePoint(pString);
     }
     *pBuffer = '\0';
     if (NULL != pnBytes)
     {
-        *pnBytes = pBuffer - aBuffer;
+	*pnBytes = pBuffer - aBuffer;
     }
     if (NULL != pnPoints)
     {
-        *pnPoints = nPoints;
+	*pnPoints = nPoints;
     }
     return aBuffer;
 }
@@ -3308,8 +3308,8 @@ UTF8 *translate_string(const UTF8 *pString, bool bConvert)
 
     if (!pString)
     {
-        *pTranslatedString = '\0';
-        return szTranslatedString;
+	*pTranslatedString = '\0';
+	return szTranslatedString;
     }
 
     ColorState csCurrent = CS_NOBLEED;
@@ -3318,41 +3318,41 @@ UTF8 *translate_string(const UTF8 *pString, bool bConvert)
     const UTF8 *MU_EscapeChar = (bConvert)? MU_EscapeConvert : MU_EscapeNoConvert;
     while ('\0' != *pString)
     {
-        unsigned int iCode = mux_color(pString);
-        if (COLOR_NOTCOLOR == iCode)
-        {
-            size_t nTransition = 0;
-            if (bConvert)
-            {
-                UTF8 *pTransition = ColorTransitionEscape(csPrevious, csCurrent, &nTransition);
-                safe_str(pTransition, szTranslatedString, &pTranslatedString);
-                csPrevious = csCurrent;
-            }
+	unsigned int iCode = mux_color(pString);
+	if (COLOR_NOTCOLOR == iCode)
+	{
+	    size_t nTransition = 0;
+	    if (bConvert)
+	    {
+		UTF8 *pTransition = ColorTransitionEscape(csPrevious, csCurrent, &nTransition);
+		safe_str(pTransition, szTranslatedString, &pTranslatedString);
+		csPrevious = csCurrent;
+	    }
 
-            UTF8 ch = pString[0];
-            unsigned char code = MU_EscapeChar[ch];
-            if (  0 < code
-               && code < NUM_MU_SUBS)
-            {
-                if (  ' ' == ch
-                   && ' ' == pString[1])
-                {
-                    code = 5;
-                }
-                safe_copy_buf(MU_Substitutes[code].p,
-                    MU_Substitutes[code].len, szTranslatedString,
-                    &pTranslatedString);
-            }
-            else
-            {
-                utf8_safe_chr(pString, szTranslatedString, &pTranslatedString);
-            }
-        }
-        else
-        {
-            csCurrent = UpdateColorState(csCurrent, iCode);
-        }
-        pString = utf8_NextCodePoint(pString);
+	    UTF8 ch = pString[0];
+	    unsigned char code = MU_EscapeChar[ch];
+	    if (  0 < code
+	       && code < NUM_MU_SUBS)
+	    {
+		if (  ' ' == ch
+		   && ' ' == pString[1])
+		{
+		    code = 5;
+		}
+		safe_copy_buf(MU_Substitutes[code].p,
+		    MU_Substitutes[code].len, szTranslatedString,
+		    &pTranslatedString);
+	    }
+	    else
+	    {
+		utf8_safe_chr(pString, szTranslatedString, &pTranslatedString);
+	    }
+	}
+	else
+	{
+	    csCurrent = UpdateColorState(csCurrent, iCode);
+	}
+	pString = utf8_NextCodePoint(pString);
     }
     *pTranslatedString = '\0';
     return szTranslatedString;
@@ -3363,51 +3363,51 @@ bool IsDecompFriendly(const UTF8 *pString)
     bool fFriendly = true;
     if (!pString)
     {
-        return fFriendly;
+	return fFriendly;
     }
 
     const UTF8 *MU_EscapeChar = MU_EscapeConvert;
     while (  '\0' != *pString
-          && fFriendly)
+	  && fFriendly)
     {
-        unsigned int iCode = mux_color(pString);
-        if (COLOR_NOTCOLOR == iCode)
-        {
-            UTF8 ch = pString[0];
-            unsigned char code = MU_EscapeChar[ch];
-            if (  0 < code
-               && code < NUM_WS_SUBS)
-            {
-                if (' ' == ch)
-                {
-                    if (' ' == pString[1])
-                    {
-                        // Two adjacent spaces are not @decomp-friendly.
-                        //
-                        fFriendly = false;
-                        break;
-                    }
+	unsigned int iCode = mux_color(pString);
+	if (COLOR_NOTCOLOR == iCode)
+	{
+	    UTF8 ch = pString[0];
+	    unsigned char code = MU_EscapeChar[ch];
+	    if (  0 < code
+	       && code < NUM_WS_SUBS)
+	    {
+		if (' ' == ch)
+		{
+		    if (' ' == pString[1])
+		    {
+			// Two adjacent spaces are not @decomp-friendly.
+			//
+			fFriendly = false;
+			break;
+		    }
 
-                    // An isolated space is still @decomp-friendly.
-                    //
-                }
-                else
-                {
-                    // Raw tabs and newlines are not @decomp-friendly.
-                    //
-                    fFriendly = false;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            // Raw color codes are not @decomp-friendly.
-            //
-            fFriendly = false;
-            break;
-        }
-        pString = utf8_NextCodePoint(pString);
+		    // An isolated space is still @decomp-friendly.
+		    //
+		}
+		else
+		{
+		    // Raw tabs and newlines are not @decomp-friendly.
+		    //
+		    fFriendly = false;
+		    break;
+		}
+	    }
+	}
+	else
+	{
+	    // Raw color codes are not @decomp-friendly.
+	    //
+	    fFriendly = false;
+	    break;
+	}
+	pString = utf8_NextCodePoint(pString);
     }
     return fFriendly;
 }
@@ -3424,24 +3424,24 @@ UTF8 *munge_space(const UTF8 *string)
 
     if (p)
     {
-        // Remove initial spaces.
-        //
-        while (mux_isspace(*p))
-            p++;
+	// Remove initial spaces.
+	//
+	while (mux_isspace(*p))
+	    p++;
 
-        while (*p)
-        {
-            while (*p && !mux_isspace(*p))
-                *q++ = *p++;
+	while (*p)
+	{
+	    while (*p && !mux_isspace(*p))
+		*q++ = *p++;
 
-            while (mux_isspace(*p))
-            {
-                p++;
-            }
+	    while (mux_isspace(*p))
+	    {
+		p++;
+	    }
 
-            if (*p)
-                *q++ = ' ';
-        }
+	    if (*p)
+		*q++ = ' ';
+	}
     }
 
     // Remove terminal spaces and terminate string.
@@ -3462,36 +3462,36 @@ UTF8 *trim_spaces(const UTF8 *string)
 
     if (p)
     {
-        // Remove initial spaces.
-        //
-        while (mux_isspace(*p))
-        {
-            p++;
-        }
+	// Remove initial spaces.
+	//
+	while (mux_isspace(*p))
+	{
+	    p++;
+	}
 
-        while (*p)
-        {
-            // Copy non-space characters.
-            //
-            while (*p && !mux_isspace(*p))
-            {
-                *q++ = *p++;
-            }
+	while (*p)
+	{
+	    // Copy non-space characters.
+	    //
+	    while (*p && !mux_isspace(*p))
+	    {
+		*q++ = *p++;
+	    }
 
-            // Compress spaces.
-            //
-            while (mux_isspace(*p))
-            {
-                p++;
-            }
+	    // Compress spaces.
+	    //
+	    while (mux_isspace(*p))
+	    {
+		p++;
+	    }
 
-            // Leave one space.
-            //
-            if (*p)
-            {
-                *q++ = ' ';
-            }
-        }
+	    // Leave one space.
+	    //
+	    if (*p)
+	    {
+		*q++ = ' ';
+	    }
+	}
     }
 
     // Terminate string.
@@ -3511,13 +3511,13 @@ UTF8 *grabto(UTF8 **str, UTF8 targ)
     UTF8 *savec, *cp;
 
     if (!str || !*str || !**str)
-        return NULL;
+	return NULL;
 
     savec = cp = *str;
     while (*cp && *cp != targ)
-        cp++;
+	cp++;
     if (*cp)
-        *cp++ = '\0';
+	*cp++ = '\0';
     *str = cp;
     return savec;
 }
@@ -3527,71 +3527,71 @@ int string_compare(const UTF8 *s1, const UTF8 *s2)
     if (  mudstate.bStandAlone
        || mudconf.space_compress)
     {
-        while (mux_isspace(*s1))
-        {
-            s1++;
-        }
-        while (mux_isspace(*s2))
-        {
-            s2++;
-        }
+	while (mux_isspace(*s1))
+	{
+	    s1++;
+	}
+	while (mux_isspace(*s2))
+	{
+	    s2++;
+	}
 
-        while (  *s1 && *s2
-              && (  (mux_tolower_ascii(*s1) == mux_tolower_ascii(*s2))
-                 || (mux_isspace(*s1) && mux_isspace(*s2))))
-        {
-            if (mux_isspace(*s1) && mux_isspace(*s2))
-            {
-                // skip all other spaces.
-                //
-                do
-                {
-                    s1++;
-                } while (mux_isspace(*s1));
+	while (  *s1 && *s2
+	      && (  (mux_tolower_ascii(*s1) == mux_tolower_ascii(*s2))
+		 || (mux_isspace(*s1) && mux_isspace(*s2))))
+	{
+	    if (mux_isspace(*s1) && mux_isspace(*s2))
+	    {
+		// skip all other spaces.
+		//
+		do
+		{
+		    s1++;
+		} while (mux_isspace(*s1));
 
-                do
-                {
-                    s2++;
-                } while (mux_isspace(*s2));
-            }
-            else
-            {
-                s1++;
-                s2++;
-            }
-        }
-        if (  *s1
-           && *s2)
-        {
-            return 1;
-        }
+		do
+		{
+		    s2++;
+		} while (mux_isspace(*s2));
+	    }
+	    else
+	    {
+		s1++;
+		s2++;
+	    }
+	}
+	if (  *s1
+	   && *s2)
+	{
+	    return 1;
+	}
 
-        if (mux_isspace(*s1))
-        {
-            while (mux_isspace(*s1))
-            {
-                s1++;
-            }
-            return *s1;
-        }
-        if (mux_isspace(*s2))
-        {
-            while (mux_isspace(*s2))
-            {
-                s2++;
-            }
-            return *s2;
-        }
-        if (  *s1
-           || *s2)
-        {
-            return 1;
-        }
-        return 0;
+	if (mux_isspace(*s1))
+	{
+	    while (mux_isspace(*s1))
+	    {
+		s1++;
+	    }
+	    return *s1;
+	}
+	if (mux_isspace(*s2))
+	{
+	    while (mux_isspace(*s2))
+	    {
+		s2++;
+	    }
+	    return *s2;
+	}
+	if (  *s1
+	   || *s2)
+	{
+	    return 1;
+	}
+	return 0;
     }
     else
     {
-        return mux_stricmp(s1, s2);
+	return mux_stricmp(s1, s2);
     }
 }
 
@@ -3600,19 +3600,19 @@ int string_prefix(const UTF8 *string, const UTF8 *prefix)
     int count = 0;
 
     while (*string && *prefix
-          && (mux_tolower_ascii(*string) == mux_tolower_ascii(*prefix)))
+	  && (mux_tolower_ascii(*string) == mux_tolower_ascii(*prefix)))
     {
-        string++, prefix++, count++;
+	string++, prefix++, count++;
     }
     if (*prefix == '\0')
     {
-        // Matched all of prefix.
-        //
-        return count;
+	// Matched all of prefix.
+	//
+	return count;
     }
     else
     {
-        return 0;
+	return 0;
     }
 }
 
@@ -3624,24 +3624,24 @@ const UTF8 *string_match(const UTF8 *src, const UTF8 *sub)
 {
     if ((*sub != '\0') && (src))
     {
-        while (*src)
-        {
-            if (string_prefix(src, sub))
-            {
-                return src;
-            }
+	while (*src)
+	{
+	    if (string_prefix(src, sub))
+	    {
+		return src;
+	    }
 
-            // else scan to beginning of next word
-            //
-            while (mux_isalnum(*src))
-            {
-                src++;
-            }
-            while (*src && !mux_isalnum(*src))
-            {
-                src++;
-            }
-        }
+	    // else scan to beginning of next word
+	    //
+	    while (mux_isalnum(*src))
+	    {
+		src++;
+	    }
+	    while (*src && !mux_isalnum(*src))
+	    {
+		src++;
+	    }
+	}
     }
     return 0;
 }
@@ -3657,51 +3657,51 @@ UTF8 *replace_string(const UTF8 *old, const UTF8 *new0, const UTF8 *s)
 {
     if (!s)
     {
-        return NULL;
+	return NULL;
     }
     size_t olen = strlen((char *)old);
     UTF8 *result = alloc_lbuf("replace_string");
     UTF8 *r = result;
     while (*s)
     {
-        // Find next occurrence of the first character of OLD string.
-        //
-        const UTF8 *p = (UTF8 *)strchr((char *)s, old[0]);
-        if (  olen
-           && p)
-        {
-            // Copy up to the next occurrence of the first char of OLD.
-            //
-            size_t n = p - s;
-            if (n)
-            {
-                safe_copy_buf(s, n, result, &r);
-                s += n;
-            }
+	// Find next occurrence of the first character of OLD string.
+	//
+	const UTF8 *p = (UTF8 *)strchr((char *)s, old[0]);
+	if (  olen
+	   && p)
+	{
+	    // Copy up to the next occurrence of the first char of OLD.
+	    //
+	    size_t n = p - s;
+	    if (n)
+	    {
+		safe_copy_buf(s, n, result, &r);
+		s += n;
+	    }
 
-            // If we are really at an complete OLD, append NEW to the result
-            // and bump the input string past the occurrence of OLD.
-            // Otherwise, copy the character and try matching again.
-            //
-            if (!strncmp((char *)old, (char *)s, olen))
-            {
-                safe_str(new0, result, &r);
-                s += olen;
-            }
-            else
-            {
-                safe_chr(*s, result, &r);
-                s++;
-            }
-        }
-        else
-        {
-            // Finish copying source string. No matches. No further
-            // work to perform.
-            //
-            safe_str(s, result, &r);
-            break;
-        }
+	    // If we are really at an complete OLD, append NEW to the result
+	    // and bump the input string past the occurrence of OLD.
+	    // Otherwise, copy the character and try matching again.
+	    //
+	    if (!strncmp((char *)old, (char *)s, olen))
+	    {
+		safe_str(new0, result, &r);
+		s += olen;
+	    }
+	    else
+	    {
+		safe_chr(*s, result, &r);
+		s++;
+	    }
+	}
+	else
+	{
+	    // Finish copying source string. No matches. No further
+	    // work to perform.
+	    //
+	    safe_str(s, result, &r);
+	    break;
+	}
     }
     *r = '\0';
     return result;
@@ -3720,65 +3720,65 @@ UTF8 *replace_tokens
 {
     if (!s)
     {
-        return NULL;
+	return NULL;
     }
     UTF8 *result = alloc_lbuf("replace_tokens");
     UTF8 *r = result;
 
     while (*s)
     {
-        // Find next '#'.
-        //
-        const UTF8 *p = (UTF8 *)strchr((char *)s, '#');
-        if (p)
-        {
-            // Copy up to the next occurrence of the first character.
-            //
-            size_t n = p - s;
-            if (n)
-            {
-                safe_copy_buf(s, n, result, &r);
-                s += n;
-            }
+	// Find next '#'.
+	//
+	const UTF8 *p = (UTF8 *)strchr((char *)s, '#');
+	if (p)
+	{
+	    // Copy up to the next occurrence of the first character.
+	    //
+	    size_t n = p - s;
+	    if (n)
+	    {
+		safe_copy_buf(s, n, result, &r);
+		s += n;
+	    }
 
-            if (  s[1] == '#'
-               && pBound)
-            {
-                // BOUND_VAR
-                //
-                safe_str(pBound, result, &r);
-                s += 2;
-            }
-            else if (  s[1] == '@'
-                    && pListPlace)
-            {
-                // LISTPLACE_VAR
-                //
-                safe_str(pListPlace, result, &r);
-                s += 2;
-            }
-            else if (  s[1] == '$'
-                    && pSwitch)
-            {
-                // SWITCH_VAR
-                //
-                safe_str(pSwitch, result, &r);
-                s += 2;
-            }
-            else
-            {
-                safe_chr(*s, result, &r);
-                s++;
-            }
-        }
-        else
-        {
-            // Finish copying source string. No matches. No further
-            // work to perform.
-            //
-            safe_str(s, result, &r);
-            break;
-        }
+	    if (  s[1] == '#'
+	       && pBound)
+	    {
+		// BOUND_VAR
+		//
+		safe_str(pBound, result, &r);
+		s += 2;
+	    }
+	    else if (  s[1] == '@'
+		    && pListPlace)
+	    {
+		// LISTPLACE_VAR
+		//
+		safe_str(pListPlace, result, &r);
+		s += 2;
+	    }
+	    else if (  s[1] == '$'
+		    && pSwitch)
+	    {
+		// SWITCH_VAR
+		//
+		safe_str(pSwitch, result, &r);
+		s += 2;
+	    }
+	    else
+	    {
+		safe_chr(*s, result, &r);
+		s++;
+	    }
+	}
+	else
+	{
+	    // Finish copying source string. No matches. No further
+	    // work to perform.
+	    //
+	    safe_str(s, result, &r);
+	    break;
+	}
     }
     *r = '\0';
     return result;
@@ -3787,19 +3787,19 @@ UTF8 *replace_tokens
 bool minmatch(const UTF8 *str, const UTF8 *target, int min)
 {
     while (*str && *target
-          && (mux_tolower_ascii(*str) == mux_tolower_ascii(*target)))
+	  && (mux_tolower_ascii(*str) == mux_tolower_ascii(*target)))
     {
-        str++;
-        target++;
-        min--;
+	str++;
+	target++;
+	min--;
     }
     if (*str)
     {
-        return false;
+	return false;
     }
     if (!*target)
     {
-        return true;
+	return true;
     }
     return (min <= 0);
 }
@@ -3812,12 +3812,12 @@ UTF8 *StringCloneLen(const UTF8 *str, size_t nStr)
     UTF8 *buff = (UTF8 *)MEMALLOC(nStr+1);
     if (buff)
     {
-        memcpy(buff, str, nStr);
-        buff[nStr] = '\0';
+	memcpy(buff, str, nStr);
+	buff[nStr] = '\0';
     }
     else
     {
-        ISOUTOFMEMORY(buff);
+	ISOUTOFMEMORY(buff);
     }
     return buff;
 }
@@ -3855,7 +3855,7 @@ void safe_copy_str(const UTF8 *src, UTF8 *buff, UTF8 **bufp, size_t nSizeOfBuffe
     UTF8 *maxtp = buff + nSizeOfBuffer;
     while (tp < maxtp && *src)
     {
-        *tp++ = *src++;
+	*tp++ = *src++;
     }
     *bufp = buff + TrimPartialSequence(tp - buff, buff);
 }
@@ -3864,14 +3864,14 @@ void safe_copy_str_lbuf(const UTF8 *src, UTF8 *buff, UTF8 **bufp)
 {
     if (src == NULL)
     {
-        return;
+	return;
     }
 
     UTF8 *tp = *bufp;
     UTF8 *maxtp = buff + LBUF_SIZE - 1;
     while (tp < maxtp && *src)
     {
-        *tp++ = *src++;
+	*tp++ = *src++;
     }
     *bufp = buff + TrimPartialSequence(tp - buff, buff);
 }
@@ -3881,7 +3881,7 @@ size_t safe_copy_buf(__in_ecount(nLen) const UTF8 *src, size_t nLen, __in UTF8 *
     size_t left = LBUF_SIZE - (*bufc - buff) - 1;
     if (left < nLen)
     {
-        nLen = TrimPartialSequence(left, src);
+	nLen = TrimPartialSequence(left, src);
     }
     memcpy(*bufc, src, nLen);
     *bufc += nLen;
@@ -3895,7 +3895,7 @@ size_t safe_fill(UTF8 *buff, UTF8 **bufc, UTF8 chFill, size_t nSpaces)
     size_t nBufferAvailable = LBUF_SIZE - (*bufc - buff) - 1;
     if (nSpaces > nBufferAvailable)
     {
-        nSpaces = nBufferAvailable;
+	nSpaces = nBufferAvailable;
     }
 
     // Fill with spaces.
@@ -3913,7 +3913,7 @@ void utf8_safe_chr(const UTF8 *src, UTF8 *buff, UTF8 **bufc)
        || UTF8_CONTINUE <= (nLen = utf8_FirstByte[*src])
        || (nLeft = LBUF_SIZE - (*bufc - buff) - 1) < nLen)
     {
-        return;
+	return;
     }
     memcpy(*bufc, src, nLen);
     *bufc += nLen;
@@ -3930,43 +3930,43 @@ UTF8 *ConvertToUTF8
 
     if (ch < (UTF32)0x80)
     {
-        // ASCII
-        //
-        buffer[1] = '\0';
-        buffer[0] = static_cast<UTF8>(ch);
+	// ASCII
+	//
+	buffer[1] = '\0';
+	buffer[0] = static_cast<UTF8>(ch);
     }
     else if (ch < (UTF32)0x800)
     {
-        buffer[2] = '\0';
-        buffer[1] = static_cast<char>((ch | byteMark) & byteMask);
-        ch >>= 6;
-        buffer[0] = static_cast<char>(0xC0 | ch);
+	buffer[2] = '\0';
+	buffer[1] = static_cast<char>((ch | byteMark) & byteMask);
+	ch >>= 6;
+	buffer[0] = static_cast<char>(0xC0 | ch);
     }
     else if (ch < (UTF32)0x10000)
     {
-        if (  UNI_SUR_HIGH_START <= ch
-           && ch <= UNI_SUR_LOW_END)
-        {
-            buffer[0] = '\0';
-            return buffer;
-        }
-        buffer[3] = '\0';
-        buffer[2] =static_cast<char>((ch | byteMark) & byteMask);
-        ch >>= 6;
-        buffer[1] = static_cast<char>((ch | byteMark) & byteMask);
-        ch >>= 6;
-        buffer[0] = static_cast<char>(0xE0 | ch);
+	if (  UNI_SUR_HIGH_START <= ch
+	   && ch <= UNI_SUR_LOW_END)
+	{
+	    buffer[0] = '\0';
+	    return buffer;
+	}
+	buffer[3] = '\0';
+	buffer[2] =static_cast<char>((ch | byteMark) & byteMask);
+	ch >>= 6;
+	buffer[1] = static_cast<char>((ch | byteMark) & byteMask);
+	ch >>= 6;
+	buffer[0] = static_cast<char>(0xE0 | ch);
     }
     else if (ch <= UNI_MAX_LEGAL_UTF32)
     {
-        buffer[4] = '\0';
-        buffer[3] = static_cast<char>((ch | byteMark) & byteMask);
-        ch >>= 6;
-        buffer[2] = static_cast<char>((ch | byteMark) & byteMask);
-        ch >>= 6;
-        buffer[1] = static_cast<char>((ch | byteMark) & byteMask);
-        ch >>= 6;
-        buffer[0] = static_cast<char>(0xF0 | ch);
+	buffer[4] = '\0';
+	buffer[3] = static_cast<char>((ch | byteMark) & byteMask);
+	ch >>= 6;
+	buffer[2] = static_cast<char>((ch | byteMark) & byteMask);
+	ch >>= 6;
+	buffer[1] = static_cast<char>((ch | byteMark) & byteMask);
+	ch >>= 6;
+	buffer[0] = static_cast<char>(0xF0 | ch);
     }
     return buffer;
 }
@@ -3977,27 +3977,27 @@ UTF16 *ConvertToUTF16(UTF32 ch)
     if (  ch < UNI_SUR_HIGH_START
        || UNI_SUR_LOW_END < ch)
     {
-        // This is the common case.
-        //
-        buffer[0] = (UTF16)ch;
-        buffer[1] = 0x0000;
-        return buffer;
+	// This is the common case.
+	//
+	buffer[0] = (UTF16)ch;
+	buffer[1] = 0x0000;
+	return buffer;
     }
     else if (ch <= UNI_MAX_LEGAL_UTF32)
     {
-        const int halfShift  = 10;
-        const UTF32 halfBase = 0x0010000UL;
-        const UTF32 halfMask = 0x3FFUL;
+	const int halfShift  = 10;
+	const UTF32 halfBase = 0x0010000UL;
+	const UTF32 halfMask = 0x3FFUL;
 
-        ch -= halfBase;
-        buffer[0] = (UTF16)((ch >> halfShift) + UNI_SUR_HIGH_START);
-        buffer[1] = (UTF16)((ch & halfMask) + UNI_SUR_LOW_START);
-        buffer[2] = 0x0000;
+	ch -= halfBase;
+	buffer[0] = (UTF16)((ch >> halfShift) + UNI_SUR_HIGH_START);
+	buffer[1] = (UTF16)((ch & halfMask) + UNI_SUR_LOW_START);
+	buffer[2] = 0x0000;
     }
     else
     {
-        buffer[0] = UNI_REPLACEMENT_CHAR;
-        buffer[1] = 0x0000;
+	buffer[0] = UNI_REPLACEMENT_CHAR;
+	buffer[1] = 0x0000;
     }
     return buffer;
 }
@@ -4007,64 +4007,64 @@ UTF32 ConvertFromUTF8(const UTF8 *pString)
     size_t t = utf8_FirstByte[*pString];
     if (UTF8_CONTINUE <= t)
     {
-        return UNI_EOF;
+	return UNI_EOF;
     }
 
     UTF32 ch;
     if (1 == t)
     {
-        // This is the most common case, and the value is always smaller than
-        // UNI_SUR_HIGH_START.
-        //
-        return pString[0];
+	// This is the most common case, and the value is always smaller than
+	// UNI_SUR_HIGH_START.
+	//
+	return pString[0];
     }
     else if (2 == t)
     {
-        if (UTF8_CONTINUE != utf8_FirstByte[pString[1]])
-        {
-            return UNI_EOF;
-        }
-        ch =  ((UTF32)(pString[0] & 0x1F) <<  6)
-           |  ((UTF32)(pString[1] & 0x3F)      );
+	if (UTF8_CONTINUE != utf8_FirstByte[pString[1]])
+	{
+	    return UNI_EOF;
+	}
+	ch =  ((UTF32)(pString[0] & 0x1F) <<  6)
+	   |  ((UTF32)(pString[1] & 0x3F)      );
     }
     else if (3 == t)
     {
-        if (  UTF8_CONTINUE != utf8_FirstByte[pString[1]]
-           || UTF8_CONTINUE != utf8_FirstByte[pString[2]])
-        {
-            return UNI_EOF;
-        }
-        ch = ((UTF32)(pString[0] & 0x1F) << 12)
-           | ((UTF32)(pString[1] & 0x3F) <<  6)
-           | ((UTF32)(pString[2] & 0x3F)      );
+	if (  UTF8_CONTINUE != utf8_FirstByte[pString[1]]
+	   || UTF8_CONTINUE != utf8_FirstByte[pString[2]])
+	{
+	    return UNI_EOF;
+	}
+	ch = ((UTF32)(pString[0] & 0x1F) << 12)
+	   | ((UTF32)(pString[1] & 0x3F) <<  6)
+	   | ((UTF32)(pString[2] & 0x3F)      );
     }
     else if (4 == t)
     {
-        if (  UTF8_CONTINUE != utf8_FirstByte[pString[1]]
-           || UTF8_CONTINUE != utf8_FirstByte[pString[2]]
-           || UTF8_CONTINUE != utf8_FirstByte[pString[3]])
-        {
-            return UNI_EOF;
-        }
-        ch = ((UTF32)(pString[0] & 0x1F) << 18)
-           | ((UTF32)(pString[1] & 0x3F) << 12)
-           | ((UTF32)(pString[2] & 0x3F) <<  6)
-           | ((UTF32)(pString[3] & 0x3F)      );
+	if (  UTF8_CONTINUE != utf8_FirstByte[pString[1]]
+	   || UTF8_CONTINUE != utf8_FirstByte[pString[2]]
+	   || UTF8_CONTINUE != utf8_FirstByte[pString[3]])
+	{
+	    return UNI_EOF;
+	}
+	ch = ((UTF32)(pString[0] & 0x1F) << 18)
+	   | ((UTF32)(pString[1] & 0x3F) << 12)
+	   | ((UTF32)(pString[2] & 0x3F) <<  6)
+	   | ((UTF32)(pString[3] & 0x3F)      );
     }
     else
     {
-        return UNI_EOF;
+	return UNI_EOF;
     }
 
     if (  ch < UNI_SUR_HIGH_START
        || (  UNI_SUR_LOW_END < ch
-          && ch <= UNI_MAX_LEGAL_UTF32))
+	  && ch <= UNI_MAX_LEGAL_UTF32))
     {
-        return ch;
+	return ch;
     }
     else
     {
-        return UNI_REPLACEMENT_CHAR;
+	return UNI_REPLACEMENT_CHAR;
     }
 }
 
@@ -4074,24 +4074,24 @@ size_t ConvertFromUTF16(UTF16 *pString, UTF32 &ch)
     if (  ch < UNI_SUR_HIGH_START
        || UNI_SUR_LOW_END < ch)
     {
-        // This is the most-common case.
-        //
-        return 1;
+	// This is the most-common case.
+	//
+	return 1;
     }
     else if (ch <= UNI_SUR_HIGH_END)
     {
-        UTF32 ch2 = pString[1];
-        if (  UNI_SUR_LOW_START <= ch2
-           && ch2 <= UNI_SUR_LOW_END)
-        {
-            const int halfShift  = 10;
-            const UTF32 halfBase = 0x0010000UL;
+	UTF32 ch2 = pString[1];
+	if (  UNI_SUR_LOW_START <= ch2
+	   && ch2 <= UNI_SUR_LOW_END)
+	{
+	    const int halfShift  = 10;
+	    const UTF32 halfBase = 0x0010000UL;
 
-            ch = ((ch - UNI_SUR_HIGH_START) << halfShift)
-               + (ch2 - UNI_SUR_LOW_START)
-               + halfBase;
-            return 2;
-        }
+	    ch = ((ch - UNI_SUR_HIGH_START) << halfShift)
+	       + (ch2 - UNI_SUR_LOW_START)
+	       + halfBase;
+	    return 2;
+	}
     }
     ch = UNI_EOF;
     return 0;
@@ -4105,18 +4105,18 @@ UTF16 *ConvertFromUTF8ToUTF16(const UTF8 *pString, size_t *pnString)
     *pnString = 0;
     while ('\0' != *pString)
     {
-        UTF32 ch = ConvertFromUTF8(pString);
-        if (UNI_EOF == ch)
-        {
-            return NULL;
-        }
+	UTF32 ch = ConvertFromUTF8(pString);
+	if (UNI_EOF == ch)
+	{
+	    return NULL;
+	}
 
-        UTF16 *q = ConvertToUTF16(ch);
-        while (0x0000 != *q)
-        {
-            *p++ = *q++;
-        }
-        pString = utf8_NextCodePoint(pString);
+	UTF16 *q = ConvertToUTF16(ch);
+	while (0x0000 != *q)
+	{
+	    *p++ = *q++;
+	}
+	pString = utf8_NextCodePoint(pString);
     }
     *p = '\0';
     *pnString = p - buffer;
@@ -4135,115 +4135,115 @@ UTF8 *ConvertToUTF8(const char *p, size_t *pn)
 
     while ('\0' != *p)
     {
-        if (ESC_CHAR != *p)
-        {
-            const UTF8 *q = latin1_utf8[(unsigned char)*p];
-            utf8_safe_chr(q, aBuffer, &pBuffer);
-            p++;
-        }
-        else
-        {
-            // We have an ANSI sequence.
-            //
-            p++;
-            if ('[' == *p)
-            {
-                p++;
-                const char *q = p;
-                while (ANSI_TokenTerminatorTable[(unsigned char)*q] == 0)
-                {
-                    q++;
-                }
+	if (ESC_CHAR != *p)
+	{
+	    const UTF8 *q = latin1_utf8[(unsigned char)*p];
+	    utf8_safe_chr(q, aBuffer, &pBuffer);
+	    p++;
+	}
+	else
+	{
+	    // We have an ANSI sequence.
+	    //
+	    p++;
+	    if ('[' == *p)
+	    {
+		p++;
+		const char *q = p;
+		while (ANSI_TokenTerminatorTable[(unsigned char)*q] == 0)
+		{
+		    q++;
+		}
 
-                if ('\0' != q[0])
-                {
-                    // The segment [p,q) should contain a list of semi-color delimited codes.
-                    //
-                    const char *r = p;
-                    while (r != q)
-                    {
-                        while (  r != q
-                              && ';' != r[0])
-                        {
-                            r++;
-                        }
+		if ('\0' != q[0])
+		{
+		    // The segment [p,q) should contain a list of semi-color delimited codes.
+		    //
+		    const char *r = p;
+		    while (r != q)
+		    {
+			while (  r != q
+			      && ';' != r[0])
+			{
+			    r++;
+			}
 
-                        // The segment [p,r) should contain one code.
-                        //
-                        size_t n = r - p;
-                        const UTF8 *s = NULL;
-                        switch (n)
-                        {
-                        case 1:
-                            if ('0' == *p)
-                            {
-                                s = aColors[COLOR_INDEX_RESET].pUTF;
-                            }
-                            else if ('1' == *p)
-                            {
-                                s = aColors[COLOR_INDEX_INTENSE].pUTF;
-                            }
-                            else if ('4' == *p)
-                            {
-                                s = aColors[COLOR_INDEX_UNDERLINE].pUTF;
-                            }
-                            else if ('5' == *p)
-                            {
-                                s = aColors[COLOR_INDEX_BLINK].pUTF;
-                            }
-                            else if ('7' == *p)
-                            {
-                                s = aColors[COLOR_INDEX_INVERSE].pUTF;
-                            }
-                            break;
+			// The segment [p,r) should contain one code.
+			//
+			size_t n = r - p;
+			const UTF8 *s = NULL;
+			switch (n)
+			{
+			case 1:
+			    if ('0' == *p)
+			    {
+				s = aColors[COLOR_INDEX_RESET].pUTF;
+			    }
+			    else if ('1' == *p)
+			    {
+				s = aColors[COLOR_INDEX_INTENSE].pUTF;
+			    }
+			    else if ('4' == *p)
+			    {
+				s = aColors[COLOR_INDEX_UNDERLINE].pUTF;
+			    }
+			    else if ('5' == *p)
+			    {
+				s = aColors[COLOR_INDEX_BLINK].pUTF;
+			    }
+			    else if ('7' == *p)
+			    {
+				s = aColors[COLOR_INDEX_INVERSE].pUTF;
+			    }
+			    break;
 
-                        case 2:
-                            if ('3' == *p)
-                            {
-                                unsigned int iCode = COLOR_INDEX_FG + (p[1] - '0');
-                                if (  COLOR_INDEX_FG <= iCode
-                                   && iCode < COLOR_INDEX_FG + 7)
-                                {
-                                    s = aColors[iCode].pUTF;
-                                }
-                            }
-                            else if ('4' == *p)
-                            {
-                                unsigned int iCode = COLOR_INDEX_BG + (p[1] - '0');
-                                if (  COLOR_INDEX_BG <= iCode
-                                   && iCode <= COLOR_INDEX_BG + 7)
-                                {
-                                    s = aColors[iCode].pUTF;
-                                }
-                            }
-                            break;
-                        }
+			case 2:
+			    if ('3' == *p)
+			    {
+				unsigned int iCode = COLOR_INDEX_FG + (p[1] - '0');
+				if (  COLOR_INDEX_FG <= iCode
+				   && iCode < COLOR_INDEX_FG + 7)
+				{
+				    s = aColors[iCode].pUTF;
+				}
+			    }
+			    else if ('4' == *p)
+			    {
+				unsigned int iCode = COLOR_INDEX_BG + (p[1] - '0');
+				if (  COLOR_INDEX_BG <= iCode
+				   && iCode <= COLOR_INDEX_BG + 7)
+				{
+				    s = aColors[iCode].pUTF;
+				}
+			    }
+			    break;
+			}
 
-                        if (NULL != s)
-                        {
-                            utf8_safe_chr(s, aBuffer, &pBuffer);
-                        }
+			if (NULL != s)
+			{
+			    utf8_safe_chr(s, aBuffer, &pBuffer);
+			}
 
-                        while (  r != q
-                              && ';' == r[0])
-                        {
-                            r++;
-                        }
-                        p = r;
-                    }
+			while (  r != q
+			      && ';' == r[0])
+			{
+			    r++;
+			}
+			p = r;
+		    }
 
-                    // Eat trailing terminator.
-                    //
-                    p = q + 1;
-                }
-                else
-                {
-                    // Skip to end of mal-formed ANSI sequence.
-                    //
-                    p = q;
-                }
-            }
-        }
+		    // Eat trailing terminator.
+		    //
+		    p = q + 1;
+		}
+		else
+		{
+		    // Skip to end of mal-formed ANSI sequence.
+		    //
+		    p = q;
+		}
+	    }
+	}
     }
     *pBuffer = '\0';
     *pn = pBuffer - aBuffer;
@@ -4258,15 +4258,15 @@ void mux_strncpy(UTF8 *dest, const UTF8 *src, size_t nSizeOfBuffer)
     if (  NULL == src
        || 0 == nSizeOfBuffer)
     {
-        return;
+	return;
     }
 
     size_t i = 0;
     while (  i < nSizeOfBuffer
-          && '\0' != src[i])
+	  && '\0' != src[i])
     {
-        dest[i] = src[i];
-        i++;
+	dest[i] = src[i];
+	i++;
     }
     dest[i] = '\0';
 }
@@ -4277,43 +4277,43 @@ bool matches_exit_from_list(const UTF8 *str, const UTF8 *pattern)
 
     while (*pattern)
     {
-        for (s = str;   // check out this one
-             ( *s
-             && (mux_tolower_ascii(*s) == mux_tolower_ascii(*pattern))
-             && *pattern
-             && (*pattern != EXIT_DELIMITER));
-             s++, pattern++) ;
+	for (s = str;   // check out this one
+	     ( *s
+	     && (mux_tolower_ascii(*s) == mux_tolower_ascii(*pattern))
+	     && *pattern
+	     && (*pattern != EXIT_DELIMITER));
+	     s++, pattern++) ;
 
-        // Did we match it all?
-        //
-        if (*s == '\0')
-        {
-            // Make sure nothing afterwards
-            //
-            while (mux_isspace(*pattern))
-            {
-                pattern++;
-            }
+	// Did we match it all?
+	//
+	if (*s == '\0')
+	{
+	    // Make sure nothing afterwards
+	    //
+	    while (mux_isspace(*pattern))
+	    {
+		pattern++;
+	    }
 
-            // Did we get it?
-            //
-            if (  !*pattern
-               || (*pattern == EXIT_DELIMITER))
-            {
-                return true;
-            }
-        }
-        // We didn't get it, find next string to test
-        //
-        while (  *pattern
-              && *pattern++ != EXIT_DELIMITER)
-        {
-            ; // Nothing.
-        }
-        while (mux_isspace(*pattern))
-        {
-            pattern++;
-        }
+	    // Did we get it?
+	    //
+	    if (  !*pattern
+	       || (*pattern == EXIT_DELIMITER))
+	    {
+		return true;
+	    }
+	}
+	// We didn't get it, find next string to test
+	//
+	while (  *pattern
+	      && *pattern++ != EXIT_DELIMITER)
+	{
+	    ; // Nothing.
+	}
+	while (mux_isspace(*pattern))
+	{
+	    pattern++;
+	}
     }
     return false;
 }
@@ -4356,8 +4356,8 @@ void mux_strtok_ctl(MUX_STRTOK_STATE *tts, const UTF8 *pControl)
     //
     while (*pControl)
     {
-        tts->aControl[(unsigned char)*pControl] = 1;
-        pControl++;
+	tts->aControl[(unsigned char)*pControl] = 1;
+	pControl++;
     }
 }
 
@@ -4366,19 +4366,19 @@ UTF8 *mux_strtok_parseLEN(MUX_STRTOK_STATE *tts, size_t *pnLen)
     *pnLen = 0;
     if (!tts)
     {
-        return NULL;
+	return NULL;
     }
     UTF8 *p = tts->pString;
     if (!p)
     {
-        return NULL;
+	return NULL;
     }
 
     // Skip over leading control characters except for the NUL character.
     //
     while (tts->aControl[(unsigned char)*p] && *p)
     {
-        p++;
+	p++;
     }
 
     UTF8 *pReturn = p;
@@ -4387,7 +4387,7 @@ UTF8 *mux_strtok_parseLEN(MUX_STRTOK_STATE *tts, size_t *pnLen)
     //
     while (tts->aControl[(unsigned char)*p] == 0)
     {
-        p++;
+	p++;
     }
 
     // What is the length of this token?
@@ -4398,28 +4398,28 @@ UTF8 *mux_strtok_parseLEN(MUX_STRTOK_STATE *tts, size_t *pnLen)
     //
     if (p[0])
     {
-        // We found a non-NUL delimiter, so the next call will begin parsing
-        // on the character after this one.
-        //
-        tts->pString = p+1;
+	// We found a non-NUL delimiter, so the next call will begin parsing
+	// on the character after this one.
+	//
+	tts->pString = p+1;
     }
     else
     {
-        // We hit the end of the string, so the end of the string is where
-        // the next call will begin.
-        //
-        tts->pString = p;
+	// We hit the end of the string, so the end of the string is where
+	// the next call will begin.
+	//
+	tts->pString = p;
     }
 
     // Did we find a token?
     //
     if (*pnLen > 0)
     {
-        return pReturn;
+	return pReturn;
     }
     else
     {
-        return NULL;
+	return NULL;
     }
 }
 
@@ -4429,7 +4429,7 @@ UTF8 *mux_strtok_parse(MUX_STRTOK_STATE *tts)
     UTF8 *p = mux_strtok_parseLEN(tts, &nLen);
     if (p)
     {
-        p[nLen] = '\0';
+	p[nLen] = '\0';
     }
     return p;
 }
@@ -4450,18 +4450,18 @@ mux_field StripTabsAndTruncate
        || 0 == nWidth0
        || '\0' == pString[0])
     {
-        if (  NULL != pBuffer
-           && 0 < nLength)
-        {
-            pBuffer[0] = '\0';
-        }
-        return fldOutput;
+	if (  NULL != pBuffer
+	   && 0 < nLength)
+	{
+	    pBuffer[0] = '\0';
+	}
+	return fldOutput;
     }
 
     LBUF_OFFSET nWidth = static_cast<LBUF_OFFSET>(nWidth0);
     if (nLength < nWidth)
     {
-        nWidth = static_cast<LBUF_OFFSET>(nLength);
+	nWidth = static_cast<LBUF_OFFSET>(nLength);
     }
 
     mux_cursor curPos = CursorMin;
@@ -4475,60 +4475,60 @@ mux_field StripTabsAndTruncate
 
     while ('\0' != pString[curPos.m_byte])
     {
-        int iCode = mux_color(pString + curPos.m_byte);
-        mux_cursor curPoint(utf8_FirstByte[pString[curPos.m_byte]], 1);
-        if (COLOR_NOTCOLOR != iCode)
-        {
-            csNext = UpdateColorState(csNext, iCode);
-        }
-        else if (NULL == strchr("\r\n\t", pString[curPos.m_byte]))
-        {
-            mux_field  fldPoint(utf8_FirstByte[pString[curPos.m_byte]], 1);
-            if (csCurrent != csNext)
-            {
-                pTransition = ColorTransitionBinary(csCurrent, csNext, &nTransition);
-                pNormal = ColorBinaryNormal(csNext, &nNormalBytes);
-                fldNormal(nNormalBytes, 0);
-            }
-            else
-            {
-                nTransition = 0;
-            }
-            fldTransition(nTransition, 0);
-            if (fldOutput + fldTransition + fldPoint + fldNormal <= fldLimit)
-            {
-                if (0 < nTransition)
-                {
-                    memcpy(pBuffer + fldOutput.m_byte, pTransition, nTransition);
-                    csCurrent = csNext;
-                }
-                fldOutput += fldTransition;
+	int iCode = mux_color(pString + curPos.m_byte);
+	mux_cursor curPoint(utf8_FirstByte[pString[curPos.m_byte]], 1);
+	if (COLOR_NOTCOLOR != iCode)
+	{
+	    csNext = UpdateColorState(csNext, iCode);
+	}
+	else if (NULL == strchr("\r\n\t", pString[curPos.m_byte]))
+	{
+	    mux_field  fldPoint(utf8_FirstByte[pString[curPos.m_byte]], 1);
+	    if (csCurrent != csNext)
+	    {
+		pTransition = ColorTransitionBinary(csCurrent, csNext, &nTransition);
+		pNormal = ColorBinaryNormal(csNext, &nNormalBytes);
+		fldNormal(nNormalBytes, 0);
+	    }
+	    else
+	    {
+		nTransition = 0;
+	    }
+	    fldTransition(nTransition, 0);
+	    if (fldOutput + fldTransition + fldPoint + fldNormal <= fldLimit)
+	    {
+		if (0 < nTransition)
+		{
+		    memcpy(pBuffer + fldOutput.m_byte, pTransition, nTransition);
+		    csCurrent = csNext;
+		}
+		fldOutput += fldTransition;
 
-                for (size_t j = 0; j < fldPoint.m_byte; j++)
-                {
-                    pBuffer[fldOutput.m_byte + j] = pString[curPos.m_byte + j];
-                }
-                fldOutput += fldPoint;
-            }
-            else
-            {
-                break;
-            }
-        }
-        curPos += curPoint;
+		for (size_t j = 0; j < fldPoint.m_byte; j++)
+		{
+		    pBuffer[fldOutput.m_byte + j] = pString[curPos.m_byte + j];
+		}
+		fldOutput += fldPoint;
+	    }
+	    else
+	    {
+		break;
+	    }
+	}
+	curPos += curPoint;
     }
 
     if (csCurrent != csNext)
     {
-        pNormal = ColorBinaryNormal(csCurrent, &nNormalBytes);
-        fldNormal(nNormalBytes, 0);
+	pNormal = ColorBinaryNormal(csCurrent, &nNormalBytes);
+	fldNormal(nNormalBytes, 0);
     }
 
     if (  0 < nNormalBytes
        && fldOutput + fldNormal <= fldLimit)
     {
-        memcpy(pBuffer + fldOutput.m_byte, pNormal, nNormalBytes);
-        fldOutput += fldNormal;
+	memcpy(pBuffer + fldOutput.m_byte, pNormal, nNormalBytes);
+	fldOutput += fldNormal;
     }
 
     pBuffer[fldOutput.m_byte] = '\0';
@@ -4578,11 +4578,11 @@ size_t TruncateToBuffer
        || 0 == nBuffer
        || '\0' == pString[0])
     {
-        if (NULL != pBuffer)
-        {
-            pBuffer[0] = '\0';
-        }
-        return nOutput;
+	if (NULL != pBuffer)
+	{
+	    pBuffer[0] = '\0';
+	}
+	return nOutput;
     }
 
     size_t nNormal;
@@ -4595,119 +4595,119 @@ size_t TruncateToBuffer
     const UTF8 *p = pString;
     bool bTruncated = false;
     while (  '\0' != p[0]
-          && !bTruncated)
+	  && !bTruncated)
     {
-        // Parse a run of color code points.
-        //
-        int iCode;
-        while (  (  UTF8_SIZE3 == utf8_FirstByte[p[0]]
-                 || UTF8_SIZE4 == utf8_FirstByte[p[0]])
-              && COLOR_NOTCOLOR != (iCode = mux_color(p)))
-        {
-            csCurrent = UpdateColorState(csCurrent, iCode);
-            p += utf8_FirstByte[p[0]];
-        }
+	// Parse a run of color code points.
+	//
+	int iCode;
+	while (  (  UTF8_SIZE3 == utf8_FirstByte[p[0]]
+		 || UTF8_SIZE4 == utf8_FirstByte[p[0]])
+	      && COLOR_NOTCOLOR != (iCode = mux_color(p)))
+	{
+	    csCurrent = UpdateColorState(csCurrent, iCode);
+	    p += utf8_FirstByte[p[0]];
+	}
 
-        // Parse a run of text.  A run of text is always ended by '\0' and
-        // sometimes by '\xEF' since all color code points start with '\xEF'.
-        //
-        bText = false;
-        size_t nTextRun = 0;
-        const UTF8 *pTextRun = p;
-        for (;;)
-        {
-            const UTF8 *pEF, *pF3;
-            if (NULL != (pEF = (UTF8 *)strchr((char *)p, '\xEF')))
-            {
-                nTextRun += pEF - p;
-                p = pEF;
-                if (COLOR_NOTCOLOR != mux_color(p))
-                {
-                    break;
-                }
-                nTextRun += UTF8_SIZE3;
-                p += UTF8_SIZE3;
-            }
-            else if (NULL != (pF3 = (UTF8 *)strchr((char *)p, '\xF3')))
-            {
-                nTextRun += pF3 - p;
-                p = pF3;
-                if (COLOR_NOTCOLOR != mux_color(p))
-                {
-                    break;
-                }
-                nTextRun += UTF8_SIZE4;
-                p += UTF8_SIZE4;
-            }
-            else
-            {
-                size_t n = strlen((char *)p);
-                nTextRun += n;
-                p += n;
-                break;
-            }
-        }
+	// Parse a run of text.  A run of text is always ended by '\0' and
+	// sometimes by '\xEF' since all color code points start with '\xEF'.
+	//
+	bText = false;
+	size_t nTextRun = 0;
+	const UTF8 *pTextRun = p;
+	for (;;)
+	{
+	    const UTF8 *pEF, *pF3;
+	    if (NULL != (pEF = (UTF8 *)strchr((char *)p, '\xEF')))
+	    {
+		nTextRun += pEF - p;
+		p = pEF;
+		if (COLOR_NOTCOLOR != mux_color(p))
+		{
+		    break;
+		}
+		nTextRun += UTF8_SIZE3;
+		p += UTF8_SIZE3;
+	    }
+	    else if (NULL != (pF3 = (UTF8 *)strchr((char *)p, '\xF3')))
+	    {
+		nTextRun += pF3 - p;
+		p = pF3;
+		if (COLOR_NOTCOLOR != mux_color(p))
+		{
+		    break;
+		}
+		nTextRun += UTF8_SIZE4;
+		p += UTF8_SIZE4;
+	    }
+	    else
+	    {
+		size_t n = strlen((char *)p);
+		nTextRun += n;
+		p += n;
+		break;
+	    }
+	}
 
-        // We have either reached a color code point or end of the string.
-        // We have seen { csCurrent, (nTextRun, pTextRun) }.  Before we parse
-        // further, we need to encode this into the destination buffer.
-        // There is a color transition, then a possibly truncated run of text
-        // followed by another color transition to CS_NORMAL.  We won't lay
-        // anything down unless there is room for at least one character of
-        // the text.
-        //
-        if (0 < nTextRun)
-        {
-            // Calculate the two transitions.
-            //
-            size_t nTransition;
-            const UTF8 *pTransition = ColorTransitionBinary(csLast, csCurrent, &nTransition);
-            pNormal = ColorBinaryNormal(csCurrent, &nNormal);
+	// We have either reached a color code point or end of the string.
+	// We have seen { csCurrent, (nTextRun, pTextRun) }.  Before we parse
+	// further, we need to encode this into the destination buffer.
+	// There is a color transition, then a possibly truncated run of text
+	// followed by another color transition to CS_NORMAL.  We won't lay
+	// anything down unless there is room for at least one character of
+	// the text.
+	//
+	if (0 < nTextRun)
+	{
+	    // Calculate the two transitions.
+	    //
+	    size_t nTransition;
+	    const UTF8 *pTransition = ColorTransitionBinary(csLast, csCurrent, &nTransition);
+	    pNormal = ColorBinaryNormal(csCurrent, &nNormal);
 
-            if (nOutput + nTransition + utf8_FirstByte[pTextRun[0]] + nNormal <= nBuffer)
-            {
-                // Lay down the initial color transition.
-                //
-                if (0 < nTransition)
-                {
-                    memcpy(pBuffer + nOutput, pTransition, nTransition);
-                    nOutput += nTransition;
-                    csLast = csCurrent;
-                }
+	    if (nOutput + nTransition + utf8_FirstByte[pTextRun[0]] + nNormal <= nBuffer)
+	    {
+		// Lay down the initial color transition.
+		//
+		if (0 < nTransition)
+		{
+		    memcpy(pBuffer + nOutput, pTransition, nTransition);
+		    nOutput += nTransition;
+		    csLast = csCurrent;
+		}
 
-                if (  nBuffer < nOutput + nTextRun + nNormal
-                   && nOutput + nNormal <= nBuffer)
-                {
-                    // We need to truncate the text.
-                    //
-                    nTextRun = nBuffer - (nOutput + nNormal);
-                    while (  0 < nTextRun
-                          && UTF8_CONTINUE <= utf8_FirstByte[pTextRun[nTextRun]])
-                    {
-                        nTextRun--;
-                    }
-                    bTruncated = true;
-                }
+		if (  nBuffer < nOutput + nTextRun + nNormal
+		   && nOutput + nNormal <= nBuffer)
+		{
+		    // We need to truncate the text.
+		    //
+		    nTextRun = nBuffer - (nOutput + nNormal);
+		    while (  0 < nTextRun
+			  && UTF8_CONTINUE <= utf8_FirstByte[pTextRun[nTextRun]])
+		    {
+			nTextRun--;
+		    }
+		    bTruncated = true;
+		}
 
-                // Lay down text.
-                //
-                bText = true;
-                memcpy(pBuffer + nOutput, pTextRun, nTextRun);
-                nOutput += nTextRun;
+		// Lay down text.
+		//
+		bText = true;
+		memcpy(pBuffer + nOutput, pTextRun, nTextRun);
+		nOutput += nTextRun;
 
-                // We have left room for the transition to CS_NORMAL, but it
-                //  isn't laid down.
-                //
-            }
-        }
+		// We have left room for the transition to CS_NORMAL, but it
+		//  isn't laid down.
+		//
+	    }
+	}
     }
 
     pNormal = ColorBinaryNormal((bText)?csCurrent:csLast, &nNormal);
     if (  0 < nNormal
        && nOutput + nNormal <= nBuffer)
     {
-        memcpy(pBuffer + nOutput, pNormal, nNormal);
-        nOutput += nNormal;
+	memcpy(pBuffer + nOutput, pNormal, nNormal);
+	nOutput += nNormal;
     }
 
     pBuffer[nOutput] = '\0';
@@ -4715,22 +4715,22 @@ size_t TruncateToBuffer
 }
 
 mux_field PadField( UTF8 *pBuffer, size_t nMaxBytes, LBUF_OFFSET nMinWidth,
-                    mux_field fldOutput)
+		    mux_field fldOutput)
 {
     if (NULL == pBuffer)
     {
-        return fldMin;
+	return fldMin;
     }
 
     while (  fldOutput.m_byte   < nMaxBytes
-          && fldOutput.m_column < nMinWidth)
+	  && fldOutput.m_column < nMinWidth)
     {
-        pBuffer[fldOutput.m_byte] = (UTF8)' ';
-        fldOutput += fldAscii;
+	pBuffer[fldOutput.m_byte] = (UTF8)' ';
+	fldOutput += fldAscii;
     }
     if (fldOutput.m_byte <= nMaxBytes)
     {
-        pBuffer[fldOutput.m_byte] = '\0';
+	pBuffer[fldOutput.m_byte] = '\0';
     }
     return fldOutput;
 }
@@ -4753,24 +4753,24 @@ bool ItemToList_AddInteger(ITL *pContext, int i)
     if (  !pContext->bFirst
        && pContext->chSep)
     {
-        *p++ = pContext->chSep;
+	*p++ = pContext->chSep;
     }
     if (pContext->chPrefix)
     {
-        *p++ = pContext->chPrefix;
+	*p++ = pContext->chPrefix;
     }
     p += mux_ltoa(i, p);
     size_t nLen = p - smbuf;
     if (  pContext->nBufferAvailable < nLen
        || sizeof(smbuf) < nLen)
     {
-        // Out of room.
-        //
-        return false;
+	// Out of room.
+	//
+	return false;
     }
     if (pContext->bFirst)
     {
-        pContext->bFirst = false;
+	pContext->bFirst = false;
     }
     memcpy(*(pContext->bufc), smbuf, nLen);
     *(pContext->bufc) += nLen;
@@ -4785,24 +4785,24 @@ bool ItemToList_AddInteger64(ITL *pContext, INT64 i64)
     if (  !pContext->bFirst
        && pContext->chSep)
     {
-        *p++ = pContext->chSep;
+	*p++ = pContext->chSep;
     }
     if (pContext->chPrefix)
     {
-        *p++ = pContext->chPrefix;
+	*p++ = pContext->chPrefix;
     }
     p += mux_i64toa(i64, p);
     size_t nLen = p - smbuf;
     if (  pContext->nBufferAvailable < nLen
        || sizeof(smbuf) < nLen)
     {
-        // Out of room.
-        //
-        return false;
+	// Out of room.
+	//
+	return false;
     }
     if (pContext->bFirst)
     {
-        pContext->bFirst = false;
+	pContext->bFirst = false;
     }
     memcpy(*(pContext->bufc), smbuf, nLen);
     *(pContext->bufc) += nLen;
@@ -4816,30 +4816,30 @@ bool ItemToList_AddStringLEN(ITL *pContext, size_t nStr, const UTF8 *pStr)
     if (  !pContext->bFirst
        && pContext->chSep)
     {
-        nLen++;
+	nLen++;
     }
     if (pContext->chPrefix)
     {
-        nLen++;
+	nLen++;
     }
     if (nLen > pContext->nBufferAvailable)
     {
-        // Out of room.
-        //
-        return false;
+	// Out of room.
+	//
+	return false;
     }
     UTF8 *p = *(pContext->bufc);
     if (pContext->bFirst)
     {
-        pContext->bFirst = false;
+	pContext->bFirst = false;
     }
     else if (pContext->chSep)
     {
-        *p++ = pContext->chSep;
+	*p++ = pContext->chSep;
     }
     if (pContext->chPrefix)
     {
-        *p++ = pContext->chPrefix;
+	*p++ = pContext->chPrefix;
     }
     memcpy(p, pStr, nStr);
     *(pContext->bufc) += nLen;
@@ -4863,26 +4863,26 @@ void ItemToList_Final(ITL *pContext)
 int mux_stricmp(const UTF8 *a, const UTF8 *b)
 {
     while (  *a
-          && *b
-          && mux_tolower_ascii(*a) == mux_tolower_ascii(*b))
+	  && *b
+	  && mux_tolower_ascii(*a) == mux_tolower_ascii(*b))
     {
-        a++;
-        b++;
+	a++;
+	b++;
     }
 
     int c1 = mux_tolower_ascii(*a);
     int c2 = mux_tolower_ascii(*b);
     if (c1 < c2)
     {
-        return -1;
+	return -1;
     }
     else if (c1 > c2)
     {
-        return 1;
+	return 1;
     }
     else
     {
-        return 0;
+	return 0;
     }
 }
 
@@ -4893,24 +4893,24 @@ int mux_memicmp(const void *p1_arg, const void *p2_arg, size_t n)
     UTF8 *p1 = (UTF8 *)p1_arg;
     UTF8 *p2 = (UTF8 *)p2_arg;
     while (  n
-          && mux_tolower_ascii(*p1) == mux_tolower_ascii(*p2))
+	  && mux_tolower_ascii(*p1) == mux_tolower_ascii(*p2))
     {
-        n--;
-        p1++;
-        p2++;
+	n--;
+	p1++;
+	p2++;
     }
     if (n)
     {
-        int c1 = mux_tolower_ascii(*p1);
-        int c2 = mux_tolower_ascii(*p2);
-        if (c1 < c2)
-        {
-            return -1;
-        }
-        else if (c1 > c2)
-        {
-            return 1;
-        }
+	int c1 = mux_tolower_ascii(*p1);
+	int c2 = mux_tolower_ascii(*p2);
+	if (c1 < c2)
+	{
+	    return -1;
+	}
+	else if (c1 > c2)
+	{
+	    return 1;
+	}
     }
     return 0;
 }
@@ -4925,48 +4925,48 @@ UTF8 *mux_strlwr(const UTF8 *a, size_t &n)
     n = 0;
     while ('\0' != *a)
     {
-        size_t j;
-        size_t m;
-        bool bXor;
-        const string_desc *qDesc = mux_tolower(a, bXor);
-        if (NULL == qDesc)
-        {
-            m = utf8_FirstByte[*a];
-            if (LBUF_SIZE-1 < n + m)
-            {
-                break;
-            }
+	size_t j;
+	size_t m;
+	bool bXor;
+	const string_desc *qDesc = mux_tolower(a, bXor);
+	if (NULL == qDesc)
+	{
+	    m = utf8_FirstByte[*a];
+	    if (LBUF_SIZE-1 < n + m)
+	    {
+		break;
+	    }
 
-            for (j = 0; j < m; j++)
-            {
-                Buffer[n+j] = a[j];
-            }
-        }
-        else
-        {
-            m = qDesc->n_bytes;
-            if (LBUF_SIZE-1 < n + m)
-            {
-                break;
-            }
+	    for (j = 0; j < m; j++)
+	    {
+		Buffer[n+j] = a[j];
+	    }
+	}
+	else
+	{
+	    m = qDesc->n_bytes;
+	    if (LBUF_SIZE-1 < n + m)
+	    {
+		break;
+	    }
 
-            if (bXor)
-            {
-                for (j = 0; j < m; j++)
-                {
-                    Buffer[n+j] = a[j] ^ qDesc->p[j];
-                }
-            }
-            else
-            {
-                for (j = 0; j < m; j++)
-                {
-                    Buffer[n+j] = qDesc->p[j];
-                }
-            }
-        }
-        n += m;
-        a = utf8_NextCodePoint(a);
+	    if (bXor)
+	    {
+		for (j = 0; j < m; j++)
+		{
+		    Buffer[n+j] = a[j] ^ qDesc->p[j];
+		}
+	    }
+	    else
+	    {
+		for (j = 0; j < m; j++)
+		{
+		    Buffer[n+j] = qDesc->p[j];
+		}
+	    }
+	}
+	n += m;
+	a = utf8_NextCodePoint(a);
     }
     Buffer[n] = '\0';
     return Buffer;
@@ -4981,48 +4981,48 @@ UTF8 *mux_strupr(const UTF8 *a, size_t &n)
     n = 0;
     while ('\0' != *a)
     {
-        size_t j;
-        size_t m;
-        bool bXor;
-        const string_desc *qDesc = mux_toupper(a, bXor);
-        if (NULL == qDesc)
-        {
-            m = utf8_FirstByte[*a];
-            if (LBUF_SIZE-1 < n + m)
-            {
-                break;
-            }
+	size_t j;
+	size_t m;
+	bool bXor;
+	const string_desc *qDesc = mux_toupper(a, bXor);
+	if (NULL == qDesc)
+	{
+	    m = utf8_FirstByte[*a];
+	    if (LBUF_SIZE-1 < n + m)
+	    {
+		break;
+	    }
 
-            for (j = 0; j < m; j++)
-            {
-                Buffer[n+j] = a[j];
-            }
-        }
-        else
-        {
-            m = qDesc->n_bytes;
-            if (LBUF_SIZE-1 < n + m)
-            {
-                break;
-            }
+	    for (j = 0; j < m; j++)
+	    {
+		Buffer[n+j] = a[j];
+	    }
+	}
+	else
+	{
+	    m = qDesc->n_bytes;
+	    if (LBUF_SIZE-1 < n + m)
+	    {
+		break;
+	    }
 
-            if (bXor)
-            {
-                for (j = 0; j < m; j++)
-                {
-                    Buffer[n+j] = a[j] ^ qDesc->p[j];
-                }
-            }
-            else
-            {
-                for (j = 0; j < m; j++)
-                {
-                    Buffer[n+j] = qDesc->p[j];
-                }
-            }
-        }
-        n += m;
-        a = utf8_NextCodePoint(a);
+	    if (bXor)
+	    {
+		for (j = 0; j < m; j++)
+		{
+		    Buffer[n+j] = a[j] ^ qDesc->p[j];
+		}
+	    }
+	    else
+	    {
+		for (j = 0; j < m; j++)
+		{
+		    Buffer[n+j] = qDesc->p[j];
+		}
+	    }
+	}
+	n += m;
+	a = utf8_NextCodePoint(a);
     }
     Buffer[n] = '\0';
     return Buffer;
@@ -5038,49 +5038,49 @@ UTF8 *mux_foldmatch(const UTF8 *a, size_t &n, bool &fChanged)
     fChanged = false;
     while ('\0' != *a)
     {
-        size_t j;
-        size_t m;
-        bool bXor;
-        const string_desc *qDesc = mux_foldmatch(a, bXor);
-        if (NULL == qDesc)
-        {
-            m = utf8_FirstByte[*a];
-            if (LBUF_SIZE-1 < n + m)
-            {
-                break;
-            }
+	size_t j;
+	size_t m;
+	bool bXor;
+	const string_desc *qDesc = mux_foldmatch(a, bXor);
+	if (NULL == qDesc)
+	{
+	    m = utf8_FirstByte[*a];
+	    if (LBUF_SIZE-1 < n + m)
+	    {
+		break;
+	    }
 
-            for (j = 0; j < m; j++)
-            {
-                Buffer[n+j] = a[j];
-            }
-        }
-        else
-        {
-            fChanged = true;
-            m = qDesc->n_bytes;
-            if (LBUF_SIZE-1 < n + m)
-            {
-                break;
-            }
+	    for (j = 0; j < m; j++)
+	    {
+		Buffer[n+j] = a[j];
+	    }
+	}
+	else
+	{
+	    fChanged = true;
+	    m = qDesc->n_bytes;
+	    if (LBUF_SIZE-1 < n + m)
+	    {
+		break;
+	    }
 
-            if (bXor)
-            {
-                for (j = 0; j < m; j++)
-                {
-                    Buffer[n+j] = a[j] ^ qDesc->p[j];
-                }
-            }
-            else
-            {
-                for (j = 0; j < m; j++)
-                {
-                    Buffer[n+j] = qDesc->p[j];
-                }
-            }
-        }
-        n += m;
-        a = utf8_NextCodePoint(a);
+	    if (bXor)
+	    {
+		for (j = 0; j < m; j++)
+		{
+		    Buffer[n+j] = a[j] ^ qDesc->p[j];
+		}
+	    }
+	    else
+	    {
+		for (j = 0; j < m; j++)
+		{
+		    Buffer[n+j] = qDesc->p[j];
+		}
+	    }
+	}
+	n += m;
+	a = utf8_NextCodePoint(a);
     }
     Buffer[n] = '\0';
     return Buffer;
@@ -5113,366 +5113,366 @@ size_t DCL_CDECL mux_vsnprintf(__in_ecount(nBuffer) UTF8 *pBuffer, __in size_t n
     if (  NULL != pFmt
        && utf8_strlen(pFmt, ncpFmt))
     {
-        static UTF8 Buff[I64BUF_SIZE];
+	static UTF8 Buff[I64BUF_SIZE];
 
-        while (0 != ncpFmt)
-        {
-            if ('%' != pFmt[iFmt])
-            {
-                // Ordinary character.
-                //
-                size_t d = utf8_FirstByte[pFmt[iFmt]];
-                size_t dProposed = dDeferred + d;
-                if (nLimit < iBuffer + dProposed)
-                {
-                    if (0 < dDeferred)
-                    {
-                        // Unravel the deferred copy.
-                        //
-                        memcpy(pBuffer + iBuffer, pFmt + iFmtDeferred, dDeferred);
-                        iBuffer += dDeferred;
-                        dDeferred = 0;
-                    }
-                    goto done;
-                }
-                else if (0 == dDeferred)
-                {
-                    iFmtDeferred = iFmt;
-                }
-                dDeferred = dProposed;
+	while (0 != ncpFmt)
+	{
+	    if ('%' != pFmt[iFmt])
+	    {
+		// Ordinary character.
+		//
+		size_t d = utf8_FirstByte[pFmt[iFmt]];
+		size_t dProposed = dDeferred + d;
+		if (nLimit < iBuffer + dProposed)
+		{
+		    if (0 < dDeferred)
+		    {
+			// Unravel the deferred copy.
+			//
+			memcpy(pBuffer + iBuffer, pFmt + iFmtDeferred, dDeferred);
+			iBuffer += dDeferred;
+			dDeferred = 0;
+		    }
+		    goto done;
+		}
+		else if (0 == dDeferred)
+		{
+		    iFmtDeferred = iFmt;
+		}
+		dDeferred = dProposed;
 
-                iFmt += d;
-                ncpFmt--;
-            }
-            else
-            {
-                if (0 < dDeferred)
-                {
-                    // Unravel the deferred copy.
-                    //
-                    memcpy(pBuffer + iBuffer, pFmt + iFmtDeferred, dDeferred);
-                    iBuffer += dDeferred;
-                    dDeferred = 0;
-                }
+		iFmt += d;
+		ncpFmt--;
+	    }
+	    else
+	    {
+		if (0 < dDeferred)
+		{
+		    // Unravel the deferred copy.
+		    //
+		    memcpy(pBuffer + iBuffer, pFmt + iFmtDeferred, dDeferred);
+		    iBuffer += dDeferred;
+		    dDeferred = 0;
+		}
 
-                size_t cbBuff;
-                size_t cpBuff;
-                size_t nWidth = 0;
-                size_t nPrecision = 0;
-                bool bLeft = false;
-                bool bZeroPadded = false;
-                bool bWidth = false;
-                bool bSawPeriod = false;
-                bool bPrecision = false;
-                int nLongs = 0;
+		size_t cbBuff;
+		size_t cpBuff;
+		size_t nWidth = 0;
+		size_t nPrecision = 0;
+		bool bLeft = false;
+		bool bZeroPadded = false;
+		bool bWidth = false;
+		bool bSawPeriod = false;
+		bool bPrecision = false;
+		int nLongs = 0;
 
-                iFmt++;
-                ncpFmt--;
+		iFmt++;
+		ncpFmt--;
 
-                while (0 != ncpFmt)
-                {
-                    if (  'd' == pFmt[iFmt]
-                       || 's' == pFmt[iFmt]
-                       || 'u' == pFmt[iFmt]
-                       || 'x' == pFmt[iFmt]
-                       || 'X' == pFmt[iFmt]
-                       || 'p' == pFmt[iFmt])
-                    {
-                        UTF8 *pBuff = Buff;
+		while (0 != ncpFmt)
+		{
+		    if (  'd' == pFmt[iFmt]
+		       || 's' == pFmt[iFmt]
+		       || 'u' == pFmt[iFmt]
+		       || 'x' == pFmt[iFmt]
+		       || 'X' == pFmt[iFmt]
+		       || 'p' == pFmt[iFmt])
+		    {
+			UTF8 *pBuff = Buff;
 
-                        if ('d' == pFmt[iFmt])
-                        {
-                            // Obtain and validate argument.
-                            //
-                            if (0 == nLongs)
-                            {
-                                int i = va_arg(va, int);
-                                cbBuff = cpBuff = mux_ltoa(i, Buff);
-                            }
-                            else if (1 == nLongs)
-                            {
-                                long int i = va_arg(va, long int);
-                                cbBuff = cpBuff = mux_ltoa(i, Buff);
-                            }
-                            else if (2 == nLongs)
-                            {
-                                INT64 i = va_arg(va, INT64);
-                                cbBuff = cpBuff = mux_i64toa(i, Buff);
-                            }
-                            else
-                            {
-                                goto done;
-                            }
-                        }
-                        else  if ('s' == pFmt[iFmt])
-                        {
-                            // Obtain and validate argument.
-                            //
-                            pBuff = va_arg(va, UTF8 *);
-                            if (  !utf8_strlen(pBuff, cpBuff)
-                               || 0 != nLongs)
-                            {
-                                goto done;
-                            }
-                            cbBuff = strlen((char *)pBuff);
+			if ('d' == pFmt[iFmt])
+			{
+			    // Obtain and validate argument.
+			    //
+			    if (0 == nLongs)
+			    {
+				int i = va_arg(va, int);
+				cbBuff = cpBuff = mux_ltoa(i, Buff);
+			    }
+			    else if (1 == nLongs)
+			    {
+				long int i = va_arg(va, long int);
+				cbBuff = cpBuff = mux_ltoa(i, Buff);
+			    }
+			    else if (2 == nLongs)
+			    {
+				INT64 i = va_arg(va, INT64);
+				cbBuff = cpBuff = mux_i64toa(i, Buff);
+			    }
+			    else
+			    {
+				goto done;
+			    }
+			}
+			else  if ('s' == pFmt[iFmt])
+			{
+			    // Obtain and validate argument.
+			    //
+			    pBuff = va_arg(va, UTF8 *);
+			    if (  !utf8_strlen(pBuff, cpBuff)
+			       || 0 != nLongs)
+			    {
+				goto done;
+			    }
+			    cbBuff = strlen((char *)pBuff);
 
-                            if (  bPrecision
-                               && nPrecision < cpBuff)
-                            {
-                                // Need to walk cbBuff back to correspond to changes in cpBuff.
-                                //
-                                while (cpBuff != nPrecision)
-                                {
-                                    do
-                                    {
-                                        cbBuff--;
-                                    } while (UTF8_CONTINUE <= utf8_FirstByte[pBuff[cbBuff]]);
-                                    cpBuff--;
-                                }
-                            }
-                        }
-                        else if ('p' == pFmt[iFmt])
-                        {
-                            if (  0 != nLongs
-                               || bWidth)
-                            {
-                                goto done;
-                            }
+			    if (  bPrecision
+			       && nPrecision < cpBuff)
+			    {
+				// Need to walk cbBuff back to correspond to changes in cpBuff.
+				//
+				while (cpBuff != nPrecision)
+				{
+				    do
+				    {
+					cbBuff--;
+				    } while (UTF8_CONTINUE <= utf8_FirstByte[pBuff[cbBuff]]);
+				    cpBuff--;
+				}
+			    }
+			}
+			else if ('p' == pFmt[iFmt])
+			{
+			    if (  0 != nLongs
+			       || bWidth)
+			    {
+				goto done;
+			    }
 
-                            // Convert pointer to unsigned integer.
-                            //
-                            union
-                            {
-                                MUX_UINT_PTR ui;
-                                void *pv;
-                            } u;
-                            u.pv = va_arg(va, void *);
+			    // Convert pointer to unsigned integer.
+			    //
+			    union
+			    {
+				MUX_UINT_PTR ui;
+				void *pv;
+			    } u;
+			    u.pv = va_arg(va, void *);
 #if SIZEOF_UINT_PTR <= SIZEOF_UNSIGNED_LONG
-                            cbBuff = cpBuff = mux_utox(u.ui, Buff, true);
+			    cbBuff = cpBuff = mux_utox(u.ui, Buff, true);
 #elif SIZEOF_UINT_PTR <= SIZEOF_UNSIGNED_LONG_LONG
-                            cbBuff = cpBuff = mux_ui64tox(u.ui, Buff, true);
+			    cbBuff = cpBuff = mux_ui64tox(u.ui, Buff, true);
 #else
 #error Size of pointer is larger size of largest known integer.
 #endif
-                            bWidth = true;
-                            nWidth = 2*sizeof(MUX_UINT_PTR);
-                            bZeroPadded = true;
-                        }
-                        else
-                        {
-                            bool bHex = (  'x' == pFmt[iFmt]
-                                        || 'X' == pFmt[iFmt]);
-                            bool bUpper = ('X' == pFmt[iFmt]);
+			    bWidth = true;
+			    nWidth = 2*sizeof(MUX_UINT_PTR);
+			    bZeroPadded = true;
+			}
+			else
+			{
+			    bool bHex = (  'x' == pFmt[iFmt]
+					|| 'X' == pFmt[iFmt]);
+			    bool bUpper = ('X' == pFmt[iFmt]);
 
-                            // Obtain and validate argument.
-                            //
-                            if (0 == nLongs)
-                            {
-                                unsigned int ui = va_arg(va, unsigned int);
-                                cbBuff = cpBuff = bHex?mux_utox(ui, Buff, bUpper):mux_utoa(ui, Buff);
-                            }
-                            else if (1 == nLongs)
-                            {
-                                unsigned long int ui = va_arg(va, unsigned long int);
-                                cbBuff = cpBuff = bHex?mux_utox(ui, Buff, bUpper):mux_utoa(ui, Buff);
-                            }
-                            else if (2 == nLongs)
-                            {
-                                UINT64 ui = va_arg(va, UINT64);
-                                cbBuff = cpBuff = bHex?mux_ui64tox(ui, Buff, bUpper):mux_ui64toa(ui, Buff);
-                            }
-                            else
-                            {
-                                goto done;
-                            }
-                        }
+			    // Obtain and validate argument.
+			    //
+			    if (0 == nLongs)
+			    {
+				unsigned int ui = va_arg(va, unsigned int);
+				cbBuff = cpBuff = bHex?mux_utox(ui, Buff, bUpper):mux_utoa(ui, Buff);
+			    }
+			    else if (1 == nLongs)
+			    {
+				unsigned long int ui = va_arg(va, unsigned long int);
+				cbBuff = cpBuff = bHex?mux_utox(ui, Buff, bUpper):mux_utoa(ui, Buff);
+			    }
+			    else if (2 == nLongs)
+			    {
+				UINT64 ui = va_arg(va, UINT64);
+				cbBuff = cpBuff = bHex?mux_ui64tox(ui, Buff, bUpper):mux_ui64toa(ui, Buff);
+			    }
+			    else
+			    {
+				goto done;
+			    }
+			}
 
-                        // Calculate and validate needed size.  Numberic and
-                        // string fields are at least the size of their width.
-                        // String fields may have been truncated above by
-                        // precision.
-                        //
-                        // Width is compared with the number of code points.
-                        // Padding is always done with space or zero.
-                        //
-                        size_t nUsed = cbBuff;
-                        size_t nPadding = 0;
-                        if (  bWidth
-                           && cpBuff < nWidth)
-                        {
-                            nPadding = nWidth - cpBuff;
-                            nUsed += nPadding;
-                        }
+			// Calculate and validate needed size.  Numberic and
+			// string fields are at least the size of their width.
+			// String fields may have been truncated above by
+			// precision.
+			//
+			// Width is compared with the number of code points.
+			// Padding is always done with space or zero.
+			//
+			size_t nUsed = cbBuff;
+			size_t nPadding = 0;
+			if (  bWidth
+			   && cpBuff < nWidth)
+			{
+			    nPadding = nWidth - cpBuff;
+			    nUsed += nPadding;
+			}
 
-                        if (nLimit < iBuffer + nUsed)
-                        {
-                            goto done;
-                        }
+			if (nLimit < iBuffer + nUsed)
+			{
+			    goto done;
+			}
 
-                        // Apply leading padding if necessary.
-                        //
-                        if (  !bLeft
-                           && bWidth)
-                        {
-                            if (  'd' == pFmt[iFmt]
-                               && '-' == pBuff[0]
-                               && 0 < nPadding
-                               && bZeroPadded)
-                            {
-                                // The leading minus sign must be laid down before zero-padding begins.
-                                //
-                                pBuffer[iBuffer] = '-';
-                                iBuffer++;
+			// Apply leading padding if necessary.
+			//
+			if (  !bLeft
+			   && bWidth)
+			{
+			    if (  'd' == pFmt[iFmt]
+			       && '-' == pBuff[0]
+			       && 0 < nPadding
+			       && bZeroPadded)
+			    {
+				// The leading minus sign must be laid down before zero-padding begins.
+				//
+				pBuffer[iBuffer] = '-';
+				iBuffer++;
 
-                                pBuff++;
-                                cbBuff--;
-                                cpBuff--;
-                            }
+				pBuff++;
+				cbBuff--;
+				cpBuff--;
+			    }
 
-                            while (0 < nPadding)
-                            {
-                                pBuffer[iBuffer] = bZeroPadded?'0':' ';
-                                iBuffer++;
-                                nPadding--;
-                            }
-                        }
+			    while (0 < nPadding)
+			    {
+				pBuffer[iBuffer] = bZeroPadded?'0':' ';
+				iBuffer++;
+				nPadding--;
+			    }
+			}
 
-                        // Apply string.
-                        //
-                        memcpy(pBuffer + iBuffer, pBuff, cbBuff);
-                        iBuffer += cbBuff;
+			// Apply string.
+			//
+			memcpy(pBuffer + iBuffer, pBuff, cbBuff);
+			iBuffer += cbBuff;
 
-                        // Apply trailing padding if necessary.
-                        //
-                        if (  bLeft
-                           && bWidth)
-                        {
-                            while (0 < nPadding)
-                            {
-                                pBuffer[iBuffer] = bZeroPadded?'0':' ';
-                                iBuffer++;
-                                nPadding--;
-                            }
-                        }
+			// Apply trailing padding if necessary.
+			//
+			if (  bLeft
+			   && bWidth)
+			{
+			    while (0 < nPadding)
+			    {
+				pBuffer[iBuffer] = bZeroPadded?'0':' ';
+				iBuffer++;
+				nPadding--;
+			    }
+			}
 
-                        iFmt++;
-                        ncpFmt--;
-                        break;
-                    }
-                    else if ('l' == pFmt[iFmt])
-                    {
-                        nLongs++;
-                        iFmt++;
-                        ncpFmt--;
-                    }
-                    else if (  '0' <= pFmt[iFmt]
-                            && pFmt[iFmt] <= '9')
-                    {
-                        if (!bSawPeriod)
-                        {
-                            if (!bWidth)
-                            {
-                                if ('0' == pFmt[iFmt])
-                                {
-                                    if (bZeroPadded)
-                                    {
-                                        goto done;
-                                    }
-                                    bZeroPadded = true;
-                                }
-                                else
-                                {
-                                    nWidth = pFmt[iFmt] - '0';
-                                    bWidth = true;
-                                }
-                            }
-                            else
-                            {
-                                nWidth = 10 * nWidth + pFmt[iFmt] - '0';
-                            }
-                        }
-                        else
-                        {
-                            if (!bPrecision)
-                            {
-                                nPrecision = pFmt[iFmt] - '0';
-                                bPrecision = true;
-                            }
-                            else
-                            {
-                                nPrecision = 10 * nPrecision + pFmt[iFmt] - '0';
-                            }
-                        }
+			iFmt++;
+			ncpFmt--;
+			break;
+		    }
+		    else if ('l' == pFmt[iFmt])
+		    {
+			nLongs++;
+			iFmt++;
+			ncpFmt--;
+		    }
+		    else if (  '0' <= pFmt[iFmt]
+			    && pFmt[iFmt] <= '9')
+		    {
+			if (!bSawPeriod)
+			{
+			    if (!bWidth)
+			    {
+				if ('0' == pFmt[iFmt])
+				{
+				    if (bZeroPadded)
+				    {
+					goto done;
+				    }
+				    bZeroPadded = true;
+				}
+				else
+				{
+				    nWidth = pFmt[iFmt] - '0';
+				    bWidth = true;
+				}
+			    }
+			    else
+			    {
+				nWidth = 10 * nWidth + pFmt[iFmt] - '0';
+			    }
+			}
+			else
+			{
+			    if (!bPrecision)
+			    {
+				nPrecision = pFmt[iFmt] - '0';
+				bPrecision = true;
+			    }
+			    else
+			    {
+				nPrecision = 10 * nPrecision + pFmt[iFmt] - '0';
+			    }
+			}
 
-                        iFmt++;
-                        ncpFmt--;
-                    }
-                    else if ('.' == pFmt[iFmt])
-                    {
-                        bSawPeriod = true;
+			iFmt++;
+			ncpFmt--;
+		    }
+		    else if ('.' == pFmt[iFmt])
+		    {
+			bSawPeriod = true;
 
-                        iFmt++;
-                        ncpFmt--;
-                    }
-                    else if ('-' == pFmt[iFmt])
-                    {
-                        if (bLeft)
-                        {
-                            goto done;
-                        }
-                        bLeft = true;
+			iFmt++;
+			ncpFmt--;
+		    }
+		    else if ('-' == pFmt[iFmt])
+		    {
+			if (bLeft)
+			{
+			    goto done;
+			}
+			bLeft = true;
 
-                        iFmt++;
-                        ncpFmt--;
-                    }
-                    else if ('c' == pFmt[iFmt])
-                    {
-                        unsigned int ch = va_arg(va, unsigned int);
-                        if (nLimit < iBuffer + 1)
-                        {
-                            goto done;
-                        }
-                        pBuffer[iBuffer] = static_cast<UTF8>(ch);
-                        iBuffer++;
+			iFmt++;
+			ncpFmt--;
+		    }
+		    else if ('c' == pFmt[iFmt])
+		    {
+			unsigned int ch = va_arg(va, unsigned int);
+			if (nLimit < iBuffer + 1)
+			{
+			    goto done;
+			}
+			pBuffer[iBuffer] = static_cast<UTF8>(ch);
+			iBuffer++;
 
-                        iFmt++;
-                        ncpFmt--;
-                        break;
-                    }
-                    else if ('%' == pFmt[iFmt])
-                    {
-                        // "%%"
-                        //
-                        if (nLimit < iBuffer + 1)
-                        {
-                            goto done;
-                        }
-                        pBuffer[iBuffer] = '%';
-                        iBuffer++;
+			iFmt++;
+			ncpFmt--;
+			break;
+		    }
+		    else if ('%' == pFmt[iFmt])
+		    {
+			// "%%"
+			//
+			if (nLimit < iBuffer + 1)
+			{
+			    goto done;
+			}
+			pBuffer[iBuffer] = '%';
+			iBuffer++;
 
-                        iFmt++;
-                        ncpFmt--;
-                        break;
-                    }
-                    else
-                    {
-                        mux_assert(0);
+			iFmt++;
+			ncpFmt--;
+			break;
+		    }
+		    else
+		    {
+			mux_assert(0);
 
-                        iFmt += utf8_FirstByte[pFmt[iFmt]];
-                        ncpFmt--;
-                    }
-                }
-            }
-        }
+			iFmt += utf8_FirstByte[pFmt[iFmt]];
+			ncpFmt--;
+		    }
+		}
+	    }
+	}
 
-        if (0 < dDeferred)
-        {
-            // Unravel the deferred copy.
-            //
-            memcpy(pBuffer + iBuffer, pFmt + iFmtDeferred, dDeferred);
-            iBuffer += dDeferred;
-            dDeferred = 0;
-        }
+	if (0 < dDeferred)
+	{
+	    // Unravel the deferred copy.
+	    //
+	    memcpy(pBuffer + iBuffer, pFmt + iFmtDeferred, dDeferred);
+	    iBuffer += dDeferred;
+	    dDeferred = 0;
+	}
     }
 
 done:
@@ -5492,14 +5492,14 @@ void DCL_CDECL mux_fprintf(FILE *fp, __in_z const UTF8 *fmt, ...)
 {
     if (NULL != fp)
     {
-        UTF8 Buffer[MBUF_SIZE];
+	UTF8 Buffer[MBUF_SIZE];
 
-        va_list ap;
-        va_start(ap, fmt);
-        size_t nBuffer = mux_vsnprintf(Buffer, sizeof(Buffer), fmt, ap);
-        va_end(ap);
+	va_list ap;
+	va_start(ap, fmt);
+	size_t nBuffer = mux_vsnprintf(Buffer, sizeof(Buffer), fmt, ap);
+	va_end(ap);
 
-        fwrite(Buffer, 1, nBuffer, fp);
+	fwrite(Buffer, 1, nBuffer, fp);
     }
 }
 
@@ -5512,29 +5512,29 @@ size_t GetLineTrunc(UTF8 *Buffer, size_t nBuffer, FILE *fp)
     size_t lenBuffer = 0;
     if (fgets((char *)Buffer, static_cast<int>(nBuffer), fp))
     {
-        lenBuffer = strlen((char *)Buffer);
+	lenBuffer = strlen((char *)Buffer);
     }
     if (lenBuffer <= 0)
     {
-        memcpy(Buffer, "\n", 2);
-        return 1;
+	memcpy(Buffer, "\n", 2);
+	return 1;
     }
     if (Buffer[lenBuffer-1] != '\n')
     {
-        // The line was too long for the buffer. Continue reading until the
-        // end of the line.
-        //
-        UTF8 TruncBuffer[SBUF_SIZE];
-        size_t lenTruncBuffer;
-        do
-        {
-            if (!fgets((char *)TruncBuffer, sizeof(TruncBuffer), fp))
-            {
-                break;
-            }
-            lenTruncBuffer = strlen((char *)TruncBuffer);
-        }
-        while (TruncBuffer[lenTruncBuffer-1] != '\n');
+	// The line was too long for the buffer. Continue reading until the
+	// end of the line.
+	//
+	UTF8 TruncBuffer[SBUF_SIZE];
+	size_t lenTruncBuffer;
+	do
+	{
+	    if (!fgets((char *)TruncBuffer, sizeof(TruncBuffer), fp))
+	    {
+		break;
+	    }
+	    lenTruncBuffer = strlen((char *)TruncBuffer);
+	}
+	while (TruncBuffer[lenTruncBuffer-1] != '\n');
     }
     return lenBuffer;
 }
@@ -5553,23 +5553,23 @@ void BMH_Prepare(BMH_State *bmhs, size_t nPat, const UTF8 *pPat)
 {
     if (nPat <= 0)
     {
-        return;
+	return;
     }
     size_t k;
     for (k = 0; k < 256; k++)
     {
-        bmhs->m_d[k] = nPat;
+	bmhs->m_d[k] = nPat;
     }
 
     UTF8 chLastPat = pPat[nPat-1];
     bmhs->m_skip2 = nPat;
     for (k = 0; k < nPat - 1; k++)
     {
-        bmhs->m_d[(unsigned char)pPat[k]] = nPat - k - 1;
-        if (pPat[k] == chLastPat)
-        {
-            bmhs->m_skip2 = nPat - k - 1;
-        }
+	bmhs->m_d[(unsigned char)pPat[k]] = nPat - k - 1;
+	if (pPat[k] == chLastPat)
+	{
+	    bmhs->m_skip2 = nPat - k - 1;
+	}
     }
     bmhs->m_d[(unsigned char)chLastPat] = BMH_LARGE;
 }
@@ -5578,30 +5578,30 @@ bool BMH_Execute(BMH_State *bmhs, size_t *pnMatched, size_t nPat, const UTF8 *pP
 {
     if (nPat <= 0)
     {
-        return false;
+	return false;
     }
     for (size_t i = nPat-1; i < nSrc; i += bmhs->m_skip2)
     {
-        while ((i += bmhs->m_d[(unsigned char)(pSrc[i])]) < nSrc)
-        {
-            ; // Nothing.
-        }
-        if (i < BMH_LARGE)
-        {
-            break;
-        }
-        i -= BMH_LARGE;
-        int j = static_cast<int>(nPat - 1);
-        const UTF8 *s = pSrc + (i - j);
-        while (--j >= 0 && s[j] == pPat[j])
-        {
-            ; // Nothing.
-        }
-        if (j < 0)
-        {
-            *pnMatched = s-pSrc;
-            return true;
-        }
+	while ((i += bmhs->m_d[(unsigned char)(pSrc[i])]) < nSrc)
+	{
+	    ; // Nothing.
+	}
+	if (i < BMH_LARGE)
+	{
+	    break;
+	}
+	i -= BMH_LARGE;
+	int j = static_cast<int>(nPat - 1);
+	const UTF8 *s = pSrc + (i - j);
+	while (--j >= 0 && s[j] == pPat[j])
+	{
+	    ; // Nothing.
+	}
+	if (j < 0)
+	{
+	    *pnMatched = s-pSrc;
+	    return true;
+	}
     }
     return false;
 }
@@ -5617,24 +5617,24 @@ void BMH_PrepareI(BMH_State *bmhs, size_t nPat, const UTF8 *pPat)
 {
     if (nPat <= 0)
     {
-        return;
+	return;
     }
     size_t k;
     for (k = 0; k < 256; k++)
     {
-        bmhs->m_d[k] = nPat;
+	bmhs->m_d[k] = nPat;
     }
 
     UTF8 chLastPat = pPat[nPat-1];
     bmhs->m_skip2 = nPat;
     for (k = 0; k < nPat - 1; k++)
     {
-        bmhs->m_d[mux_toupper_ascii(pPat[k])] = nPat - k - 1;
-        bmhs->m_d[mux_tolower_ascii(pPat[k])] = nPat - k - 1;
-        if (mux_toupper_ascii(pPat[k]) == mux_toupper_ascii(chLastPat))
-        {
-            bmhs->m_skip2 = nPat - k - 1;
-        }
+	bmhs->m_d[mux_toupper_ascii(pPat[k])] = nPat - k - 1;
+	bmhs->m_d[mux_tolower_ascii(pPat[k])] = nPat - k - 1;
+	if (mux_toupper_ascii(pPat[k]) == mux_toupper_ascii(chLastPat))
+	{
+	    bmhs->m_skip2 = nPat - k - 1;
+	}
     }
     bmhs->m_d[mux_toupper_ascii(chLastPat)] = BMH_LARGE;
     bmhs->m_d[mux_tolower_ascii(chLastPat)] = BMH_LARGE;
@@ -5644,31 +5644,31 @@ bool BMH_ExecuteI(BMH_State *bmhs, size_t *pnMatched, size_t nPat, const UTF8 *p
 {
     if (nPat <= 0)
     {
-        return false;
+	return false;
     }
     for (size_t i = nPat-1; i < nSrc; i += bmhs->m_skip2)
     {
-        while ((i += bmhs->m_d[(unsigned char)(pSrc[i])]) < nSrc)
-        {
-            ; // Nothing.
-        }
-        if (i < BMH_LARGE)
-        {
-            break;
-        }
-        i -= BMH_LARGE;
-        int j = static_cast<int>(nPat - 1);
-        const UTF8 *s = pSrc + (i - j);
-        while (  --j >= 0
-              && mux_toupper_ascii(s[j]) == mux_toupper_ascii(pPat[j]))
-        {
-            ; // Nothing.
-        }
-        if (j < 0)
-        {
-            *pnMatched = s-pSrc;
-            return true;
-        }
+	while ((i += bmhs->m_d[(unsigned char)(pSrc[i])]) < nSrc)
+	{
+	    ; // Nothing.
+	}
+	if (i < BMH_LARGE)
+	{
+	    break;
+	}
+	i -= BMH_LARGE;
+	int j = static_cast<int>(nPat - 1);
+	const UTF8 *s = pSrc + (i - j);
+	while (  --j >= 0
+	      && mux_toupper_ascii(s[j]) == mux_toupper_ascii(pPat[j]))
+	{
+	    ; // Nothing.
+	}
+	if (j < 0)
+	{
+	    *pnMatched = s-pSrc;
+	    return true;
+	}
     }
     return false;
 }
@@ -5695,18 +5695,18 @@ CF_HAND(cf_art_rule)
 
     while (mux_isspace(*pCurrent))
     {
-        pCurrent++;
+	pCurrent++;
     }
     UTF8 *pArticle = pCurrent;
     while (  !mux_isspace(*pCurrent)
-          && *pCurrent != '\0')
+	  && *pCurrent != '\0')
     {
-        pCurrent++;
+	pCurrent++;
     }
     if (*pCurrent == '\0')
     {
-        cf_log_syntax(player, cmd, T("No article or regexp specified."));
-        return -1;
+	cf_log_syntax(player, cmd, T("No article or regexp specified."));
+	return -1;
     }
 
     bool bUseAn = false;
@@ -5714,39 +5714,39 @@ CF_HAND(cf_art_rule)
 
     if (pCurrent - pArticle <= 2)
     {
-        if (  'a' == pArticle[0]
-           || 'A' == pArticle[0])
-        {
-            if (  'n' == pArticle[1]
-               || 'N' == pArticle[1])
-            {
-                bUseAn = true;
-                bOkay = true;
-            }
+	if (  'a' == pArticle[0]
+	   || 'A' == pArticle[0])
+	{
+	    if (  'n' == pArticle[1]
+	       || 'N' == pArticle[1])
+	    {
+		bUseAn = true;
+		bOkay = true;
+	    }
 
-            if (mux_isspace(pArticle[1]))
-            {
-                bOkay = true;
-            }
-        }
+	    if (mux_isspace(pArticle[1]))
+	    {
+		bOkay = true;
+	    }
+	}
     }
 
     if (!bOkay)
     {
-        *pCurrent = '\0';
-        cf_log_syntax(player, cmd, T("Invalid article \xE2\x80\x98%s\xE2\x80\x99."), pArticle);
-        return -1;
+	*pCurrent = '\0';
+	cf_log_syntax(player, cmd, T("Invalid article \xE2\x80\x98%s\xE2\x80\x99."), pArticle);
+	return -1;
     }
 
     while (mux_isspace(*pCurrent))
     {
-        pCurrent++;
+	pCurrent++;
     }
 
     if (*pCurrent == '\0')
     {
-        cf_log_syntax(player, cmd, T("No regexp specified."));
-        return -1;
+	cf_log_syntax(player, cmd, T("No regexp specified."));
+	return -1;
     }
 
     const char *errptr;
@@ -5754,9 +5754,9 @@ CF_HAND(cf_art_rule)
     pcre* reNewRegexp = pcre_compile((char *)pCurrent, PCRE_UTF8, &errptr, &erroffset, NULL);
     if (!reNewRegexp)
     {
-        cf_log_syntax(player, cmd, T("Error processing regexp \xE2\x80\x98%s\xE2\x80\x99:."),
-              pCurrent, errptr);
-        return -1;
+	cf_log_syntax(player, cmd, T("Error processing regexp \xE2\x80\x98%s\xE2\x80\x99:."),
+	      pCurrent, errptr);
+	return -1;
     }
 
     pcre_extra *study = pcre_study(reNewRegexp, 0, &errptr);
@@ -5766,32 +5766,32 @@ CF_HAND(cf_art_rule)
     ArtRuleset* arNewRule = NULL;
     try
     {
-        arNewRule = new ArtRuleset;
+	arNewRule = new ArtRuleset;
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL != arNewRule)
     {
-        // Push new rule at head of list.
-        //
-        arNewRule->m_pNextRule = *arRules;
-        arNewRule->m_bUseAn = bUseAn;
-        arNewRule->m_pRegexp = reNewRegexp;
-        arNewRule->m_pRegexpStudy = study;
-        *arRules = arNewRule;
+	// Push new rule at head of list.
+	//
+	arNewRule->m_pNextRule = *arRules;
+	arNewRule->m_bUseAn = bUseAn;
+	arNewRule->m_pRegexp = reNewRegexp;
+	arNewRule->m_pRegexpStudy = study;
+	*arRules = arNewRule;
     }
     else
     {
-        MEMFREE(reNewRegexp);
-        if (study)
-        {
-            MEMFREE(study);
-        }
-        cf_log_syntax(player, cmd, T("Out of memory."));
-        return -1;
+	MEMFREE(reNewRegexp);
+	if (study)
+	{
+	    MEMFREE(study);
+	}
+	cf_log_syntax(player, cmd, T("Out of memory."));
+	return -1;
     }
 
     return 0;
@@ -5887,11 +5887,11 @@ void mux_string::Validate(void) const
     // enough to contain colors for every code point.
     //
     mux_assert(  ( NULL == m_pcs
-                 && 0 == m_ncs)
-              || ( NULL != m_pcs
-                 && 1 <= m_ncs
-                 && m_ncs <= LBUF_SIZE-1
-                 && m_iLast.m_point <= m_ncs));
+		 && 0 == m_ncs)
+	      || ( NULL != m_pcs
+		 && 1 <= m_ncs
+		 && m_ncs <= LBUF_SIZE-1
+		 && m_iLast.m_point <= m_ncs));
 
     // m_iLast.m_byte bytes of m_atuf[] contain the non-color UTF-8-encoded
     // code points.  A terminating '\0' at m_autf[m_iLast.m_byte] is not
@@ -5908,26 +5908,26 @@ void mux_string::Validate(void) const
 
     const UTF8 *p = m_autf;
     while (  p < (m_autf + LBUF_SIZE)
-          && '\0' != *p)
+	  && '\0' != *p)
     {
-        // Each code point must be valid encoding.
-        //
-        unsigned char iCode = utf8_FirstByte[*p];
-        mux_assert(iCode < UTF8_CONTINUE);
+	// Each code point must be valid encoding.
+	//
+	unsigned char iCode = utf8_FirstByte[*p];
+	mux_assert(iCode < UTF8_CONTINUE);
 
-        size_t j;
-        for (j = 1; j < iCode; j++)
-        {
-            mux_assert(UTF8_CONTINUE == utf8_FirstByte[p[j]]);
-        }
+	size_t j;
+	for (j = 1; j < iCode; j++)
+	{
+	    mux_assert(UTF8_CONTINUE == utf8_FirstByte[p[j]]);
+	}
 
-        // All code points in m_autf[] must be non-color code points.
-        //
-        mux_assert(COLOR_NOTCOLOR == mux_color(p));
+	// All code points in m_autf[] must be non-color code points.
+	//
+	mux_assert(COLOR_NOTCOLOR == mux_color(p));
 
-        p += iCode;
-        nbytes += iCode;
-        npoints++;
+	p += iCode;
+	nbytes += iCode;
+	npoints++;
     }
 
     mux_assert(nbytes == m_iLast.m_byte);
@@ -5935,13 +5935,13 @@ void mux_string::Validate(void) const
 
     if (NULL != m_pcs)
     {
-        // Every ColorState must be valid.
-        //
-        size_t i;
-        for (i = 0; i < m_iLast.m_point; i++)
-        {
-            ValidateColorState(m_pcs[i]);
-        }
+	// Every ColorState must be valid.
+	//
+	size_t i;
+	for (i = 0; i < m_iLast.m_point; i++)
+	{
+	    ValidateColorState(m_pcs[i]);
+	}
     }
 }
 
@@ -5975,22 +5975,22 @@ void mux_string::append(const mux_string &sStr, mux_cursor iStart, mux_cursor iE
        || iEnd <= iStart
        || LBUF_SIZE-1 == m_iLast.m_byte)
     {
-        // The selection range is empty, or no buffer space is left.
-        //
-        return;
+	// The selection range is empty, or no buffer space is left.
+	//
+	return;
     }
 
     if (sStr.m_iLast < iEnd)
     {
-        iEnd = sStr.m_iLast;
+	iEnd = sStr.m_iLast;
     }
 
     if (CursorMax - m_iLast < iEnd - iStart)
     {
-        while (LBUF_SIZE-1 < m_iLast.m_byte + iEnd.m_byte - iStart.m_byte)
-        {
-            sStr.cursor_prev(iEnd);
-        }
+	while (LBUF_SIZE-1 < m_iLast.m_byte + iEnd.m_byte - iStart.m_byte)
+	{
+	    sStr.cursor_prev(iEnd);
+	}
     }
 
     LBUF_OFFSET nBytes = iEnd.m_byte - iStart.m_byte;
@@ -5999,24 +5999,24 @@ void mux_string::append(const mux_string &sStr, mux_cursor iStart, mux_cursor iE
     if (  0 != m_ncs
        || 0 != sStr.m_ncs)
     {
-        // One of the strings specifies ColorStates, so the result will need
-        // to as well.
-        //
-        realloc_m_pcs(m_iLast.m_point + nPoints);
+	// One of the strings specifies ColorStates, so the result will need
+	// to as well.
+	//
+	realloc_m_pcs(m_iLast.m_point + nPoints);
     }
 
     memcpy(m_autf + m_iLast.m_byte, sStr.m_autf + iStart.m_byte, nBytes);
 
     if (0 != sStr.m_ncs)
     {
-        memcpy(m_pcs + m_iLast.m_point, sStr.m_pcs + iStart.m_point, nPoints * sizeof(m_pcs[0]));
+	memcpy(m_pcs + m_iLast.m_point, sStr.m_pcs + iStart.m_point, nPoints * sizeof(m_pcs[0]));
     }
     else if (0 != m_ncs)
     {
-        for (size_t i = 0; i < nPoints; i++)
-        {
-            m_pcs[m_iLast.m_point + i] = CS_NORMAL;
-        }
+	for (size_t i = 0; i < nPoints; i++)
+	{
+	    m_pcs[m_iLast.m_point + i] = CS_NORMAL;
+	}
     }
 
     m_iLast(m_iLast.m_byte + nBytes, m_iLast.m_point + nPoints);
@@ -6028,21 +6028,21 @@ void mux_string::append(const UTF8 *pStr)
     if (  NULL == pStr
        || '\0' == *pStr)
     {
-        return;
+	return;
     }
 
     size_t nAvail = (LBUF_SIZE-1) - m_iLast.m_byte;
     if (0 == nAvail)
     {
-        // No room.
-        //
-        return;
+	// No room.
+	//
+	return;
     }
 
     size_t nLen = strlen((char *)pStr);
     if (nAvail < nLen)
     {
-        nLen = nAvail;
+	nLen = nAvail;
     }
 
     mux_string *sNew = new mux_string;
@@ -6058,19 +6058,19 @@ void mux_string::append(const UTF8 *pStr, size_t nLen)
     if (  NULL == pStr
        || '\0' == *pStr)
     {
-        return;
+	return;
     }
 
     size_t nAvail = (LBUF_SIZE-1) - m_iLast.m_byte;
     if (0 == nAvail)
     {
-        // No room.
-        //
-        return;
+	// No room.
+	//
+	return;
     }
     if (nAvail < nLen)
     {
-        nLen = nAvail;
+	nLen = nAvail;
     }
 
     mux_string *sNew = new mux_string;
@@ -6085,37 +6085,37 @@ void mux_string::append_TextPlain(const UTF8 *pStr)
     if (  '\0' == *pStr
        || LBUF_SIZE-1 <= m_iLast.m_byte)
     {
-        // The selection range is empty, or no buffer space is left.
-        //
-        return;
+	// The selection range is empty, or no buffer space is left.
+	//
+	return;
     }
 
     size_t nLen = strlen((char *)pStr);
 
     if (static_cast<size_t>((LBUF_SIZE-1) - m_iLast.m_byte) < nLen)
     {
-        nLen = (LBUF_SIZE-1) - m_iLast.m_byte;
+	nLen = (LBUF_SIZE-1) - m_iLast.m_byte;
     }
 
     memcpy(m_autf + m_iLast.m_byte, pStr, nLen * sizeof(m_autf[0]));
 
     mux_cursor i = m_iLast, j = i;
     while (  cursor_next(i)
-          && i.m_byte <= m_iLast.m_byte + nLen)
+	  && i.m_byte <= m_iLast.m_byte + nLen)
     {
-        j = i;
+	j = i;
     }
 
     if (0 != m_ncs)
     {
-        // Note that mux_string invariant is not maintained on the following
-        // call to realloc_m_pcs().
-        //
-        realloc_m_pcs(j.m_point);
-        for (size_t k = m_iLast.m_point; k < j.m_point; k++)
-        {
-            m_pcs[k] = CS_NORMAL;
-        }
+	// Note that mux_string invariant is not maintained on the following
+	// call to realloc_m_pcs().
+	//
+	realloc_m_pcs(j.m_point);
+	for (size_t k = m_iLast.m_point; k < j.m_point; k++)
+	{
+	    m_pcs[k] = CS_NORMAL;
+	}
     }
 
     m_iLast = j;
@@ -6128,32 +6128,32 @@ void mux_string::append_TextPlain(const UTF8 *pStr, size_t nLen)
        || 0 == nLen
        || LBUF_SIZE-1 == m_iLast.m_byte)
     {
-        // The selection range is empty, or no buffer space is left.
-        //
-        return;
+	// The selection range is empty, or no buffer space is left.
+	//
+	return;
     }
 
     if (static_cast<size_t>((LBUF_SIZE-1) - m_iLast.m_byte) < nLen)
     {
-        nLen = (LBUF_SIZE-1) - m_iLast.m_byte;
+	nLen = (LBUF_SIZE-1) - m_iLast.m_byte;
     }
 
     if (0 != m_ncs)
     {
-        realloc_m_pcs(m_iLast.m_point + nLen);
-        for (size_t i = 0; i < nLen; i++)
-        {
-            m_pcs[m_iLast.m_point + i] = CS_NORMAL;
-        }
+	realloc_m_pcs(m_iLast.m_point + nLen);
+	for (size_t i = 0; i < nLen; i++)
+	{
+	    m_pcs[m_iLast.m_point + i] = CS_NORMAL;
+	}
     }
 
     memcpy(m_autf + m_iLast.m_byte, pStr, nLen * sizeof(m_autf[0]));
 
     mux_cursor i = m_iLast, j = i;
     while (  cursor_next(i)
-          && i.m_byte <= m_iLast.m_byte + nLen)
+	  && i.m_byte <= m_iLast.m_byte + nLen)
     {
-        j = i;
+	j = i;
     }
 
     m_iLast = j;
@@ -6179,31 +6179,31 @@ void mux_string::compress(const UTF8 *ch)
 
     while (i < m_iLast)
     {
-        if (m_autf[i.m_byte] == ch[0])
-        {
-            k = 1;
-            while (  i.m_byte + k < m_iLast.m_byte
-                  && m_autf[i.m_byte + k] == ch[k % nChar])
-            {
-                k++;
-            }
-            if (1 < k)
-            {
-                j = i;
-                while (  j.m_byte < i.m_byte + k
-                      && cursor_next(j))
-                {
-                    ; // Nothing.
-                };
-                if (i.m_byte + k < j.m_byte)
-                {
-                    cursor_prev(j);
-                }
-                cursor_next(i);
-                delete_Chars(i, j);
-            }
-        }
-        cursor_next(i);
+	if (m_autf[i.m_byte] == ch[0])
+	{
+	    k = 1;
+	    while (  i.m_byte + k < m_iLast.m_byte
+		  && m_autf[i.m_byte + k] == ch[k % nChar])
+	    {
+		k++;
+	    }
+	    if (1 < k)
+	    {
+		j = i;
+		while (  j.m_byte < i.m_byte + k
+		      && cursor_next(j))
+		{
+		    ; // Nothing.
+		};
+		if (i.m_byte + k < j.m_byte)
+		{
+		    cursor_prev(j);
+		}
+		cursor_next(i);
+		delete_Chars(i, j);
+	    }
+	}
+	cursor_next(i);
     }
 }
 
@@ -6221,22 +6221,22 @@ void mux_string::compress_Spaces(void)
     mux_cursor i = CursorMin, j = CursorMin;
     while (i < m_iLast)
     {
-        if (mux_isspace(m_autf[i.m_byte]))
-        {
-            // look ahead for consecutive whitespace characters
-            //
-            j = i;
-            while (  cursor_next(j)
-                  && mux_isspace(m_autf[j.m_byte]))
-            {
-                ; // Nothing.
-            }
-            if (  cursor_next(i)
-               && i < j)
-            {
-                delete_Chars(i, j);
-            }
-        }
+	if (mux_isspace(m_autf[i.m_byte]))
+	{
+	    // look ahead for consecutive whitespace characters
+	    //
+	    j = i;
+	    while (  cursor_next(j)
+		  && mux_isspace(m_autf[j.m_byte]))
+	    {
+		; // Nothing.
+	    }
+	    if (  cursor_next(i)
+	       && i < j)
+	    {
+		delete_Chars(i, j);
+	    }
+	}
     }
     cursor_next(i);
 }
@@ -6253,18 +6253,18 @@ void mux_string::delete_Chars(mux_cursor iStart, mux_cursor iEnd)
     if (  m_iLast <= iStart
        || iEnd <= iStart)
     {
-        // The range does not select any characters.
-        //
-        return;
+	// The range does not select any characters.
+	//
+	return;
     }
 
     if (m_iLast <= iEnd)
     {
-        // The range extends beyond the end, so we can simply truncate.
-        //
-        m_iLast = iStart;
-        m_autf[m_iLast.m_byte] = '\0';
-        return;
+	// The range extends beyond the end, so we can simply truncate.
+	//
+	m_iLast = iStart;
+	m_autf[m_iLast.m_byte] = '\0';
+	return;
     }
 
     size_t nBytesMove = m_iLast.m_byte - iEnd.m_byte;
@@ -6272,7 +6272,7 @@ void mux_string::delete_Chars(mux_cursor iStart, mux_cursor iEnd)
     memmove(m_autf + iStart.m_byte, m_autf + iEnd.m_byte, nBytesMove);
     if (0 != m_ncs)
     {
-        memmove(m_pcs + iStart.m_point, m_pcs + iEnd.m_point, nPointsMove * sizeof(m_pcs[0]));
+	memmove(m_pcs + iStart.m_point, m_pcs + iEnd.m_point, nPointsMove * sizeof(m_pcs[0]));
     }
     m_iLast(m_iLast.m_byte - (iEnd.m_byte - iStart.m_byte), m_iLast.m_point - (iEnd.m_point - iStart.m_point));
     m_autf[m_iLast.m_byte] = '\0';
@@ -6300,51 +6300,51 @@ void mux_string::edit(mux_string &sFrom, const mux_string &sTo)
     if (  1 == nFrom.m_byte
        && '^' == sFrom.m_autf[0])
     {
-        // Prepend 'to' to string.
-        //
-        prepend(sTo);
+	// Prepend 'to' to string.
+	//
+	prepend(sTo);
     }
     else if (  1 == nFrom.m_byte
-            && '$' == sFrom.m_autf[0])
+	    && '$' == sFrom.m_autf[0])
     {
-        // Append 'to' to string.
-        //
-        append(sTo);
+	// Append 'to' to string.
+	//
+	append(sTo);
     }
     else
     {
-        // Replace all occurances of 'from' with 'to'. Handle the special
-        // cases of from = \$ and \^.
-        //
-        if (  (  '\\' == sFrom.m_autf[0]
-              || '%' == sFrom.m_autf[0])
-           && (  '$' == sFrom.m_autf[1]
-              || '^' == sFrom.m_autf[1])
-           && 2 == nFrom.m_byte)
-        {
-            mux_cursor n(1, 1);
-            sFrom.delete_Chars(CursorMin, n);
-            nFrom(nFrom.m_byte-1, nFrom.m_point-1);
-        }
+	// Replace all occurances of 'from' with 'to'. Handle the special
+	// cases of from = \$ and \^.
+	//
+	if (  (  '\\' == sFrom.m_autf[0]
+	      || '%' == sFrom.m_autf[0])
+	   && (  '$' == sFrom.m_autf[1]
+	      || '^' == sFrom.m_autf[1])
+	   && 2 == nFrom.m_byte)
+	{
+	    mux_cursor n(1, 1);
+	    sFrom.delete_Chars(CursorMin, n);
+	    nFrom(nFrom.m_byte-1, nFrom.m_point-1);
+	}
 
-        mux_cursor iStart = CursorMin, iFound = CursorMin;
-        mux_cursor nTo = sTo.m_iLast;
-        bool bSucceeded = search(sFrom, &iFound);
-        while (bSucceeded)
-        {
-            iStart = iFound;
-            replace_Chars(sTo, iStart, nFrom);
-            iStart = iStart + nTo;
+	mux_cursor iStart = CursorMin, iFound = CursorMin;
+	mux_cursor nTo = sTo.m_iLast;
+	bool bSucceeded = search(sFrom, &iFound);
+	while (bSucceeded)
+	{
+	    iStart = iFound;
+	    replace_Chars(sTo, iStart, nFrom);
+	    iStart = iStart + nTo;
 
-            if (iStart < m_iLast)
-            {
-                bSucceeded = search(sFrom, &iFound, iStart);
-            }
-            else
-            {
-                bSucceeded = false;
-            }
-        }
+	    if (iStart < m_iLast)
+	    {
+		bSucceeded = search(sFrom, &iFound, iStart);
+	    }
+	    else
+	    {
+		bSucceeded = false;
+	    }
+	}
     }
 }
 
@@ -6354,41 +6354,41 @@ void mux_string::encode_Html(void)
     mux_string *sTo = new mux_string;
     while (iPos < m_iLast)
     {
-        const UTF8 *pTo = NULL;
-        switch (m_autf[iPos.m_byte])
-        {
-        case '&':
-            pTo = T("&amp;");
-            break;
+	const UTF8 *pTo = NULL;
+	switch (m_autf[iPos.m_byte])
+	{
+	case '&':
+	    pTo = T("&amp;");
+	    break;
 
-        case '<':
-            pTo = T("&lt;");
-            break;
+	case '<':
+	    pTo = T("&lt;");
+	    break;
 
-        case '>':
-            pTo = T("&gt;");
-            break;
+	case '>':
+	    pTo = T("&gt;");
+	    break;
 
-        case '\"':
-            pTo = T("&quot;");
-            break;
-        }
+	case '\"':
+	    pTo = T("&quot;");
+	    break;
+	}
 
-        if (NULL != pTo)
-        {
-            sTo->import(pTo);
-            if (NULL != m_pcs)
-            {
-                ColorState cs = m_pcs[iPos.m_point];
-                sTo->realloc_m_pcs(sTo->m_iLast.m_point);
-                for (size_t i = 0; i < sTo->m_iLast.m_point; i++)
-                {
-                    sTo->m_pcs[i] = cs;
-                }
-            }
-            replace_Chars(*sTo, iPos, mux_cursor(1, 1));
-        }
-        cursor_next(iPos);
+	if (NULL != pTo)
+	{
+	    sTo->import(pTo);
+	    if (NULL != m_pcs)
+	    {
+		ColorState cs = m_pcs[iPos.m_point];
+		sTo->realloc_m_pcs(sTo->m_iLast.m_point);
+		for (size_t i = 0; i < sTo->m_iLast.m_point; i++)
+		{
+		    sTo->m_pcs[i] = cs;
+		}
+	    }
+	    replace_Chars(*sTo, iPos, mux_cursor(1, 1));
+	}
+	cursor_next(iPos);
     }
     delete sTo;
 }
@@ -6399,7 +6399,7 @@ UTF8 mux_string::export_Char(size_t n) const
 {
     if (m_iLast.m_byte <= n)
     {
-        return '\0';
+	return '\0';
     }
     return m_autf[n];
 }
@@ -6408,32 +6408,32 @@ LBUF_OFFSET mux_string::export_Char_UTF8(size_t iFirst, UTF8 *pBuffer) const
 {
     if (m_iLast.m_byte <= iFirst)
     {
-        if (NULL != pBuffer)
-        {
-            pBuffer[0] = '\0';
-        }
-        return 0;
+	if (NULL != pBuffer)
+	{
+	    pBuffer[0] = '\0';
+	}
+	return 0;
     }
 
     LBUF_OFFSET nBytes = utf8_FirstByte[m_autf[iFirst]];
 
     if (UTF8_CONTINUE <= nBytes)
     {
-        if (NULL != pBuffer)
-        {
-            pBuffer[0] = '\0';
-        }
-        return 0;
+	if (NULL != pBuffer)
+	{
+	    pBuffer[0] = '\0';
+	}
+	return 0;
     }
 
     if (NULL != pBuffer)
     {
-        LBUF_OFFSET i;
-        for (i = 0; i < nBytes; i++)
-        {
-            pBuffer[i] = m_autf[iFirst + i];
-        }
-        pBuffer[i] = '\0';
+	LBUF_OFFSET i;
+	for (i = 0; i < nBytes; i++)
+	{
+	    pBuffer[i] = m_autf[iFirst + i];
+	}
+	pBuffer[i] = '\0';
     }
     return nBytes;
 }
@@ -6443,7 +6443,7 @@ ColorState mux_string::export_Color(size_t n) const
     if (  m_iLast.m_point <= n
        || 0 == m_ncs)
     {
-        return CS_NORMAL;
+	return CS_NORMAL;
     }
     ValidateColorState(m_pcs[n]);
     return m_pcs[n];
@@ -6488,18 +6488,18 @@ LBUF_OFFSET mux_string::export_TextColor
     //
     if (!pBuffer)
     {
-        return 0;
+	return 0;
     }
     if (  m_iLast <= iStart
        || iEnd <= iStart
        || 0 == nBytesMax)
     {
-        *pBuffer = '\0';
-        return 0;
+	*pBuffer = '\0';
+	return 0;
     }
     if (m_iLast < iEnd)
     {
-        iEnd = m_iLast;
+	iEnd = m_iLast;
     }
 
     // iStart is the position in the source string where we will start
@@ -6515,10 +6515,10 @@ LBUF_OFFSET mux_string::export_TextColor
     LBUF_OFFSET nPointsWanted = iEnd.m_point - iStart.m_point;
     if (0 == m_ncs)
     {
-        return export_TextPlain(pBuffer, iStart, iEnd, nBytesMax);
+	return export_TextPlain(pBuffer, iStart, iEnd, nBytesMax);
     }
     bool bPlentyOfRoom = (nBytesMax >
-        static_cast<size_t>(nBytesWanted + (COLOR_MAXIMUM_BINARY_TRANSITION_LENGTH * nPointsWanted) + COLOR_MAXIMUM_BINARY_NORMAL + 1));
+	static_cast<size_t>(nBytesWanted + (COLOR_MAXIMUM_BINARY_TRANSITION_LENGTH * nPointsWanted) + COLOR_MAXIMUM_BINARY_NORMAL + 1));
     mux_cursor iPos = iStart, iCopy = iStart;
     size_t nTransition = 0;
     const UTF8 *pTransition = NULL;
@@ -6527,41 +6527,41 @@ LBUF_OFFSET mux_string::export_TextColor
 
     if (bPlentyOfRoom)
     {
-        while (iPos < iEnd)
-        {
-            if (csPrev != m_pcs[iPos.m_point])
-            {
-                if (iCopy < iPos)
-                {
-                    nCopy = iPos.m_byte - iCopy.m_byte;
-                    memcpy(pBuffer + nDone, m_autf + iCopy.m_byte, nCopy);
-                    nDone = static_cast<LBUF_OFFSET>(nDone + nCopy);
-                    iCopy = iPos;
-                }
+	while (iPos < iEnd)
+	{
+	    if (csPrev != m_pcs[iPos.m_point])
+	    {
+		if (iCopy < iPos)
+		{
+		    nCopy = iPos.m_byte - iCopy.m_byte;
+		    memcpy(pBuffer + nDone, m_autf + iCopy.m_byte, nCopy);
+		    nDone = static_cast<LBUF_OFFSET>(nDone + nCopy);
+		    iCopy = iPos;
+		}
 
-                pTransition = ColorTransitionBinary( csPrev,
-                                                     m_pcs[iPos.m_point],
-                                                     &nTransition);
-                memcpy(pBuffer + nDone, pTransition, nTransition * sizeof(pTransition[0]));
-                nDone = static_cast<LBUF_OFFSET>(nDone + nTransition);
-                csPrev = m_pcs[iPos.m_point];
-            }
-            cursor_next(iPos);
-        }
-        if (iCopy < iPos)
-        {
-            nCopy = iPos.m_byte - iCopy.m_byte;
-            memcpy(pBuffer + nDone, m_autf + iCopy.m_byte, nCopy);
-            nDone = static_cast<LBUF_OFFSET>(nDone + nCopy);
-        }
-        if (csPrev != CS_NORMAL)
-        {
-            pTransition = ColorBinaryNormal(csPrev, &nTransition);
-            memcpy(pBuffer + nDone, pTransition, nTransition * sizeof(pTransition[0]));
-            nDone = static_cast<LBUF_OFFSET>(nDone + nTransition);
-        }
-        pBuffer[nDone] = '\0';
-        return nDone;
+		pTransition = ColorTransitionBinary( csPrev,
+						     m_pcs[iPos.m_point],
+						     &nTransition);
+		memcpy(pBuffer + nDone, pTransition, nTransition * sizeof(pTransition[0]));
+		nDone = static_cast<LBUF_OFFSET>(nDone + nTransition);
+		csPrev = m_pcs[iPos.m_point];
+	    }
+	    cursor_next(iPos);
+	}
+	if (iCopy < iPos)
+	{
+	    nCopy = iPos.m_byte - iCopy.m_byte;
+	    memcpy(pBuffer + nDone, m_autf + iCopy.m_byte, nCopy);
+	    nDone = static_cast<LBUF_OFFSET>(nDone + nCopy);
+	}
+	if (csPrev != CS_NORMAL)
+	{
+	    pTransition = ColorBinaryNormal(csPrev, &nTransition);
+	    memcpy(pBuffer + nDone, pTransition, nTransition * sizeof(pTransition[0]));
+	    nDone = static_cast<LBUF_OFFSET>(nDone + nTransition);
+	}
+	pBuffer[nDone] = '\0';
+	return nDone;
     }
 
     // There's a chance we might hit the end of the buffer. Do it the hard way.
@@ -6570,48 +6570,48 @@ LBUF_OFFSET mux_string::export_TextColor
     LBUF_OFFSET nChar = 0;
     while (iPos < iEnd)
     {
-        if (csPrev != m_pcs[iPos.m_point])
-        {
-            pTransition = ColorTransitionBinary( csPrev, m_pcs[iPos.m_point],
-                                                 &nTransition);
-        }
-        else
-        {
-            nTransition = 0;
-        }
-        nChar = utf8_FirstByte[m_autf[iPos.m_byte]];
-        if (nBytesMax < nDone + nTransition + nChar + COLOR_MAXIMUM_BINARY_NORMAL)
-        {
-            if (  !bNearEnd
-               || nTransition)
-            {
-                ColorBinaryNormal(m_pcs[iPos.m_point], &nNeededAfter);
-                bNearEnd = true;
-            }
-            if (nBytesMax < nDone + nTransition + nChar + nNeededAfter)
-            {
-                // There isn't enough room to add the color sequence,
-                // its character, and still get back to normal. Stop here.
-                //
-                break;
-            }
-        }
-        if (nTransition)
-        {
-            memcpy(pBuffer + nDone, pTransition, nTransition * sizeof(pTransition[0]));
-            nDone = static_cast<LBUF_OFFSET>(nDone + nTransition);
-            csPrev = m_pcs[iPos.m_point];
-        }
-        memcpy(pBuffer + nDone, m_autf + iPos.m_byte, nChar * sizeof(m_autf[0]));
-        nDone = static_cast<LBUF_OFFSET>(nDone + nChar);
-        cursor_next(iPos);
+	if (csPrev != m_pcs[iPos.m_point])
+	{
+	    pTransition = ColorTransitionBinary( csPrev, m_pcs[iPos.m_point],
+						 &nTransition);
+	}
+	else
+	{
+	    nTransition = 0;
+	}
+	nChar = utf8_FirstByte[m_autf[iPos.m_byte]];
+	if (nBytesMax < nDone + nTransition + nChar + COLOR_MAXIMUM_BINARY_NORMAL)
+	{
+	    if (  !bNearEnd
+	       || nTransition)
+	    {
+		ColorBinaryNormal(m_pcs[iPos.m_point], &nNeededAfter);
+		bNearEnd = true;
+	    }
+	    if (nBytesMax < nDone + nTransition + nChar + nNeededAfter)
+	    {
+		// There isn't enough room to add the color sequence,
+		// its character, and still get back to normal. Stop here.
+		//
+		break;
+	    }
+	}
+	if (nTransition)
+	{
+	    memcpy(pBuffer + nDone, pTransition, nTransition * sizeof(pTransition[0]));
+	    nDone = static_cast<LBUF_OFFSET>(nDone + nTransition);
+	    csPrev = m_pcs[iPos.m_point];
+	}
+	memcpy(pBuffer + nDone, m_autf + iPos.m_byte, nChar * sizeof(m_autf[0]));
+	nDone = static_cast<LBUF_OFFSET>(nDone + nChar);
+	cursor_next(iPos);
     }
     pTransition = ColorBinaryNormal(csPrev, &nTransition);
     if (  nTransition
        && nDone + nTransition <= nBytesMax)
     {
-        memcpy(pBuffer + nDone, pTransition, nTransition * sizeof(pTransition[0]));
-        nDone = static_cast<LBUF_OFFSET>(nDone + nTransition);
+	memcpy(pBuffer + nDone, pTransition, nTransition * sizeof(pTransition[0]));
+	nDone = static_cast<LBUF_OFFSET>(nDone + nTransition);
     }
     pBuffer[nDone] = '\0';
     return nDone;
@@ -6638,20 +6638,20 @@ UTF8 *mux_string::export_TextConverted
        || 0 == m_iLast.m_point
        || !fColor)
     {
-        export_TextPlain(Buffer);
-        return Buffer;
+	export_TextPlain(Buffer);
+	return Buffer;
     }
     else if (fHtml)
     {
-        export_TextHtml(sizeof(Buffer), Buffer);
-        return Buffer;
+	export_TextHtml(sizeof(Buffer), Buffer);
+	return Buffer;
     }
 
     static const UTF8 *pNormal= T(ANSI_NORMAL ANSI_WHITE);
     size_t nNormal = sizeof(ANSI_NORMAL)-1;
     if (fNoBleed)
     {
-        nNormal += sizeof(ANSI_WHITE)-1;
+	nNormal += sizeof(ANSI_WHITE)-1;
     }
 
     mux_cursor curIn, iCopy;
@@ -6665,44 +6665,44 @@ UTF8 *mux_string::export_TextConverted
 
     if (bPlentyOfRoom)
     {
-        while (curIn < m_iLast)
-        {
-            csCurrent = m_pcs[curIn.m_point];
-            ValidateColorState(csCurrent);
-            if (csPrev != csCurrent)
-            {
-                if (iCopy < curIn)
-                {
-                    nCopy = (curIn - iCopy).m_byte;
-                    memcpy(Buffer + iOut, m_autf + iCopy.m_byte, nCopy);
-                    iOut += nCopy;
-                    iCopy = curIn;
-                }
-                pTransition = ColorTransitionANSI( csClient, csCurrent,
-                                                   &nTransition, fNoBleed, fColor256);
-                if (nTransition)
-                {
-                    memcpy(Buffer + iOut, pTransition, nTransition);
-                    iOut += nTransition;
-                }
-                csPrev = csCurrent;
-            }
-            cursor_next(curIn);
-        }
+	while (curIn < m_iLast)
+	{
+	    csCurrent = m_pcs[curIn.m_point];
+	    ValidateColorState(csCurrent);
+	    if (csPrev != csCurrent)
+	    {
+		if (iCopy < curIn)
+		{
+		    nCopy = (curIn - iCopy).m_byte;
+		    memcpy(Buffer + iOut, m_autf + iCopy.m_byte, nCopy);
+		    iOut += nCopy;
+		    iCopy = curIn;
+		}
+		pTransition = ColorTransitionANSI( csClient, csCurrent,
+						   &nTransition, fNoBleed, fColor256);
+		if (nTransition)
+		{
+		    memcpy(Buffer + iOut, pTransition, nTransition);
+		    iOut += nTransition;
+		}
+		csPrev = csCurrent;
+	    }
+	    cursor_next(curIn);
+	}
 
-        if (iCopy < curIn)
-        {
-            nCopy = (curIn - iCopy).m_byte;
-            memcpy(Buffer + iOut, m_autf + iCopy.m_byte, nCopy);
-            iOut += nCopy;
-        }
-        if (csPrev != CS_NORMAL)
-        {
-            memcpy(Buffer + iOut, pNormal, nNormal);
-            iOut += nNormal;
-        }
-        Buffer[iOut] = '\0';
-        return Buffer;
+	if (iCopy < curIn)
+	{
+	    nCopy = (curIn - iCopy).m_byte;
+	    memcpy(Buffer + iOut, m_autf + iCopy.m_byte, nCopy);
+	    iOut += nCopy;
+	}
+	if (csPrev != CS_NORMAL)
+	{
+	    memcpy(Buffer + iOut, pNormal, nNormal);
+	    iOut += nNormal;
+	}
+	Buffer[iOut] = '\0';
+	return Buffer;
     }
 
     // There's a chance we might hit the end of the buffer. Do it the hard way.
@@ -6711,59 +6711,59 @@ UTF8 *mux_string::export_TextConverted
     LBUF_OFFSET nChar = 0;
     while (curIn < m_iLast)
     {
-        csCurrent = m_pcs[curIn.m_point];
-        ValidateColorState(csCurrent);
-        if (csPrev != csCurrent)
-        {
-            pTransition = ColorTransitionANSI( csClient, csCurrent,
-                                               &nTransition, fNoBleed, fColor256);
-        }
-        else
-        {
-            nTransition = 0;
-        }
-        nChar = utf8_FirstByte[m_autf[curIn.m_byte]];
-        if (sizeof(Buffer) <= iOut + nTransition + nChar + nNormal)
-        {
-            if (  !bNearEnd
-               || nTransition)
-            {
-                if (  CS_NORMAL == csCurrent
-                   || (  fNoBleed
-                      && CS_NOBLEED == csCurrent))
-                {
-                    nNeededAfter = 0;
-                }
-                else
-                {
-                    nNeededAfter = nNormal;
-                }
-                bNearEnd = true;
-            }
-            if (sizeof(Buffer) <= iOut + nTransition + nChar + nNeededAfter)
-            {
-                // There isn't enough room to add the color sequence,
-                // its character, and still get back to normal. Stop here.
-                //
-                break;
-            }
-        }
-        if (nTransition)
-        {
-            memcpy(Buffer + iOut, pTransition, nTransition);
-            iOut += nTransition;
-            csPrev = csCurrent;
-        }
-        memcpy(Buffer + iOut, m_autf + curIn.m_byte, nChar);
-        iOut += nChar;
-        cursor_next(curIn);
+	csCurrent = m_pcs[curIn.m_point];
+	ValidateColorState(csCurrent);
+	if (csPrev != csCurrent)
+	{
+	    pTransition = ColorTransitionANSI( csClient, csCurrent,
+					       &nTransition, fNoBleed, fColor256);
+	}
+	else
+	{
+	    nTransition = 0;
+	}
+	nChar = utf8_FirstByte[m_autf[curIn.m_byte]];
+	if (sizeof(Buffer) <= iOut + nTransition + nChar + nNormal)
+	{
+	    if (  !bNearEnd
+	       || nTransition)
+	    {
+		if (  CS_NORMAL == csCurrent
+		   || (  fNoBleed
+		      && CS_NOBLEED == csCurrent))
+		{
+		    nNeededAfter = 0;
+		}
+		else
+		{
+		    nNeededAfter = nNormal;
+		}
+		bNearEnd = true;
+	    }
+	    if (sizeof(Buffer) <= iOut + nTransition + nChar + nNeededAfter)
+	    {
+		// There isn't enough room to add the color sequence,
+		// its character, and still get back to normal. Stop here.
+		//
+		break;
+	    }
+	}
+	if (nTransition)
+	{
+	    memcpy(Buffer + iOut, pTransition, nTransition);
+	    iOut += nTransition;
+	    csPrev = csCurrent;
+	}
+	memcpy(Buffer + iOut, m_autf + curIn.m_byte, nChar);
+	iOut += nChar;
+	cursor_next(curIn);
     }
 
     if (  csPrev != CS_NORMAL
        && iOut + nNormal < sizeof(Buffer))
     {
-        memcpy(Buffer + iOut, pNormal, nNormal);
-        iOut += nNormal;
+	memcpy(Buffer + iOut, pNormal, nNormal);
+	iOut += nNormal;
     }
     Buffer[iOut] = '\0';
     return Buffer;
@@ -6778,7 +6778,7 @@ void mux_string::export_TextHtml
     if (  0 == m_ncs
        || 0 == m_iLast.m_point)
     {
-        export_TextPlain(aBuffer);
+	export_TextPlain(aBuffer);
     }
 
     // Converting to HTML is performed in two passes. The first pass
@@ -6794,11 +6794,11 @@ void mux_string::export_TextHtml
 
     if (CS_NORMAL == m_pcs[0])
     {
-        List[nList].fBeginEnd = true;
-        List[nList].kTag = kNormal;
-        List[nList].cs = CS_NORMAL;
-        List[nList].iStart = 0;
-        nList++;
+	List[nList].fBeginEnd = true;
+	List[nList].kTag = kNormal;
+	List[nList].cs = CS_NORMAL;
+	List[nList].iStart = 0;
+	nList++;
     }
 
     ColorState csPrev = CS_NORMAL;
@@ -6806,358 +6806,358 @@ void mux_string::export_TextHtml
 
     for (size_t i = 0; i < m_iLast.m_point; i++)
     {
-        csNext = m_pcs[i];
-        if (0 != (csNext & ~CS_ALLBITS))
-        {
-            STARTLOG(LOG_BUGS, "BUG", "INFO");
-            Log.tinyprintf(T("csNext = 0x%08llX, (csNext & CS_ALLBITS) = 0x%08llX, %d, %d" ENDLINE), csNext, csNext & CS_ALLBITS, i, m_iLast.m_point);
-            ENDLOG;
-        }
-        mux_assert((csNext & ~CS_ALLBITS) == 0);
-        while (csNext != csPrev)
-        {
-            for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG + 1; iAttr++)
-            {
-                ColorState tmp = csNext ^ csPrev;
-                mux_assert((tmp & ~CS_ALLBITS) == 0);
-                HTMLtag kNext = tagmap[iAttr - COLOR_INDEX_ATTR];
-                bool fOpen = false;
-                bool fClose = false;
+	csNext = m_pcs[i];
+	if (0 != (csNext & ~CS_ALLBITS))
+	{
+	    STARTLOG(LOG_BUGS, "BUG", "INFO");
+	    Log.tinyprintf(T("csNext = 0x%08llX, (csNext & CS_ALLBITS) = 0x%08llX, %d, %d" ENDLINE), csNext, csNext & CS_ALLBITS, i, m_iLast.m_point);
+	    ENDLOG;
+	}
+	mux_assert((csNext & ~CS_ALLBITS) == 0);
+	while (csNext != csPrev)
+	{
+	    for (unsigned int iAttr = COLOR_INDEX_ATTR; iAttr < COLOR_INDEX_FG + 1; iAttr++)
+	    {
+		ColorState tmp = csNext ^ csPrev;
+		mux_assert((tmp & ~CS_ALLBITS) == 0);
+		HTMLtag kNext = tagmap[iAttr - COLOR_INDEX_ATTR];
+		bool fOpen = false;
+		bool fClose = false;
 
-                if (iAttr < COLOR_INDEX_FG)
-                {
-                    // Attribute
-                    //
-                    if (tmp & aColors[iAttr].csMask)
-                    {
-                        if (csNext & aColors[iAttr].csMask)
-                        {
-                            fOpen = true;
-                        }
-                        else
-                        {
-                            fClose = true;
-                        }
-                    }
-                }
-                else
-                {
-                    // Color
-                    //
-                    if (tmp & CS_FOREGROUND)
-                    {
-                        if (  (csPrev & CS_FOREGROUND) == CS_FG_DEFAULT
-                           && (csNext & CS_FOREGROUND) != CS_FG_DEFAULT)
-                        {
-                            fOpen = true;
-                        }
-                        else if (  (csPrev & CS_FOREGROUND) != CS_FG_DEFAULT
-                                && (csNext & CS_FOREGROUND) == CS_FG_DEFAULT)
-                        {
-                            fClose = true;
-                        }
-                        else
-                        {
-                            fOpen = true;
-                            fClose = true;
-                        }
-                    }
-                    if (tmp & CS_BACKGROUND)
-                    {
-                        if (  (csPrev & CS_BACKGROUND) == CS_BG_DEFAULT
-                           && (csNext & CS_BACKGROUND) != CS_BG_DEFAULT)
-                        {
-                            fOpen = true;
-                        }
-                        else if (  (csPrev & CS_BACKGROUND) != CS_BG_DEFAULT
-                                && (csNext & CS_BACKGROUND) == CS_BG_DEFAULT)
-                        {
-                            fClose = true;
-                        }
-                        else
-                        {
-                            fOpen = true;
-                            fClose = true;
-                        }
-                    }
-                }
+		if (iAttr < COLOR_INDEX_FG)
+		{
+		    // Attribute
+		    //
+		    if (tmp & aColors[iAttr].csMask)
+		    {
+			if (csNext & aColors[iAttr].csMask)
+			{
+			    fOpen = true;
+			}
+			else
+			{
+			    fClose = true;
+			}
+		    }
+		}
+		else
+		{
+		    // Color
+		    //
+		    if (tmp & CS_FOREGROUND)
+		    {
+			if (  (csPrev & CS_FOREGROUND) == CS_FG_DEFAULT
+			   && (csNext & CS_FOREGROUND) != CS_FG_DEFAULT)
+			{
+			    fOpen = true;
+			}
+			else if (  (csPrev & CS_FOREGROUND) != CS_FG_DEFAULT
+				&& (csNext & CS_FOREGROUND) == CS_FG_DEFAULT)
+			{
+			    fClose = true;
+			}
+			else
+			{
+			    fOpen = true;
+			    fClose = true;
+			}
+		    }
+		    if (tmp & CS_BACKGROUND)
+		    {
+			if (  (csPrev & CS_BACKGROUND) == CS_BG_DEFAULT
+			   && (csNext & CS_BACKGROUND) != CS_BG_DEFAULT)
+			{
+			    fOpen = true;
+			}
+			else if (  (csPrev & CS_BACKGROUND) != CS_BG_DEFAULT
+				&& (csNext & CS_BACKGROUND) == CS_BG_DEFAULT)
+			{
+			    fClose = true;
+			}
+			else
+			{
+			    fOpen = true;
+			    fClose = true;
+			}
+		    }
+		}
 
-                if (fClose)
-                {
-                    for (int j = nStack - 1; 0 <= j; j--)
-                    {
-                        if (List[Stack[j]].kTag == kNext)
-                        {
-                            if (List[Stack[j]].iStart != List[Stack[nStack-1]].iStart)
-                            {
-                                // Pop other tags and mark in csPrev that they are gone.  We'll add them back in the next
-                                // iteration of the loop.  We stop at the point where tags can be swapped with the one
-                                // we're interested in.
-                                //
-                                for (int k = nStack - 1; j < k  && List[Stack[j]].iStart != List[Stack[nStack-1]].iStart; k--)
-                                {
-                                    List[nList] = List[Stack[k]];
-                                    List[nList].fBeginEnd = false;
-                                    List[nList].iStart = i;
+		if (fClose)
+		{
+		    for (int j = nStack - 1; 0 <= j; j--)
+		    {
+			if (List[Stack[j]].kTag == kNext)
+			{
+			    if (List[Stack[j]].iStart != List[Stack[nStack-1]].iStart)
+			    {
+				// Pop other tags and mark in csPrev that they are gone.  We'll add them back in the next
+				// iteration of the loop.  We stop at the point where tags can be swapped with the one
+				// we're interested in.
+				//
+				for (int k = nStack - 1; j < k  && List[Stack[j]].iStart != List[Stack[nStack-1]].iStart; k--)
+				{
+				    List[nList] = List[Stack[k]];
+				    List[nList].fBeginEnd = false;
+				    List[nList].iStart = i;
 
-                                    switch (List[nList].kTag)
-                                    {
-                                    case kIntense:
-                                        csPrev &= ~CS_INTENSE;
-                                        break;
+				    switch (List[nList].kTag)
+				    {
+				    case kIntense:
+					csPrev &= ~CS_INTENSE;
+					break;
 
-                                    case kUnderline:
-                                        csPrev &= ~CS_UNDERLINE;
-                                        break;
+				    case kUnderline:
+					csPrev &= ~CS_UNDERLINE;
+					break;
 
-                                    case kBlink:
-                                        csPrev &= ~CS_BLINK;
-                                        break;
+				    case kBlink:
+					csPrev &= ~CS_BLINK;
+					break;
 
-                                    case kInverse:
-                                        csPrev &= ~CS_INVERSE;
-                                        break;
+				    case kInverse:
+					csPrev &= ~CS_INVERSE;
+					break;
 
-                                    case kColor:
-                                        csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
-                                        break;
+				    case kColor:
+					csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
+					break;
 
-                                    default:
-                                        break;
-                                    }
-                                    mux_assert((csPrev & ~CS_ALLBITS) == 0);
-                                    nList++;
-                                    nStack--;
-                                }
-                            }
+				    default:
+					break;
+				    }
+				    mux_assert((csPrev & ~CS_ALLBITS) == 0);
+				    nList++;
+				    nStack--;
+				}
+			    }
 
-                            if (j != nStack - 1)
-                            {
-                                // Change the order of tags which open at the
-                                // same position so that the one we want to
-                                // close can be popped.
-                                //
-                                tag_node t = List[Stack[j]];
-                                List[Stack[j]] = List[Stack[nStack-1]];
-                                List[Stack[nStack-1]] = t;
-                                j = nStack - 1;
-                            }
+			    if (j != nStack - 1)
+			    {
+				// Change the order of tags which open at the
+				// same position so that the one we want to
+				// close can be popped.
+				//
+				tag_node t = List[Stack[j]];
+				List[Stack[j]] = List[Stack[nStack-1]];
+				List[Stack[nStack-1]] = t;
+				j = nStack - 1;
+			    }
 
-                            List[nList] = List[Stack[j]];
-                            List[nList].fBeginEnd = false;
-                            List[nList].iStart = i;
-                            switch (List[nList].kTag)
-                            {
-                            case kIntense:
-                                csPrev &= ~CS_INTENSE;
-                                break;
+			    List[nList] = List[Stack[j]];
+			    List[nList].fBeginEnd = false;
+			    List[nList].iStart = i;
+			    switch (List[nList].kTag)
+			    {
+			    case kIntense:
+				csPrev &= ~CS_INTENSE;
+				break;
 
-                            case kUnderline:
-                                csPrev &= ~CS_UNDERLINE;
-                                break;
+			    case kUnderline:
+				csPrev &= ~CS_UNDERLINE;
+				break;
 
-                            case kBlink:
-                                csPrev &= ~CS_BLINK;
-                                break;
+			    case kBlink:
+				csPrev &= ~CS_BLINK;
+				break;
 
-                            case kInverse:
-                                csPrev &= ~CS_INVERSE;
-                                break;
+			    case kInverse:
+				csPrev &= ~CS_INVERSE;
+				break;
 
-                            case kColor:
-                                csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
-                                break;
+			    case kColor:
+				csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
+				break;
 
-                            default:
-                                break;
-                            }
-                            mux_assert((csPrev & ~CS_ALLBITS) == 0);
-                            nList++;
+			    default:
+				break;
+			    }
+			    mux_assert((csPrev & ~CS_ALLBITS) == 0);
+			    nList++;
 
-                            nStack--;
-                            break;
-                        }
-                    }
-                }
+			    nStack--;
+			    break;
+			}
+		    }
+		}
 
-                if (fOpen)
-                {
-                    List[nList].fBeginEnd = true;
-                    List[nList].cs = csNext;
-                    List[nList].kTag = kNext;
-                    List[nList].iStart = i;
-                    switch (List[nList].kTag)
-                    {
-                    case kIntense:
-                        csPrev |= CS_INTENSE;
-                        break;
+		if (fOpen)
+		{
+		    List[nList].fBeginEnd = true;
+		    List[nList].cs = csNext;
+		    List[nList].kTag = kNext;
+		    List[nList].iStart = i;
+		    switch (List[nList].kTag)
+		    {
+		    case kIntense:
+			csPrev |= CS_INTENSE;
+			break;
 
-                    case kUnderline:
-                        csPrev |= CS_UNDERLINE;
-                        break;
+		    case kUnderline:
+			csPrev |= CS_UNDERLINE;
+			break;
 
-                    case kBlink:
-                        csPrev |= CS_BLINK;
-                        break;
+		    case kBlink:
+			csPrev |= CS_BLINK;
+			break;
 
-                    case kInverse:
-                        csPrev |= CS_INVERSE;
-                        break;
+		    case kInverse:
+			csPrev |= CS_INVERSE;
+			break;
 
-                    case kColor:
-                        csPrev &= ~(CS_FOREGROUND|CS_BACKGROUND);
-                        csPrev |= (CS_FOREGROUND|CS_BACKGROUND) & csNext;;
-                        break;
+		    case kColor:
+			csPrev &= ~(CS_FOREGROUND|CS_BACKGROUND);
+			csPrev |= (CS_FOREGROUND|CS_BACKGROUND) & csNext;;
+			break;
 
-                    default:
-                        break;
-                    }
-                    mux_assert((csPrev & ~CS_ALLBITS) == 0);
-                    Stack[nStack++] = nList++;
-                }
-            }
-        }
+		    default:
+			break;
+		    }
+		    mux_assert((csPrev & ~CS_ALLBITS) == 0);
+		    Stack[nStack++] = nList++;
+		}
+	    }
+	}
     }
 
     while (0 < nStack)
     {
-        List[nList] = List[Stack[nStack-1]];
-        List[nList].fBeginEnd = false;
-        List[nList].iStart = m_iLast.m_point;
-        switch (List[nList].kTag)
-        {
-        case kIntense:
-            csPrev &= ~CS_INTENSE;
-            break;
+	List[nList] = List[Stack[nStack-1]];
+	List[nList].fBeginEnd = false;
+	List[nList].iStart = m_iLast.m_point;
+	switch (List[nList].kTag)
+	{
+	case kIntense:
+	    csPrev &= ~CS_INTENSE;
+	    break;
 
-        case kUnderline:
-            csPrev &= ~CS_UNDERLINE;
-            break;
+	case kUnderline:
+	    csPrev &= ~CS_UNDERLINE;
+	    break;
 
-        case kBlink:
-            csPrev &= ~CS_BLINK;
-            break;
+	case kBlink:
+	    csPrev &= ~CS_BLINK;
+	    break;
 
-        case kInverse:
-            csPrev &= ~CS_INVERSE;
-            break;
+	case kInverse:
+	    csPrev &= ~CS_INVERSE;
+	    break;
 
-        case kColor:
-            csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
-            break;
+	case kColor:
+	    csPrev = (csPrev & ~(CS_FOREGROUND|CS_BACKGROUND)) | CS_NORMAL;
+	    break;
 
-        default:
-            break;
-        }
-        mux_assert((csPrev & ~CS_ALLBITS) == 0);
-        nList++;
+	default:
+	    break;
+	}
+	mux_assert((csPrev & ~CS_ALLBITS) == 0);
+	nList++;
 
-        nStack--;
+	nStack--;
     }
 
     UTF8 *pBuffer = aBuffer;
     for (int iList = 0; iList < nList; iList++)
     {
-        if (kNormal != List[iList].kTag)
-        {
-            *pBuffer++ = '<';
-            if (!List[iList].fBeginEnd)
-            {
-                *pBuffer++ = '/';
-            }
+	if (kNormal != List[iList].kTag)
+	{
+	    *pBuffer++ = '<';
+	    if (!List[iList].fBeginEnd)
+	    {
+		*pBuffer++ = '/';
+	    }
 
-            switch (List[iList].kTag)
-            {
-            case kIntense:
-                *pBuffer++ = 'B';
-                break;
+	    switch (List[iList].kTag)
+	    {
+	    case kIntense:
+		*pBuffer++ = 'B';
+		break;
 
-            case kUnderline:
-                *pBuffer++ = 'U';
-                break;
+	    case kUnderline:
+		*pBuffer++ = 'U';
+		break;
 
-            case kBlink:
-                *pBuffer++ = 'I';
-                break;
+	    case kBlink:
+		*pBuffer++ = 'I';
+		break;
 
-            case kInverse:
-                *pBuffer++ = 'S';
-                break;
+	    case kInverse:
+		*pBuffer++ = 'S';
+		break;
 
-            case kColor:
-                if (List[iList].fBeginEnd)
-                {
-                    ColorState cs = List[iList].cs;
-                    if (  (CS_FOREGROUND & cs) != CS_FG_DEFAULT
-                       && (CS_FG_INDEXED & cs))
-                    {
-                       cs = (cs & ~CS_FOREGROUND) | rgb2cs(&palette[CS_FG_FIELD(cs)].rgb);
-                    }
+	    case kColor:
+		if (List[iList].fBeginEnd)
+		{
+		    ColorState cs = List[iList].cs;
+		    if (  (CS_FOREGROUND & cs) != CS_FG_DEFAULT
+		       && (CS_FG_INDEXED & cs))
+		    {
+		       cs = (cs & ~CS_FOREGROUND) | rgb2cs(&palette[CS_FG_FIELD(cs)].rgb);
+		    }
 
-                    if (  (CS_BACKGROUND & cs) != CS_BG_DEFAULT
-                       && (CS_BG_INDEXED & cs))
-                    {
-                        cs = (cs & ~CS_BACKGROUND) | (rgb2cs(&palette[CS_BG_FIELD(cs)].rgb) << 32);
-                    }
+		    if (  (CS_BACKGROUND & cs) != CS_BG_DEFAULT
+		       && (CS_BG_INDEXED & cs))
+		    {
+			cs = (cs & ~CS_BACKGROUND) | (rgb2cs(&palette[CS_BG_FIELD(cs)].rgb) << 32);
+		    }
 
-                    if ((CS_FOREGROUND & cs) == CS_FG_DEFAULT)
-                    {
-                        if ((CS_BACKGROUND & cs) != CS_BG_DEFAULT)
-                        {
-                            mux_sprintf(pBuffer, nBuffer - (pBuffer - aBuffer) - 1, T("COLOR BACK=#%06llX"), CS_BG_FIELD(cs));
-                            pBuffer += strlen((char *)pBuffer);
-                        }
-                    }
-                    else
-                    {
-                        if ((CS_BACKGROUND & cs) == CS_BG_DEFAULT)
-                        {
-                            mux_sprintf(pBuffer, nBuffer - (pBuffer - aBuffer) - 1, T("COLOR #%06llX"), CS_FG_FIELD(cs));
-                            pBuffer += strlen((char *)pBuffer);
-                        }
-                        else
-                        {
-                            mux_sprintf(pBuffer, nBuffer - (pBuffer - aBuffer) - 1, T("COLOR #%06llX #%06llX"), CS_FG_FIELD(cs), CS_BG_FIELD(cs));
-                            pBuffer += strlen((char *)pBuffer);
-                        }
-                    }
-                }
-                else
-                {
-                    mux_sprintf(pBuffer, nBuffer - (pBuffer - aBuffer) - 1, T("COLOR"));
-                    pBuffer += strlen((char *)pBuffer);
-                }
-                break;
+		    if ((CS_FOREGROUND & cs) == CS_FG_DEFAULT)
+		    {
+			if ((CS_BACKGROUND & cs) != CS_BG_DEFAULT)
+			{
+			    mux_sprintf(pBuffer, nBuffer - (pBuffer - aBuffer) - 1, T("COLOR BACK=#%06llX"), CS_BG_FIELD(cs));
+			    pBuffer += strlen((char *)pBuffer);
+			}
+		    }
+		    else
+		    {
+			if ((CS_BACKGROUND & cs) == CS_BG_DEFAULT)
+			{
+			    mux_sprintf(pBuffer, nBuffer - (pBuffer - aBuffer) - 1, T("COLOR #%06llX"), CS_FG_FIELD(cs));
+			    pBuffer += strlen((char *)pBuffer);
+			}
+			else
+			{
+			    mux_sprintf(pBuffer, nBuffer - (pBuffer - aBuffer) - 1, T("COLOR #%06llX #%06llX"), CS_FG_FIELD(cs), CS_BG_FIELD(cs));
+			    pBuffer += strlen((char *)pBuffer);
+			}
+		    }
+		}
+		else
+		{
+		    mux_sprintf(pBuffer, nBuffer - (pBuffer - aBuffer) - 1, T("COLOR"));
+		    pBuffer += strlen((char *)pBuffer);
+		}
+		break;
 
-            default:
-                break;
-            }
-            *pBuffer++ = '>';
-        }
+	    default:
+		break;
+	    }
+	    *pBuffer++ = '>';
+	}
 
-        int iCopy = List[iList].iStart;
-        if (  0 <= iCopy
-           && (  iList == nList - 1
-              || List[iList].iStart != List[iList+1].iStart))
-        {
-            mux_cursor curStart;
-            if (cursor_from_point(curStart, iCopy))
-            {
-                mux_cursor cur = curStart;
-                do
-                {
-                    cursor_next(cur);
-                } while (  cur < m_iLast
-                        && m_pcs[curStart.m_point] == m_pcs[cur.m_point]);
+	int iCopy = List[iList].iStart;
+	if (  0 <= iCopy
+	   && (  iList == nList - 1
+	      || List[iList].iStart != List[iList+1].iStart))
+	{
+	    mux_cursor curStart;
+	    if (cursor_from_point(curStart, iCopy))
+	    {
+		mux_cursor cur = curStart;
+		do
+		{
+		    cursor_next(cur);
+		} while (  cur < m_iLast
+			&& m_pcs[curStart.m_point] == m_pcs[cur.m_point]);
 
-                size_t n = cur.m_byte - curStart.m_byte;
-                if (0 < n)
-                {
-                    memcpy(pBuffer, &m_autf[curStart.m_byte], n);
-                    pBuffer += n;
-                }
-            }
-        }
+		size_t n = cur.m_byte - curStart.m_byte;
+		if (0 < n)
+		{
+		    memcpy(pBuffer, &m_autf[curStart.m_byte], n);
+		    pBuffer += n;
+		}
+	    }
+	}
     }
 
     *pBuffer = '\0';
@@ -7190,16 +7190,16 @@ LBUF_OFFSET mux_string::export_TextPlain
        || iEnd <= iStart
        || 0 == nBytesMax)
     {
-        return 0;
+	return 0;
     }
     if (m_iLast < iEnd)
     {
-        iEnd = m_iLast;
+	iEnd = m_iLast;
     }
     LBUF_OFFSET nBytes  = iEnd.m_byte - iStart.m_byte;
     if (nBytesMax < nBytes)
     {
-        nBytes = static_cast<LBUF_OFFSET>(nBytesMax);
+	nBytes = static_cast<LBUF_OFFSET>(nBytesMax);
     }
 
     memcpy(pBuffer, m_autf + iStart.m_byte, nBytes);
@@ -7269,25 +7269,25 @@ void mux_string::import(const mux_string &sStr, mux_cursor iStart)
 {
     if (sStr.m_iLast <= iStart)
     {
-        m_iLast = CursorMin;
-        m_autf[m_iLast.m_byte] = '\0';
-        realloc_m_pcs(0);
+	m_iLast = CursorMin;
+	m_autf[m_iLast.m_byte] = '\0';
+	realloc_m_pcs(0);
     }
     else
     {
-        m_iLast = sStr.m_iLast - iStart;
-        memcpy(m_autf, sStr.m_autf + iStart.m_byte, m_iLast.m_byte);
-        m_autf[m_iLast.m_byte] = '\0';
+	m_iLast = sStr.m_iLast - iStart;
+	memcpy(m_autf, sStr.m_autf + iStart.m_byte, m_iLast.m_byte);
+	m_autf[m_iLast.m_byte] = '\0';
 
-        if (0 == sStr.m_ncs)
-        {
-            realloc_m_pcs(0);
-        }
-        else
-        {
-            realloc_m_pcs(m_iLast.m_point);
-            memcpy(m_pcs, sStr.m_pcs + iStart.m_point, m_iLast.m_point * sizeof(m_pcs[0]));
-        }
+	if (0 == sStr.m_ncs)
+	{
+	    realloc_m_pcs(0);
+	}
+	else
+	{
+	    realloc_m_pcs(m_iLast.m_point);
+	    memcpy(m_pcs, sStr.m_pcs + iStart.m_point, m_iLast.m_point * sizeof(m_pcs[0]));
+	}
     }
 }
 
@@ -7306,8 +7306,8 @@ void mux_string::import(const UTF8 *pStr)
     if (  NULL == pStr
        || '\0' == *pStr)
     {
-        m_autf[m_iLast.m_byte] = '\0';
-        return;
+	m_autf[m_iLast.m_byte] = '\0';
+	return;
     }
 
     size_t nLen = strlen((char *)pStr);
@@ -7332,14 +7332,14 @@ void mux_string::import(const UTF8 *pStr, size_t nLen)
        || '\0' == *pStr
        || 0 == nLen)
     {
-        realloc_m_pcs(0);
-        m_autf[m_iLast.m_byte] = '\0';
-        return;
+	realloc_m_pcs(0);
+	m_autf[m_iLast.m_byte] = '\0';
+	return;
     }
 
     if (LBUF_SIZE-1 < nLen)
     {
-        nLen = LBUF_SIZE-1;
+	nLen = LBUF_SIZE-1;
     }
 
     bool fColor = false;
@@ -7351,21 +7351,21 @@ void mux_string::import(const UTF8 *pStr, size_t nLen)
     UTF8 *pch = m_autf;
     while (iStr < nLen)
     {
-        unsigned int iCode = mux_color(pStr + iStr);
-        if (COLOR_NOTCOLOR == iCode)
-        {
-            safe_chr_utf8(pStr + iStr, m_autf, &pch);
-            acsTemp[iPoint++] = cs;
-            if (CS_NORMAL != cs)
-            {
-                fColor = true;
-            }
-        }
-        else
-        {
-            cs = UpdateColorState(cs, iCode);
-        }
-        iStr += utf8_FirstByte[(unsigned char)pStr[iStr]];
+	unsigned int iCode = mux_color(pStr + iStr);
+	if (COLOR_NOTCOLOR == iCode)
+	{
+	    safe_chr_utf8(pStr + iStr, m_autf, &pch);
+	    acsTemp[iPoint++] = cs;
+	    if (CS_NORMAL != cs)
+	    {
+		fColor = true;
+	    }
+	}
+	else
+	{
+	    cs = UpdateColorState(cs, iCode);
+	}
+	iStr += utf8_FirstByte[(unsigned char)pStr[iStr]];
     }
 
     m_iLast(static_cast<LBUF_OFFSET>(pch - m_autf), iPoint);
@@ -7373,12 +7373,12 @@ void mux_string::import(const UTF8 *pStr, size_t nLen)
 
     if (fColor)
     {
-        realloc_m_pcs(m_iLast.m_point);
-        memcpy(m_pcs, acsTemp, m_iLast.m_point * sizeof(m_pcs[0]));
+	realloc_m_pcs(m_iLast.m_point);
+	memcpy(m_pcs, acsTemp, m_iLast.m_point * sizeof(m_pcs[0]));
     }
     else
     {
-        realloc_m_pcs(0);
+	realloc_m_pcs(0);
     }
 }
 
@@ -7453,46 +7453,46 @@ void mux_string::realloc_m_pcs(size_t ncs)
     if (  0 == ncs
        && 0 != m_ncs)
     {
-        delete [] m_pcs;
-        m_pcs = NULL;
-        m_ncs = 0;
+	delete [] m_pcs;
+	m_pcs = NULL;
+	m_ncs = 0;
     }
     else if (m_ncs < ncs)
     {
-        // extend in chunks of 8
-        //
-        ncs |= 0x7;
-        ncs++;
+	// extend in chunks of 8
+	//
+	ncs |= 0x7;
+	ncs++;
 
-        ColorState *pcsOld = m_pcs;
-        m_pcs = NULL;
-        try
-        {
-            m_pcs = new ColorState[ncs];
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
-        ISOUTOFMEMORY(m_pcs);
+	ColorState *pcsOld = m_pcs;
+	m_pcs = NULL;
+	try
+	{
+	    m_pcs = new ColorState[ncs];
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
+	ISOUTOFMEMORY(m_pcs);
 
-        if (0 == m_ncs)
-        {
-            // Initialize the implicit CS_NORMAL ColorStates to maintain the
-            // mux_string invariant.
-            //
-            for (size_t i = 0; i < ncs; i++)
-            {
-                m_pcs[i] = CS_NORMAL;
-            }
-        }
-        else
-        {
-            memcpy(m_pcs, pcsOld, m_ncs * sizeof(m_pcs[0]));
-            delete [] pcsOld;
-        }
+	if (0 == m_ncs)
+	{
+	    // Initialize the implicit CS_NORMAL ColorStates to maintain the
+	    // mux_string invariant.
+	    //
+	    for (size_t i = 0; i < ncs; i++)
+	    {
+		m_pcs[i] = CS_NORMAL;
+	    }
+	}
+	else
+	{
+	    memcpy(m_pcs, pcsOld, m_ncs * sizeof(m_pcs[0]));
+	    delete [] pcsOld;
+	}
 
-        m_ncs = ncs;
+	m_ncs = ncs;
     }
 }
 
@@ -7516,79 +7516,79 @@ void mux_string::replace_Chars
 
     if (nLen != nTo)
     {
-        // Since the substring size is not the same size as the replacement
-        // string size, we need to move things around.
-        //
-        nMove = m_iLast - (iStart + nLen);
-        if (LBUF_SIZE - 1 < m_iLast.m_byte + sTo.m_iLast.m_byte - nLen.m_byte)
-        {
-            // The resulting string would be too large, so we need to trim
-            // either the move or the copy part -- depending on how much
-            // needs to be trimmed.
-            //
-            if (LBUF_SIZE - 1 < iStart.m_byte + nTo.m_byte)
-            {
-                while (  sTo.cursor_prev(nCopy)
-                      && CursorMax.m_byte - iStart.m_byte < nCopy.m_byte)
-                {
-                    ; // Nothing.
-                }
-                nMove = CursorMin;
-            }
-            else
-            {
-                while (  cursor_prev(nMove)
-                      && CursorMax.m_byte - (iStart.m_byte + nCopy.m_byte) < nMove.m_byte)
-                {
-                    ; // Nothing.
-                }
-            }
-        }
+	// Since the substring size is not the same size as the replacement
+	// string size, we need to move things around.
+	//
+	nMove = m_iLast - (iStart + nLen);
+	if (LBUF_SIZE - 1 < m_iLast.m_byte + sTo.m_iLast.m_byte - nLen.m_byte)
+	{
+	    // The resulting string would be too large, so we need to trim
+	    // either the move or the copy part -- depending on how much
+	    // needs to be trimmed.
+	    //
+	    if (LBUF_SIZE - 1 < iStart.m_byte + nTo.m_byte)
+	    {
+		while (  sTo.cursor_prev(nCopy)
+		      && CursorMax.m_byte - iStart.m_byte < nCopy.m_byte)
+		{
+		    ; // Nothing.
+		}
+		nMove = CursorMin;
+	    }
+	    else
+	    {
+		while (  cursor_prev(nMove)
+		      && CursorMax.m_byte - (iStart.m_byte + nCopy.m_byte) < nMove.m_byte)
+		{
+		    ; // Nothing.
+		}
+	    }
+	}
 
-        mux_cursor iLast = iStart + nCopy + nMove;
+	mux_cursor iLast = iStart + nCopy + nMove;
 
-        // Move text if necessary.
-        //
-        if (CursorMin < nMove)
-        {
-            memmove(m_autf + iStart.m_byte + nCopy.m_byte,
-                    m_autf + iStart.m_byte + nLen.m_byte, nMove.m_byte * sizeof(m_autf[0]));
-        }
+	// Move text if necessary.
+	//
+	if (CursorMin < nMove)
+	{
+	    memmove(m_autf + iStart.m_byte + nCopy.m_byte,
+		    m_autf + iStart.m_byte + nLen.m_byte, nMove.m_byte * sizeof(m_autf[0]));
+	}
 
-        // Update color if necessary to be consistent with the move.
-        //
-        if (0 != m_ncs)
-        {
-            realloc_m_pcs(iLast.m_point);
+	// Update color if necessary to be consistent with the move.
+	//
+	if (0 != m_ncs)
+	{
+	    realloc_m_pcs(iLast.m_point);
 
-            // Propagate the last color state out further.
-            //
-            for (int i = m_iLast.m_point; i < iLast.m_point; i++)
-            {
-                m_pcs[i] = m_pcs[m_iLast.m_point-1];
-            }
+	    // Propagate the last color state out further.
+	    //
+	    for (int i = m_iLast.m_point; i < iLast.m_point; i++)
+	    {
+		m_pcs[i] = m_pcs[m_iLast.m_point-1];
+	    }
 
-            // If there is a move operation, the color also needs to be moved.
-            // A copy on the end of the string without a move may require some
-            // color state to be initialized.
-            //
-            if (CursorMin < nMove)
-            {
-                memmove(m_pcs + iStart.m_point + nCopy.m_point,
-                        m_pcs + iStart.m_point + nLen.m_point, nMove.m_point * sizeof(m_pcs[0]));
-            }
-        }
-        else if (0 != sTo.m_ncs)
-        {
-            realloc_m_pcs(iLast.m_point);
-        }
+	    // If there is a move operation, the color also needs to be moved.
+	    // A copy on the end of the string without a move may require some
+	    // color state to be initialized.
+	    //
+	    if (CursorMin < nMove)
+	    {
+		memmove(m_pcs + iStart.m_point + nCopy.m_point,
+			m_pcs + iStart.m_point + nLen.m_point, nMove.m_point * sizeof(m_pcs[0]));
+	    }
+	}
+	else if (0 != sTo.m_ncs)
+	{
+	    realloc_m_pcs(iLast.m_point);
+	}
 
-        m_iLast = iLast;
+	m_iLast = iLast;
     }
     else if (  0 == m_ncs
-            && 0 != sTo.m_ncs)
+	    && 0 != sTo.m_ncs)
     {
-        realloc_m_pcs(m_iLast.m_point);
+	realloc_m_pcs(m_iLast.m_point);
     }
 
     // Copy replacement text over substring.
@@ -7599,7 +7599,7 @@ void mux_string::replace_Chars
     //
     if (0 != sTo.m_ncs)
     {
-        memcpy(m_pcs + iStart.m_point, sTo.m_pcs, nCopy.m_point * sizeof(m_pcs[0]));
+	memcpy(m_pcs + iStart.m_point, sTo.m_pcs, nCopy.m_point * sizeof(m_pcs[0]));
     }
 
     m_autf[m_iLast.m_byte] = '\0';
@@ -7612,33 +7612,33 @@ bool mux_string::replace_Point(const UTF8 *p, const mux_cursor &i)
 
     if (n != m)
     {
-        if (  m < n
-           && sizeof(m_autf) <= m_iLast.m_byte + m - n)
-        {
-            // We need to truncate the trailing point to make room for an expansion.
-            //
-            do
-            {
-                cursor_prev(m_iLast);
-            } while (sizeof(m_autf) <= m_iLast.m_byte + m - n);
-            m_autf[m_iLast.m_byte] = '\0';
-        }
+	if (  m < n
+	   && sizeof(m_autf) <= m_iLast.m_byte + m - n)
+	{
+	    // We need to truncate the trailing point to make room for an expansion.
+	    //
+	    do
+	    {
+		cursor_prev(m_iLast);
+	    } while (sizeof(m_autf) <= m_iLast.m_byte + m - n);
+	    m_autf[m_iLast.m_byte] = '\0';
+	}
 
-        if (i.m_byte + n  < m_iLast.m_byte)
-        {
-            size_t nBytesMove = m_iLast.m_byte - (i.m_byte + n);
-            UTF8 *pFrom = m_autf + i.m_byte + n;
-            UTF8 *pTo   = m_autf + i.m_byte + m;
-            memmove(pTo, pFrom, nBytesMove);
+	if (i.m_byte + n  < m_iLast.m_byte)
+	{
+	    size_t nBytesMove = m_iLast.m_byte - (i.m_byte + n);
+	    UTF8 *pFrom = m_autf + i.m_byte + n;
+	    UTF8 *pTo   = m_autf + i.m_byte + m;
+	    memmove(pTo, pFrom, nBytesMove);
 
-            m_iLast.m_byte = static_cast<LBUF_OFFSET>(m_iLast.m_byte + m - n);
-            m_autf[m_iLast.m_byte] = '\0';
-        }
+	    m_iLast.m_byte = static_cast<LBUF_OFFSET>(m_iLast.m_byte + m - n);
+	    m_autf[m_iLast.m_byte] = '\0';
+	}
     }
 
     for (size_t j = 0; j < m; j++)
     {
-        m_autf[i.m_byte + j] = p[j];
+	m_autf[i.m_byte + j] = p[j];
     }
     return true;
 }
@@ -7662,8 +7662,8 @@ void mux_string::reverse(void)
 
     while (cursor_prev(i))
     {
-        sTemp->append(*this, i, j);
-        j = i;
+	sTemp->append(*this, i, j);
+	j = i;
     }
     import(*sTemp);
     delete sTemp;
@@ -7673,7 +7673,7 @@ void mux_string::reverse(void)
  *
  * \param pPattern Pointer to pattern to search for.
  * \param nPos     Pointer to value of position in string where pattern
-                   is found.
+		   is found.
  * \param nStart   Position in string to begin looking at. Defaults to 0.
  * \return         True if found, false if not.
  */
@@ -7694,33 +7694,33 @@ bool mux_string::search
 
     if (m_iLast < iEnd)
     {
-        iEnd = m_iLast;
+	iEnd = m_iLast;
     }
 
     size_t i = 0;
     bool bSucceeded = false;
     if (nPat == 1)
     {
-        // We can optimize the single-character case.
-        //
-        const unsigned char *p = (const unsigned char *)memchr(pTarget, pPatBuf[0], iEnd.m_byte - iStart.m_byte);
-        if (p)
-        {
-            i = p - pTarget;
-            bSucceeded = true;
-        }
+	// We can optimize the single-character case.
+	//
+	const unsigned char *p = (const unsigned char *)memchr(pTarget, pPatBuf[0], iEnd.m_byte - iStart.m_byte);
+	if (p)
+	{
+	    i = p - pTarget;
+	    bSucceeded = true;
+	}
     }
     else if (nPat > 1)
     {
-        // We have a multi-byte pattern.
-        //
-        bSucceeded = BMH_StringSearch(&i, nPat, pPatBuf,
-                                      iEnd.m_byte - iStart.m_byte, pTarget);
+	// We have a multi-byte pattern.
+	//
+	bSucceeded = BMH_StringSearch(&i, nPat, pPatBuf,
+				      iEnd.m_byte - iStart.m_byte, pTarget);
     }
 
     if (iPos)
     {
-        cursor_from_byte(*iPos, static_cast<LBUF_OFFSET>(i + iStart.m_byte));
+	cursor_from_byte(*iPos, static_cast<LBUF_OFFSET>(i + iStart.m_byte));
     }
     return bSucceeded;
 }
@@ -7729,7 +7729,7 @@ bool mux_string::search
  *
  * \param sPattern Reference to string to search for.
  * \param nPos     Pointer to value of position in string where pattern
-                   is found.
+		   is found.
  * \param nStart   Position in string to begin looking at. Defaults to 0.
  * \return         True if found, false if not.
  */
@@ -7750,30 +7750,30 @@ bool mux_string::search
     bool bSucceeded = false;
     if (m_iLast < iEnd)
     {
-        iEnd = m_iLast;
+	iEnd = m_iLast;
     }
     if (1 == sPattern.m_iLast.m_byte)
     {
-        // We can optimize the single-character case.
-        //
-        const unsigned char *p = (const unsigned char *)memchr(pTarget, sPattern.m_autf[0], iEnd.m_byte - iStart.m_byte);
-        if (p)
-        {
-            i = p - pTarget;
-            bSucceeded = true;
-        }
+	// We can optimize the single-character case.
+	//
+	const unsigned char *p = (const unsigned char *)memchr(pTarget, sPattern.m_autf[0], iEnd.m_byte - iStart.m_byte);
+	if (p)
+	{
+	    i = p - pTarget;
+	    bSucceeded = true;
+	}
     }
     else
     {
-        // We have a multi-byte pattern.
-        //
-        bSucceeded = BMH_StringSearch(&i, sPattern.m_iLast.m_byte, sPattern.m_autf,
-                                      iEnd.m_byte - iStart.m_byte, pTarget);
+	// We have a multi-byte pattern.
+	//
+	bSucceeded = BMH_StringSearch(&i, sPattern.m_iLast.m_byte, sPattern.m_autf,
+				      iEnd.m_byte - iStart.m_byte, pTarget);
     }
 
     if (iPos)
     {
-        cursor_from_byte(*iPos, static_cast<LBUF_OFFSET>(i + iStart.m_byte));
+	cursor_from_byte(*iPos, static_cast<LBUF_OFFSET>(i + iStart.m_byte));
     }
     return bSucceeded;
 }
@@ -7784,7 +7784,7 @@ void mux_string::set_Char(size_t n, const UTF8 cChar)
 {
     if (m_iLast.m_byte <= n)
     {
-        return;
+	return;
     }
     m_autf[n] = cChar;
 }
@@ -7795,24 +7795,24 @@ void mux_string::set_Color(size_t n, ColorState csColor)
 
     if (m_iLast.m_point <= n)
     {
-        return;
+	return;
     }
     if (  0 == m_ncs
        && csColor != CS_NORMAL)
     {
-        realloc_m_pcs(m_iLast.m_point);
+	realloc_m_pcs(m_iLast.m_point);
     }
 
     if (0 != m_ncs)
     {
-        m_pcs[n] = csColor;
+	m_pcs[n] = csColor;
     }
 }
 
 bool mux_string::compare_Char(const mux_cursor &i, const mux_string &sStr) const
 {
     return (  sStr.m_iLast.m_byte <= m_iLast.m_byte - i.m_byte
-           && 0 == memcmp(m_autf + i.m_byte, sStr.m_autf, sStr.m_iLast.m_byte));
+	   && 0 == memcmp(m_autf + i.m_byte, sStr.m_autf, sStr.m_iLast.m_byte));
 }
 
 /*! \brief Removes a specified set of characters from string.
@@ -7820,7 +7820,7 @@ bool mux_string::compare_Char(const mux_cursor &i, const mux_string &sStr) const
  * \param pStripSet Pointer to string of characters to remove.
  * \param nStart    Position in string to begin checking. Defaults to 0.
  * \param nLen      Number of characters in string to check.
-                    Defaults to LBUF_SIZE-1.
+		    Defaults to LBUF_SIZE-1.
  * \return          None.
  */
 
@@ -7833,14 +7833,14 @@ void mux_string::strip(const UTF8 *pStripSet, mux_cursor iStart, mux_cursor iEnd
        || m_iLast <= iStart
        || iEnd <= iStart)
     {
-        // Nothing to do.
-        //
-        return;
+	// Nothing to do.
+	//
+	return;
     }
 
     if (m_iLast < iEnd)
     {
-        iEnd = m_iLast;
+	iEnd = m_iLast;
     }
 
     // Load set of characters to strip.
@@ -7848,11 +7848,11 @@ void mux_string::strip(const UTF8 *pStripSet, mux_cursor iStart, mux_cursor iEnd
     memset(strip_table, false, sizeof(strip_table));
     while ('\0' != *pStripSet)
     {
-        UTF8 ch = *pStripSet++;
-        if (mux_isprint_ascii(ch))
-        {
-            strip_table[ch] = true;
-        }
+	UTF8 ch = *pStripSet++;
+	if (mux_isprint_ascii(ch))
+	{
+	    strip_table[ch] = true;
+	}
     }
     stripWithTable(strip_table, iStart, iEnd);
 }
@@ -7867,52 +7867,52 @@ void mux_string::stripWithTable
     if (  m_iLast <= iStart
        || iEnd <= iStart)
     {
-        // Nothing to do.
-        //
-        return;
+	// Nothing to do.
+	//
+	return;
     }
 
     if (m_iLast < iEnd)
     {
-        iEnd = m_iLast;
+	iEnd = m_iLast;
     }
 
     bool bInStrip = false;
     mux_cursor iStripStart = iStart;
     for (mux_cursor i = iStart; i < iEnd; cursor_next(i))
     {
-        if (  !bInStrip
-           && strip_table[m_autf[i.m_byte]])
-        {
-            bInStrip = true;
-            iStripStart = i;
-        }
-        else if (  bInStrip
-                && !strip_table[m_autf[i.m_byte]])
-        {
-            // We've hit the end of a string to be stripped.
-            //
-            delete_Chars(iStripStart, i);
-            iEnd -= (i - iStripStart);
-            i = iStripStart;
-            bInStrip = false;
-        }
+	if (  !bInStrip
+	   && strip_table[m_autf[i.m_byte]])
+	{
+	    bInStrip = true;
+	    iStripStart = i;
+	}
+	else if (  bInStrip
+		&& !strip_table[m_autf[i.m_byte]])
+	{
+	    // We've hit the end of a string to be stripped.
+	    //
+	    delete_Chars(iStripStart, i);
+	    iEnd -= (i - iStripStart);
+	    i = iStripStart;
+	    bInStrip = false;
+	}
     }
 
     if (bInStrip)
     {
-        if (m_iLast == iEnd)
-        {
-            // We found chars to strip at the end of the string.
-            // We can just truncate.
-            //
-            m_iLast = iStripStart;
-            m_autf[m_iLast.m_byte] = '\0';
-        }
-        else
-        {
-            delete_Chars(iStripStart, iEnd);
-        }
+	if (m_iLast == iEnd)
+	{
+	    // We found chars to strip at the end of the string.
+	    // We can just truncate.
+	    //
+	    m_iLast = iStripStart;
+	    m_autf[m_iLast.m_byte] = '\0';
+	}
+	else
+	{
+	    delete_Chars(iStripStart, iEnd);
+	}
     }
 }
 
@@ -7926,70 +7926,70 @@ void mux_string::transform
 {
     if (m_iLast.m_point <= nStart)
     {
-        return;
+	return;
     }
 
     if (  sFromSet.isAscii()
        && sToSet.isAscii())
     {
-        // Since both sets use only ASCII characters, we can special case this
-        // request.  First, we build a table that maps all possible ASCII
-        // characters to their requested replacement, and then we use it.
-        //
-        UTF8 asciiTable[SCHAR_MAX+1];
-        for (unsigned char c = 0; c <= SCHAR_MAX; c++)
-        {
-            asciiTable[c] = c;
-        }
+	// Since both sets use only ASCII characters, we can special case this
+	// request.  First, we build a table that maps all possible ASCII
+	// characters to their requested replacement, and then we use it.
+	//
+	UTF8 asciiTable[SCHAR_MAX+1];
+	for (unsigned char c = 0; c <= SCHAR_MAX; c++)
+	{
+	    asciiTable[c] = c;
+	}
 
-        mux_cursor iFromSet, iToSet;
-        sFromSet.cursor_start(iFromSet);
-        sToSet.cursor_start(iToSet);
-        do
-        {
-            UTF8 cFrom = sFromSet.m_autf[iFromSet.m_byte];
-            UTF8 cTo = sToSet.m_autf[iToSet.m_byte];
-            asciiTable[cFrom] = cTo;
-        } while (  sFromSet.cursor_next(iFromSet)
-                && sToSet.cursor_next(iToSet));
+	mux_cursor iFromSet, iToSet;
+	sFromSet.cursor_start(iFromSet);
+	sToSet.cursor_start(iToSet);
+	do
+	{
+	    UTF8 cFrom = sFromSet.m_autf[iFromSet.m_byte];
+	    UTF8 cTo = sToSet.m_autf[iToSet.m_byte];
+	    asciiTable[cFrom] = cTo;
+	} while (  sFromSet.cursor_next(iFromSet)
+		&& sToSet.cursor_next(iToSet));
 
-        transform_Ascii(asciiTable, nStart, nLen);
+	transform_Ascii(asciiTable, nStart, nLen);
     }
     else
     {
-        // This is the more general case.  We use a hash table for mapping.
-        //
-        hashflush(&mudstate.scratch_htab);
+	// This is the more general case.  We use a hash table for mapping.
+	//
+	hashflush(&mudstate.scratch_htab);
 
-        mux_cursor iFromSet, iToSet;
-        sFromSet.cursor_start(iFromSet);
-        sToSet.cursor_start(iToSet);
-        do
-        {
-            size_t nFrom = utf8_FirstByte[sFromSet.m_autf[iFromSet.m_byte]];
-            hashdeleteLEN(&sFromSet.m_autf[iFromSet.m_byte], nFrom, &mudstate.scratch_htab);
-            hashaddLEN(&sFromSet.m_autf[iFromSet.m_byte], nFrom, &sToSet.m_autf[iToSet.m_byte], &mudstate.scratch_htab);
+	mux_cursor iFromSet, iToSet;
+	sFromSet.cursor_start(iFromSet);
+	sToSet.cursor_start(iToSet);
+	do
+	{
+	    size_t nFrom = utf8_FirstByte[sFromSet.m_autf[iFromSet.m_byte]];
+	    hashdeleteLEN(&sFromSet.m_autf[iFromSet.m_byte], nFrom, &mudstate.scratch_htab);
+	    hashaddLEN(&sFromSet.m_autf[iFromSet.m_byte], nFrom, &sToSet.m_autf[iToSet.m_byte], &mudstate.scratch_htab);
 
-        } while (  sFromSet.cursor_next(iFromSet)
-                && sToSet.cursor_next(iToSet));
+	} while (  sFromSet.cursor_next(iFromSet)
+		&& sToSet.cursor_next(iToSet));
 
-        mux_cursor i;
-        if (cursor_from_point(i, static_cast<LBUF_OFFSET>(nStart)))
-        {
-            do
-            {
-                size_t n = utf8_FirstByte[m_autf[i.m_byte]];
-                UTF8 *p = static_cast<UTF8*>(hashfindLEN(&m_autf[i.m_byte], n, &mudstate.scratch_htab));
-                if (  NULL != p
-                   && !replace_Point(p, i))
-                {
-                    break;
-                }
-            } while (  cursor_next(i)
-                    && i.m_point < nStart+nLen);
-        }
+	mux_cursor i;
+	if (cursor_from_point(i, static_cast<LBUF_OFFSET>(nStart)))
+	{
+	    do
+	    {
+		size_t n = utf8_FirstByte[m_autf[i.m_byte]];
+		UTF8 *p = static_cast<UTF8*>(hashfindLEN(&m_autf[i.m_byte], n, &mudstate.scratch_htab));
+		if (  NULL != p
+		   && !replace_Point(p, i))
+		{
+		    break;
+		}
+	    } while (  cursor_next(i)
+		    && i.m_point < nStart+nLen);
+	}
 
-        hashflush(&mudstate.scratch_htab);
+	hashflush(&mudstate.scratch_htab);
     }
 }
 
@@ -8003,14 +8003,14 @@ void mux_string::transform_Ascii
     mux_cursor i;
     if (cursor_from_point(i, static_cast<LBUF_OFFSET>(nStart)))
     {
-        do
-        {
-            if (mux_isprint_ascii(m_autf[i.m_byte]))
-            {
-                m_autf[i.m_byte] = asciiTable[m_autf[i.m_byte]];
-            }
-        } while (  cursor_next(i)
-                && i.m_point < nStart+nLen);
+	do
+	{
+	    if (mux_isprint_ascii(m_autf[i.m_byte]))
+	    {
+		m_autf[i.m_byte] = asciiTable[m_autf[i.m_byte]];
+	    }
+	} while (  cursor_next(i)
+		&& i.m_point < nStart+nLen);
     }
 }
 
@@ -8018,50 +8018,50 @@ void mux_string::trim(const UTF8 ch, bool bLeft, bool bRight)
 {
     if (  0 == m_iLast.m_byte
        || (  !bLeft
-          && !bRight ))
+	  && !bRight ))
     {
-        return;
+	return;
     }
 
     if (bRight)
     {
-        LBUF_OFFSET iPos = m_iLast.m_byte - 1;
-        while (  ch == m_autf[iPos]
-              && 0 < iPos)
-        {
-            iPos--;
-        }
+	LBUF_OFFSET iPos = m_iLast.m_byte - 1;
+	while (  ch == m_autf[iPos]
+	      && 0 < iPos)
+	{
+	    iPos--;
+	}
 
-        if (iPos < m_iLast.m_byte - 1)
-        {
-            mux_cursor iEnd;
-            cursor_end(iEnd);
-            while (  iPos < iEnd.m_byte
-                  && cursor_prev(iEnd))
-            {
-                ; // Nothing.
-            }
-            cursor_next(iEnd);
-            m_iLast = iEnd;
-            m_autf[m_iLast.m_byte] = '\0';
-        }
+	if (iPos < m_iLast.m_byte - 1)
+	{
+	    mux_cursor iEnd;
+	    cursor_end(iEnd);
+	    while (  iPos < iEnd.m_byte
+		  && cursor_prev(iEnd))
+	    {
+		; // Nothing.
+	    }
+	    cursor_next(iEnd);
+	    m_iLast = iEnd;
+	    m_autf[m_iLast.m_byte] = '\0';
+	}
     }
 
     if (bLeft)
     {
-        LBUF_OFFSET iPos = 0;
-        while (  ch == m_autf[iPos]
-              && iPos < m_iLast.m_byte)
-        {
-            iPos++;
-        }
+	LBUF_OFFSET iPos = 0;
+	while (  ch == m_autf[iPos]
+	      && iPos < m_iLast.m_byte)
+	{
+	    iPos++;
+	}
 
-        if (0 < iPos)
-        {
-            mux_cursor iEnd;
-            cursor_from_byte(iEnd, iPos);
-            delete_Chars(CursorMin, iEnd);
-        }
+	if (0 < iPos)
+	{
+	    mux_cursor iEnd;
+	    cursor_from_byte(iEnd, iPos);
+	    delete_Chars(CursorMin, iEnd);
+	}
     }
 }
 
@@ -8071,20 +8071,20 @@ void mux_string::trim(const UTF8 *p, bool bLeft, bool bRight)
        || NULL == p
        || '\0' == p[0]
        || (  !bLeft
-          && !bRight ))
+	  && !bRight ))
     {
-        return;
+	return;
     }
 
     size_t n = strlen((char *)p);
 
     if (1 == n)
     {
-        trim(p[0], bLeft, bRight);
+	trim(p[0], bLeft, bRight);
     }
     else
     {
-        trim(p, n, bLeft, bRight);
+	trim(p, n, bLeft, bRight);
     }
 }
 
@@ -8095,57 +8095,57 @@ void mux_string::trim(const UTF8 *p, size_t n, bool bLeft, bool bRight)
        || 0 == n
        || m_iLast.m_byte < n
        || (  !bLeft
-          && !bRight ))
+	  && !bRight ))
     {
-        return;
+	return;
     }
 
     if (bRight)
     {
-        LBUF_OFFSET iPos = m_iLast.m_byte - 1;
-        size_t iDist = n - 1;
-        while (  p[iDist] == m_autf[iPos]
-              && 0 < iPos)
-        {
-            iPos--;
-            iDist = (0 < iDist) ? iDist - 1 : n - 1;
-        }
+	LBUF_OFFSET iPos = m_iLast.m_byte - 1;
+	size_t iDist = n - 1;
+	while (  p[iDist] == m_autf[iPos]
+	      && 0 < iPos)
+	{
+	    iPos--;
+	    iDist = (0 < iDist) ? iDist - 1 : n - 1;
+	}
 
-        if (iPos < m_iLast.m_byte - 1)
-        {
-            mux_cursor iEnd;
-            cursor_end(iEnd);
-            while (  iPos < iEnd.m_byte
-                  && cursor_prev(iEnd))
-            {
-                ; // Nothing.
-            }
-            cursor_next(iEnd);
-            m_iLast = iEnd;
-            m_autf[m_iLast.m_byte] = '\0';
-        }
+	if (iPos < m_iLast.m_byte - 1)
+	{
+	    mux_cursor iEnd;
+	    cursor_end(iEnd);
+	    while (  iPos < iEnd.m_byte
+		  && cursor_prev(iEnd))
+	    {
+		; // Nothing.
+	    }
+	    cursor_next(iEnd);
+	    m_iLast = iEnd;
+	    m_autf[m_iLast.m_byte] = '\0';
+	}
     }
 
     if (bLeft)
     {
-        size_t iPos = 0;
-        while (  p[iPos % n] == m_autf[iPos]
-              && iPos < m_iLast.m_byte)
-        {
-            iPos++;
-        }
+	size_t iPos = 0;
+	while (  p[iPos % n] == m_autf[iPos]
+	      && iPos < m_iLast.m_byte)
+	{
+	    iPos++;
+	}
 
-        if (0 < iPos)
-        {
-            mux_cursor iEnd;
-            cursor_start(iEnd);
-            while (  iEnd.m_byte < iPos
-                  && cursor_next(iEnd))
-            {
-                ; // Nothing.
-            }
-            delete_Chars(CursorMin, iEnd);
-        }
+	if (0 < iPos)
+	{
+	    mux_cursor iEnd;
+	    cursor_start(iEnd);
+	    while (  iEnd.m_byte < iPos
+		  && cursor_next(iEnd))
+	    {
+		; // Nothing.
+	    }
+	    delete_Chars(CursorMin, iEnd);
+	}
     }
 }
 
@@ -8153,7 +8153,7 @@ void mux_string::truncate(mux_cursor iEnd)
 {
     if (m_iLast <= iEnd)
     {
-        return;
+	return;
     }
     m_iLast = iEnd;
     m_autf[m_iLast.m_byte] = '\0';
@@ -8164,51 +8164,51 @@ void mux_string::UpperCase(void)
     mux_string *sTo = NULL;
     for (mux_cursor i = CursorMin; i < m_iLast; cursor_next(i))
     {
-        UTF8 *p = m_autf + i.m_byte;
+	UTF8 *p = m_autf + i.m_byte;
 
-        bool bXor;
-        const string_desc *qDesc = mux_toupper(p, bXor);
-        if (NULL != qDesc)
-        {
-            size_t m = qDesc->n_bytes;
-            if (bXor)
-            {
-                // An XOR-type string_desc requires and enforces that the bytes be equal. Currently, none of the cases increase
-                // the number points in the string to 2 or more points, but it is possible for some future version of Unicode --
-                // as long as the bytes remain equal.
-                //
-                size_t j;
-                for (j = 0; j < m; j++)
-                {
-                    p[j] ^= qDesc->p[j];
-                }
-            }
-            else
-            {
-                // Since an XOR-type string_desc covers the case there the bytes are equal, a literal-type string_desc will always
-                // have an unequal number of bytes. It can also increase points in the string to 2 or more.
-                //
-                if (NULL == sTo)
-                {
-                    try
-                    {
-                        sTo = new mux_string();
-                    }
-                    catch (...)
-                    {
-                        ; // Nothing.
-                    }
-                }
-                if (NULL != sTo)
-                {
-                    mux_cursor len;
-                    len.m_byte = utf8_FirstByte[*p];
-                    len.m_point = 1;
-                    sTo->import(qDesc->p);
-                    replace_Chars(*sTo, i, len);
-                }
-            }
-        }
+	bool bXor;
+	const string_desc *qDesc = mux_toupper(p, bXor);
+	if (NULL != qDesc)
+	{
+	    size_t m = qDesc->n_bytes;
+	    if (bXor)
+	    {
+		// An XOR-type string_desc requires and enforces that the bytes be equal. Currently, none of the cases increase
+		// the number points in the string to 2 or more points, but it is possible for some future version of Unicode --
+		// as long as the bytes remain equal.
+		//
+		size_t j;
+		for (j = 0; j < m; j++)
+		{
+		    p[j] ^= qDesc->p[j];
+		}
+	    }
+	    else
+	    {
+		// Since an XOR-type string_desc covers the case there the bytes are equal, a literal-type string_desc will always
+		// have an unequal number of bytes. It can also increase points in the string to 2 or more.
+		//
+		if (NULL == sTo)
+		{
+		    try
+		    {
+			sTo = new mux_string();
+		    }
+		    catch (...)
+		    {
+			; // Nothing.
+		    }
+		}
+		if (NULL != sTo)
+		{
+		    mux_cursor len;
+		    len.m_byte = utf8_FirstByte[*p];
+		    len.m_point = 1;
+		    sTo->import(qDesc->p);
+		    replace_Chars(*sTo, i, len);
+		}
+	    }
+	}
     }
     delete sTo;
     sTo = NULL;
@@ -8219,51 +8219,51 @@ void mux_string::LowerCase(void)
     mux_string *sTo = NULL;
     for (mux_cursor i = CursorMin; i < m_iLast; cursor_next(i))
     {
-        UTF8 *p = m_autf + i.m_byte;
+	UTF8 *p = m_autf + i.m_byte;
 
-        bool bXor;
-        const string_desc *qDesc = mux_tolower(p, bXor);
-        if (NULL != qDesc)
-        {
-            size_t m = qDesc->n_bytes;
-            if (bXor)
-            {
-                // An XOR-type string_desc requires and enforces that the bytes be equal. Currently, none of the cases increase
-                // the number points in the string to 2 or more points, but it is possible for some future version of Unicode --
-                // as long as the bytes remain equal.
-                //
-                size_t j;
-                for (j = 0; j < m; j++)
-                {
-                    p[j] ^= qDesc->p[j];
-                }
-            }
-            else
-            {
-                // Since an XOR-type string_desc covers the case there the bytes are equal, a literal-type string_desc will always
-                // have an unequal number of bytes. It can also increase points in the string to 2 or more.
-                //
-                if (NULL == sTo)
-                {
-                    try
-                    {
-                        sTo = new mux_string();
-                    }
-                    catch (...)
-                    {
-                        ; // Nothing.
-                    }
-                }
-                if (NULL != sTo)
-                {
-                    mux_cursor len;
-                    len.m_byte = utf8_FirstByte[*p];
-                    len.m_point = 1;
-                    sTo->import(qDesc->p);
-                    replace_Chars(*sTo, i, len);
-                }
-            }
-        }
+	bool bXor;
+	const string_desc *qDesc = mux_tolower(p, bXor);
+	if (NULL != qDesc)
+	{
+	    size_t m = qDesc->n_bytes;
+	    if (bXor)
+	    {
+		// An XOR-type string_desc requires and enforces that the bytes be equal. Currently, none of the cases increase
+		// the number points in the string to 2 or more points, but it is possible for some future version of Unicode --
+		// as long as the bytes remain equal.
+		//
+		size_t j;
+		for (j = 0; j < m; j++)
+		{
+		    p[j] ^= qDesc->p[j];
+		}
+	    }
+	    else
+	    {
+		// Since an XOR-type string_desc covers the case there the bytes are equal, a literal-type string_desc will always
+		// have an unequal number of bytes. It can also increase points in the string to 2 or more.
+		//
+		if (NULL == sTo)
+		{
+		    try
+		    {
+			sTo = new mux_string();
+		    }
+		    catch (...)
+		    {
+			; // Nothing.
+		    }
+		}
+		if (NULL != sTo)
+		{
+		    mux_cursor len;
+		    len.m_byte = utf8_FirstByte[*p];
+		    len.m_point = 1;
+		    sTo->import(qDesc->p);
+		    replace_Chars(*sTo, i, len);
+		}
+	    }
+	}
     }
     delete sTo;
     sTo = NULL;
@@ -8275,51 +8275,51 @@ void mux_string::UpperCaseFirst(void)
     mux_cursor i = CursorMin;
     if (i < m_iLast)
     {
-        UTF8 *p = m_autf + i.m_byte;
+	UTF8 *p = m_autf + i.m_byte;
 
-        bool bXor;
-        const string_desc *qDesc = mux_totitle(p, bXor);
-        if (NULL != qDesc)
-        {
-            size_t m = qDesc->n_bytes;
-            if (bXor)
-            {
-                // An XOR-type string_desc requires and enforces that the bytes be equal. Currently, none of the cases increase
-                // the number points in the string to 2 or more points, but it is possible for some future version of Unicode --
-                // as long as the bytes remain equal.
-                //
-                size_t j;
-                for (j = 0; j < m; j++)
-                {
-                    p[j] ^= qDesc->p[j];
-                }
-            }
-            else
-            {
-                // Since an XOR-type string_desc covers the case there the bytes are equal, a literal-type string_desc will always
-                // have an unequal number of bytes. It can also increase points in the string to 2 or more.
-                //
-                if (NULL == sTo)
-                {
-                    try
-                    {
-                        sTo = new mux_string();
-                    }
-                    catch (...)
-                    {
-                        ; // Nothing.
-                    }
-                }
-                if (NULL != sTo)
-                {
-                    mux_cursor len;
-                    len.m_byte = utf8_FirstByte[*p];
-                    len.m_point = 1;
-                    sTo->import(qDesc->p);
-                    replace_Chars(*sTo, i, len);
-                }
-            }
-        }
+	bool bXor;
+	const string_desc *qDesc = mux_totitle(p, bXor);
+	if (NULL != qDesc)
+	{
+	    size_t m = qDesc->n_bytes;
+	    if (bXor)
+	    {
+		// An XOR-type string_desc requires and enforces that the bytes be equal. Currently, none of the cases increase
+		// the number points in the string to 2 or more points, but it is possible for some future version of Unicode --
+		// as long as the bytes remain equal.
+		//
+		size_t j;
+		for (j = 0; j < m; j++)
+		{
+		    p[j] ^= qDesc->p[j];
+		}
+	    }
+	    else
+	    {
+		// Since an XOR-type string_desc covers the case there the bytes are equal, a literal-type string_desc will always
+		// have an unequal number of bytes. It can also increase points in the string to 2 or more.
+		//
+		if (NULL == sTo)
+		{
+		    try
+		    {
+			sTo = new mux_string();
+		    }
+		    catch (...)
+		    {
+			; // Nothing.
+		    }
+		}
+		if (NULL != sTo)
+		{
+		    mux_cursor len;
+		    len.m_byte = utf8_FirstByte[*p];
+		    len.m_point = 1;
+		    sTo->import(qDesc->p);
+		    replace_Chars(*sTo, i, len);
+		}
+	    }
+	}
     }
     delete sTo;
     sTo = NULL;
@@ -8329,29 +8329,29 @@ void mux_string::FoldForMatching(void)
 {
     for (mux_cursor i = CursorMin; i < m_iLast; cursor_next(i))
     {
-        UTF8 *p = m_autf + i.m_byte;
+	UTF8 *p = m_autf + i.m_byte;
 
-        bool bXor;
-        const string_desc *qDesc = mux_foldmatch(p, bXor);
-        if (NULL != qDesc)
-        {
-            size_t m = qDesc->n_bytes;
-            if (bXor)
-            {
-                // TODO: In future, the string may need to be expanded or contracted in terms of points.
-                //
-                size_t j;
-                for (j = 0; j < m; j++)
-                {
-                    p[j] ^= qDesc->p[j];
-                }
-            }
-            else
-            {
-                // TODO: The string must be expanded or contracted in terms of points and bytes.
-                //
-            }
-        }
+	bool bXor;
+	const string_desc *qDesc = mux_foldmatch(p, bXor);
+	if (NULL != qDesc)
+	{
+	    size_t m = qDesc->n_bytes;
+	    if (bXor)
+	    {
+		// TODO: In future, the string may need to be expanded or contracted in terms of points.
+		//
+		size_t j;
+		for (j = 0; j < m; j++)
+		{
+		    p[j] ^= qDesc->p[j];
+		}
+	    }
+	    else
+	    {
+		// TODO: The string must be expanded or contracted in terms of points and bytes.
+		//
+	    }
+	}
     }
 }
 
@@ -8366,7 +8366,7 @@ void mux_words::export_WordColor(LBUF_OFFSET n, UTF8 *buff, UTF8 **bufc)
 {
     if (m_nWords <= n)
     {
-        return;
+	return;
     }
 
     mux_cursor iStart = m_aiWordBegins[n];
@@ -8404,32 +8404,32 @@ LBUF_OFFSET mux_words::find_Words(const UTF8 *pDelim, bool bFavorEmptyList)
 
     if (fSpaceDelim)
     {
-        while (' ' == m_s->m_autf[iStart.m_byte])
-        {
-            iStart = iStart + curAscii;
-        }
+	while (' ' == m_s->m_autf[iStart.m_byte])
+	{
+	    iStart = iStart + curAscii;
+	}
     }
     bool bSucceeded = m_s->search(pDelimNoColor, &iPos, iStart);
 
     while (  bSucceeded
-          && nWords + 1 < MAX_WORDS)
+	  && nWords + 1 < MAX_WORDS)
     {
-        m_aiWordBegins[nWords] = iStart;
-        m_aiWordEnds[nWords] = iPos;
-        nWords++;
-        if (fSpaceDelim)
-        {
-            iStart = iPos;
-            while (' ' == m_s->m_autf[iStart.m_byte])
-            {
-                iStart = iStart + curAscii;
-            }
-        }
-        else
-        {
-            iStart = iPos + nDelimNoColor;
-        }
-        bSucceeded = m_s->search(pDelimNoColor, &iPos, iStart);
+	m_aiWordBegins[nWords] = iStart;
+	m_aiWordEnds[nWords] = iPos;
+	nWords++;
+	if (fSpaceDelim)
+	{
+	    iStart = iPos;
+	    while (' ' == m_s->m_autf[iStart.m_byte])
+	    {
+		iStart = iStart + curAscii;
+	    }
+	}
+	else
+	{
+	    iStart = iPos + nDelimNoColor;
+	}
+	bSucceeded = m_s->search(pDelimNoColor, &iPos, iStart);
     }
     MEMFREE(pDelimNoColor);
     pDelimNoColor = NULL;
@@ -8437,9 +8437,9 @@ LBUF_OFFSET mux_words::find_Words(const UTF8 *pDelim, bool bFavorEmptyList)
     if (  !fSpaceDelim
        || m_s->m_iLast != iStart)
     {
-        m_aiWordBegins[nWords] = iStart;
-        m_aiWordEnds[nWords] = m_s->m_iLast;
-        nWords++;
+	m_aiWordBegins[nWords] = iStart;
+	m_aiWordEnds[nWords] = m_s->m_iLast;
+	nWords++;
     }
     m_nWords = nWords;
     return nWords;
@@ -8449,13 +8449,13 @@ void mux_words::ignore_Word(LBUF_OFFSET n)
 {
     if (m_nWords <= n)
     {
-        return;
+	return;
     }
 
     for (LBUF_OFFSET i = n; i < m_nWords - 1; i++)
     {
-        m_aiWordBegins[i] = m_aiWordBegins[i + 1];
-        m_aiWordEnds[i] = m_aiWordEnds[i + 1];
+	m_aiWordBegins[i] = m_aiWordBegins[i + 1];
+	m_aiWordEnds[i] = m_aiWordEnds[i + 1];
     }
     m_nWords--;
 }
@@ -8464,7 +8464,7 @@ mux_cursor mux_words::wordBegin(LBUF_OFFSET n) const
 {
     if (m_nWords <= n)
     {
-        return CursorMin;
+	return CursorMin;
     }
 
     return m_aiWordBegins[n];
@@ -8474,7 +8474,7 @@ mux_cursor mux_words::wordEnd(LBUF_OFFSET n) const
 {
     if (m_nWords <= n)
     {
-        return CursorMin;
+	return CursorMin;
     }
 
     return m_aiWordEnds[n];

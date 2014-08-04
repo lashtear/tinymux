@@ -35,11 +35,11 @@ static int YearType(int iYear)
     ltaLocal.SetFields(&ft);
     if (isLeapYear(iYear))
     {
-        return ft.iDayOfWeek + 8;
+	return ft.iDayOfWeek + 8;
     }
     else
     {
-        return ft.iDayOfWeek + 1;
+	return ft.iDayOfWeek + 1;
     }
 }
 
@@ -61,18 +61,18 @@ static time_t time_t_largest(void)
     time_t t;
     if (sizeof(INT64) <= sizeof(time_t))
     {
-        t = static_cast<time_t>(INT64_MAX_VALUE);
+	t = static_cast<time_t>(INT64_MAX_VALUE);
     }
     else
     {
-        t = static_cast<time_t>(INT32_MAX_VALUE);
+	t = static_cast<time_t>(INT32_MAX_VALUE);
     }
 
 #if defined(TIMEUTIL_TIME_T_MAX_VALUE)
     INT64 t64 = static_cast<INT64>(t);
     if (TIMEUTIL_TIME_T_MAX_VALUE < t64)
     {
-        t = static_cast<time_t>(TIMEUTIL_TIME_T_MAX_VALUE);
+	t = static_cast<time_t>(TIMEUTIL_TIME_T_MAX_VALUE);
     }
 #endif
 #if defined(LOCALTIME_TIME_T_MAX_VALUE)
@@ -85,7 +85,7 @@ static time_t time_t_largest(void)
     //
     if (LOCALTIME_TIME_T_MAX_VALUE < t)
     {
-        t = static_cast<time_t>(LOCALTIME_TIME_T_MAX_VALUE);
+	t = static_cast<time_t>(LOCALTIME_TIME_T_MAX_VALUE);
     }
 #endif
     return t;
@@ -96,23 +96,23 @@ static time_t time_t_smallest(void)
     time_t t;
     if (sizeof(INT64) <= sizeof(time_t))
     {
-        t = static_cast<time_t>(INT64_MIN_VALUE);
+	t = static_cast<time_t>(INT64_MIN_VALUE);
     }
     else
     {
-        t = static_cast<time_t>(INT32_MIN_VALUE);
+	t = static_cast<time_t>(INT32_MIN_VALUE);
     }
 #if defined(TIMEUTIL_TIME_T_MIN_VALUE)
     INT64 t64 = static_cast<INT64>(t);
     if (t64 < TIMEUTIL_TIME_T_MIN_VALUE)
     {
-        t = static_cast<time_t>(TIMEUTIL_TIME_T_MIN_VALUE);
+	t = static_cast<time_t>(TIMEUTIL_TIME_T_MIN_VALUE);
     }
 #endif
 #if defined(LOCALTIME_TIME_T_MIN_VALUE)
     if (t < LOCALTIME_TIME_T_MIN_VALUE)
     {
-        t = static_cast<time_t>(LOCALTIME_TIME_T_MIN_VALUE);
+	t = static_cast<time_t>(LOCALTIME_TIME_T_MIN_VALUE);
     }
 #endif
     return t;
@@ -130,12 +130,12 @@ static bool mux_localtime(struct tm *ptm_arg, const time_t *pt_arg)
     struct tm *ptm = localtime(pt_arg);
     if (ptm)
     {
-        *ptm_arg = *ptm;
-        return true;
+	*ptm_arg = *ptm;
+	return true;
     }
     else
     {
-        return false;
+	return false;
     }
 #endif // WINDOWS_TIME
 }
@@ -154,15 +154,15 @@ static void test_time_t(void)
     time_t tMid;
     while (tLower < tUpper)
     {
-        tMid = time_t_midpoint(tLower+1, tUpper);
-        if (mux_localtime(&_tm, &tMid))
-        {
-            tLower = tMid;
-        }
-        else
-        {
-            tUpper = tMid-1;
-        }
+	tMid = time_t_midpoint(tLower+1, tUpper);
+	if (mux_localtime(&_tm, &tMid))
+	{
+	    tLower = tMid;
+	}
+	else
+	{
+	    tUpper = tMid-1;
+	}
     }
     ltaUpperBound.SetSeconds(tLower);
 
@@ -172,15 +172,15 @@ static void test_time_t(void)
     tLower = time_t_smallest();
     while (tLower < tUpper)
     {
-        tMid = time_t_midpoint(tLower, tUpper-1);
-        if (mux_localtime(&_tm, &tMid))
-        {
-            tUpper = tMid;
-        }
-        else
-        {
-            tLower = tMid+1;
-        }
+	tMid = time_t_midpoint(tLower, tUpper-1);
+	if (mux_localtime(&_tm, &tMid))
+	{
+	    tUpper = tMid;
+	}
+	else
+	{
+	    tLower = tMid+1;
+	}
     }
     ltaLowerBound.SetSeconds(tUpper);
 
@@ -188,31 +188,31 @@ static void test_time_t(void)
     //
     for (;;)
     {
-        mux_localtime(&_tm, &tLower);
+	mux_localtime(&_tm, &tLower);
 
-        if (_tm.tm_isdst <= 0)
-        {
-            // Daylight savings time is either not in effect or
-            // we have no way of knowing whether it is in effect
-            // or not.
-            //
-            FIELDEDTIME ft;
-            SetStructTm(&ft, &_tm);
-            ft.iMillisecond = 0;
-            ft.iMicrosecond = 0;
-            ft.iNanosecond  = 0;
+	if (_tm.tm_isdst <= 0)
+	{
+	    // Daylight savings time is either not in effect or
+	    // we have no way of knowing whether it is in effect
+	    // or not.
+	    //
+	    FIELDEDTIME ft;
+	    SetStructTm(&ft, &_tm);
+	    ft.iMillisecond = 0;
+	    ft.iMicrosecond = 0;
+	    ft.iNanosecond  = 0;
 
-            CLinearTimeAbsolute ltaLocal;
-            CLinearTimeAbsolute ltaUTC;
-            ltaLocal.SetFields(&ft);
-            ltaUTC.SetSeconds(tLower);
-            ltdTimeZoneStandard = ltaLocal - ltaUTC;
-            break;
-        }
+	    CLinearTimeAbsolute ltaLocal;
+	    CLinearTimeAbsolute ltaUTC;
+	    ltaLocal.SetFields(&ft);
+	    ltaUTC.SetSeconds(tLower);
+	    ltdTimeZoneStandard = ltaLocal - ltaUTC;
+	    break;
+	}
 
-        // Advance the time by 1 month (expressed as seconds).
-        //
-        tLower += 30*24*60*60;
+	// Advance the time by 1 month (expressed as seconds).
+	//
+	tLower += 30*24*60*60;
     }
 }
 
@@ -224,7 +224,7 @@ void TIME_Initialize(void)
 {
     if (bTimeInitialized)
     {
-        return;
+	return;
     }
     bTimeInitialized = true;
 
@@ -237,19 +237,19 @@ void TIME_Initialize(void)
     int i;
     for (i = 0; i < 15; i++)
     {
-        NearestYearOfType[i] = -1;
+	NearestYearOfType[i] = -1;
     }
     int cnt = 14;
     FIELDEDTIME ft;
     ltaUpperBound.ReturnFields(&ft);
     for (i = ft.iYear-1; cnt; i--)
     {
-        int iYearType = YearType(i);
-        if (NearestYearOfType[iYearType] < 0)
-        {
-            NearestYearOfType[iYearType] = static_cast<short>(i);
-            cnt--;
-        }
+	int iYearType = YearType(i);
+	if (NearestYearOfType[iYearType] < 0)
+	{
+	    NearestYearOfType[iYearType] = static_cast<short>(i);
+	    cnt--;
+	}
     }
 }
 
@@ -288,15 +288,15 @@ static int FindOffsetEntry(const CLinearTimeAbsolute& lta)
     int mid = 0;
     while (lo <= hi)
     {
-        mid = ((hi - lo) >> 1) + lo;
-        if (OffsetTable[mid].ltaStart <= lta)
-        {
-            lo = mid + 1;
-        }
-        else
-        {
-            hi = mid - 1;
-        }
+	mid = ((hi - lo) >> 1) + lo;
+	if (OffsetTable[mid].ltaStart <= lta)
+	{
+	    lo = mid + 1;
+	}
+	else
+	{
+	    hi = mid - 1;
+	}
     }
     return lo-1;
 }
@@ -319,10 +319,10 @@ static bool QueryOffsetTable
     if (  0 <= i
        && lta <= OffsetTable[i].ltaEnd)
     {
-        *pltdOffset = OffsetTable[i].ltdOffset;
-        *pisDST = OffsetTable[i].isDST;
-        OffsetTable[i].nTouched = nTouched0;
-        return true;
+	*pltdOffset = OffsetTable[i].ltdOffset;
+	*pisDST = OffsetTable[i].isDST;
+	OffsetTable[i].nTouched = nTouched0;
+	return true;
     }
     return false;
 }
@@ -338,7 +338,7 @@ static void UpdateOffsetTable
     if (  i < 0
        || MAX_OFFSETS <= i)
     {
-        return;
+	return;
     }
 
 Again:
@@ -350,8 +350,8 @@ Again:
     if (  0 <= i
        && lta <= OffsetTable[i].ltaEnd)
     {
-        OffsetTable[i].nTouched = nTouched0;
-        return;
+	OffsetTable[i].nTouched = nTouched0;
+	return;
     }
 
     bool bTryMerge = false;
@@ -367,16 +367,16 @@ Again:
        && OffsetTable[i].isDST == isDST
        && lta <= OffsetTable[i].ltaEnd + ltdIntervalMinimum)
     {
-        // Cool. We can just extend this interval to include our new
-        // data point.
-        //
-        OffsetTable[i].ltaEnd = lta;
-        OffsetTable[i].nTouched = nTouched0;
+	// Cool. We can just extend this interval to include our new
+	// data point.
+	//
+	OffsetTable[i].ltaEnd = lta;
+	OffsetTable[i].nTouched = nTouched0;
 
-        // Since we have changed this interval, we may be able to
-        // coalesce it with the next interval.
-        //
-        bTryMerge = true;
+	// Since we have changed this interval, we may be able to
+	// coalesce it with the next interval.
+	//
+	bTryMerge = true;
     }
 
     // Coalesce new data point into next interval if:
@@ -393,78 +393,78 @@ Again:
        && OffsetTable[iNext].isDST == isDST
        && OffsetTable[iNext].ltaStart - ltdIntervalMinimum <= lta)
     {
-        // Cool. We can just extend the next interval to include our
-        // new data point.
-        //
-        OffsetTable[iNext].ltaStart = lta;
-        OffsetTable[iNext].nTouched = nTouched0;
+	// Cool. We can just extend the next interval to include our
+	// new data point.
+	//
+	OffsetTable[iNext].ltaStart = lta;
+	OffsetTable[iNext].nTouched = nTouched0;
 
-        // Since we have changed the next interval, we may be able
-        // to coalesce it with the previous interval.
-        //
-        bTryMerge = true;
+	// Since we have changed the next interval, we may be able
+	// to coalesce it with the previous interval.
+	//
+	bTryMerge = true;
     }
 
     if (bTryMerge)
     {
-        // We should combine the current and next intervals if we can.
-        //
-        if (  0 <= i
-           && iNext < nOffsetTable
-           && OffsetTable[i].ltdOffset == OffsetTable[iNext].ltdOffset
-           && OffsetTable[i].isDST     == OffsetTable[iNext].isDST
-           && OffsetTable[iNext].ltaStart - ltdIntervalMinimum
-              <= OffsetTable[i].ltaEnd)
-        {
-            if (0 <= i && 0 <= iNext)
-            {
-                OffsetTable[i].ltaEnd = OffsetTable[iNext].ltaEnd;
-            }
-            int nSize = sizeof(OffsetEntry)*(nOffsetTable-i-2);
-            memmove(OffsetTable+i+1, OffsetTable+i+2, nSize);
-            nOffsetTable--;
-        }
+	// We should combine the current and next intervals if we can.
+	//
+	if (  0 <= i
+	   && iNext < nOffsetTable
+	   && OffsetTable[i].ltdOffset == OffsetTable[iNext].ltdOffset
+	   && OffsetTable[i].isDST     == OffsetTable[iNext].isDST
+	   && OffsetTable[iNext].ltaStart - ltdIntervalMinimum
+	      <= OffsetTable[i].ltaEnd)
+	{
+	    if (0 <= i && 0 <= iNext)
+	    {
+		OffsetTable[i].ltaEnd = OffsetTable[iNext].ltaEnd;
+	    }
+	    int nSize = sizeof(OffsetEntry)*(nOffsetTable-i-2);
+	    memmove(OffsetTable+i+1, OffsetTable+i+2, nSize);
+	    nOffsetTable--;
+	}
     }
     else
     {
-        // We'll have'ta create a new interval.
-        //
-        if (nOffsetTable < MAX_OFFSETS)
-        {
-            size_t nSize = sizeof(OffsetEntry)*(nOffsetTable-i-1);
-            memmove(OffsetTable+i+2, OffsetTable+i+1, nSize);
-            nOffsetTable++;
-            i++;
-            OffsetTable[i].isDST = isDST;
-            OffsetTable[i].ltdOffset = ltdOffset;
-            OffsetTable[i].ltaStart= lta;
-            OffsetTable[i].ltaEnd= lta;
-            OffsetTable[i].nTouched = nTouched0;
-        }
-        else
-        {
-            // We ran out of room. Throw away the least used
-            // interval and try again.
-            //
-            int nMinTouched = OffsetTable[0].nTouched;
-            int iMinTouched = 0;
-            for (int j = 1; j < nOffsetTable; j++)
-            {
-                if (OffsetTable[j].nTouched - nMinTouched < 0)
-                {
-                    nMinTouched = OffsetTable[j].nTouched;
-                    iMinTouched = j;
-                }
-            }
-            int nSize = sizeof(OffsetEntry)*(nOffsetTable-iMinTouched-1);
-            memmove(OffsetTable+iMinTouched, OffsetTable+iMinTouched+1, nSize);
-            nOffsetTable--;
-            if (iMinTouched <= i)
-            {
-                i--;
-            }
-            goto Again;
-        }
+	// We'll have'ta create a new interval.
+	//
+	if (nOffsetTable < MAX_OFFSETS)
+	{
+	    size_t nSize = sizeof(OffsetEntry)*(nOffsetTable-i-1);
+	    memmove(OffsetTable+i+2, OffsetTable+i+1, nSize);
+	    nOffsetTable++;
+	    i++;
+	    OffsetTable[i].isDST = isDST;
+	    OffsetTable[i].ltdOffset = ltdOffset;
+	    OffsetTable[i].ltaStart= lta;
+	    OffsetTable[i].ltaEnd= lta;
+	    OffsetTable[i].nTouched = nTouched0;
+	}
+	else
+	{
+	    // We ran out of room. Throw away the least used
+	    // interval and try again.
+	    //
+	    int nMinTouched = OffsetTable[0].nTouched;
+	    int iMinTouched = 0;
+	    for (int j = 1; j < nOffsetTable; j++)
+	    {
+		if (OffsetTable[j].nTouched - nMinTouched < 0)
+		{
+		    nMinTouched = OffsetTable[j].nTouched;
+		    iMinTouched = j;
+		}
+	    }
+	    int nSize = sizeof(OffsetEntry)*(nOffsetTable-iMinTouched-1);
+	    memmove(OffsetTable+iMinTouched, OffsetTable+iMinTouched+1, nSize);
+	    nOffsetTable--;
+	    if (iMinTouched <= i)
+	    {
+		i--;
+	    }
+	    goto Again;
+	}
     }
 }
 
@@ -477,7 +477,7 @@ static CLinearTimeDelta QueryLocalOffsetAt_Internal
 {
     if (!bTimeInitialized)
     {
-        TIME_Initialize();
+	TIME_Initialize();
     }
 
     // At this point, we must use localtime() to discover what the
@@ -499,13 +499,13 @@ static CLinearTimeDelta QueryLocalOffsetAt_Internal
     //
     if (lta > ltaUpperBound)
     {
-        // Map the specified year to the closest year with the same
-        // pattern of weeks.
-        //
-        FIELDEDTIME ft;
-        lta.ReturnFields(&ft);
-        ft.iYear = NearestYearOfType[YearType(ft.iYear)];
-        lta.SetFields(&ft);
+	// Map the specified year to the closest year with the same
+	// pattern of weeks.
+	//
+	FIELDEDTIME ft;
+	lta.ReturnFields(&ft);
+	ft.iYear = NearestYearOfType[YearType(ft.iYear)];
+	lta.SetFields(&ft);
     }
 
     // Rely on localtime() to take a UTC count of seconds and convert
@@ -516,10 +516,10 @@ static CLinearTimeDelta QueryLocalOffsetAt_Internal
     time_t lt = static_cast<time_t>(lta.ReturnSeconds());
     if (!mux_localtime(&_tm, &lt))
     {
-        // This should never happen as we have already taken pains
-        // to restrict the range of UTC seconds gives to localtime().
-        //
-        return ltdTimeZoneStandard;
+	// This should never happen as we have already taken pains
+	// to restrict the range of UTC seconds gives to localtime().
+	//
+	return ltdTimeZoneStandard;
     }
 
     // With the fielded (or broken down) time from localtime(), we
@@ -577,7 +577,7 @@ CLinearTimeDelta QueryLocalOffsetAtUTC
     //
     if (lta < ltaLowerBound)
     {
-        return ltdTimeZoneStandard;
+	return ltdTimeZoneStandard;
     }
 
     // Next, we check our table for whether this time falls into a
@@ -590,7 +590,7 @@ CLinearTimeDelta QueryLocalOffsetAtUTC
     int iEntry;
     if (QueryOffsetTable(lta, &ltdOffset, pisDST, &iEntry))
     {
-        return ltdOffset;
+	return ltdOffset;
     }
     ltdOffset = QueryLocalOffsetAt_Internal(lta, pisDST, iEntry);
 
@@ -605,13 +605,13 @@ CLinearTimeDelta QueryLocalOffsetAtUTC
     ltaProbe = lta - ltdIntervalMinimum;
     if (!QueryOffsetTable(ltaProbe, &ltdDontCare, &bDontCare, &iEntry))
     {
-        QueryLocalOffsetAt_Internal(ltaProbe, &bDontCare, iEntry);
+	QueryLocalOffsetAt_Internal(ltaProbe, &bDontCare, iEntry);
     }
 
     ltaProbe = lta + ltdIntervalMinimum;
     if (!QueryOffsetTable(ltaProbe, &ltdDontCare, &bDontCare, &iEntry))
     {
-        QueryLocalOffsetAt_Internal(ltaProbe, &bDontCare, iEntry);
+	QueryLocalOffsetAt_Internal(ltaProbe, &bDontCare, iEntry);
     }
     return ltdOffset;
 }

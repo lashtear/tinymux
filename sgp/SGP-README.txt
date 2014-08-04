@@ -42,8 +42,8 @@ then we probably cannot help you.
     
 Report problems and make suggestions and feature requests at:
 
-          http://sandbox.erisian.net/sgp/SGPbugs.html. 
-          
+	  http://sandbox.erisian.net/sgp/SGPbugs.html. 
+	  
 SGP 1.0 has been installed on and run normally under the following 
 platforms:
 
@@ -169,11 +169,11 @@ Credits:
 
 Audumla@Sandbox - Scope and Design.  RPT code.
 BEM@Granite     - Many many many of the base globals.  
-                  Project Status Tracker
-                  WoD Dice Code
-                  +help system
+		  Project Status Tracker
+		  WoD Dice Code
+		  +help system
 Angel           - PLACES upgrades, CNOTES, and meticulous recoding of 
-                  certain commands.
+		  certain commands.
 David@Sandbox   - +motd system
 Megiddo         - Coding and recoding certain commands.
 Lilith@Detroit  - Registration code.
@@ -213,7 +213,7 @@ commands.
    +3who        - A 3 column +who
    +shout       - Emits a shout to nearby rooms.
    +stnotes     - Sets judgenotes.  Differs from +cnote in that it is staff-
-              only.(RPPack)
+	      only.(RPPack)
    +timestamp   - Sets generic timestamps on player objects.
 
 as of: 26 Jun 00

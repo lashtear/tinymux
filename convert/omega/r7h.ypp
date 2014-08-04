@@ -73,37 +73,37 @@ object
     INTEGER INTEGER INTEGER INTEGER
     zones
     attrlist '<' {
-                     R7H_OBJECTINFO *oi = new R7H_OBJECTINFO;
-                     oi->SetRef($1);
-                     oi->SetName($2);
-                     oi->SetLocation($3);
-                     oi->SetContents($4);
-                     oi->SetExits($5);
-                     oi->SetLink($6);
-                     oi->SetNext($7);
-                     oi->SetDefaultLock($8);
-                     oi->SetOwner($9);
-                     oi->SetParent($10);
-                     oi->SetPennies($11);
-                     oi->SetFlags1($12);
-                     oi->SetFlags2($13);
-                     oi->SetFlags3($14);
-                     oi->SetFlags4($15);
-                     oi->SetToggles1($16);
-                     oi->SetToggles2($17);
-                     oi->SetToggles3($18);
-                     oi->SetToggles4($19);
-                     oi->SetToggles5($20);
-                     oi->SetToggles6($21);
-                     oi->SetToggles7($22);
-                     oi->SetToggles8($23);
-                     oi->SetZones($24);
-                     if (NULL != $25)
-                     {
-                         oi->SetAttrs($25->size(), $25);
-                     }
-                     g_r7hgame.AddObject(oi);
-                 }
+		     R7H_OBJECTINFO *oi = new R7H_OBJECTINFO;
+		     oi->SetRef($1);
+		     oi->SetName($2);
+		     oi->SetLocation($3);
+		     oi->SetContents($4);
+		     oi->SetExits($5);
+		     oi->SetLink($6);
+		     oi->SetNext($7);
+		     oi->SetDefaultLock($8);
+		     oi->SetOwner($9);
+		     oi->SetParent($10);
+		     oi->SetPennies($11);
+		     oi->SetFlags1($12);
+		     oi->SetFlags2($13);
+		     oi->SetFlags3($14);
+		     oi->SetFlags4($15);
+		     oi->SetToggles1($16);
+		     oi->SetToggles2($17);
+		     oi->SetToggles3($18);
+		     oi->SetToggles4($19);
+		     oi->SetToggles5($20);
+		     oi->SetToggles6($21);
+		     oi->SetToggles7($22);
+		     oi->SetToggles8($23);
+		     oi->SetZones($24);
+		     if (NULL != $25)
+		     {
+			 oi->SetAttrs($25->size(), $25);
+		     }
+		     g_r7hgame.AddObject(oi);
+		 }
 ;
 
 zones:
@@ -117,7 +117,7 @@ lockexpr:
 |
     lockterm                         { $$ = $1; }
 |
-                                     { $$ = NULL; }
+				     { $$ = NULL; }
 ;
 
 lockterm:
@@ -164,7 +164,7 @@ attrlist
 :
     attrlist attr       { $$ = $1; if (NULL == $$) { $$ = new vector<R7H_ATTRINFO *>; } $$->push_back($2); }
 |
-                        { $$ = NULL; }
+			{ $$ = NULL; }
 ;
 
 

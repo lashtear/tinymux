@@ -21,12 +21,12 @@
   @va me=a%[a%]a%(a%)a%{a%}a%;a%%a%\a%$a%,a;
   @vb me=%[%]%(%)%{%}%;%%%\%$%,;
   @if strmatch(
-        setr(0,sha1(
-            secure(%va)
-            [secure(%vb)]
-          )
-        ),
-        46921D8F439E5D25081D6E6810EA42693EB7FBB0
+	setr(0,sha1(
+	    secure(%va)
+	    [secure(%vb)]
+	  )
+	),
+	46921D8F439E5D25081D6E6810EA42693EB7FBB0
       )=
   {
     @log smoke=TC001: ASCII mix. Succeeded.
@@ -42,12 +42,12 @@
   @va me=%xga%xr%[%xga%xr%]%xga%xr%(%xga%xr%)%xga%xr%{%xga%xr%}%xga%xr%;%xga%xr%%%xga%xr%\%xga%xr%$%xga%xr%,%xga;
   @vb me=%xg%[%xr%]%xg%(%xr%)%xg%{%xr%}%xg%;%xr%%%xg%\%xr%$%xg%,%xr;
   @if strmatch(
-        setr(0,sha1(
-            translate(secure(%va),p)
-            [translate(secure(%vb),p)]
-          )
-        ),
-        0432DFA8F9CAB622E397DB9BD462C3516DF8A07F
+	setr(0,sha1(
+	    translate(secure(%va),p)
+	    [translate(secure(%vb),p)]
+	  )
+	),
+	0432DFA8F9CAB622E397DB9BD462C3516DF8A07F
       )=
   {
     @log smoke=TC002: ASCII-color mix. Succeeded.
@@ -65,13 +65,13 @@
     @va me=[chr(256)]%[[chr(256)]%][chr(256)]%([chr(256)]%)[chr(256)]%{[chr(256)]%}[chr(256)]%;[chr(256)]%%[chr(256)]%\[chr(256)]%$[chr(256)]%,[chr(256)];
     @vb me=[chr(10010)]%[[chr(10010)]%][chr(10010)]%([chr(10010)]%)[chr(10010)]%{[chr(10010)]%}[chr(10010)]%;[chr(10010)]%%[chr(10010)]%\[chr(10010)]%$[chr(10010)]%,[chr(10010)];
     @if strmatch(
-          setr(0,sha1(
-              secure(%va)
-              [secure(%vb)]
-            )
-          ),
-          05682C82D8D3A053DD4743BB2B3F0FBF07DC41B2
-        )=
+	  setr(0,sha1(
+	      secure(%va)
+	      [secure(%vb)]
+	    )
+	  ),
+	  05682C82D8D3A053DD4743BB2B3F0FBF07DC41B2
+	)=
     {
       @log smoke=TC003: Unicode mix. Succeeded.
     },
@@ -92,13 +92,13 @@
     @va me=%xg[chr(256)]%xr%[%xg[chr(256)]%xr%]%xg[chr(256)]%xr%(%xg[chr(256)]%xr%)%xg[chr(256)]%xr%{%xg[chr(256)]%xr%}%xg[chr(256)]%xr%;%xg[chr(256)]%xr%%%xg[chr(256)]%xr%\%xg[chr(256)]%xr%$%xg[chr(256)]%xr%,%xg[chr(256)];
     @vb me=%xg[chr(10010)]%xr%[%xg[chr(10010)]%xr%]%xg[chr(10010)]%xr%(%xg[chr(10010)]%xr%)%xg[chr(10010)]%xr%{%xg[chr(10010)]%xr%}%xg[chr(10010)]%xr%;%xg[chr(10010)]%xr%%%xg[chr(10010)]%xr%\%xg[chr(10010)]%xr%$%xg[chr(10010)]%xr%,%xg[chr(10010)];
     @if strmatch(
-          setr(0,sha1(
-              translate(secure(%va),p)
-              [translate(secure(%vb),p)]
-            )
-          ),
-          B3B9A8C6CEC34774EC4666057CD5CF5088CC91CD
-        )=
+	  setr(0,sha1(
+	      translate(secure(%va),p)
+	      [translate(secure(%vb),p)]
+	    )
+	  ),
+	  B3B9A8C6CEC34774EC4666057CD5CF5088CC91CD
+	)=
     {
       @log smoke=TC004: Unicode-color mix. Succeeded.;
       @trig me/tr.done

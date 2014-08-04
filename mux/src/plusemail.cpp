@@ -111,161 +111,161 @@ UTF8 *EncodeBody(UTF8 *pBody)
     int iState = STATE_BOM;
     for (;;)
     {
-        UTF8 ch = *pBody++;
-        int iAction = BodyActions[iState][BodyClasses[(unsigned char)ch]];
-        switch (iAction)
-        {
-        case 0:
-            // Action 0 - Remain in current state.
-            //
-            break;
+	UTF8 ch = *pBody++;
+	int iAction = BodyActions[iState][BodyClasses[(unsigned char)ch]];
+	switch (iAction)
+	{
+	case 0:
+	    // Action 0 - Remain in current state.
+	    //
+	    break;
 
-        case 1:
-            // Action 1 - Emit ch and remain in current state.
-            //
-            *bp++ = ch;
-            break;
+	case 1:
+	    // Action 1 - Emit ch and remain in current state.
+	    //
+	    *bp++ = ch;
+	    break;
 
-        case 2:
-            // Action 2 - Emit ch and move to STATE_NOTHING.
-            //
-            *bp++ = ch;
-            iState = STATE_NOTHING;
-            break;
+	case 2:
+	    // Action 2 - Emit ch and move to STATE_NOTHING.
+	    //
+	    *bp++ = ch;
+	    iState = STATE_NOTHING;
+	    break;
 
-        case 3:
-            // Action 3 - Emit CRLF.CRLF and terminate.
-            //
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '.';
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '\0';
-            return buf;
-            break;
+	case 3:
+	    // Action 3 - Emit CRLF.CRLF and terminate.
+	    //
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '.';
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '\0';
+	    return buf;
+	    break;
 
-        case 4:
-            // Action 4 - Move to STATE_HAVE_CR.
-            //
-            iState = STATE_HAVE_CR;
-            break;
+	case 4:
+	    // Action 4 - Move to STATE_HAVE_CR.
+	    //
+	    iState = STATE_HAVE_CR;
+	    break;
 
-        case 5:
-            // Action 5 - Move to STATE_HAVE_DOT.
-            //
-            iState = STATE_HAVE_DOT;
-            break;
+	case 5:
+	    // Action 5 - Move to STATE_HAVE_DOT.
+	    //
+	    iState = STATE_HAVE_DOT;
+	    break;
 
-        case 6:
-            // Action 6 - Move to STATE_HAVE_CRLF.
-            //
-            iState = STATE_HAVE_CRLF;
-            break;
+	case 6:
+	    // Action 6 - Move to STATE_HAVE_CRLF.
+	    //
+	    iState = STATE_HAVE_CRLF;
+	    break;
 
-        case 7:
-            // Action 7 - Emit CRLF+ch and move to STATE_NOTHING.
-            //
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = ch;
-            iState = STATE_NOTHING;
-            break;
+	case 7:
+	    // Action 7 - Emit CRLF+ch and move to STATE_NOTHING.
+	    //
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = ch;
+	    iState = STATE_NOTHING;
+	    break;
 
-        case 8:
-            // Action 8 - Emit CRLF and move to STATE_HAVE_CR.
-            //
-            *bp++ = '\r';
-            *bp++ = '\n';
-            iState = STATE_HAVE_CR;
-            break;
+	case 8:
+	    // Action 8 - Emit CRLF and move to STATE_HAVE_CR.
+	    //
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    iState = STATE_HAVE_CR;
+	    break;
 
-        case 9:
-            // Action 9 - Move to STATE_HAVE_CRLF_DOT.
-            //
-            iState = STATE_HAVE_CRLF_DOT;
-            break;
+	case 9:
+	    // Action 9 - Move to STATE_HAVE_CRLF_DOT.
+	    //
+	    iState = STATE_HAVE_CRLF_DOT;
+	    break;
 
-        case 10:
-            // Action 10 - Emit CRLF..+ch and move to STATE_NOTHING.
-            //
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '.';
-            *bp++ = '.';
-            *bp++ = ch;
-            iState = STATE_NOTHING;
-            break;
+	case 10:
+	    // Action 10 - Emit CRLF..+ch and move to STATE_NOTHING.
+	    //
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '.';
+	    *bp++ = '.';
+	    *bp++ = ch;
+	    iState = STATE_NOTHING;
+	    break;
 
-        case 11:
-            // Action 11 - Emit CRLF..CRLF.CRLF and terminate.
-            //
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '.';
-            *bp++ = '.';
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '.';
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '\0';
-            return buf;
-            break;
+	case 11:
+	    // Action 11 - Emit CRLF..CRLF.CRLF and terminate.
+	    //
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '.';
+	    *bp++ = '.';
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '.';
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '\0';
+	    return buf;
+	    break;
 
-        case 12:
-            // Action 12 - Move to STATE_HAVE_CRLF_DOT_CR.
-            //
-            iState = STATE_HAVE_CRLF_DOT_CR;
-            break;
+	case 12:
+	    // Action 12 - Move to STATE_HAVE_CRLF_DOT_CR.
+	    //
+	    iState = STATE_HAVE_CRLF_DOT_CR;
+	    break;
 
-        case 13:
-            // Action 13 - Emit CRLF.. and move to STATE_HAVE_CRLF.
-            //
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '.';
-            *bp++ = '.';
-            iState = STATE_HAVE_CRLF;
-            break;
+	case 13:
+	    // Action 13 - Emit CRLF.. and move to STATE_HAVE_CRLF.
+	    //
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '.';
+	    *bp++ = '.';
+	    iState = STATE_HAVE_CRLF;
+	    break;
 
-        case 14:
-            // Action 14 - Emit ..+ch and move to STATE_NOTHING.
-            //
-            *bp++ = '.';
-            *bp++ = '.';
-            *bp++ = ch;
-            iState = STATE_NOTHING;
-            break;
+	case 14:
+	    // Action 14 - Emit ..+ch and move to STATE_NOTHING.
+	    //
+	    *bp++ = '.';
+	    *bp++ = '.';
+	    *bp++ = ch;
+	    iState = STATE_NOTHING;
+	    break;
 
-        case 15:
-            // Action 15 - Emit ..CRLF.CRLF and terminate.
-            //
-            *bp++ = '.';
-            *bp++ = '.';
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '.';
-            *bp++ = '\r';
-            *bp++ = '\n';
-            *bp++ = '\0';
-            return buf;
-            break;
+	case 15:
+	    // Action 15 - Emit ..CRLF.CRLF and terminate.
+	    //
+	    *bp++ = '.';
+	    *bp++ = '.';
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '.';
+	    *bp++ = '\r';
+	    *bp++ = '\n';
+	    *bp++ = '\0';
+	    return buf;
+	    break;
 
-        case 16:
-            // Action 16 - Move to STATE_HAVE_DOT_CR.
-            //
-            iState = STATE_HAVE_DOT_CR;
-            break;
+	case 16:
+	    // Action 16 - Move to STATE_HAVE_DOT_CR.
+	    //
+	    iState = STATE_HAVE_DOT_CR;
+	    break;
 
-        case 17:
-            // Action 17 - Emit .. and move to STATE_HAVE_CRLF.
-            //
-            *bp++ = '.';
-            *bp++ = '.';
-            iState = STATE_HAVE_CRLF;
-            break;
-        }
+	case 17:
+	    // Action 17 - Emit .. and move to STATE_HAVE_CRLF.
+	    //
+	    *bp++ = '.';
+	    *bp++ = '.';
+	    iState = STATE_HAVE_CRLF;
+	    break;
+	}
     }
 }
 
@@ -279,41 +279,41 @@ UTF8 *ConvertCRLFtoSpace(const UTF8 *pString)
     // Skip any leading CRLF as well as non-ASCII.
     //
     while (  '\r' == *pString
-          || '\n' == *pString
-          || (0x80 & *pString) == 0x80)
+	  || '\n' == *pString
+	  || (0x80 & *pString) == 0x80)
     {
-        pString++;
+	pString++;
     }
 
     bool bFirst = true;
     while (*pString)
     {
-        if (!bFirst)
-        {
-            safe_chr(' ', buf, &bp);
-        }
-        else
-        {
-            bFirst = false;
-        }
+	if (!bFirst)
+	{
+	    safe_chr(' ', buf, &bp);
+	}
+	else
+	{
+	    bFirst = false;
+	}
 
-        while (  *pString
-              && '\r' != *pString
-              && '\n' != *pString
-              && (0x80 & *pString) == 0x00)
-        {
-            safe_chr(*pString, buf, &bp);
-            pString++;
-        }
+	while (  *pString
+	      && '\r' != *pString
+	      && '\n' != *pString
+	      && (0x80 & *pString) == 0x00)
+	{
+	    safe_chr(*pString, buf, &bp);
+	    pString++;
+	}
 
-        // Skip any CRLF.
-        //
-        while (  '\r' == *pString
-              || '\n' == *pString
-              || 0x80 == (0x80 & *pString))
-        {
-            pString++;
-        }
+	// Skip any CRLF.
+	//
+	while (  '\r' == *pString
+	      || '\n' == *pString
+	      || 0x80 == (0x80 & *pString))
+	{
+	    pString++;
+	}
     }
     *bp = '\0';
     return buf;
@@ -328,7 +328,7 @@ static int DCL_CDECL mod_email_sock_printf(SOCKET sock, const UTF8 *format, ...)
 
     if (IS_INVALID_SOCKET(sock))
     {
-        return 0;
+	return 0;
     }
 
     va_start(vargs, format);
@@ -346,7 +346,7 @@ static int mod_email_sock_readline(SOCKET sock, UTF8 *buffer, int maxlen)
 
     if (IS_INVALID_SOCKET(sock))
     {
-        return 0;
+	return 0;
     }
 
     fd_set read_fds;
@@ -363,12 +363,12 @@ static int mod_email_sock_readline(SOCKET sock, UTF8 *buffer, int maxlen)
     //
     if (IS_SOCKET_ERROR(select(static_cast<int>(sock+1), &read_fds, NULL, NULL, &tv)))
     {
-        return 0;
+	return 0;
     }
 
     if (!FD_ISSET(sock, &read_fds))
     {
-        return 0;
+	return 0;
     }
 
     bool done = false;
@@ -376,53 +376,53 @@ static int mod_email_sock_readline(SOCKET sock, UTF8 *buffer, int maxlen)
     int  pos = 0;
 
     while (  !done
-          && pos < maxlen)
+	  && pos < maxlen)
     {
-        UTF8 getme[2];
+	UTF8 getme[2];
 
-        int numread = SOCKET_READ(sock, (char *)&getme[0], 1, 0);
-        if (  IS_SOCKET_ERROR(numread)
-           || 0 == numread)
-        {
-            if (possible_close)
-            {
-                done = true;
-            }
-            else
-            {
-                FD_ZERO(&read_fds);
-                FD_SET(sock, &read_fds);
+	int numread = SOCKET_READ(sock, (char *)&getme[0], 1, 0);
+	if (  IS_SOCKET_ERROR(numread)
+	   || 0 == numread)
+	{
+	    if (possible_close)
+	    {
+		done = true;
+	    }
+	    else
+	    {
+		FD_ZERO(&read_fds);
+		FD_SET(sock, &read_fds);
 
-                // Wait up to 1 second.
-                //
-                tv.tv_sec  = 1;
-                tv.tv_usec = 0;
+		// Wait up to 1 second.
+		//
+		tv.tv_sec  = 1;
+		tv.tv_usec = 0;
 
-                // Check for data before giving up.
-                //
-                if (IS_SOCKET_ERROR(select(static_cast<int>(sock+1), &read_fds, NULL, NULL, &tv)))
-                {
-                    done = true;
-                }
+		// Check for data before giving up.
+		//
+		if (IS_SOCKET_ERROR(select(static_cast<int>(sock+1), &read_fds, NULL, NULL, &tv)))
+		{
+		    done = true;
+		}
 
-                if (FD_ISSET(sock, &read_fds))
-                {
-                    possible_close = true;
-                }
-            }
-        }
-        else
-        {
-            possible_close = false;
-            if (getme[0] != '\n')
-            {
-                buffer[pos++] = getme[0];
-            }
-            else
-            {
-                done = true;
-            }
-        }
+		if (FD_ISSET(sock, &read_fds))
+		{
+		    possible_close = true;
+		}
+	    }
+	}
+	else
+	{
+	    possible_close = false;
+	    if (getme[0] != '\n')
+	    {
+		buffer[pos++] = getme[0];
+	    }
+	    else
+	    {
+		done = true;
+	    }
+	}
     }
     buffer[pos] = '\0';
 
@@ -450,19 +450,19 @@ static int mod_email_sock_open(const UTF8 *conhostname, u_short port, SOCKET *so
     MUX_ADDRINFO *servinfo;
     if (0 == mux_getaddrinfo(conhostname, sPort, &hints, &servinfo))
     {
-        for (MUX_ADDRINFO *p = servinfo; NULL != p; p = p->ai_next)
-        {
-            cc = -2;
-            SOCKET mysock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-            if (0 == connect(mysock, p->ai_addr, p->ai_addrlen))
-            {
-                *sock = mysock;
-                cc = 0;
-                break;
-            }
-            SOCKET_CLOSE(mysock);
-        }
-        mux_freeaddrinfo(servinfo);
+	for (MUX_ADDRINFO *p = servinfo; NULL != p; p = p->ai_next)
+	{
+	    cc = -2;
+	    SOCKET mysock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+	    if (0 == connect(mysock, p->ai_addr, p->ai_addrlen))
+	    {
+		*sock = mysock;
+		cc = 0;
+		break;
+	    }
+	    SOCKET_CLOSE(mysock);
+	}
+	mux_freeaddrinfo(servinfo);
     }
     return cc;
 }
@@ -473,7 +473,7 @@ static int mod_email_sock_close(SOCKET sock)
 }
 
 void do_plusemail(dbref executor, dbref cause, dbref enactor, int eval, int key,
-                 int nargs, UTF8 *arg1, UTF8 *arg2, const UTF8 *cargs[], int ncargs)
+		 int nargs, UTF8 *arg1, UTF8 *arg2, const UTF8 *cargs[], int ncargs)
 {
     UNUSED_PARAMETER(cause);
     UNUSED_PARAMETER(enactor);
@@ -487,20 +487,20 @@ void do_plusemail(dbref executor, dbref cause, dbref enactor, int eval, int key,
 
     if ('\0' == mudconf.mail_server[0])
     {
-        notify(executor, T("@email: Not configured"));
-        return;
+	notify(executor, T("@email: Not configured"));
+	return;
     }
 
     if (!arg1 || !*arg1)
     {
-        notify(executor, T("@email: I don\xE2\x80\x99t know who you want to e-mail!"));
-        return;
+	notify(executor, T("@email: I don\xE2\x80\x99t know who you want to e-mail!"));
+	return;
     }
 
     if (!arg2 || !*arg2)
     {
-        notify(executor, T("@email: Not sending an empty e-mail!"));
-        return;
+	notify(executor, T("@email: Not sending an empty e-mail!"));
+	return;
     }
 
     UTF8 *addy = alloc_lbuf("mod_email_do_email.headers");
@@ -511,12 +511,12 @@ void do_plusemail(dbref executor, dbref cause, dbref enactor, int eval, int key,
     UTF8 *subject = (UTF8 *)strchr((char *)addy, '/');
     if (subject)
     {
-        *subject = '\0';
-        subject++;
+	*subject = '\0';
+	subject++;
     }
     else
     {
-        subject = mudconf.mail_subject;
+	subject = mudconf.mail_subject;
     }
 
     UTF8 *pMailServer = ConvertCRLFtoSpace(mudconf.mail_server);
@@ -525,155 +525,155 @@ void do_plusemail(dbref executor, dbref cause, dbref enactor, int eval, int key,
 
     if (-1 == result)
     {
-        notify(executor, tprintf(T("@email: Unable to resolve hostname %s!"),
-            pMailServer));
-        free_lbuf(addy);
-        return;
+	notify(executor, tprintf(T("@email: Unable to resolve hostname %s!"),
+	    pMailServer));
+	free_lbuf(addy);
+	return;
     }
     else if (-2 == result)
     {
-        // Periodically, we get a failed connect, for reasons which elude me.
-        // In almost every case, an immediate retry works.  Therefore, we give
-        // it one more shot, before we give up.
-        //
-        result = mod_email_sock_open(pMailServer, 25, &mailsock);
-        if (0 != result)
-        {
-            notify(executor, T("@email: Unable to connect to mailserver, aborting!"));
-            free_lbuf(addy);
-            return;
-        }
+	// Periodically, we get a failed connect, for reasons which elude me.
+	// In almost every case, an immediate retry works.  Therefore, we give
+	// it one more shot, before we give up.
+	//
+	result = mod_email_sock_open(pMailServer, 25, &mailsock);
+	if (0 != result)
+	{
+	    notify(executor, T("@email: Unable to connect to mailserver, aborting!"));
+	    free_lbuf(addy);
+	    return;
+	}
     }
 
     UTF8 *body = alloc_lbuf("mod_email_do_email.body");
     UTF8 *bodyptr = body;
     mux_exec(arg2, LBUF_SIZE-1, body, &bodyptr, executor, executor, executor,
-        EV_TOP | EV_STRIP_CURLY | EV_FCHECK | EV_EVAL, NULL, 0);
+	EV_TOP | EV_STRIP_CURLY | EV_FCHECK | EV_EVAL, NULL, 0);
     *bodyptr = '\0';
 
     do
     {
-        result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
+	result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
     } while (  0 == result
-            || (  3 < result
-               && '-' == inputline[3]));
+	    || (  3 < result
+	       && '-' == inputline[3]));
 
     if (-1 == result)
     {
-        mod_email_sock_close(mailsock);
-        notify(executor, T("@email: Connection to mailserver lost."));
-        free_lbuf(body);
-        free_lbuf(addy);
-        return;
+	mod_email_sock_close(mailsock);
+	notify(executor, T("@email: Connection to mailserver lost."));
+	free_lbuf(body);
+	free_lbuf(addy);
+	return;
     }
 
     if ('2' != inputline[0])
     {
-        mod_email_sock_close(mailsock);
-        notify(executor, tprintf(T("@email: Invalid mailserver greeting (%s)"),
-            inputline));
+	mod_email_sock_close(mailsock);
+	notify(executor, tprintf(T("@email: Invalid mailserver greeting (%s)"),
+	    inputline));
     }
 
     mod_email_sock_printf(mailsock, T("EHLO %s\r\n"), ConvertCRLFtoSpace(mudconf.mail_ehlo));
 
     do
     {
-        result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
+	result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
     } while (  0 == result
-            || (  3 < result
-               && '-' == inputline[3]));
+	    || (  3 < result
+	       && '-' == inputline[3]));
 
     if (-1 == result)
     {
-        mod_email_sock_close(mailsock);
-        notify(executor, T("@email: Connection to mailserver lost."));
-        free_lbuf(body);
-        free_lbuf(addy);
-        return;
+	mod_email_sock_close(mailsock);
+	notify(executor, T("@email: Connection to mailserver lost."));
+	free_lbuf(body);
+	free_lbuf(addy);
+	return;
     }
 
     if ('2' != inputline[0])
     {
-        notify(executor, tprintf(T("@email: Error response on EHLO (%s)"),
-            inputline));
+	notify(executor, tprintf(T("@email: Error response on EHLO (%s)"),
+	    inputline));
     }
 
     mod_email_sock_printf(mailsock, T("MAIL FROM:<%s>\r\n"), ConvertCRLFtoSpace(mudconf.mail_sendaddr));
 
     do
     {
-        result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
+	result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
     } while (  0 == result
-            || (  3 < result
-               && '-' == inputline[3]));
+	    || (  3 < result
+	       && '-' == inputline[3]));
 
     if (-1 == result)
     {
-        mod_email_sock_close(mailsock);
-        notify(executor, T("@email: Connection to mailserver lost."));
-        free_lbuf(body);
-        free_lbuf(addy);
-        return;
+	mod_email_sock_close(mailsock);
+	notify(executor, T("@email: Connection to mailserver lost."));
+	free_lbuf(body);
+	free_lbuf(addy);
+	return;
     }
 
     if ('2' != inputline[0])
     {
-        notify(executor, tprintf(T("@email: Error response on MAIL FROM (%s)"),
-            inputline));
+	notify(executor, tprintf(T("@email: Error response on MAIL FROM (%s)"),
+	    inputline));
     }
 
     mod_email_sock_printf(mailsock, T("RCPT TO:<%s>\r\n"), ConvertCRLFtoSpace(addy));
 
     do
     {
-        result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
+	result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
     } while (  0 == result
-            || (  3 < result
-               && '-' == inputline[3]));
+	    || (  3 < result
+	       && '-' == inputline[3]));
 
     if (-1 == result)
     {
-        mod_email_sock_close(mailsock);
-        notify(executor, T("@email: Connection to mailserver lost."));
-        free_lbuf(body);
-        free_lbuf(addy);
-        return;
+	mod_email_sock_close(mailsock);
+	notify(executor, T("@email: Connection to mailserver lost."));
+	free_lbuf(body);
+	free_lbuf(addy);
+	return;
     }
 
     if ('2' != inputline[0])
     {
-        notify(executor, tprintf(T("@email: Error response on RCPT TO (%s)"),
-            inputline));
-        free_lbuf(body);
-        free_lbuf(addy);
-        return;
+	notify(executor, tprintf(T("@email: Error response on RCPT TO (%s)"),
+	    inputline));
+	free_lbuf(body);
+	free_lbuf(addy);
+	return;
     }
 
     mod_email_sock_printf(mailsock, T("DATA\r\n"));
 
     do
     {
-        result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
+	result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
     } while (  0 == result
-            || (  3 < result
-               && '-' == inputline[3]));
+	    || (  3 < result
+	       && '-' == inputline[3]));
 
     if (-1 == result)
     {
-        mod_email_sock_close(mailsock);
-        notify(executor, T("@email: Connection to mailserver lost."));
-        free_lbuf(body);
-        free_lbuf(addy);
-        return;
+	mod_email_sock_close(mailsock);
+	notify(executor, T("@email: Connection to mailserver lost."));
+	free_lbuf(body);
+	free_lbuf(addy);
+	return;
     }
 
     if ('3' != inputline[0])
     {
-        notify(executor, tprintf(T("@email: Error response on DATA (%s)"),
-            inputline));
-        free_lbuf(body);
-        free_lbuf(addy);
-        return;
+	notify(executor, tprintf(T("@email: Error response on DATA (%s)"),
+	    inputline));
+	free_lbuf(body);
+	free_lbuf(addy);
+	return;
     }
 
     UTF8 *pSendName = StringClone(ConvertCRLFtoSpace(mudconf.mail_sendname));
@@ -690,37 +690,37 @@ void do_plusemail(dbref executor, dbref cause, dbref enactor, int eval, int key,
 
     do
     {
-        result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
+	result = mod_email_sock_readline(mailsock, inputline, LBUF_SIZE - 1);
 
-        // Remove trailing CR and LF characters.
-        //
-        while (  0 < result
-              && (  '\n' == inputline[result-1]
-                 || '\r' == inputline[result-1]))
-        {
-            result--;
-            inputline[result] = '\0';
-        }
+	// Remove trailing CR and LF characters.
+	//
+	while (  0 < result
+	      && (  '\n' == inputline[result-1]
+		 || '\r' == inputline[result-1]))
+	{
+	    result--;
+	    inputline[result] = '\0';
+	}
     } while (  0 == result
-            || (  3 < result
-               && '-' == inputline[3]));
+	    || (  3 < result
+	       && '-' == inputline[3]));
 
     if (-1 == result)
     {
-        mod_email_sock_close(mailsock);
-        notify(executor, T("@email: Connection to mailserver lost."));
-        free_lbuf(body);
-        free_lbuf(addy);
-        return;
+	mod_email_sock_close(mailsock);
+	notify(executor, T("@email: Connection to mailserver lost."));
+	free_lbuf(body);
+	free_lbuf(addy);
+	return;
     }
 
     if ('2' != inputline[0])
     {
-        notify(executor, tprintf(T("@email: Message rejected (%s)"), inputline));
+	notify(executor, tprintf(T("@email: Message rejected (%s)"), inputline));
     }
     else
     {
-        notify(executor, tprintf(T("@email: Mail sent to %s (%s)"), ConvertCRLFtoSpace(addy), &inputline[4]));
+	notify(executor, tprintf(T("@email: Mail sent to %s (%s)"), ConvertCRLFtoSpace(addy), &inputline[4]));
     }
 
     mod_email_sock_printf(mailsock, T("QUIT\n"));

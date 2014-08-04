@@ -56,18 +56,18 @@ inline size_t TrimPartialSequence(size_t n, __in_ecount(n) const UTF8 *p)
 {
     for (size_t i = 0; i < n; i++)
     {
-        int j = utf8_FirstByte[p[n-i-1]];
-        if (j < UTF8_CONTINUE)
-        {
-            if (i < 4)
-            {
-                return n - g_trimoffset[i][j-1];
-            }
-            else
-            {
-                return n - i + j - 1;
-            }
-        }
+	int j = utf8_FirstByte[p[n-i-1]];
+	if (j < UTF8_CONTINUE)
+	{
+	    if (i < 4)
+	    {
+		return n - g_trimoffset[i][j-1];
+	    }
+	    else
+	    {
+		return n - i + j - 1;
+	    }
+	}
     }
     return 0;
 }
@@ -119,44 +119,44 @@ inline bool mux_isprint(__in const unsigned char *p)
     unsigned char iState = CL_PRINT_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_print_itt[(unsigned char)ch];
-        unsigned short iOffset = cl_print_sot[iState];
-        for (;;)
-        {
-            int y = cl_print_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_print_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_print_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_print_itt[(unsigned char)ch];
+	unsigned short iOffset = cl_print_sot[iState];
+	for (;;)
+	{
+	    int y = cl_print_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_print_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_print_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_PRINT_ACCEPTING_STATES_START);
     return ((iState - CL_PRINT_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -168,44 +168,44 @@ inline bool mux_isattrnameinitial(__in const unsigned char *p)
     unsigned char iState = CL_ATTRNAMEINITIAL_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_attrnameinitial_itt[(unsigned char)ch];
-        unsigned char iOffset = cl_attrnameinitial_sot[iState];
-        for (;;)
-        {
-            int y = cl_attrnameinitial_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_attrnameinitial_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_attrnameinitial_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_attrnameinitial_itt[(unsigned char)ch];
+	unsigned char iOffset = cl_attrnameinitial_sot[iState];
+	for (;;)
+	{
+	    int y = cl_attrnameinitial_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_attrnameinitial_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_attrnameinitial_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_ATTRNAMEINITIAL_ACCEPTING_STATES_START);
     return ((iState - CL_ATTRNAMEINITIAL_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -217,44 +217,44 @@ inline bool mux_isattrname(__in const unsigned char *p)
     unsigned char iState = CL_ATTRNAME_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_attrname_itt[(unsigned char)ch];
-        unsigned char iOffset = cl_attrname_sot[iState];
-        for (;;)
-        {
-            int y = cl_attrname_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_attrname_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_attrname_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_attrname_itt[(unsigned char)ch];
+	unsigned char iOffset = cl_attrname_sot[iState];
+	for (;;)
+	{
+	    int y = cl_attrname_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_attrname_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_attrname_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_ATTRNAME_ACCEPTING_STATES_START);
     return ((iState - CL_ATTRNAME_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -266,44 +266,44 @@ inline bool mux_isobjectname(__in const unsigned char *p)
     unsigned char iState = CL_OBJECTNAME_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_objectname_itt[(unsigned char)ch];
-        unsigned short iOffset = cl_objectname_sot[iState];
-        for (;;)
-        {
-            int y = cl_objectname_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_objectname_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_objectname_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_objectname_itt[(unsigned char)ch];
+	unsigned short iOffset = cl_objectname_sot[iState];
+	for (;;)
+	{
+	    int y = cl_objectname_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_objectname_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_objectname_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_OBJECTNAME_ACCEPTING_STATES_START);
     return ((iState - CL_OBJECTNAME_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -315,44 +315,44 @@ inline bool mux_isplayername(__in const unsigned char *p)
     unsigned char iState = CL_PLAYERNAME_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_playername_itt[(unsigned char)ch];
-        unsigned short iOffset = cl_playername_sot[iState];
-        for (;;)
-        {
-            int y = cl_playername_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_playername_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_playername_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_playername_itt[(unsigned char)ch];
+	unsigned short iOffset = cl_playername_sot[iState];
+	for (;;)
+	{
+	    int y = cl_playername_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_playername_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_playername_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_PLAYERNAME_ACCEPTING_STATES_START);
     return ((iState - CL_PLAYERNAME_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -364,44 +364,44 @@ inline bool mux_is8859_1(__in const unsigned char *p)
     unsigned char iState = CL_8859_1_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_8859_1_itt[(unsigned char)ch];
-        unsigned char iOffset = cl_8859_1_sot[iState];
-        for (;;)
-        {
-            int y = cl_8859_1_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_8859_1_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_8859_1_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_8859_1_itt[(unsigned char)ch];
+	unsigned char iOffset = cl_8859_1_sot[iState];
+	for (;;)
+	{
+	    int y = cl_8859_1_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_8859_1_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_8859_1_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_8859_1_ACCEPTING_STATES_START);
     return ((iState - CL_8859_1_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -413,44 +413,44 @@ inline bool mux_is8859_2(__in const unsigned char *p)
     unsigned char iState = CL_8859_2_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_8859_2_itt[(unsigned char)ch];
-        unsigned char iOffset = cl_8859_2_sot[iState];
-        for (;;)
-        {
-            int y = cl_8859_2_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_8859_2_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_8859_2_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_8859_2_itt[(unsigned char)ch];
+	unsigned char iOffset = cl_8859_2_sot[iState];
+	for (;;)
+	{
+	    int y = cl_8859_2_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_8859_2_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_8859_2_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_8859_2_ACCEPTING_STATES_START);
     return ((iState - CL_8859_2_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -462,44 +462,44 @@ inline bool mux_ishangul(__in const unsigned char *p)
     unsigned char iState = CL_HANGUL_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_hangul_itt[(unsigned char)ch];
-        unsigned char iOffset = cl_hangul_sot[iState];
-        for (;;)
-        {
-            int y = cl_hangul_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_hangul_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_hangul_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_hangul_itt[(unsigned char)ch];
+	unsigned char iOffset = cl_hangul_sot[iState];
+	for (;;)
+	{
+	    int y = cl_hangul_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_hangul_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_hangul_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_HANGUL_ACCEPTING_STATES_START);
     return ((iState - CL_HANGUL_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -511,44 +511,44 @@ inline bool mux_ishiragana(__in const unsigned char *p)
     unsigned char iState = CL_HIRAGANA_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_hiragana_itt[(unsigned char)ch];
-        unsigned char iOffset = cl_hiragana_sot[iState];
-        for (;;)
-        {
-            int y = cl_hiragana_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_hiragana_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_hiragana_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_hiragana_itt[(unsigned char)ch];
+	unsigned char iOffset = cl_hiragana_sot[iState];
+	for (;;)
+	{
+	    int y = cl_hiragana_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_hiragana_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_hiragana_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_HIRAGANA_ACCEPTING_STATES_START);
     return ((iState - CL_HIRAGANA_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -560,44 +560,44 @@ inline bool mux_iskanji(__in const unsigned char *p)
     unsigned char iState = CL_KANJI_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_kanji_itt[(unsigned char)ch];
-        unsigned char iOffset = cl_kanji_sot[iState];
-        for (;;)
-        {
-            int y = cl_kanji_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_kanji_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_kanji_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_kanji_itt[(unsigned char)ch];
+	unsigned char iOffset = cl_kanji_sot[iState];
+	for (;;)
+	{
+	    int y = cl_kanji_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_kanji_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_kanji_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_KANJI_ACCEPTING_STATES_START);
     return ((iState - CL_KANJI_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -609,44 +609,44 @@ inline bool mux_iskatakana(__in const unsigned char *p)
     unsigned char iState = CL_KATAKANA_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = cl_katakana_itt[(unsigned char)ch];
-        unsigned char iOffset = cl_katakana_sot[iState];
-        for (;;)
-        {
-            int y = cl_katakana_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = cl_katakana_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = cl_katakana_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned char>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = cl_katakana_itt[(unsigned char)ch];
+	unsigned char iOffset = cl_katakana_sot[iState];
+	for (;;)
+	{
+	    int y = cl_katakana_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = cl_katakana_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = cl_katakana_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned char>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < CL_KATAKANA_ACCEPTING_STATES_START);
     return ((iState - CL_KATAKANA_ACCEPTING_STATES_START) == 1) ? true : false;
 }
@@ -678,55 +678,55 @@ inline const string_desc *mux_tolower(__in const unsigned char *p, bool &bXor)
     unsigned char iState = TR_TOLOWER_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = tr_tolower_itt[(unsigned char)ch];
-        unsigned short iOffset = tr_tolower_sot[iState];
-        for (;;)
-        {
-            int y = tr_tolower_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = tr_tolower_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = tr_tolower_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = tr_tolower_itt[(unsigned char)ch];
+	unsigned short iOffset = tr_tolower_sot[iState];
+	for (;;)
+	{
+	    int y = tr_tolower_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = tr_tolower_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = tr_tolower_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < TR_TOLOWER_ACCEPTING_STATES_START);
 
     if (TR_TOLOWER_DEFAULT == iState - TR_TOLOWER_ACCEPTING_STATES_START)
     {
-        bXor = false;
-        return NULL;
+	bXor = false;
+	return NULL;
     }
     else
     {
-        bXor = (TR_TOLOWER_XOR_START <= iState - TR_TOLOWER_ACCEPTING_STATES_START);
-        return tr_tolower_ott + iState - TR_TOLOWER_ACCEPTING_STATES_START - 1;
+	bXor = (TR_TOLOWER_XOR_START <= iState - TR_TOLOWER_ACCEPTING_STATES_START);
+	return tr_tolower_ott + iState - TR_TOLOWER_ACCEPTING_STATES_START - 1;
     }
 }
 
@@ -737,55 +737,55 @@ inline const string_desc *mux_toupper(__in const unsigned char *p, bool &bXor)
     unsigned char iState = TR_TOUPPER_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = tr_toupper_itt[(unsigned char)ch];
-        unsigned short iOffset = tr_toupper_sot[iState];
-        for (;;)
-        {
-            int y = tr_toupper_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = tr_toupper_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = tr_toupper_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = tr_toupper_itt[(unsigned char)ch];
+	unsigned short iOffset = tr_toupper_sot[iState];
+	for (;;)
+	{
+	    int y = tr_toupper_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = tr_toupper_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = tr_toupper_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < TR_TOUPPER_ACCEPTING_STATES_START);
 
     if (TR_TOUPPER_DEFAULT == iState - TR_TOUPPER_ACCEPTING_STATES_START)
     {
-        bXor = false;
-        return NULL;
+	bXor = false;
+	return NULL;
     }
     else
     {
-        bXor = (TR_TOUPPER_XOR_START <= iState - TR_TOUPPER_ACCEPTING_STATES_START);
-        return tr_toupper_ott + iState - TR_TOUPPER_ACCEPTING_STATES_START - 1;
+	bXor = (TR_TOUPPER_XOR_START <= iState - TR_TOUPPER_ACCEPTING_STATES_START);
+	return tr_toupper_ott + iState - TR_TOUPPER_ACCEPTING_STATES_START - 1;
     }
 }
 
@@ -796,55 +796,55 @@ inline const string_desc *mux_totitle(__in const unsigned char *p, bool &bXor)
     unsigned char iState = TR_TOTITLE_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = tr_totitle_itt[(unsigned char)ch];
-        unsigned short iOffset = tr_totitle_sot[iState];
-        for (;;)
-        {
-            int y = tr_totitle_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = tr_totitle_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = tr_totitle_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = tr_totitle_itt[(unsigned char)ch];
+	unsigned short iOffset = tr_totitle_sot[iState];
+	for (;;)
+	{
+	    int y = tr_totitle_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = tr_totitle_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = tr_totitle_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < TR_TOTITLE_ACCEPTING_STATES_START);
 
     if (TR_TOTITLE_DEFAULT == iState - TR_TOTITLE_ACCEPTING_STATES_START)
     {
-        bXor = false;
-        return NULL;
+	bXor = false;
+	return NULL;
     }
     else
     {
-        bXor = (TR_TOTITLE_XOR_START <= iState - TR_TOTITLE_ACCEPTING_STATES_START);
-        return tr_totitle_ott + iState - TR_TOTITLE_ACCEPTING_STATES_START - 1;
+	bXor = (TR_TOTITLE_XOR_START <= iState - TR_TOTITLE_ACCEPTING_STATES_START);
+	return tr_totitle_ott + iState - TR_TOTITLE_ACCEPTING_STATES_START - 1;
     }
 }
 
@@ -855,55 +855,55 @@ inline const string_desc *mux_foldmatch(__in const unsigned char *p, bool &bXor)
     int iState = TR_FOLDMATCH_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = tr_foldmatch_itt[(unsigned char)ch];
-        unsigned short iOffset = tr_foldmatch_sot[iState];
-        for (;;)
-        {
-            int y = tr_foldmatch_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = tr_foldmatch_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = tr_foldmatch_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = tr_foldmatch_itt[(unsigned char)ch];
+	unsigned short iOffset = tr_foldmatch_sot[iState];
+	for (;;)
+	{
+	    int y = tr_foldmatch_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = tr_foldmatch_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = tr_foldmatch_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < TR_FOLDMATCH_ACCEPTING_STATES_START);
 
     if (TR_FOLDMATCH_DEFAULT == iState - TR_FOLDMATCH_ACCEPTING_STATES_START)
     {
-        bXor = false;
-        return NULL;
+	bXor = false;
+	return NULL;
     }
     else
     {
-        bXor = (TR_FOLDMATCH_XOR_START <= iState - TR_FOLDMATCH_ACCEPTING_STATES_START);
-        return tr_foldmatch_ott + iState - TR_FOLDMATCH_ACCEPTING_STATES_START - 1;
+	bXor = (TR_FOLDMATCH_XOR_START <= iState - TR_FOLDMATCH_ACCEPTING_STATES_START);
+	return tr_foldmatch_ott + iState - TR_FOLDMATCH_ACCEPTING_STATES_START - 1;
     }
 }
 
@@ -914,44 +914,44 @@ inline int mux_color(__in const unsigned char *p)
     unsigned short iState = TR_COLOR_START_STATE;
     do
     {
-        unsigned char ch = *p++;
-        unsigned char iColumn = tr_color_itt[(unsigned char)ch];
-        unsigned short iOffset = tr_color_sot[iState];
-        for (;;)
-        {
-            int y = tr_color_sbt[iOffset];
-            if (y < 128)
-            {
-                // RUN phrase.
-                //
-                if (iColumn < y)
-                {
-                    iState = tr_color_sbt[iOffset+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset += 2;
-                }
-            }
-            else
-            {
-                // COPY phrase.
-                //
-                y = 256-y;
-                if (iColumn < y)
-                {
-                    iState = tr_color_sbt[iOffset+iColumn+1];
-                    break;
-                }
-                else
-                {
-                    iColumn = static_cast<unsigned char>(iColumn - y);
-                    iOffset = static_cast<unsigned short>(iOffset + y + 1);
-                }
-            }
-        }
+	unsigned char ch = *p++;
+	unsigned char iColumn = tr_color_itt[(unsigned char)ch];
+	unsigned short iOffset = tr_color_sot[iState];
+	for (;;)
+	{
+	    int y = tr_color_sbt[iOffset];
+	    if (y < 128)
+	    {
+		// RUN phrase.
+		//
+		if (iColumn < y)
+		{
+		    iState = tr_color_sbt[iOffset+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset += 2;
+		}
+	    }
+	    else
+	    {
+		// COPY phrase.
+		//
+		y = 256-y;
+		if (iColumn < y)
+		{
+		    iState = tr_color_sbt[iOffset+iColumn+1];
+		    break;
+		}
+		else
+		{
+		    iColumn = static_cast<unsigned char>(iColumn - y);
+		    iOffset = static_cast<unsigned short>(iOffset + y + 1);
+		}
+	    }
+	}
     } while (iState < TR_COLOR_ACCEPTING_STATES_START);
     return iState - TR_COLOR_ACCEPTING_STATES_START;
 }
@@ -1679,88 +1679,88 @@ public:
 
     inline mux_field(size_t byte = 0, size_t column = 0)
     {
-        m_byte = static_cast<LBUF_OFFSET>(byte);
-        m_column = static_cast<LBUF_OFFSET>(column);
+	m_byte = static_cast<LBUF_OFFSET>(byte);
+	m_column = static_cast<LBUF_OFFSET>(column);
     };
 
     inline void operator =(const mux_field &c)
     {
-        m_byte = c.m_byte;
-        m_column = c.m_column;
+	m_byte = c.m_byte;
+	m_column = c.m_column;
     };
 
     inline void operator ()(size_t byte, size_t column)
     {
-        m_byte = static_cast<LBUF_OFFSET>(byte);
-        m_column = static_cast<LBUF_OFFSET>(column);
+	m_byte = static_cast<LBUF_OFFSET>(byte);
+	m_column = static_cast<LBUF_OFFSET>(column);
     };
 
     inline bool operator <(const mux_field &a) const
     {
-        return (  m_byte < a.m_byte
-               && m_column < a.m_column);
+	return (  m_byte < a.m_byte
+	       && m_column < a.m_column);
     };
 
     inline bool operator <=(const mux_field &a) const
     {
-        return (  m_byte <= a.m_byte
-               && m_column <= a.m_column);
+	return (  m_byte <= a.m_byte
+	       && m_column <= a.m_column);
     };
 
     inline bool operator ==(const mux_field &a) const
     {
-        return (m_byte == a.m_byte) && (m_column == a.m_column);
+	return (m_byte == a.m_byte) && (m_column == a.m_column);
     };
 
     inline bool operator !=(const mux_field &a) const
     {
-        return (m_byte != a.m_byte) || (m_column != a.m_column);
+	return (m_byte != a.m_byte) || (m_column != a.m_column);
     };
 
     inline mux_field operator -(const mux_field &a) const
     {
-        mux_field b;
-        if (  a.m_byte  < m_byte
-           && a.m_column < m_column)
-        {
-            b.m_byte  = m_byte  - a.m_byte;
-            b.m_column = m_column - a.m_column;
-        }
-        else
-        {
-            b.m_byte  = 0;
-            b.m_column = 0;
-        }
-        return b;
+	mux_field b;
+	if (  a.m_byte  < m_byte
+	   && a.m_column < m_column)
+	{
+	    b.m_byte  = m_byte  - a.m_byte;
+	    b.m_column = m_column - a.m_column;
+	}
+	else
+	{
+	    b.m_byte  = 0;
+	    b.m_column = 0;
+	}
+	return b;
     };
 
     inline mux_field operator +(const mux_field &a) const
     {
-        mux_field b;
-        b.m_byte  = m_byte  + a.m_byte;
-        b.m_column = m_column + a.m_column;
-        return b;
+	mux_field b;
+	b.m_byte  = m_byte  + a.m_byte;
+	b.m_column = m_column + a.m_column;
+	return b;
     };
 
     inline void operator +=(const mux_field &a)
     {
-        m_byte  = m_byte + a.m_byte;
-        m_column = m_column + a.m_column;
+	m_byte  = m_byte + a.m_byte;
+	m_column = m_column + a.m_column;
     };
 
     inline void operator -=(const mux_field &a)
     {
-        if (  a.m_byte  < m_byte
-           && a.m_column < m_column)
-        {
-            m_byte  = m_byte - a.m_byte;
-            m_column = m_column - a.m_column;
-        }
-        else
-        {
-            m_byte  = 0;
-            m_column = 0;
-        }
+	if (  a.m_byte  < m_byte
+	   && a.m_column < m_column)
+	{
+	    m_byte  = m_byte - a.m_byte;
+	    m_column = m_column - a.m_column;
+	}
+	else
+	{
+	    m_byte  = 0;
+	    m_column = 0;
+	}
     };
 };
 
@@ -1776,88 +1776,88 @@ public:
 
     inline mux_cursor(size_t byte = 0, size_t point = 0)
     {
-        m_byte = static_cast<LBUF_OFFSET>(byte);
-        m_point = static_cast<LBUF_OFFSET>(point);
+	m_byte = static_cast<LBUF_OFFSET>(byte);
+	m_point = static_cast<LBUF_OFFSET>(point);
     };
 
     inline void operator =(const mux_cursor &c)
     {
-        m_byte = c.m_byte;
-        m_point = c.m_point;
+	m_byte = c.m_byte;
+	m_point = c.m_point;
     };
 
     inline void operator ()(size_t byte, size_t point)
     {
-        m_byte = static_cast<LBUF_OFFSET>(byte);
-        m_point = static_cast<LBUF_OFFSET>(point);
+	m_byte = static_cast<LBUF_OFFSET>(byte);
+	m_point = static_cast<LBUF_OFFSET>(point);
     };
 
     inline bool operator <(const mux_cursor &a) const
     {
-        return (  m_byte < a.m_byte
-               && m_point < a.m_point);
+	return (  m_byte < a.m_byte
+	       && m_point < a.m_point);
     };
 
     inline bool operator <=(const mux_cursor &a) const
     {
-        return (  m_byte <= a.m_byte
-               && m_point <= a.m_point);
+	return (  m_byte <= a.m_byte
+	       && m_point <= a.m_point);
     };
 
     inline bool operator ==(const mux_cursor &a) const
     {
-        return (m_byte == a.m_byte) && (m_point == a.m_point);
+	return (m_byte == a.m_byte) && (m_point == a.m_point);
     };
 
     inline bool operator !=(const mux_cursor &a) const
     {
-        return (m_byte != a.m_byte) || (m_point != a.m_point);
+	return (m_byte != a.m_byte) || (m_point != a.m_point);
     };
 
     inline mux_cursor operator -(const mux_cursor &a) const
     {
-        mux_cursor b;
-        if (  a.m_byte  < m_byte
-           && a.m_point < m_point)
-        {
-            b.m_byte  = m_byte  - a.m_byte;
-            b.m_point = m_point - a.m_point;
-        }
-        else
-        {
-            b.m_byte  = 0;
-            b.m_point = 0;
-        }
-        return b;
+	mux_cursor b;
+	if (  a.m_byte  < m_byte
+	   && a.m_point < m_point)
+	{
+	    b.m_byte  = m_byte  - a.m_byte;
+	    b.m_point = m_point - a.m_point;
+	}
+	else
+	{
+	    b.m_byte  = 0;
+	    b.m_point = 0;
+	}
+	return b;
     };
 
     inline mux_cursor operator +(const mux_cursor &a) const
     {
-        mux_cursor b;
-        b.m_byte  = m_byte  + a.m_byte;
-        b.m_point = m_point + a.m_point;
-        return b;
+	mux_cursor b;
+	b.m_byte  = m_byte  + a.m_byte;
+	b.m_point = m_point + a.m_point;
+	return b;
     };
 
     inline void operator +=(const mux_cursor &a)
     {
-        m_byte  = m_byte + a.m_byte;
-        m_point = m_point + a.m_point;
+	m_byte  = m_byte + a.m_byte;
+	m_point = m_point + a.m_point;
     };
 
     inline void operator -=(const mux_cursor &a)
     {
-        if (  a.m_byte  < m_byte
-           && a.m_point < m_point)
-        {
-            m_byte  = m_byte - a.m_byte;
-            m_point = m_point - a.m_point;
-        }
-        else
-        {
-            m_byte  = 0;
-            m_point = 0;
-        }
+	if (  a.m_byte  < m_byte
+	   && a.m_point < m_point)
+	{
+	    m_byte  = m_byte - a.m_byte;
+	    m_point = m_point - a.m_point;
+	}
+	else
+	{
+	    m_byte  = 0;
+	    m_point = 0;
+	}
     };
 };
 
@@ -1868,7 +1868,7 @@ bool utf8_strlen(const UTF8 *pString, mux_cursor &nString);
 mux_field StripTabsAndTruncate(const UTF8 *pString, UTF8 *pBuffer,
     size_t nLength, size_t nWidth);
 mux_field PadField(UTF8 *pBuffer, size_t nMaxBytes, LBUF_OFFSET nMinWidth,
-                   mux_field fldOutput = fldMin);
+		   mux_field fldOutput = fldMin);
 
 size_t TruncateToBuffer(const UTF8 *pString, UTF8 *pBuffer, size_t nBuffer);
 
@@ -1925,9 +1925,9 @@ public:
 
     inline bool isAscii(void)
     {
-        // If every byte corresponds to a point, then all the bytes must be ASCII.
-        //
-        return (m_iLast.m_byte == m_iLast.m_point);
+	// If every byte corresponds to a point, then all the bytes must be ASCII.
+	//
+	return (m_iLast.m_byte == m_iLast.m_point);
     }
 
     void append(dbref num);
@@ -1935,9 +1935,9 @@ public:
     void append(long lLong);
     void append
     (
-        const mux_string &sStr,
-        mux_cursor nStart = CursorMin,
-        mux_cursor iEnd   = CursorMax
+	const mux_string &sStr,
+	mux_cursor nStart = CursorMin,
+	mux_cursor iEnd   = CursorMax
     );
     void append(const UTF8 *pStr);
     void append(const UTF8 *pStr, size_t nLen);
@@ -1956,25 +1956,25 @@ public:
     long export_Long(void) const;
     LBUF_OFFSET export_TextColor
     (
-        UTF8 *pBuffer,
-        mux_cursor iStart = CursorMin,
-        mux_cursor iEnd   = CursorMax,
-        size_t nBytesMax = (LBUF_SIZE-1)
+	UTF8 *pBuffer,
+	mux_cursor iStart = CursorMin,
+	mux_cursor iEnd   = CursorMax,
+	size_t nBytesMax = (LBUF_SIZE-1)
     ) const;
     UTF8 *export_TextConverted
     (
-        bool fColor,
-        bool fNoBleed,
-        bool fColor256,
-        bool fHtml
+	bool fColor,
+	bool fNoBleed,
+	bool fColor256,
+	bool fHtml
     ) const;
     void export_TextHtml(size_t nBuffer, UTF8 *aBuffer) const;
     LBUF_OFFSET export_TextPlain
     (
-        UTF8 *pBuffer,
-        mux_cursor iStart = CursorMin,
-        mux_cursor iEnd   = CursorMax,
-        size_t nBytesMax = (LBUF_SIZE-1)
+	UTF8 *pBuffer,
+	mux_cursor iStart = CursorMin,
+	mux_cursor iEnd   = CursorMax,
+	size_t nBytesMax = (LBUF_SIZE-1)
     ) const;
     void import(dbref num);
     void import(INT64 iInt);
@@ -1985,17 +1985,17 @@ public:
 
     inline mux_cursor length_cursor(void) const
     {
-        return m_iLast;
+	return m_iLast;
     }
 
     inline size_t length_byte(void) const
     {
-        return m_iLast.m_byte;
+	return m_iLast.m_byte;
     }
 
     inline size_t length_point(void) const
     {
-        return m_iLast.m_point;
+	return m_iLast.m_point;
     }
 
     void prepend(dbref num);
@@ -2010,45 +2010,45 @@ public:
     void reverse(void);
     bool search
     (
-        const UTF8 *pPattern,
-        mux_cursor *iPos = NULL,
-        mux_cursor iStart = CursorMin,
-        mux_cursor iEnd = CursorMax
+	const UTF8 *pPattern,
+	mux_cursor *iPos = NULL,
+	mux_cursor iStart = CursorMin,
+	mux_cursor iEnd = CursorMax
     ) const;
     bool search
     (
-        const mux_string &sPattern,
-        mux_cursor *iPos = NULL,
-        mux_cursor iStart = CursorMin,
-        mux_cursor iEnd = CursorMax
+	const mux_string &sPattern,
+	mux_cursor *iPos = NULL,
+	mux_cursor iStart = CursorMin,
+	mux_cursor iEnd = CursorMax
     ) const;
     void set_Char(size_t n, const UTF8 cChar); // Deprecated.
     void set_Color(size_t n, ColorState csColor);
     bool compare_Char(const mux_cursor &i, const mux_string &sStr) const;
     void strip
     (
-        const UTF8 *pStripSet,
-        mux_cursor iStart = CursorMin,
-        mux_cursor iEnd = CursorMax
+	const UTF8 *pStripSet,
+	mux_cursor iStart = CursorMin,
+	mux_cursor iEnd = CursorMax
     );
     void stripWithTable
     (
-        const bool strip_table[UCHAR_MAX+1],
-        mux_cursor iStart = CursorMin,
-        mux_cursor iEnd = CursorMax
+	const bool strip_table[UCHAR_MAX+1],
+	mux_cursor iStart = CursorMin,
+	mux_cursor iEnd = CursorMax
     );
     void transform
     (
-        mux_string &sFromSet,
-        mux_string &sToSet,
-        size_t nStart = 0,
-        size_t nLen = (LBUF_SIZE-1)
+	mux_string &sFromSet,
+	mux_string &sToSet,
+	size_t nStart = 0,
+	size_t nLen = (LBUF_SIZE-1)
     );
     void transform_Ascii
     (
-        const UTF8 asciiTable[SCHAR_MAX+1],
-        size_t nStart = 0,
-        size_t nLen = (LBUF_SIZE-1)
+	const UTF8 asciiTable[SCHAR_MAX+1],
+	size_t nStart = 0,
+	size_t nLen = (LBUF_SIZE-1)
     );
     void trim(const UTF8 ch = ' ', bool bLeft = true, bool bRight = true);
     void trim(const UTF8 *p, bool bLeft = true, bool bRight = true);
@@ -2057,16 +2057,16 @@ public:
 
     static void * operator new(size_t size)
     {
-        mux_assert(size == sizeof(mux_string));
-        return alloc_string("new");
+	mux_assert(size == sizeof(mux_string));
+	return alloc_string("new");
     }
 
     static void operator delete(void *p)
     {
-        if (NULL != p)
-        {
-            free_string(p);
-        }
+	if (NULL != p)
+	{
+	    free_string(p);
+	}
     }
 
     void UpperCase(void);
@@ -2082,31 +2082,31 @@ public:
     //
     inline bool cursor_start(mux_cursor &c) const
     {
-        c.m_byte  = 0;
-        c.m_point = 0;
-        return (0 != m_iLast.m_point);
+	c.m_byte  = 0;
+	c.m_point = 0;
+	return (0 != m_iLast.m_point);
     }
 
     inline bool cursor_next(mux_cursor &c) const
     {
-        if ('\0' != m_autf[c.m_byte])
-        {
+	if ('\0' != m_autf[c.m_byte])
+	{
 #ifdef NEW_MUX_STRING_PARANOID
-            size_t n = utf8_FirstByte[m_autf[c.m_byte]];
-            mux_assert(n < UTF8_CONTINUE);
-            while (n--)
-            {
-                c.m_byte++;
-                mux_assert(UTF8_CONTINUE == utf8_FirstByte[m_autf[c.m_byte]]);
-            }
-            mux_assert(0 <= c.m_point && c.m_point < m_ncp);
+	    size_t n = utf8_FirstByte[m_autf[c.m_byte]];
+	    mux_assert(n < UTF8_CONTINUE);
+	    while (n--)
+	    {
+		c.m_byte++;
+		mux_assert(UTF8_CONTINUE == utf8_FirstByte[m_autf[c.m_byte]]);
+	    }
+	    mux_assert(0 <= c.m_point && c.m_point < m_ncp);
 #else
-            c.m_byte = (LBUF_OFFSET)(c.m_byte + utf8_FirstByte[m_autf[c.m_byte]]);
+	    c.m_byte = (LBUF_OFFSET)(c.m_byte + utf8_FirstByte[m_autf[c.m_byte]]);
 #endif // NEW_MUX_STRING_PARANOID
-            c.m_point++;
-            return true;
-        }
-        return false;
+	    c.m_point++;
+	    return true;
+	}
+	return false;
     };
 
     // mux_cursor c;
@@ -2117,117 +2117,117 @@ public:
     //
     inline void cursor_end(mux_cursor &c) const
     {
-        c = m_iLast;
+	c = m_iLast;
     }
 
     inline bool cursor_prev(mux_cursor &c) const
     {
-        if (0 < c.m_byte)
-        {
+	if (0 < c.m_byte)
+	{
 #ifdef NEW_MUX_STRING_PARANOID
-            size_t n = 1;
-            while (UTF8_CONTINUE == utf8_FirstByte[m_autf[c.m_byte - n]])
-            {
-                n++;
-                mux_assert(0 < c.m_byte - n);
-            }
-            mux_assert(utf8_FirstByte[m_autf[c.m_byte - n]] < UTF8_CONTINUE);
-            c.m_byte -= n;
-            mux_assert(0 < c.m_byte && c.m_byte <= m_ncp);
+	    size_t n = 1;
+	    while (UTF8_CONTINUE == utf8_FirstByte[m_autf[c.m_byte - n]])
+	    {
+		n++;
+		mux_assert(0 < c.m_byte - n);
+	    }
+	    mux_assert(utf8_FirstByte[m_autf[c.m_byte - n]] < UTF8_CONTINUE);
+	    c.m_byte -= n;
+	    mux_assert(0 < c.m_byte && c.m_byte <= m_ncp);
 #else
-            c.m_byte--;
-            while (  0 < c.m_byte
-                  && UTF8_CONTINUE == utf8_FirstByte[m_autf[c.m_byte]])
-            {
-                c.m_byte--;
-            }
+	    c.m_byte--;
+	    while (  0 < c.m_byte
+		  && UTF8_CONTINUE == utf8_FirstByte[m_autf[c.m_byte]])
+	    {
+		c.m_byte--;
+	    }
 #endif // NEW_MUX_STRING_PARANOID
-            c.m_point--;
-            return true;
-        }
-        return false;
+	    c.m_point--;
+	    return true;
+	}
+	return false;
     };
 
     inline bool cursor_from_point(mux_cursor &c, LBUF_OFFSET iPoint) const
     {
-        if (iPoint <= m_iLast.m_point)
-        {
-            if (m_iLast.m_point == m_iLast.m_byte)
-            {
-                // Special case of ASCII.
-                //
-                c.m_byte  = iPoint;
-                c.m_point = iPoint;
-            }
-            else if (iPoint < m_iLast.m_point/2)
-            {
-                // Start from the beginning.
-                //
-                cursor_start(c);
-                while (  c.m_point < iPoint
-                      && cursor_next(c))
-                {
-                    ; // Nothing.
-                }
-            }
-            else
-            {
-                // Start from the end.
-                //
-                cursor_end(c);
-                while (  iPoint < c.m_point
-                      && cursor_prev(c))
-                {
-                    ; // Nothing.
-                }
-            }
-            return true;
-        }
-        cursor_end(c);
-        return false;
+	if (iPoint <= m_iLast.m_point)
+	{
+	    if (m_iLast.m_point == m_iLast.m_byte)
+	    {
+		// Special case of ASCII.
+		//
+		c.m_byte  = iPoint;
+		c.m_point = iPoint;
+	    }
+	    else if (iPoint < m_iLast.m_point/2)
+	    {
+		// Start from the beginning.
+		//
+		cursor_start(c);
+		while (  c.m_point < iPoint
+		      && cursor_next(c))
+		{
+		    ; // Nothing.
+		}
+	    }
+	    else
+	    {
+		// Start from the end.
+		//
+		cursor_end(c);
+		while (  iPoint < c.m_point
+		      && cursor_prev(c))
+		{
+		    ; // Nothing.
+		}
+	    }
+	    return true;
+	}
+	cursor_end(c);
+	return false;
     }
 
     inline bool cursor_from_byte(mux_cursor &c, LBUF_OFFSET iByte) const
     {
-        if (iByte <= m_iLast.m_byte)
-        {
-            if (m_iLast.m_point == m_iLast.m_byte)
-            {
-                // Special case of ASCII.
-                //
-                c.m_byte  = iByte;
-                c.m_point = iByte;
-            }
-            else if (iByte < m_iLast.m_byte/2)
-            {
-                // Start from the beginning.
-                //
-                cursor_start(c);
-                while (  c.m_byte < iByte
-                      && cursor_next(c))
-                {
-                    ; // Nothing.
-                }
-            }
-            else
-            {
-                // Start from the end.
-                //
-                cursor_end(c);
-                while (  iByte < c.m_byte
-                      && cursor_prev(c))
-                {
-                    ; // Nothing.
-                }
-            }
-            return true;
-        }
-        return false;
+	if (iByte <= m_iLast.m_byte)
+	{
+	    if (m_iLast.m_point == m_iLast.m_byte)
+	    {
+		// Special case of ASCII.
+		//
+		c.m_byte  = iByte;
+		c.m_point = iByte;
+	    }
+	    else if (iByte < m_iLast.m_byte/2)
+	    {
+		// Start from the beginning.
+		//
+		cursor_start(c);
+		while (  c.m_byte < iByte
+		      && cursor_next(c))
+		{
+		    ; // Nothing.
+		}
+	    }
+	    else
+	    {
+		// Start from the end.
+		//
+		cursor_end(c);
+		while (  iByte < c.m_byte
+		      && cursor_prev(c))
+		{
+		    ; // Nothing.
+		}
+	    }
+	    return true;
+	}
+	return false;
     }
 
     inline bool IsEscape(mux_cursor &c)
     {
-        return mux_isescape(m_autf[c.m_byte]);
+	return mux_isescape(m_autf[c.m_byte]);
     }
 
     friend class mux_words;

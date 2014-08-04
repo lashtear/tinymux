@@ -62,8 +62,8 @@ typedef enum {
 /*                         int line); */
 
 #define chfree(buf) do {                        \
-        mux_assert(buf != NULL);                \
-        free(buf); } while (0)
+	mux_assert(buf != NULL);                \
+	free(buf); } while (0)
 #define pool_free(p,buf,file,line) chfree(buf)
 
 // Used only in timer.cpp
@@ -150,8 +150,8 @@ extern void pool_reset(void);
 { \
     if ((size_t)(*bufp - buff) < nSizeOfBuffer) \
     { \
-        **bufp = src; \
-        (*bufp)++; \
+	**bufp = src; \
+	(*bufp)++; \
     } \
 }
 

@@ -78,7 +78,7 @@ void *hashfindLEN(const void *pKey, size_t nKey, CHashTable *htab)
     if (  pKey == NULL
        || nKey <= 0)
     {
-        return NULL;
+	return NULL;
     }
 
     UINT32 nHash = HASH_ProcessBuffer(0, pKey, nKey);
@@ -87,16 +87,16 @@ void *hashfindLEN(const void *pKey, size_t nKey, CHashTable *htab)
     iDir = htab->FindFirstKey(nHash);
     while (iDir != HF_FIND_END)
     {
-        HP_HEAPLENGTH nRecord;
-        htab->Copy(iDir, &nRecord, &htab_rec);
-        size_t nTarget = nRecord - sizeof(int *);
+	HP_HEAPLENGTH nRecord;
+	htab->Copy(iDir, &nRecord, &htab_rec);
+	size_t nTarget = nRecord - sizeof(int *);
 
-        if (  nTarget == nKey
-           && memcmp(pKey, htab_rec.aKey, nKey) == 0)
-        {
-            return htab_rec.pData;
-        }
-        iDir = htab->FindNextKey(iDir, nHash);
+	if (  nTarget == nKey
+	   && memcmp(pKey, htab_rec.aKey, nKey) == 0)
+	{
+	    return htab_rec.pData;
+	}
+	iDir = htab->FindNextKey(iDir, nHash);
     }
     return NULL;
 }
@@ -125,7 +125,7 @@ bool hashaddLEN(const void *pKey, size_t nKey, void *pData, CHashTable *htab)
     if (  pKey == NULL
        || nKey <= 0)
     {
-        return false;
+	return false;
     }
 
     UINT32 nHash = HASH_ProcessBuffer(0, pKey, nKey);
@@ -155,7 +155,7 @@ void hashdeleteLEN(const void *pKey, size_t nKey, CHashTable *htab)
     if (  pKey == NULL
        || nKey <= 0)
     {
-        return;
+	return;
     }
 
     UINT32 nHash = HASH_ProcessBuffer(0, pKey, nKey);
@@ -163,16 +163,16 @@ void hashdeleteLEN(const void *pKey, size_t nKey, CHashTable *htab)
     UINT32 iDir = htab->FindFirstKey(nHash);
     while (iDir != HF_FIND_END)
     {
-        HP_HEAPLENGTH nRecord;
-        htab->Copy(iDir, &nRecord, &htab_rec);
-        size_t nTarget = nRecord - sizeof(int *);
+	HP_HEAPLENGTH nRecord;
+	htab->Copy(iDir, &nRecord, &htab_rec);
+	size_t nTarget = nRecord - sizeof(int *);
 
-        if (  nTarget == nKey
-           && memcmp(pKey, htab_rec.aKey, nKey) == 0)
-        {
-            htab->Remove(iDir);
-        }
-        iDir = htab->FindNextKey(iDir, nHash);
+	if (  nTarget == nKey
+	   && memcmp(pKey, htab_rec.aKey, nKey) == 0)
+	{
+	    htab->Remove(iDir);
+	}
+	iDir = htab->FindNextKey(iDir, nHash);
     }
 }
 
@@ -200,7 +200,7 @@ bool hashreplLEN(const void *str, size_t nStr, void *pData, CHashTable *htab)
     if (  str == NULL
        || nStr <= 0)
     {
-        return false;
+	return false;
     }
 
     UINT32 nHash = HASH_ProcessBuffer(0, str, nStr);
@@ -208,18 +208,18 @@ bool hashreplLEN(const void *str, size_t nStr, void *pData, CHashTable *htab)
     UINT32 iDir = htab->FindFirstKey(nHash);
     while (iDir != HF_FIND_END)
     {
-        HP_HEAPLENGTH nRecord;
-        htab->Copy(iDir, &nRecord, &htab_rec);
-        size_t nTarget = nRecord - sizeof(int *);
+	HP_HEAPLENGTH nRecord;
+	htab->Copy(iDir, &nRecord, &htab_rec);
+	size_t nTarget = nRecord - sizeof(int *);
 
-        if (  nTarget == nStr
-           && memcmp(str, htab_rec.aKey, nStr) == 0)
-        {
-            htab_rec.pData = pData;
-            htab->Update(iDir, nRecord, &htab_rec);
-            return true;
-        }
-        iDir = htab->FindNextKey(iDir, nHash);
+	if (  nTarget == nStr
+	   && memcmp(str, htab_rec.aKey, nStr) == 0)
+	{
+	    htab_rec.pData = pData;
+	    htab->Update(iDir, nRecord, &htab_rec);
+	    return true;
+	}
+	iDir = htab->FindNextKey(iDir, nHash);
     }
     return false;
 }
@@ -228,14 +228,14 @@ void hashreplall(const void *old, void *new0, CHashTable *htab)
 {
     HP_HEAPLENGTH nRecord;
     for (  UINT32 iDir = htab->FindFirst(&nRecord, &htab_rec);
-           iDir != HF_FIND_END;
-           iDir = htab->FindNext(&nRecord, &htab_rec))
+	   iDir != HF_FIND_END;
+	   iDir = htab->FindNext(&nRecord, &htab_rec))
     {
-        if (htab_rec.pData == old)
-        {
-            htab_rec.pData = new0;
-            htab->Update(iDir, nRecord, &htab_rec);
-        }
+	if (htab_rec.pData == old)
+	{
+	    htab_rec.pData = new0;
+	    htab->Update(iDir, nRecord, &htab_rec);
+	}
     }
 }
 
@@ -249,7 +249,7 @@ void *hash_firstentry(CHashTable *htab)
     UINT32 iDir = htab->FindFirst(&nRecord, &htab_rec);
     if (iDir != HF_FIND_END)
     {
-        return htab_rec.pData;
+	return htab_rec.pData;
     }
     return NULL;
 }
@@ -260,7 +260,7 @@ void *hash_nextentry(CHashTable *htab)
     UINT32 iDir = htab->FindNext(&nRecord, &htab_rec);
     if (iDir != HF_FIND_END)
     {
-        return htab_rec.pData;
+	return htab_rec.pData;
     }
     return NULL;
 }
@@ -275,9 +275,9 @@ void *hash_firstkey(CHashTable *htab, int *nKeyLength, UTF8 **pKey)
     UINT32 iDir = htab->FindFirst(&nRecord, &htab_rec);
     if (iDir != HF_FIND_END)
     {
-        *nKeyLength = nRecord-sizeof(int *);
-        *pKey = htab_rec.aKey;
-        return htab_rec.pData;
+	*nKeyLength = nRecord-sizeof(int *);
+	*pKey = htab_rec.aKey;
+	return htab_rec.pData;
     }
     *nKeyLength = 0;
     *pKey = NULL;
@@ -290,9 +290,9 @@ void *hash_nextkey(CHashTable *htab, int *nKeyLength, UTF8 **pKey)
     UINT32 iDir = htab->FindNext(&nRecord, &htab_rec);
     if (iDir != HF_FIND_END)
     {
-        *nKeyLength = nRecord-sizeof(int *);
-        *pKey = htab_rec.aKey;
-        return htab_rec.pData;
+	*nKeyLength = nRecord-sizeof(int *);
+	*pKey = htab_rec.aKey;
+	return htab_rec.pData;
     }
     *nKeyLength = 0;
     *pKey = NULL;
@@ -308,19 +308,19 @@ bool search_nametab(dbref player, NAMETAB *ntab, const UTF8 *flagname, unsigned 
 {
     for (NAMETAB *nt = ntab; nt->name; nt++)
     {
-        if (minmatch(flagname, nt->name, nt->minlen))
-        {
-            if (check_access(player, nt->perm))
-            {
-                *pflag = nt->flag;
-                return true;
-            }
-            else
-            {
-                *pflag = -2;
-                return false;
-            }
-        }
+	if (minmatch(flagname, nt->name, nt->minlen))
+	{
+	    if (check_access(player, nt->perm))
+	    {
+		*pflag = nt->flag;
+		return true;
+	    }
+	    else
+	    {
+		*pflag = -2;
+		return false;
+	    }
+	}
     }
     *pflag = -1;
     return false;
@@ -335,13 +335,13 @@ NAMETAB *find_nametab_ent(dbref player, NAMETAB *ntab, const UTF8 *flagname)
 {
     for (NAMETAB *nt = ntab; nt->name; nt++)
     {
-        if (minmatch(flagname, nt->name, nt->minlen))
-        {
-            if (check_access(player, nt->perm))
-            {
-                return nt;
-            }
-        }
+	if (minmatch(flagname, nt->name, nt->minlen))
+	{
+	    if (check_access(player, nt->perm))
+	    {
+		return nt;
+	    }
+	}
     }
     return NULL;
 }
@@ -361,19 +361,19 @@ void display_nametab(dbref player, NAMETAB *ntab, const UTF8 *prefix, bool list_
     safe_chr(':', buf, &bp);
     for (NAMETAB *nt = ntab; nt->name; nt++)
     {
-        if (  God(player)
-           || check_access(player, nt->perm))
-        {
-            safe_chr(' ', buf, &bp);
-            safe_str(nt->name, buf, &bp);
-            got_one = true;
-        }
+	if (  God(player)
+	   || check_access(player, nt->perm))
+	{
+	    safe_chr(' ', buf, &bp);
+	    safe_str(nt->name, buf, &bp);
+	    got_one = true;
+	}
     }
     *bp = '\0';
     if (  got_one
        || list_if_none)
     {
-        notify(player, buf);
+	notify(player, buf);
     }
     free_lbuf(buf);
 }
@@ -392,26 +392,26 @@ void interp_nametab(dbref player, NAMETAB *ntab, int flagword,
     safe_str(prefix, buf, &bp);
     for (NAMETAB *nt = ntab; nt->name; nt++)
     {
-        if (  God(player)
-           || check_access(player, nt->perm))
-        {
-            if (!bFirst)
-            {
-                safe_chr(';', buf, &bp);
-                bFirst = false;
-            }
-            safe_chr(' ', buf, &bp);
-            safe_str(nt->name, buf, &bp);
-            safe_str(T("..."), buf, &bp);
-            if ((flagword & nt->flag) != 0)
-            {
-                safe_str(true_text, buf, &bp);
-            }
-            else
-            {
-                safe_str(false_text, buf, &bp);
-            }
-        }
+	if (  God(player)
+	   || check_access(player, nt->perm))
+	{
+	    if (!bFirst)
+	    {
+		safe_chr(';', buf, &bp);
+		bFirst = false;
+	    }
+	    safe_chr(' ', buf, &bp);
+	    safe_str(nt->name, buf, &bp);
+	    safe_str(T("..."), buf, &bp);
+	    if ((flagword & nt->flag) != 0)
+	    {
+		safe_str(true_text, buf, &bp);
+	    }
+	    else
+	    {
+		safe_str(false_text, buf, &bp);
+	    }
+	}
     }
     *bp = '\0';
     notify(player, buf);
@@ -433,20 +433,20 @@ void listset_nametab(dbref player, NAMETAB *ntab, int flagword, const UTF8 *pref
     bool got_one = false;
     for (NAMETAB *nt = ntab; nt->name; nt++)
     {
-        if (  ((flagword & nt->flag) != 0)
-           && (  God(player)
-              || check_access(player, nt->perm)))
-        {
-            safe_chr(' ', buf, &bp);
-            safe_str(nt->name, buf, &bp);
-            got_one = true;
-        }
+	if (  ((flagword & nt->flag) != 0)
+	   && (  God(player)
+	      || check_access(player, nt->perm)))
+	{
+	    safe_chr(' ', buf, &bp);
+	    safe_str(nt->name, buf, &bp);
+	    got_one = true;
+	}
     }
     *bp = '\0';
     if (  got_one
        || list_if_none)
     {
-        notify(player, buf);
+	notify(player, buf);
     }
     free_lbuf(buf);
 }
@@ -462,24 +462,24 @@ CF_HAND(cf_ntab_access)
 
     for (ap = str; *ap && !mux_isspace(*ap); ap++)
     {
-        ; // Nothing.
+	; // Nothing.
     }
     if (*ap)
     {
-        *ap++ = '\0';
+	*ap++ = '\0';
     }
 
     while (mux_isspace(*ap))
     {
-        ap++;
+	ap++;
     }
 
     for (np = (NAMETAB *) vp; np->name; np++)
     {
-        if (minmatch(str, np->name, np->minlen))
-        {
-            return cf_modify_bits(&(np->perm), ap, pExtra, nExtra, player, cmd);
-        }
+	if (minmatch(str, np->name, np->minlen))
+	{
+	    return cf_modify_bits(&(np->perm), ap, pExtra, nExtra, player, cmd);
+	}
     }
     cf_log_notfound(player, cmd, T("Entry"), str);
     return -1;

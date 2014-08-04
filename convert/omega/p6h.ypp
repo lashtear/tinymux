@@ -134,29 +134,29 @@ object
     OBJECT STRING INTEGER INTEGER INTEGER INTEGER INTEGER LOCKCOUNT
     INTEGER locklist INTEGER INTEGER INTEGER INTEGER INTEGER INTEGER
     INTEGER INTEGER attrlist_old '<' {
-                                         P6H_OBJECTINFO *oi = new P6H_OBJECTINFO;
-                                         oi->SetRef($1);
-                                         oi->SetName($2);
-                                         oi->SetLocation($3);
-                                         oi->SetContents($4);
-                                         oi->SetExits($5);
-                                         oi->SetNext($6);
-                                         oi->SetParent($7);
-                                         oi->SetLocks($9, $10);
-                                         oi->SetOwner($11);
-                                         oi->SetZone($12);
-                                         oi->SetPennies($13);
-                                         oi->SetFlags($14);
-                                         oi->SetToggles($15);
-                                         oi->SetPowers($16);
-                                         oi->SetCreated($17);
-                                         oi->SetModified($18);
-                                         if (NULL != $19)
-                                         {
-                                             oi->SetAttrs($19->size(), $19);
-                                         }
-                                         g_p6hgame.AddObject(oi);
-                                     }
+					 P6H_OBJECTINFO *oi = new P6H_OBJECTINFO;
+					 oi->SetRef($1);
+					 oi->SetName($2);
+					 oi->SetLocation($3);
+					 oi->SetContents($4);
+					 oi->SetExits($5);
+					 oi->SetNext($6);
+					 oi->SetParent($7);
+					 oi->SetLocks($9, $10);
+					 oi->SetOwner($11);
+					 oi->SetZone($12);
+					 oi->SetPennies($13);
+					 oi->SetFlags($14);
+					 oi->SetToggles($15);
+					 oi->SetPowers($16);
+					 oi->SetCreated($17);
+					 oi->SetModified($18);
+					 if (NULL != $19)
+					 {
+					     oi->SetAttrs($19->size(), $19);
+					 }
+					 g_p6hgame.AddObject(oi);
+				     }
 ;
 
 objectphrases
@@ -207,7 +207,7 @@ locklist
 :
     locklist lock                    { $$ = $1; if (NULL == $$) { $$ = new vector<P6H_LOCKINFO *>; } $$->push_back($2); }
 |
-                                     { $$ = NULL; }
+				     { $$ = NULL; }
 ;
 
 lock
@@ -241,7 +241,7 @@ attrlist
 :
     attrlist attr                    { $$ = $1; if (NULL == $$) { $$ = new vector<P6H_ATTRINFO *>; } $$->push_back($2); }
 |
-                                     { $$ = NULL; }
+				     { $$ = NULL; }
 ;
 
 
@@ -249,7 +249,7 @@ attrlist_old
 :
     attrlist_old attr_old           { $$ = $1; if (NULL == $$) { $$ = new vector<P6H_ATTRINFO *>; } $$->push_back($2); }
 |
-                                    { $$ = NULL; }
+				    { $$ = NULL; }
 ;
 
 attr

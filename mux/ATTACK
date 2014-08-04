@@ -112,12 +112,12 @@ There are a few things you should do on a regular basis:
     progress.  Get a 'feel' for what is normal for you game and be
     sensitive to what might be abnormal.
 
-        ps ux -A
+	ps ux -A
 
   - Keep an eye on attribute names (Vattr names) with the following
     command:
 
-        @list hashstats
+	@list hashstats
 
     The column you care about is the 'entries' column.  This number will
     always increase, however, stale names can be removed by #1 using the

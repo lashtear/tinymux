@@ -100,12 +100,12 @@ typedef struct tagHPHeapNode
     HP_HEAPLENGTH nBlockSize;
     union
     {
-        HP_HEAPOFFSET oNext;
-        struct
-        {
-            HP_HEAPLENGTH nRecordSize;
-            UINT32        nHash;
-        } s;
+	HP_HEAPOFFSET oNext;
+	struct
+	{
+	    HP_HEAPLENGTH nRecordSize;
+	    UINT32        nHash;
+	} s;
     } u;
 } HP_HEAPNODE, *HP_PHEAPNODE;
 #define HP_SIZEOF_HEAPNODE sizeof(HP_HEAPNODE)
@@ -278,7 +278,7 @@ public:
     CHashTable(void);
     void ResetStats(void);
     void GetStats( unsigned int *hashsize, int *entries, INT64 *deletes,
-                   INT64 *scans, INT64 *hits, INT64 *checks, int *max_scan);
+		   INT64 *scans, INT64 *hits, INT64 *checks, int *max_scan);
     unsigned int GetEntryCount();
 
     void Reset(void);

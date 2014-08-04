@@ -35,11 +35,11 @@ fi
 if [ -r "$PIDFILE" ]; then
     oldpid=`cat $PIDFILE`
     if [ "$oldpid" -gt 1 ]; then
-        nmux=`ps | grep $oldpid | grep netmux | wc -l`
-        if [ "$nmux" -gt 0 ]; then
-            echo "A smoke test already seems to be running."
-            exit 0
-        fi
+	nmux=`ps | grep $oldpid | grep netmux | wc -l`
+	if [ "$nmux" -gt 0 ]; then
+	    echo "A smoke test already seems to be running."
+	    exit 0
+	fi
     fi
 fi
 perl ./tools/unformat.pl *.mux > $TMP

@@ -46,11 +46,11 @@
 
     Input parameters:
     sourceStart - pointer to a pointer to the source buffer.
-        The contents of this are modified on return so that
-        it points at the next thing to be converted.
+	The contents of this are modified on return so that
+	it points at the next thing to be converted.
     targetStart - similarly, pointer to pointer to the target buffer.
     sourceEnd, targetEnd - respectively pointers to the ends of the
-        two buffers, for overflow checking only.
+	two buffers, for overflow checking only.
 
     These conversion functions take a ConversionFlags argument. When this
     flag is set to strict, both irregular sequences and isolated surrogates
@@ -75,7 +75,7 @@
 
     Author: Mark E. Davis, 1994.
     Rev History: Rick McGowan, fixes & updates May 2001.
-         Fixes & updates, Sept 2001.
+	 Fixes & updates, Sept 2001.
 
 ------------------------------------------------------------------------ */
 
@@ -117,28 +117,28 @@ extern "C" {
 #endif
 
 ConversionResult ConvertUTF8toUTF16 (
-        const UTF8** sourceStart, const UTF8* sourceEnd,
-        UTF16** targetStart, UTF16* targetEnd, ConversionFlags flags);
+	const UTF8** sourceStart, const UTF8* sourceEnd,
+	UTF16** targetStart, UTF16* targetEnd, ConversionFlags flags);
 
 ConversionResult ConvertUTF16toUTF8 (
-        const UTF16** sourceStart, const UTF16* sourceEnd,
-        UTF8** targetStart, UTF8* targetEnd, ConversionFlags flags);
+	const UTF16** sourceStart, const UTF16* sourceEnd,
+	UTF8** targetStart, UTF8* targetEnd, ConversionFlags flags);
 
 ConversionResult ConvertUTF8toUTF32 (
-        const UTF8** sourceStart, const UTF8* sourceEnd,
-        UTF32** targetStart, UTF32* targetEnd, ConversionFlags flags);
+	const UTF8** sourceStart, const UTF8* sourceEnd,
+	UTF32** targetStart, UTF32* targetEnd, ConversionFlags flags);
 
 ConversionResult ConvertUTF32toUTF8 (
-        const UTF32** sourceStart, const UTF32* sourceEnd,
-        UTF8** targetStart, UTF8* targetEnd, ConversionFlags flags);
+	const UTF32** sourceStart, const UTF32* sourceEnd,
+	UTF8** targetStart, UTF8* targetEnd, ConversionFlags flags);
 
 ConversionResult ConvertUTF16toUTF32 (
-        const UTF16** sourceStart, const UTF16* sourceEnd,
-        UTF32** targetStart, UTF32* targetEnd, ConversionFlags flags);
+	const UTF16** sourceStart, const UTF16* sourceEnd,
+	UTF32** targetStart, UTF32* targetEnd, ConversionFlags flags);
 
 ConversionResult ConvertUTF32toUTF16 (
-        const UTF32** sourceStart, const UTF32* sourceEnd,
-        UTF16** targetStart, UTF16* targetEnd, ConversionFlags flags);
+	const UTF32** sourceStart, const UTF32* sourceEnd,
+	UTF16** targetStart, UTF16* targetEnd, ConversionFlags flags);
 
 Boolean isLegalUTF8Sequence(const UTF8 *source, const UTF8 *sourceEnd);
 Boolean isLegalUTF8(const UTF8 *source, int length);

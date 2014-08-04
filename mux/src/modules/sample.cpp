@@ -30,11 +30,11 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_CanUnloadNow(void)
     if (  0 == g_cComponents
        && 0 == g_cServerLocks)
     {
-        return MUX_S_OK;
+	return MUX_S_OK;
     }
     else
     {
-        return MUX_S_FALSE;
+	return MUX_S_FALSE;
     }
 }
 
@@ -44,43 +44,43 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_GetClassObject(MUX_CID cid, MUX_IID
 
     if (CID_Sample == cid)
     {
-        CSampleFactory *pSampleFactory = NULL;
-        try
-        {
-            pSampleFactory = new CSampleFactory;
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	CSampleFactory *pSampleFactory = NULL;
+	try
+	{
+	    pSampleFactory = new CSampleFactory;
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pSampleFactory)
-        {
-            return MUX_E_OUTOFMEMORY;
-        }
+	if (NULL == pSampleFactory)
+	{
+	    return MUX_E_OUTOFMEMORY;
+	}
 
-        mr = pSampleFactory->QueryInterface(iid, ppv);
-        pSampleFactory->Release();
+	mr = pSampleFactory->QueryInterface(iid, ppv);
+	pSampleFactory->Release();
     }
     else if (CID_SumProxy == cid)
     {
-        CSumProxyFactory *pSumProxyFactory = NULL;
-        try
-        {
-            pSumProxyFactory = new CSumProxyFactory;
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	CSumProxyFactory *pSumProxyFactory = NULL;
+	try
+	{
+	    pSumProxyFactory = new CSumProxyFactory;
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pSumProxyFactory)
-        {
-            return MUX_E_OUTOFMEMORY;
-        }
+	if (NULL == pSumProxyFactory)
+	{
+	    return MUX_E_OUTOFMEMORY;
+	}
 
-        mr = pSumProxyFactory->QueryInterface(iid, ppv);
-        pSumProxyFactory->Release();
+	mr = pSumProxyFactory->QueryInterface(iid, ppv);
+	pSumProxyFactory->Release();
     }
     return mr;
 }
@@ -91,28 +91,28 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_Register(void)
 
     if (NULL == g_pISample)
     {
-        // Advertise our components.
-        //
-        mr = mux_RegisterClassObjects(NUM_CLASSES, sample_classes, NULL);
-        if (MUX_FAILED(mr))
-        {
-            return mr;
-        }
+	// Advertise our components.
+	//
+	mr = mux_RegisterClassObjects(NUM_CLASSES, sample_classes, NULL);
+	if (MUX_FAILED(mr))
+	{
+	    return mr;
+	}
 
-        // Create an instance of our CSample component.
-        //
-        ISample *pISample = NULL;
-        mr = mux_CreateInstance(CID_Sample, NULL, UseSameProcess, IID_ISample, (void **)&pISample);
-        if (MUX_SUCCEEDED(mr))
-        {
-            g_pISample = pISample;
-            pISample = NULL;
-        }
-        else
-        {
-            (void)mux_RevokeClassObjects(NUM_CLASSES, sample_classes);
-            mr = MUX_E_OUTOFMEMORY;
-        }
+	// Create an instance of our CSample component.
+	//
+	ISample *pISample = NULL;
+	mr = mux_CreateInstance(CID_Sample, NULL, UseSameProcess, IID_ISample, (void **)&pISample);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    g_pISample = pISample;
+	    pISample = NULL;
+	}
+	else
+	{
+	    (void)mux_RevokeClassObjects(NUM_CLASSES, sample_classes);
+	    mr = MUX_E_OUTOFMEMORY;
+	}
     }
     return mr;
 }
@@ -123,9 +123,9 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_Unregister(void)
     //
     if (NULL != g_pISample)
     {
-        g_pISample->Unregistering();
-        g_pISample->Release();
-        g_pISample = NULL;
+	g_pISample->Unregistering();
+	g_pISample->Release();
+	g_pISample = NULL;
     }
 
     return mux_RevokeClassObjects(NUM_CLASSES, sample_classes);
@@ -149,13 +149,13 @@ MUX_RESULT CSample::FinalConstruct(void)
     mr = mux_CreateInstance(CID_Log, NULL, UseSameProcess, IID_ILog, (void **)&m_pILog);
     if (MUX_SUCCEEDED(mr))
     {
-        bool fStarted;
-        mr = m_pILog->start_log(&fStarted, LOG_ALWAYS, T("INI"), T("INFO")); 
-        if (MUX_SUCCEEDED(mr) && fStarted)
-        {
-            mr = m_pILog->log_text(T("CSample::CSample()." ENDLINE));
-            mr = m_pILog->end_log();
-        }
+	bool fStarted;
+	mr = m_pILog->start_log(&fStarted, LOG_ALWAYS, T("INI"), T("INFO")); 
+	if (MUX_SUCCEEDED(mr) && fStarted)
+	{
+	    mr = m_pILog->log_text(T("CSample::CSample()." ENDLINE));
+	    mr = m_pILog->end_log();
+	}
     }
 
     // Use CServerEventsSource to hook up our IServerEventsSink callback interface.
@@ -164,12 +164,12 @@ MUX_RESULT CSample::FinalConstruct(void)
     mr = QueryInterface(IID_IServerEventsSink, (void **)&pIServerEventsSink);
     if (MUX_SUCCEEDED(mr))
     {
-        mr = mux_CreateInstance(CID_ServerEventsSource, NULL, UseSameProcess, IID_IServerEventsControl, (void **)&m_pIServerEventsControl);
-        if (MUX_SUCCEEDED(mr))
-        {
-            m_pIServerEventsControl->Advise(pIServerEventsSink);
-        }
-        pIServerEventsSink->Release();
+	mr = mux_CreateInstance(CID_ServerEventsSource, NULL, UseSameProcess, IID_IServerEventsControl, (void **)&m_pIServerEventsControl);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    m_pIServerEventsControl->Advise(pIServerEventsSink);
+	}
+	pIServerEventsSink->Release();
     }
     return mr;
 }
@@ -178,22 +178,22 @@ CSample::~CSample()
 {
     if (NULL != m_pILog)
     {
-        bool fStarted;
-        MUX_RESULT mr = m_pILog->start_log(&fStarted, LOG_ALWAYS, T("INI"), T("INFO"));
-        if (MUX_SUCCEEDED(mr) && fStarted)
-        {
-            mr = m_pILog->log_text(T("CSample::~CSample()." ENDLINE));
-            mr = m_pILog->end_log();
-        }
+	bool fStarted;
+	MUX_RESULT mr = m_pILog->start_log(&fStarted, LOG_ALWAYS, T("INI"), T("INFO"));
+	if (MUX_SUCCEEDED(mr) && fStarted)
+	{
+	    mr = m_pILog->log_text(T("CSample::~CSample()." ENDLINE));
+	    mr = m_pILog->end_log();
+	}
 
-        m_pILog->Release();
-        m_pILog = NULL;
+	m_pILog->Release();
+	m_pILog = NULL;
     }
 
     if (NULL != m_pIServerEventsControl)
     {
-        m_pIServerEventsControl->Release();
-        m_pIServerEventsControl = NULL;
+	m_pIServerEventsControl->Release();
+	m_pIServerEventsControl = NULL;
     }
 
     g_cComponents--;
@@ -203,20 +203,20 @@ MUX_RESULT CSample::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<ISample *>(this);
+	*ppv = static_cast<ISample *>(this);
     }
     else if (IID_ISample == iid)
     {
-        *ppv = static_cast<ISample *>(this);
+	*ppv = static_cast<ISample *>(this);
     }
     else if (IID_IServerEventsSink == iid)
     {
-        *ppv = static_cast<mux_IServerEventsSink *>(this);
+	*ppv = static_cast<mux_IServerEventsSink *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -233,8 +233,8 @@ UINT32 CSample::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -246,8 +246,8 @@ void CSample::Unregistering(void)
     //
     if (NULL != m_pIServerEventsControl)
     {
-        m_pIServerEventsControl->Release();
-        m_pIServerEventsControl = NULL;
+	m_pIServerEventsControl->Release();
+	m_pIServerEventsControl = NULL;
     }
 }
 
@@ -265,16 +265,16 @@ MUX_RESULT CSampleFactory::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else if (mux_IID_IClassFactory == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -291,8 +291,8 @@ UINT32 CSampleFactory::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -303,32 +303,32 @@ MUX_RESULT CSampleFactory::CreateInstance(mux_IUnknown *pUnknownOuter, MUX_IID i
     //
     if (NULL != pUnknownOuter)
     {
-        return MUX_E_NOAGGREGATION;
+	return MUX_E_NOAGGREGATION;
     }
 
     CSample *pSample = NULL;
     try
     {
-        pSample = new CSample;
+	pSample = new CSample;
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     MUX_RESULT mr;
     if (NULL == pSample)
     {
-        return MUX_E_OUTOFMEMORY;
+	return MUX_E_OUTOFMEMORY;
     }
     else
     {
-        mr = pSample->FinalConstruct();
-        if (MUX_FAILED(mr))
-        {
-            pSample->Release();
-            return mr;
-        }
+	mr = pSample->FinalConstruct();
+	if (MUX_FAILED(mr))
+	{
+	    pSample->Release();
+	    return mr;
+	}
     }
 
     mr = pSample->QueryInterface(iid, ppv);
@@ -340,11 +340,11 @@ MUX_RESULT CSampleFactory::LockServer(bool bLock)
 {
     if (bLock)
     {
-        g_cServerLocks++;
+	g_cServerLocks++;
     }
     else
     {
-        g_cServerLocks--;
+	g_cServerLocks--;
     }
     return MUX_S_OK;
 }
@@ -360,25 +360,25 @@ void CSample::startup(void)
     mr = mux_CreateInstance(CID_Sum, NULL, UseSlaveProcess, IID_ISum, (void **)&pISum);
     if (MUX_SUCCEEDED(mr))
     {
-        int sum;
-        mr = pISum->Add(1,1, &sum);
-        if (MUX_SUCCEEDED(mr))
-        {
-            mr = m_pILog->log_text(T("ISum::Add(1,1) is:"));
-            mr = m_pILog->log_number(sum);
-        }
-        else
-        {
-            mr = m_pILog->log_text(T("Call to pISum->Add() failed with:."));
-            mr = m_pILog->log_number(mr);
-        }
-        pISum->Release();
-        pISum = NULL;
+	int sum;
+	mr = pISum->Add(1,1, &sum);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    mr = m_pILog->log_text(T("ISum::Add(1,1) is:"));
+	    mr = m_pILog->log_number(sum);
+	}
+	else
+	{
+	    mr = m_pILog->log_text(T("Call to pISum->Add() failed with:."));
+	    mr = m_pILog->log_number(mr);
+	}
+	pISum->Release();
+	pISum = NULL;
     }
     else
     {
-        mr = m_pILog->log_text(T("CreateInstance returned:"));
-        mr = m_pILog->log_number(mr);
+	mr = m_pILog->log_text(T("CreateInstance returned:"));
+	mr = m_pILog->log_number(mr);
     }
 #endif
 }
@@ -529,20 +529,20 @@ MUX_RESULT CSumProxy::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<ISum *>(this);
+	*ppv = static_cast<ISum *>(this);
     }
     else if (IID_ISum == iid)
     {
-        *ppv = static_cast<ISum *>(this);
+	*ppv = static_cast<ISum *>(this);
     }
     else if (mux_IID_IMarshal == iid)
     {
-        *ppv = static_cast<mux_IMarshal *>(this);
+	*ppv = static_cast<mux_IMarshal *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -559,17 +559,17 @@ UINT32 CSumProxy::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        // The last reference to the proxy was released, we need to clean up
-        // the connection as well.
-        //
-        QUEUE_INFO qiFrame;
-        Pipe_InitializeQueueInfo(&qiFrame);
-        (void)Pipe_SendDiscPacket(m_nChannel, &qiFrame);
-        m_nChannel = CHANNEL_INVALID;
-        Pipe_EmptyQueue(&qiFrame);
+	// The last reference to the proxy was released, we need to clean up
+	// the connection as well.
+	//
+	QUEUE_INFO qiFrame;
+	Pipe_InitializeQueueInfo(&qiFrame);
+	(void)Pipe_SendDiscPacket(m_nChannel, &qiFrame);
+	m_nChannel = CHANNEL_INVALID;
+	Pipe_EmptyQueue(&qiFrame);
 
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -606,7 +606,7 @@ MUX_RESULT CSumProxy::UnmarshalInterface(QUEUE_INFO *pqi, MUX_IID riid, void **p
     if (  Pipe_GetBytes(pqi, &nWanted, &m_nChannel)
        && nWanted == sizeof(m_nChannel))
     {
-        return QueryInterface(riid, ppv);
+	return QueryInterface(riid, ppv);
     }
     return MUX_E_NOINTERFACE;
 }
@@ -641,8 +641,8 @@ MUX_RESULT CSumProxy::Add(int a, int b, int *sum)
 
     struct FRAME
     {
-        int    a;
-        int    b;
+	int    a;
+	int    b;
     } CallFrame;
 
     CallFrame.a       = a;
@@ -654,21 +654,21 @@ MUX_RESULT CSumProxy::Add(int a, int b, int *sum)
 
     if (MUX_SUCCEEDED(mr))
     {
-        struct RETURN
-        {
-            int sum;
-        } ReturnFrame;
+	struct RETURN
+	{
+	    int sum;
+	} ReturnFrame;
 
-        size_t nWanted = sizeof(ReturnFrame);
-        if (  Pipe_GetBytes(&qiFrame, &nWanted, &ReturnFrame)
-           && nWanted == sizeof(ReturnFrame))
-        {
-            *sum = ReturnFrame.sum;
-        }
-        else
-        {
-            mr = MUX_E_FAIL;
-        }
+	size_t nWanted = sizeof(ReturnFrame);
+	if (  Pipe_GetBytes(&qiFrame, &nWanted, &ReturnFrame)
+	   && nWanted == sizeof(ReturnFrame))
+	{
+	    *sum = ReturnFrame.sum;
+	}
+	else
+	{
+	    mr = MUX_E_FAIL;
+	}
     }
     Pipe_EmptyQueue(&qiFrame);
     return mr;
@@ -688,16 +688,16 @@ MUX_RESULT CSumProxyFactory::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else if (mux_IID_IClassFactory == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -714,8 +714,8 @@ UINT32 CSumProxyFactory::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -726,32 +726,32 @@ MUX_RESULT CSumProxyFactory::CreateInstance(mux_IUnknown *pUnknownOuter, MUX_IID
     //
     if (NULL != pUnknownOuter)
     {
-        return MUX_E_NOAGGREGATION;
+	return MUX_E_NOAGGREGATION;
     }
 
     CSumProxy *pSumProxy = NULL;
     try
     {
-        pSumProxy = new CSumProxy;
+	pSumProxy = new CSumProxy;
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     MUX_RESULT mr;
     if (NULL == pSumProxy)
     {
-        return MUX_E_OUTOFMEMORY;
+	return MUX_E_OUTOFMEMORY;
     }
     else
     {
-        mr = pSumProxy->FinalConstruct();
-        if (MUX_FAILED(mr))
-        {
-            pSumProxy->Release();
-            return mr;
-        }
+	mr = pSumProxy->FinalConstruct();
+	if (MUX_FAILED(mr))
+	{
+	    pSumProxy->Release();
+	    return mr;
+	}
     }
 
     mr = pSumProxy->QueryInterface(iid, ppv);
@@ -763,11 +763,11 @@ MUX_RESULT CSumProxyFactory::LockServer(bool bLock)
 {
     if (bLock)
     {
-        g_cServerLocks++;
+	g_cServerLocks++;
     }
     else
     {
-        g_cServerLocks--;
+	g_cServerLocks--;
     }
     return MUX_S_OK;
 }

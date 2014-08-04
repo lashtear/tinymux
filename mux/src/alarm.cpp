@@ -33,21 +33,21 @@ DWORD WINAPI CMuxAlarm::AlarmProc(LPVOID lpParameter)
     DWORD dwWait = pthis->dwWait;
     for (;;)
     {
-        HANDLE hSemAlarm = pthis->hSemAlarm;
-        if (hSemAlarm == INVALID_HANDLE_VALUE)
-        {
-            break;
-        }
-        DWORD dwReason = WaitForSingleObject(hSemAlarm, dwWait);
-        if (dwReason == WAIT_TIMEOUT)
-        {
-            pthis->bAlarmed = true;
-            dwWait = INFINITE;
-        }
-        else
-        {
-            dwWait = pthis->dwWait;
-        }
+	HANDLE hSemAlarm = pthis->hSemAlarm;
+	if (hSemAlarm == INVALID_HANDLE_VALUE)
+	{
+	    break;
+	}
+	DWORD dwReason = WaitForSingleObject(hSemAlarm, dwWait);
+	if (dwReason == WAIT_TIMEOUT)
+	{
+	    pthis->bAlarmed = true;
+	    dwWait = INFINITE;
+	}
+	else
+	{
+	    dwWait = pthis->dwWait;
+	}
     }
     return 1;
 }
@@ -171,16 +171,16 @@ void CMuxAlarm::Sleep(CLinearTimeDelta ltd)
     ltd.ReturnTimeSpecStruct(&req);
     while (!mudstate.shutdown_flag)
     {
-        struct timespec rem;
-        if (  nanosleep(&req, &rem) == -1
-           && errno == EINTR)
-        {
-            req = rem;
-        }
-        else
-        {
-            break;
-        }
+	struct timespec rem;
+	if (  nanosleep(&req, &rem) == -1
+	   && errno == EINTR)
+	{
+	    req = rem;
+	}
+	else
+	{
+	    break;
+	}
     }
 #else
 #if defined(HAVE_SETITIMER)
@@ -188,16 +188,16 @@ void CMuxAlarm::Sleep(CLinearTimeDelta ltd)
     bool   bSaved = false;
     if (bAlarmSet)
     {
-        // Save existing timer and disable.
-        //
-        struct itimerval it;
-        it.it_value.tv_sec = 0;
-        it.it_value.tv_usec = 0;
-        it.it_interval.tv_sec = 0;
-        it.it_interval.tv_usec = 0;
-        setitimer(ITIMER_PROF, &it, &oit);
-        bSaved = true;
-        bAlarmSet = false;
+	// Save existing timer and disable.
+	//
+	struct itimerval it;
+	it.it_value.tv_sec = 0;
+	it.it_value.tv_usec = 0;
+	it.it_interval.tv_sec = 0;
+	it.it_interval.tv_usec = 0;
+	setitimer(ITIMER_PROF, &it, &oit);
+	bSaved = true;
+	bAlarmSet = false;
     }
 #endif
 #if defined(HAVE_USLEEP)
@@ -206,19 +206,19 @@ void CMuxAlarm::Sleep(CLinearTimeDelta ltd)
     INT64 usecTotal = ltd.ReturnMicroseconds();
 
     while (  usecTotal
-          && mudstate.shutdown_flag)
+	  && mudstate.shutdown_flag)
     {
-        usec = usecTotal;
-        if (usecTotal < TIME_1S)
-        {
-            usec = usecTotal;
-        }
-        else
-        {
-            usec = TIME_1S-1;
-        }
-        usleep(usec);
-        usecTotal -= usec;
+	usec = usecTotal;
+	if (usecTotal < TIME_1S)
+	{
+	    usec = usecTotal;
+	}
+	else
+	{
+	    usec = TIME_1S-1;
+	}
+	usleep(usec);
+	usecTotal -= usec;
     }
 #else
     ::sleep(ltd.ReturnSeconds());
@@ -226,10 +226,10 @@ void CMuxAlarm::Sleep(CLinearTimeDelta ltd)
 #ifdef HAVE_SETITIMER
     if (bSaved)
     {
-        // Restore and re-enabled timer.
-        //
-        setitimer(ITIMER_PROF, &oit, NULL);
-        bAlarmSet = true;
+	// Restore and re-enabled timer.
+	//
+	setitimer(ITIMER_PROF, &oit, NULL);
+	bAlarmSet = true;
     }
 #endif
 #endif

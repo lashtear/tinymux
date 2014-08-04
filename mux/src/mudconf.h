@@ -139,9 +139,9 @@ struct confdata
     int     no_levels;          /* Number of reality levels */
     struct  rlevel_def
     {
-        UTF8 name[9];           /* Rlevel name */
-        RLEVEL value;           /* Rlevel bitmask */
-        UTF8 attr[33];          /* desc attribute */
+	UTF8 name[9];           /* Rlevel name */
+	RLEVEL value;           /* Rlevel bitmask */
+	UTF8 attr[33];          /* desc attribute */
     } reality_level[32];        /* Reality levels */
     RLEVEL  def_room_rx;        /* Default room RX level */
     RLEVEL  def_room_tx;        /* Default room TX level */
@@ -438,7 +438,7 @@ struct statedata
     volatile pid_t dumper;      // PID of dumping process (as returned by fork()).
     volatile pid_t dumped;      // PID of dumping process (as given by SIGCHLD).
     bool    write_protect;      // Write-protect against modifications to the
-                                // database during dumps.
+				// database during dumps.
 #endif // HAVE_WORKING_FORK
 
     dbref   curr_enactor;       /* Who initiated the current command */

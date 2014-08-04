@@ -11,15 +11,15 @@ then
       cc > /dev/null 2>&1
       if [ $? -eq 127 ]
       then
-         gcc > /dev/null 2>&1
-         if [ $? -eq 127 ]
-         then
-            echo "Compiler not found.  Please identify compiler with the CC variable in this script."
-            exit 1
-         fi
-         CC=gcc
+	 gcc > /dev/null 2>&1
+	 if [ $? -eq 127 ]
+	 then
+	    echo "Compiler not found.  Please identify compiler with the CC variable in this script."
+	    exit 1
+	 fi
+	 CC=gcc
       else
-         CC=cc
+	 CC=cc
       fi
    fi
    echo "Compiling source tree for penn converter...."|tr -d '\012'
@@ -44,12 +44,12 @@ BEGIN {
    }
    if ( in_attr ) {
       if ( match($1, "attrcount") ) {
-         attrcount=$2
-         attrcntr=1
+	 attrcount=$2
+	 attrcntr=1
       }
       if ( match($1, "name") && attrcntr <= attrcount ) {
-         printf("%s\n", $2);
-         attrcntr++
+	 printf("%s\n", $2);
+	 attrcntr++
       }
    }
 }' < $1 > ${1}.out 2>/dev/null
@@ -119,23 +119,23 @@ while read attrname
 do
    case ${FCNTR} in
    ${F10}) echo "10%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    ${F20}) echo "20%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    ${F30}) echo "30%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    ${F40}) echo "40%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    ${F50}) echo "50%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    ${F60}) echo "60%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    ${F70}) echo "70%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    ${F80}) echo "80%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    ${F90}) echo "90%..."|tr -d '\012' >&2
-           ;;
+	   ;;
    esac
    ((FCNTR=${FCNTR}+1))
    if [ -z "$(echo "${attrname}"|tr -d " ")" ]
@@ -155,16 +155,16 @@ do
    then
       if [ ${#BEF} -gt 59 -o ${CHK2} -gt 0 ]
       then
-         NEWATTR="$(echo "${BEF}"|cut -c1-59)$(echo ${ATRRENAME}|awk '{printf("%03d\n", $1)}'))"
-         echo "${attrname} ${NEWATTR}" >> ${1}.exception
-         echo "${NEWATTR} ${ATRCNTR}" >> ${1}.id
-         ((ATRCNTR=${ATRCNTR}+1))
+	 NEWATTR="$(echo "${BEF}"|cut -c1-59)$(echo ${ATRRENAME}|awk '{printf("%03d\n", $1)}'))"
+	 echo "${attrname} ${NEWATTR}" >> ${1}.exception
+	 echo "${NEWATTR} ${ATRCNTR}" >> ${1}.id
+	 ((ATRCNTR=${ATRCNTR}+1))
       else
-         echo "${BEF} ${ATRCNTR}" >> ${1}.id
-         if [ "${BEF}" != "${attrname}" ]
-         then
-            echo "${attrname} ${BEF}" >> ${1}.exception
-         fi
+	 echo "${BEF} ${ATRCNTR}" >> ${1}.id
+	 if [ "${BEF}" != "${attrname}" ]
+	 then
+	    echo "${attrname} ${BEF}" >> ${1}.exception
+	 fi
       fi
       ((ATRCNTR=${ATRCNTR}+1))
    else

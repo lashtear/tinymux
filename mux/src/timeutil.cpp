@@ -84,29 +84,29 @@ int iMod(int x, int y)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            if (INT_MIN == x && -1 == y)
-            {
-                return 0;
-            }
-            return x % y;
-        }
-        else
-        {
-            return ((x-1) % y) + y + 1;
-        }
+	if (x <= 0)
+	{
+	    if (INT_MIN == x && -1 == y)
+	    {
+		return 0;
+	    }
+	    return x % y;
+	}
+	else
+	{
+	    return ((x-1) % y) + y + 1;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            return ((x+1) % y) + y - 1;
-        }
-        else
-        {
-            return x % y;
-        }
+	if (x < 0)
+	{
+	    return ((x+1) % y) + y - 1;
+	}
+	else
+	{
+	    return x % y;
+	}
     }
 }
 
@@ -114,29 +114,29 @@ INT64 i64Mod(INT64 x, INT64 y)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            if (INT64_MIN_VALUE == x && -1 == y)
-            {
-                return 0;
-            }
-            return x % y;
-        }
-        else
-        {
-            return ((x-1) % y) + y + 1;
-        }
+	if (x <= 0)
+	{
+	    if (INT64_MIN_VALUE == x && -1 == y)
+	    {
+		return 0;
+	    }
+	    return x % y;
+	}
+	else
+	{
+	    return ((x-1) % y) + y + 1;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            return ((x+1) % y) + y - 1;
-        }
-        else
-        {
-            return x % y;
-        }
+	if (x < 0)
+	{
+	    return ((x+1) % y) + y - 1;
+	}
+	else
+	{
+	    return x % y;
+	}
     }
 }
 
@@ -146,7 +146,7 @@ inline int iRemainder(int x, int y)
 {
     if (INT_MIN == x && -1 == y)
     {
-        return 0;
+	return 0;
     }
     return x % y;
 }
@@ -164,25 +164,25 @@ int iFloorDivision(int x, int y)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            return x / y;
-        }
-        else
-        {
-            return (x - y - 1) / y;
-        }
+	if (x <= 0)
+	{
+	    return x / y;
+	}
+	else
+	{
+	    return (x - y - 1) / y;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            return (x - y + 1) / y;
-        }
-        else
-        {
-            return x / y;
-        }
+	if (x < 0)
+	{
+	    return (x - y + 1) / y;
+	}
+	else
+	{
+	    return x / y;
+	}
     }
 }
 
@@ -190,25 +190,25 @@ INT64 i64FloorDivision(INT64 x, INT64 y)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            return x / y;
-        }
-        else
-        {
-            return (x - y - 1) / y;
-        }
+	if (x <= 0)
+	{
+	    return x / y;
+	}
+	else
+	{
+	    return (x - y - 1) / y;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            return (x - y + 1) / y;
-        }
-        else
-        {
-            return x / y;
-        }
+	if (x < 0)
+	{
+	    return (x - y + 1) / y;
+	}
+	else
+	{
+	    return x / y;
+	}
     }
 }
 
@@ -216,36 +216,36 @@ int iFloorDivisionMod(int x, int y, int *piMod)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            if (INT_MIN == x && -1 == y)
-            {
-                *piMod = 0;
-            }
-            else
-            {
-                *piMod = x % y;
-            }
-            return x / y;
-        }
-        else
-        {
-            *piMod = ((x-1) % y) + y + 1;
-            return (x - y - 1) / y;
-        }
+	if (x <= 0)
+	{
+	    if (INT_MIN == x && -1 == y)
+	    {
+		*piMod = 0;
+	    }
+	    else
+	    {
+		*piMod = x % y;
+	    }
+	    return x / y;
+	}
+	else
+	{
+	    *piMod = ((x-1) % y) + y + 1;
+	    return (x - y - 1) / y;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            *piMod = ((x+1) % y) + y - 1;
-            return (x - y + 1) / y;
-        }
-        else
-        {
-            *piMod = x % y;
-            return x / y;
-        }
+	if (x < 0)
+	{
+	    *piMod = ((x+1) % y) + y - 1;
+	    return (x - y + 1) / y;
+	}
+	else
+	{
+	    *piMod = x % y;
+	    return x / y;
+	}
     }
 }
 
@@ -253,36 +253,36 @@ INT64 i64FloorDivisionMod(INT64 x, INT64 y, INT64 *piMod)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            if (INT64_MIN_VALUE == x && -1 == y)
-            {
-                *piMod = 0;
-            }
-            else
-            {
-                *piMod = x % y;
-            }
-            return x / y;
-        }
-        else
-        {
-            *piMod = ((x-1) % y) + y + 1;
-            return (x - y - 1) / y;
-        }
+	if (x <= 0)
+	{
+	    if (INT64_MIN_VALUE == x && -1 == y)
+	    {
+		*piMod = 0;
+	    }
+	    else
+	    {
+		*piMod = x % y;
+	    }
+	    return x / y;
+	}
+	else
+	{
+	    *piMod = ((x-1) % y) + y + 1;
+	    return (x - y - 1) / y;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            *piMod = ((x+1) % y) + y - 1;
-            return (x - y + 1) / y;
-        }
-        else
-        {
-            *piMod = x % y;
-            return x / y;
-        }
+	if (x < 0)
+	{
+	    *piMod = ((x+1) % y) + y - 1;
+	    return (x - y + 1) / y;
+	}
+	else
+	{
+	    *piMod = x % y;
+	    return x / y;
+	}
     }
 }
 
@@ -294,7 +294,7 @@ inline int iMod(int x, int y)
 {
     if (INT_MIN == x && -1 == y)
     {
-        return 0;
+	return 0;
     }
     return x % y;
 }
@@ -305,29 +305,29 @@ int iRemainder(int x, int y)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            if (INT_MIN == x && -1 == y)
-            {
-                return 0;
-            }
-            return x % y;
-        }
-        else
-        {
-            return ((x+1) % y) - y - 1;
-        }
+	if (x <= 0)
+	{
+	    if (INT_MIN == x && -1 == y)
+	    {
+		return 0;
+	    }
+	    return x % y;
+	}
+	else
+	{
+	    return ((x+1) % y) - y - 1;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            return ((x-1) % y) - y + 1;
-        }
-        else
-        {
-            return x % y;
-        }
+	if (x < 0)
+	{
+	    return ((x-1) % y) - y + 1;
+	}
+	else
+	{
+	    return x % y;
+	}
     }
 }
 
@@ -335,29 +335,29 @@ INT64 i64Remainder(INT64 x, INT64 y)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            if (INT64_MIN_VALUE == x && -1 == y)
-            {
-                return 0;
-            }
-            return x % y;
-        }
-        else
-        {
-            return ((x+1) % y) - y - 1;
-        }
+	if (x <= 0)
+	{
+	    if (INT64_MIN_VALUE == x && -1 == y)
+	    {
+		return 0;
+	    }
+	    return x % y;
+	}
+	else
+	{
+	    return ((x+1) % y) - y - 1;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            return ((x-1) % y) - y + 1;
-        }
-        else
-        {
-            return x % y;
-        }
+	if (x < 0)
+	{
+	    return ((x-1) % y) - y + 1;
+	}
+	else
+	{
+	    return x % y;
+	}
     }
 }
 
@@ -367,25 +367,25 @@ int iDivision(int x, int y)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            return x / y;
-        }
-        else
-        {
-            return (x + y + 1) / y;
-        }
+	if (x <= 0)
+	{
+	    return x / y;
+	}
+	else
+	{
+	    return (x + y + 1) / y;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            return (x + y - 1) / y;
-        }
-        else
-        {
-            return x / y;
-        }
+	if (x < 0)
+	{
+	    return (x + y - 1) / y;
+	}
+	else
+	{
+	    return x / y;
+	}
     }
 }
 
@@ -393,25 +393,25 @@ INT64 i64Division(INT64 x, INT64 y)
 {
     if (y < 0)
     {
-        if (x <= 0)
-        {
-            return x / y;
-        }
-        else
-        {
-            return (x + y + 1) / y;
-        }
+	if (x <= 0)
+	{
+	    return x / y;
+	}
+	else
+	{
+	    return (x + y + 1) / y;
+	}
     }
     else
     {
-        if (x < 0)
-        {
-            return (x + y - 1) / y;
-        }
-        else
-        {
-            return x / y;
-        }
+	if (x < 0)
+	{
+	    return (x + y - 1) / y;
+	}
+	else
+	{
+	    return x / y;
+	}
     }
 }
 
@@ -426,11 +426,11 @@ inline INT64 i64FloorDivisionMod(INT64 x, INT64 y, INT64 *piMod)
 {
     if (INT64_MIN_VALUE == x && -1 == y)
     {
-        *piMod = 0;
+	*piMod = 0;
     }
     else
     {
-        *piMod = x % y;
+	*piMod = x % y;
     }
     return x / y;
 }
@@ -448,22 +448,22 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     //
     while (mux_isspace(*str))
     {
-        str++;
+	str++;
     }
 
     // Leading minus
     //
     if (*str == '-')
     {
-        bMinus = true;
-        str++;
+	bMinus = true;
+	str++;
 
-        // But not if just a minus
-        //
-        if (!*str)
-        {
-            return false;
-        }
+	// But not if just a minus
+	//
+	if (!*str)
+	{
+	    return false;
+	}
     }
 
     // Need at least one digit.
@@ -472,15 +472,15 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     UTF8 *pIntegerStart = str;
     if (mux_isdigit(*str))
     {
-        bGotOne = true;
-        str++;
+	bGotOne = true;
+	str++;
     }
 
     // The number (int)
     //
     while (mux_isdigit(*str))
     {
-        str++;
+	str++;
     }
     UTF8 *pIntegerEnd = str;
 
@@ -488,7 +488,7 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     //
     if (*str == '.')
     {
-        str++;
+	str++;
     }
 
     // Need at least one digit
@@ -496,15 +496,15 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     UTF8 *pFractionalStart = str;
     if (mux_isdigit(*str))
     {
-        bGotOne = true;
-        str++;
+	bGotOne = true;
+	str++;
     }
 
     // The number (fract)
     //
     while (mux_isdigit(*str))
     {
-        str++;
+	str++;
     }
     UTF8 *pFractionalEnd = str;
 
@@ -512,12 +512,12 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     //
     while (mux_isspace(*str))
     {
-        str++;
+	str++;
     }
 
     if (*str || !bGotOne)
     {
-        return false;
+	return false;
     }
 
 #define PFSS_PRECISION 7
@@ -529,8 +529,8 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     //
     if (bMinus)
     {
-        *p++ = '-';
-        nBufferAvailable--;
+	*p++ = '-';
+	nBufferAvailable--;
     }
 
     // Integer part.
@@ -539,14 +539,14 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     size_t n = pIntegerEnd - pIntegerStart;
     if (n > 0)
     {
-        if (n > nBufferAvailable)
-        {
-            bOverUnderflow = true;
-            n = nBufferAvailable;
-        }
-        memcpy(p, pIntegerStart, n);
-        p += n;
-        nBufferAvailable -= n;
+	if (n > nBufferAvailable)
+	{
+	    bOverUnderflow = true;
+	    n = nBufferAvailable;
+	}
+	memcpy(p, pIntegerStart, n);
+	p += n;
+	nBufferAvailable -= n;
     }
 
     // Fractional part.
@@ -554,13 +554,13 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     n = pFractionalEnd - pFractionalStart;
     if (n > 0)
     {
-        if (n > PFSS_PRECISION)
-        {
-            n = PFSS_PRECISION;
-        }
-        memcpy(p, pFractionalStart, n);
-        p += n;
-        nBufferAvailable -= n;
+	if (n > PFSS_PRECISION)
+	{
+	    n = PFSS_PRECISION;
+	}
+	memcpy(p, pFractionalStart, n);
+	p += n;
+	nBufferAvailable -= n;
     }
 
     // Handle trailing zeroes.
@@ -568,25 +568,25 @@ bool ParseFractionalSecondsString(INT64 &i64, UTF8 *str)
     n = PFSS_PRECISION - n;
     if (n > 0)
     {
-        memset(p, '0', n);
-        p += n;
+	memset(p, '0', n);
+	p += n;
     }
     *p++ = '\0';
 
     if (bOverUnderflow)
     {
-        if (bMinus)
-        {
-            i64 = INT64_MIN_VALUE;
-        }
-        else
-        {
-            i64 = INT64_MAX_VALUE;
-        }
+	if (bMinus)
+	{
+	    i64 = INT64_MIN_VALUE;
+	}
+	else
+	{
+	    i64 = INT64_MAX_VALUE;
+	}
     }
     else
     {
-        i64 = mux_atoi64(aBuffer);
+	i64 = mux_atoi64(aBuffer);
     }
     return true;
 }
@@ -599,7 +599,7 @@ void ConvertToSecondsString(UTF8 *buffer, INT64 n64, int nFracDigits)
     size_t n = mux_i64toa(lt, buffer);
     if (Leftover == 0)
     {
-        return;
+	return;
     }
 
     // Sanitize Precision Request.
@@ -608,30 +608,30 @@ void ConvertToSecondsString(UTF8 *buffer, INT64 n64, int nFracDigits)
     const int minFracDigits = 0;
     if (nFracDigits < minFracDigits)
     {
-        nFracDigits = minFracDigits;
+	nFracDigits = minFracDigits;
     }
     else if (maxFracDigits < nFracDigits)
     {
-        nFracDigits = maxFracDigits;
+	nFracDigits = maxFracDigits;
     }
     if (0 < nFracDigits)
     {
-        UTF8 *p = buffer + n;
-        *p++ = '.';
-        UTF8 *q = p;
+	UTF8 *p = buffer + n;
+	*p++ = '.';
+	UTF8 *q = p;
 
-        UTF8 buf[maxFracDigits+1];
-        size_t m = mux_i64toa(Leftover, buf);
-        memset(p, '0', maxFracDigits - m);
-        p += maxFracDigits - m;
-        memcpy(p, buf, m);
-        p = q + nFracDigits - 1;
-        while (*p == '0')
-        {
-            p--;
-        }
-        p++;
-        *p = '\0';
+	UTF8 buf[maxFracDigits+1];
+	size_t m = mux_i64toa(Leftover, buf);
+	memset(p, '0', maxFracDigits - m);
+	p += maxFracDigits - m;
+	memcpy(p, buf, m);
+	p = q + nFracDigits - 1;
+	while (*p == '0')
+	{
+	    p--;
+	}
+	p++;
+	*p = '\0';
     }
 }
 
@@ -639,16 +639,16 @@ bool isLeapYear(long iYear)
 {
     if (iMod(iYear, 4) != 0)
     {
-        // Not a leap year.
-        //
-        return false;
+	// Not a leap year.
+	//
+	return false;
     }
     unsigned long wMod = iMod(iYear, 400);
     if ((wMod == 100) || (wMod == 200) || (wMod == 300))
     {
-        // Not a leap year.
-        //
-        return false;
+	// Not a leap year.
+	//
+	return false;
     }
     return true;
 }
@@ -657,19 +657,19 @@ bool isValidDate(int iYear, int iMonth, int iDay)
 {
     if (iYear < -27256 || 30826 < iYear)
     {
-        return false;
+	return false;
     }
     if (iMonth < 1 || 12 < iMonth)
     {
-        return false;
+	return false;
     }
     if (iDay < 1 || daystab[iMonth-1] < iDay)
     {
-        return false;
+	return false;
     }
     if (iMonth == 2 && iDay == 29 && !isLeapYear(iYear))
     {
-        return false;
+	return false;
     }
     return true;
 }
@@ -686,14 +686,14 @@ static int FixedFromGregorian(int iYear, int iMonth, int iDay)
 
     if (iMonth > 2)
     {
-        if (isLeapYear(iYear+1))
-        {
-            iFixedDay -= 1;
-        }
-        else
-        {
-            iFixedDay -= 2;
-        }
+	if (isLeapYear(iYear+1))
+	{
+	    iFixedDay -= 1;
+	}
+	else
+	{
+	    iFixedDay -= 2;
+	}
     }
 
     // At this point, iFixedDay has an epoch of 1 R.D.
@@ -726,7 +726,7 @@ static void GregorianFromFixed(int iFixedDay, int &iYear, int &iMonth,  int &iDa
 
     if (n100 != 4 && n1 != 4)
     {
-        iYear = iYear + 1;
+	iYear = iYear + 1;
     }
 
     static int cache_iYear = 99999;
@@ -736,14 +736,14 @@ static void GregorianFromFixed(int iFixedDay, int &iYear, int &iMonth,  int &iDa
     int iFixedDayOfMarch1st;
     if (iYear == cache_iYear)
     {
-        iFixedDayOfJanuary1st = cache_iJan1st;
-        iFixedDayOfMarch1st = cache_iMar1st;
+	iFixedDayOfJanuary1st = cache_iJan1st;
+	iFixedDayOfMarch1st = cache_iMar1st;
     }
     else
     {
-        cache_iYear = iYear;
-        cache_iJan1st = iFixedDayOfJanuary1st = FixedFromGregorian(iYear, 1, 1);
-        cache_iMar1st = iFixedDayOfMarch1st = FixedFromGregorian(iYear, 3, 1);
+	cache_iYear = iYear;
+	cache_iJan1st = iFixedDayOfJanuary1st = FixedFromGregorian(iYear, 1, 1);
+	cache_iMar1st = iFixedDayOfMarch1st = FixedFromGregorian(iYear, 3, 1);
     }
 
 
@@ -751,15 +751,15 @@ static void GregorianFromFixed(int iFixedDay, int &iYear, int &iMonth,  int &iDa
     int iCorrection;
     if (iFixedDay < iFixedDayOfMarch1st)
     {
-        iCorrection = 0;
+	iCorrection = 0;
     }
     else if (isLeapYear(iYear))
     {
-        iCorrection = 1;
+	iCorrection = 1;
     }
     else
     {
-        iCorrection = 2;
+	iCorrection = 2;
     }
 
     iMonth = (12*(iPriorDays+iCorrection)+373)/367;
@@ -783,8 +783,8 @@ bool FieldedTimeToLinearTime(FIELDEDTIME *ft, INT64 *plt)
 {
     if (!isValidDate(ft->iYear, ft->iMonth, ft->iDayOfMonth))
     {
-        *plt = 0;
-        return false;
+	*plt = 0;
+	return false;
     }
 
     int iFixedDay = FixedFromGregorian_Adjusted(ft->iYear, ft->iMonth, ft->iDayOfMonth);
@@ -813,7 +813,7 @@ bool LinearTimeToFieldedTime(INT64 lt, FIELDEDTIME *ft)
     GregorianFromFixed_Adjusted(d0, iYear, iMonth, iDayOfYear, iDayOfMonth, iDayOfWeek);
     if (!isValidDate(iYear, iMonth, iDayOfMonth))
     {
-        return false;
+	return false;
     }
 
     ft->iYear       = static_cast<short>(iYear);
@@ -863,7 +863,7 @@ static bool ParseThreeLetters(const UTF8 **pp, int *piHash)
     const UTF8 *p = *pp;
     while (*p == ' ')
     {
-        p++;
+	p++;
     }
 
     // Parse space-separate token.
@@ -872,19 +872,19 @@ static bool ParseThreeLetters(const UTF8 **pp, int *piHash)
     int iHash = 0;
     while (*q && *q != ' ')
     {
-        if (!mux_isalpha(*q))
-        {
-            return false;
-        }
-        iHash = (iHash << 8) | mux_toupper_ascii(*q);
-        q++;
+	if (!mux_isalpha(*q))
+	{
+	    return false;
+	}
+	iHash = (iHash << 8) | mux_toupper_ascii(*q);
+	q++;
     }
 
     // Must be exactly 3 letters long.
     //
     if (q - p != 3)
     {
-        return false;
+	return false;
     }
     p = q;
 
@@ -892,7 +892,7 @@ static bool ParseThreeLetters(const UTF8 **pp, int *piHash)
     //
     while (*p == ' ')
     {
-        p++;
+	p++;
     }
 
     *pp = p;
@@ -901,12 +901,12 @@ static bool ParseThreeLetters(const UTF8 **pp, int *piHash)
 }
 
 void ParseDecimalSeconds(size_t n, const UTF8 *p, unsigned short *iMilli,
-                         unsigned short *iMicro, unsigned short *iNano)
+			 unsigned short *iMicro, unsigned short *iNano)
 {
     UTF8 aBuffer[10];
     if (n > sizeof(aBuffer) - 1)
     {
-        n = sizeof(aBuffer) - 1;
+	n = sizeof(aBuffer) - 1;
     }
     memcpy(aBuffer, p, n);
     memset(aBuffer + n, '0', sizeof(aBuffer) - n - 1);
@@ -923,7 +923,7 @@ bool do_convtime(const UTF8 *str, FIELDEDTIME *ft)
     memset(ft, 0, sizeof(FIELDEDTIME));
     if (!str || !ft)
     {
-        return false;
+	return false;
     }
 
     // Day-of-week OR month.
@@ -932,33 +932,33 @@ bool do_convtime(const UTF8 *str, FIELDEDTIME *ft)
     int i, iHash;
     if (!ParseThreeLetters(&p, &iHash))
     {
-        return false;
+	return false;
     }
 
     for (i = 0; (i < 12) && iHash != MonthTabHash[i]; i++)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (i == 12)
     {
-        // The above three letters were probably the Day-Of-Week, the
-        // next three letters are required to be the month name.
-        //
-        if (!ParseThreeLetters(&p, &iHash))
-        {
-            return false;
-        }
+	// The above three letters were probably the Day-Of-Week, the
+	// next three letters are required to be the month name.
+	//
+	if (!ParseThreeLetters(&p, &iHash))
+	{
+	    return false;
+	}
 
-        for (i = 0; (i < 12) && iHash != MonthTabHash[i]; i++)
-        {
-            ; // Nothing.
-        }
+	for (i = 0; (i < 12) && iHash != MonthTabHash[i]; i++)
+	{
+	    ; // Nothing.
+	}
 
-        if (i == 12)
-        {
-            return false;
-        }
+	if (i == 12)
+	{
+	    return false;
+	}
     }
 
     // January = 1, February = 2, etc.
@@ -970,7 +970,7 @@ bool do_convtime(const UTF8 *str, FIELDEDTIME *ft)
     ft->iDayOfMonth = (unsigned short)mux_atol(p);
     if (ft->iDayOfMonth < 1 || daystab[i] < ft->iDayOfMonth)
     {
-        return false;
+	return false;
     }
     while (*p && *p != ' ') p++;
     while (*p == ' ') p++;
@@ -980,7 +980,7 @@ bool do_convtime(const UTF8 *str, FIELDEDTIME *ft)
     ft->iHour = (unsigned short)mux_atol(p);
     if (ft->iHour > 23 || (ft->iHour == 0 && *p != '0'))
     {
-        return false;
+	return false;
     }
     while (*p && *p != ':') p++;
     if (*p == ':') p++;
@@ -991,7 +991,7 @@ bool do_convtime(const UTF8 *str, FIELDEDTIME *ft)
     ft->iMinute = (unsigned short)mux_atol(p);
     if (ft->iMinute > 59 || (ft->iMinute == 0 && *p != '0'))
     {
-        return false;
+	return false;
     }
     while (*p && *p != ':') p++;
     if (*p == ':') p++;
@@ -1002,31 +1002,31 @@ bool do_convtime(const UTF8 *str, FIELDEDTIME *ft)
     ft->iSecond = (unsigned short)mux_atol(p);
     if (ft->iSecond > 59 || (ft->iSecond == 0 && *p != '0'))
     {
-        return false;
+	return false;
     }
     while (mux_isdigit(*p))
     {
-        p++;
+	p++;
     }
 
     // Milliseconds, Microseconds, and Nanoseconds
     //
     if (*p == '.')
     {
-        p++;
-        size_t n;
-        const UTF8 *q = (UTF8 *)strchr((char *)p, ' ');
-        if (q)
-        {
-            n = q - p;
-        }
-        else
-        {
-            n = strlen((char *)p);
-        }
+	p++;
+	size_t n;
+	const UTF8 *q = (UTF8 *)strchr((char *)p, ' ');
+	if (q)
+	{
+	    n = q - p;
+	}
+	else
+	{
+	    n = strlen((char *)p);
+	}
 
-        ParseDecimalSeconds(n, p, &ft->iMillisecond, &ft->iMicrosecond,
-            &ft->iNanosecond);
+	ParseDecimalSeconds(n, p, &ft->iMillisecond, &ft->iMicrosecond,
+	    &ft->iNanosecond);
     }
     while (*p && *p != ' ') p++;
     while (*p == ' ') p++;
@@ -1036,12 +1036,12 @@ bool do_convtime(const UTF8 *str, FIELDEDTIME *ft)
     ft->iYear = (short)mux_atol(p);
     while (mux_isdigit(*p))
     {
-        p++;
+	p++;
     }
     while (*p == ' ') p++;
     if (*p != '\0')
     {
-        return false;
+	return false;
     }
 
     // DayOfYear and DayOfWeek
@@ -1074,8 +1074,8 @@ void GetUTCLinearTime(INT64 *plt)
     gettimeofday(&tv, &tz);
 
     *plt = (((INT64)tv.tv_sec) * FACTOR_100NS_PER_SECOND)
-         + (tv.tv_usec * FACTOR_100NS_PER_MICROSECOND)
-         + EPOCH_OFFSET;
+	 + (tv.tv_usec * FACTOR_100NS_PER_MICROSECOND)
+	 + EPOCH_OFFSET;
 #else
     time_t t;
 

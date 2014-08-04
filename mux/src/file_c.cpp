@@ -23,8 +23,8 @@ struct filecache_block
 {
     struct filecache_block_hdr
     {
-        struct filecache_block *nxt;
-        unsigned int nchars;
+	struct filecache_block *nxt;
+	unsigned int nchars;
     } hdr;
     UTF8 data[MBUF_SIZE - sizeof(struct filecache_block_hdr)];
 };
@@ -84,8 +84,8 @@ void do_list_file(dbref executor, dbref caller, dbref enactor, int eval, int key
     unsigned int flagvalue;
     if (!search_nametab(executor, list_files, arg, &flagvalue))
     {
-        display_nametab(executor, list_files, T("Unknown file.  Use one of"), true);
-        return;
+	display_nametab(executor, list_files, T("Unknown file.  Use one of"), true);
+	return;
     }
     fcache_send(executor, flagvalue);
 }
@@ -94,13 +94,13 @@ static FBLOCK *fcache_fill(FBLOCK *fp, UTF8 ch)
 {
     if (fp->hdr.nchars >= sizeof(fp->data))
     {
-        // We filled the current buffer.  Go get a new one.
-        //
-        FBLOCK *tfp = fp;
-        fp = (FBLOCK *) alloc_mbuf("fcache_fill");
-        fp->hdr.nxt = NULL;
-        fp->hdr.nchars = 0;
-        tfp->hdr.nxt = fp;
+	// We filled the current buffer.  Go get a new one.
+	//
+	FBLOCK *tfp = fp;
+	fp = (FBLOCK *) alloc_mbuf("fcache_fill");
+	fp->hdr.nxt = NULL;
+	fp->hdr.nchars = 0;
+	tfp->hdr.nxt = fp;
     }
     fp->data[fp->hdr.nchars++] = ch;
     return fp;
@@ -113,9 +113,9 @@ static int fcache_read(FBLOCK **cp, UTF8 *filename)
     FBLOCK *fp = *cp;
     while (fp != NULL)
     {
-        FBLOCK *tfp = fp->hdr.nxt;
-        free_mbuf(fp);
-        fp = tfp;
+	FBLOCK *tfp = fp->hdr.nxt;
+	free_mbuf(fp);
+	fp = tfp;
     }
     *cp = NULL;
 
@@ -125,15 +125,15 @@ static int fcache_read(FBLOCK **cp, UTF8 *filename)
     UTF8 *buff;
     if (!mux_open(&fd, filename, O_RDONLY|O_BINARY))
     {
-        // Failure: log the event
-        //
-        STARTLOG(LOG_PROBLEMS, "FIL", "OPEN");
-        buff = alloc_mbuf("fcache_read.LOG");
-        mux_sprintf(buff, MBUF_SIZE, T("Couldn\xE2\x80\x99t open file \xE2\x80\x98%s\xE2\x80\x99."), filename);
-        log_text(buff);
-        free_mbuf(buff);
-        ENDLOG
-        return -1;
+	// Failure: log the event
+	//
+	STARTLOG(LOG_PROBLEMS, "FIL", "OPEN");
+	buff = alloc_mbuf("fcache_read.LOG");
+	mux_sprintf(buff, MBUF_SIZE, T("Couldn\xE2\x80\x99t open file \xE2\x80\x98%s\xE2\x80\x99."), filename);
+	log_text(buff);
+	free_mbuf(buff);
+	ENDLOG
+	return -1;
     }
     DebugTotalFiles++;
     buff = alloc_lbuf("fcache_read.temp");
@@ -151,36 +151,36 @@ static int fcache_read(FBLOCK **cp, UTF8 *filename)
     int nmax = mux_read(fd, buff, LBUF_SIZE);
     while (nmax > 0)
     {
-        for (int n = 0; n < nmax; n++)
-        {
-            switch (buff[n])
-            {
-            case '\n':
-                fp = fcache_fill(fp, '\r');
-                fp = fcache_fill(fp, '\n');
-                tchars += 2;
-            case '\0':
-            case '\r':
-                break;
-            default:
-                fp = fcache_fill(fp, buff[n]);
-                tchars++;
-            }
-        }
-        nmax = mux_read(fd, buff, LBUF_SIZE);
+	for (int n = 0; n < nmax; n++)
+	{
+	    switch (buff[n])
+	    {
+	    case '\n':
+		fp = fcache_fill(fp, '\r');
+		fp = fcache_fill(fp, '\n');
+		tchars += 2;
+	    case '\0':
+	    case '\r':
+		break;
+	    default:
+		fp = fcache_fill(fp, buff[n]);
+		tchars++;
+	    }
+	}
+	nmax = mux_read(fd, buff, LBUF_SIZE);
     }
     free_lbuf(buff);
     if (mux_close(fd) == 0)
     {
-        DebugTotalFiles--;
+	DebugTotalFiles--;
     }
 
     // If we didn't read anything in, toss the initial buffer.
     //
     if (fp->hdr.nchars == 0)
     {
-        *cp = NULL;
-        free_mbuf(fp);
+	*cp = NULL;
+	free_mbuf(fp);
     }
     return tchars;
 }
@@ -189,7 +189,7 @@ void fcache_rawdump(SOCKET fd, int num)
 {
     if ((num < 0) || (num > FC_LAST))
     {
-        return;
+	return;
     }
 
     FBLOCK *fp = fcache[num].fileblock;
@@ -198,19 +198,19 @@ void fcache_rawdump(SOCKET fd, int num)
 
     while (fp != NULL)
     {
-        start = fp->data;
-        remaining = fp->hdr.nchars;
-        while (remaining > 0)
-        {
-            cnt = SOCKET_WRITE(fd, (char *)start, remaining, 0);
-            if (cnt < 0)
-            {
-                return;
-            }
-            remaining -= cnt;
-            start += cnt;
-        }
-        fp = fp->hdr.nxt;
+	start = fp->data;
+	remaining = fp->hdr.nchars;
+	while (remaining > 0)
+	{
+	    cnt = SOCKET_WRITE(fd, (char *)start, remaining, 0);
+	    if (cnt < 0)
+	    {
+		return;
+	    }
+	    remaining -= cnt;
+	    start += cnt;
+	}
+	fp = fp->hdr.nxt;
     }
     return;
 }
@@ -219,14 +219,14 @@ void fcache_dump(DESC *d, int num)
 {
     if ((num < 0) || (num > FC_LAST))
     {
-        return;
+	return;
     }
     FBLOCK *fp = fcache[num].fileblock;
 
     while (fp != NULL)
     {
-        queue_write_LEN(d, (const unsigned char *)fp->data, fp->hdr.nchars);
-        fp = fp->hdr.nxt;
+	queue_write_LEN(d, (const unsigned char *)fp->data, fp->hdr.nchars);
+	fp = fp->hdr.nxt;
     }
 }
 
@@ -236,7 +236,7 @@ void fcache_send(dbref player, int num)
 
     DESC_ITER_PLAYER(player, d)
     {
-        fcache_dump(d, num);
+	fcache_dump(d, num);
     }
 }
 
@@ -249,29 +249,29 @@ void fcache_load(dbref player)
     sbuf = alloc_sbuf("fcache_load.sbuf");
     for (fp = fcache; fp->ppFilename; fp++)
     {
-        int i = fcache_read(&fp->fileblock, *fp->ppFilename);
-        if (  player != NOTHING
-           && !Quiet(player))
-        {
-            mux_ltoa(i, sbuf);
-            if (fp == fcache)
-            {
-                safe_str(T("File sizes: "), buff, &bufc);
-            }
-            else
-            {
-                safe_str(T("  "), buff, &bufc);
-            }
-            safe_str(fp->desc, buff, &bufc);
-            safe_str(T("..."), buff, &bufc);
-            safe_str(sbuf, buff, &bufc);
-        }
+	int i = fcache_read(&fp->fileblock, *fp->ppFilename);
+	if (  player != NOTHING
+	   && !Quiet(player))
+	{
+	    mux_ltoa(i, sbuf);
+	    if (fp == fcache)
+	    {
+		safe_str(T("File sizes: "), buff, &bufc);
+	    }
+	    else
+	    {
+		safe_str(T("  "), buff, &bufc);
+	    }
+	    safe_str(fp->desc, buff, &bufc);
+	    safe_str(T("..."), buff, &bufc);
+	    safe_str(sbuf, buff, &bufc);
+	}
     }
     *bufc = '\0';
     if (  player != NOTHING
        && !Quiet(player))
     {
-        notify(player, buff);
+	notify(player, buff);
     }
     free_lbuf(buff);
     free_sbuf(sbuf);
@@ -282,7 +282,7 @@ void fcache_init(void)
     FCACHE *fp = fcache;
     for (fp = fcache; fp->ppFilename; fp++)
     {
-        fp->fileblock = NULL;
+	fp->fileblock = NULL;
     }
 
     fcache_load(NOTHING);

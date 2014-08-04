@@ -71,7 +71,7 @@ static int add_to(dbref executor, int am, int attrnum)
     *buff = '\0';
     if (num)
     {
-        nlen = mux_ltoa(num, buff);
+	nlen = mux_ltoa(num, buff);
     }
     atr_add_raw_LEN(executor, attrnum, buff, nlen);
     return num;
@@ -90,166 +90,166 @@ static void Task_RunQueueEntry(void *pEntry, int iUnused)
     if (  Good_obj(executor)
        && !Going(executor))
     {
-        giveto(executor, mudconf.waitcost);
-        mudstate.curr_enactor = point->enactor;
-        mudstate.curr_executor = executor;
-        a_Queue(Owner(executor), -1);
-        point->executor = NOTHING;
-        if (!Halted(executor))
-        {
-            // Load scratch args.
-            //
-            for (int i = 0; i < MAX_GLOBAL_REGS; i++)
-            {
-                if (mudstate.global_regs[i])
-                {
-                    RegRelease(mudstate.global_regs[i]);
-                    mudstate.global_regs[i] = NULL;
-                }
-                mudstate.global_regs[i] = point->scr[i];
-                point->scr[i] = NULL;
-            }
+	giveto(executor, mudconf.waitcost);
+	mudstate.curr_enactor = point->enactor;
+	mudstate.curr_executor = executor;
+	a_Queue(Owner(executor), -1);
+	point->executor = NOTHING;
+	if (!Halted(executor))
+	{
+	    // Load scratch args.
+	    //
+	    for (int i = 0; i < MAX_GLOBAL_REGS; i++)
+	    {
+		if (mudstate.global_regs[i])
+		{
+		    RegRelease(mudstate.global_regs[i]);
+		    mudstate.global_regs[i] = NULL;
+		}
+		mudstate.global_regs[i] = point->scr[i];
+		point->scr[i] = NULL;
+	    }
 
 #if defined(HAVE_STUB_SLAVE)
-            if (NULL != mudstate.pResultsSet)
-            {
-                mudstate.pResultsSet->Release();
-                mudstate.pResultsSet = NULL;
-            }
-            mudstate.pResultsSet = point->pResultsSet;
-            point->pResultsSet = NULL;
-            mudstate.iRow = point->iRow;
+	    if (NULL != mudstate.pResultsSet)
+	    {
+		mudstate.pResultsSet->Release();
+		mudstate.pResultsSet = NULL;
+	    }
+	    mudstate.pResultsSet = point->pResultsSet;
+	    point->pResultsSet = NULL;
+	    mudstate.iRow = point->iRow;
 #endif // HAVE_STUB_SLAVE
 
-            UTF8 *command = point->comm;
+	    UTF8 *command = point->comm;
 
-            mux_assert(!mudstate.inpipe);
-            mux_assert(mudstate.pipe_nest_lev == 0);
-            mux_assert(mudstate.poutobj == NOTHING);
-            mux_assert(!mudstate.pout);
+	    mux_assert(!mudstate.inpipe);
+	    mux_assert(mudstate.pipe_nest_lev == 0);
+	    mux_assert(mudstate.poutobj == NOTHING);
+	    mux_assert(!mudstate.pout);
 
-            break_called = false;
-            while (  command
-                  && !break_called)
-            {
-                mux_assert(!mudstate.poutnew);
-                mux_assert(!mudstate.poutbufc);
+	    break_called = false;
+	    while (  command
+		  && !break_called)
+	    {
+		mux_assert(!mudstate.poutnew);
+		mux_assert(!mudstate.poutbufc);
 
-                UTF8 *cp = parse_to(&command, ';', 0);
+		UTF8 *cp = parse_to(&command, ';', 0);
 
-                if (  cp
-                   && *cp)
-                {
-                    // Will command be piped?
-                    //
-                    if (  command
-                       && *command == '|'
-                       && mudstate.pipe_nest_lev < mudconf.ntfy_nest_lim)
-                    {
-                        command++;
-                        mudstate.pipe_nest_lev++;
-                        mudstate.inpipe = true;
+		if (  cp
+		   && *cp)
+		{
+		    // Will command be piped?
+		    //
+		    if (  command
+		       && *command == '|'
+		       && mudstate.pipe_nest_lev < mudconf.ntfy_nest_lim)
+		    {
+			command++;
+			mudstate.pipe_nest_lev++;
+			mudstate.inpipe = true;
 
-                        mudstate.poutnew  = alloc_lbuf("process_command.pipe");
-                        mudstate.poutbufc = mudstate.poutnew;
-                        mudstate.poutobj  = executor;
-                    }
-                    else
-                    {
-                        mudstate.inpipe = false;
-                        mudstate.poutobj = NOTHING;
-                    }
+			mudstate.poutnew  = alloc_lbuf("process_command.pipe");
+			mudstate.poutbufc = mudstate.poutnew;
+			mudstate.poutobj  = executor;
+		    }
+		    else
+		    {
+			mudstate.inpipe = false;
+			mudstate.poutobj = NOTHING;
+		    }
 
-                    CLinearTimeAbsolute ltaBegin;
-                    ltaBegin.GetUTC();
-                    MuxAlarm.Set(mudconf.max_cmdsecs);
-                    CLinearTimeDelta ltdUsageBegin = GetProcessorUsage();
+		    CLinearTimeAbsolute ltaBegin;
+		    ltaBegin.GetUTC();
+		    MuxAlarm.Set(mudconf.max_cmdsecs);
+		    CLinearTimeDelta ltdUsageBegin = GetProcessorUsage();
 
-                    UTF8 *log_cmdbuf = process_command(executor, point->caller,
-                        point->enactor, point->eval, false, cp, (const UTF8 **)point->env,
-                        point->nargs);
+		    UTF8 *log_cmdbuf = process_command(executor, point->caller,
+			point->enactor, point->eval, false, cp, (const UTF8 **)point->env,
+			point->nargs);
 
-                    CLinearTimeAbsolute ltaEnd;
-                    ltaEnd.GetUTC();
-                    if (MuxAlarm.bAlarmed)
-                    {
-                        notify(executor, T("GAME: Expensive activity abbreviated."));
-                        s_Flags(point->enactor, FLAG_WORD1, Flags(point->enactor) | HALT);
-                        s_Flags(point->executor, FLAG_WORD1, Flags(point->executor) | HALT);
-                        halt_que(point->enactor, NOTHING);
-                        halt_que(executor, NOTHING);
-                    }
-                    MuxAlarm.Clear();
+		    CLinearTimeAbsolute ltaEnd;
+		    ltaEnd.GetUTC();
+		    if (MuxAlarm.bAlarmed)
+		    {
+			notify(executor, T("GAME: Expensive activity abbreviated."));
+			s_Flags(point->enactor, FLAG_WORD1, Flags(point->enactor) | HALT);
+			s_Flags(point->executor, FLAG_WORD1, Flags(point->executor) | HALT);
+			halt_que(point->enactor, NOTHING);
+			halt_que(executor, NOTHING);
+		    }
+		    MuxAlarm.Clear();
 
-                    CLinearTimeDelta ltdUsageEnd = GetProcessorUsage();
-                    CLinearTimeDelta ltd = ltdUsageEnd - ltdUsageBegin;
-                    db[executor].cpu_time_used += ltd;
+		    CLinearTimeDelta ltdUsageEnd = GetProcessorUsage();
+		    CLinearTimeDelta ltd = ltdUsageEnd - ltdUsageBegin;
+		    db[executor].cpu_time_used += ltd;
 
-                    ltd = ltaEnd - ltaBegin;
-                    if (mudconf.rpt_cmdsecs < ltd)
-                    {
-                        STARTLOG(LOG_PROBLEMS, "CMD", "CPU");
-                        log_name_and_loc(executor);
-                        UTF8 *logbuf = alloc_lbuf("do_top.LOG.cpu");
-                        mux_sprintf(logbuf, LBUF_SIZE, T(" queued command taking %s secs (enactor #%d): "),
-                            ltd.ReturnSecondsString(4), point->enactor);
-                        log_text(logbuf);
-                        free_lbuf(logbuf);
-                        log_text(log_cmdbuf);
-                        ENDLOG;
-                    }
-                }
+		    ltd = ltaEnd - ltaBegin;
+		    if (mudconf.rpt_cmdsecs < ltd)
+		    {
+			STARTLOG(LOG_PROBLEMS, "CMD", "CPU");
+			log_name_and_loc(executor);
+			UTF8 *logbuf = alloc_lbuf("do_top.LOG.cpu");
+			mux_sprintf(logbuf, LBUF_SIZE, T(" queued command taking %s secs (enactor #%d): "),
+			    ltd.ReturnSecondsString(4), point->enactor);
+			log_text(logbuf);
+			free_lbuf(logbuf);
+			log_text(log_cmdbuf);
+			ENDLOG;
+		    }
+		}
 
-                // Transition %| value.
-                //
-                if (mudstate.pout)
-                {
-                    free_lbuf(mudstate.pout);
-                    mudstate.pout = NULL;
-                }
-                if (mudstate.poutnew)
-                {
-                    *mudstate.poutbufc = '\0';
-                    mudstate.pout = mudstate.poutnew;
-                    mudstate.poutnew  = NULL;
-                    mudstate.poutbufc = NULL;
-                }
-            }
+		// Transition %| value.
+		//
+		if (mudstate.pout)
+		{
+		    free_lbuf(mudstate.pout);
+		    mudstate.pout = NULL;
+		}
+		if (mudstate.poutnew)
+		{
+		    *mudstate.poutbufc = '\0';
+		    mudstate.pout = mudstate.poutnew;
+		    mudstate.poutnew  = NULL;
+		    mudstate.poutbufc = NULL;
+		}
+	    }
 
-            // Clean up %| value.
-            //
-            if (mudstate.pout)
-            {
-                free_lbuf(mudstate.pout);
-                mudstate.pout = NULL;
-            }
-            mudstate.pipe_nest_lev = 0;
-            mudstate.inpipe = false;
-            mudstate.poutobj = NOTHING;
-        }
+	    // Clean up %| value.
+	    //
+	    if (mudstate.pout)
+	    {
+		free_lbuf(mudstate.pout);
+		mudstate.pout = NULL;
+	    }
+	    mudstate.pipe_nest_lev = 0;
+	    mudstate.inpipe = false;
+	    mudstate.poutobj = NOTHING;
+	}
     }
 
     for (int i = 0; i < MAX_GLOBAL_REGS; i++)
     {
-        if (point->scr[i])
-        {
-            RegRelease(point->scr[i]);
-            point->scr[i] = NULL;
-        }
+	if (point->scr[i])
+	{
+	    RegRelease(point->scr[i]);
+	    point->scr[i] = NULL;
+	}
 
-        if (mudstate.global_regs[i])
-        {
-            RegRelease(mudstate.global_regs[i]);
-            mudstate.global_regs[i] = NULL;
-        }
+	if (mudstate.global_regs[i])
+	{
+	    RegRelease(mudstate.global_regs[i]);
+	    mudstate.global_regs[i] = NULL;
+	}
     }
 
 #if defined(HAVE_STUB_SLAVE)
     mudstate.iRow = RS_TOP;
     if (NULL != mudstate.pResultsSet)
     {
-        mudstate.pResultsSet->Release();
-        mudstate.pResultsSet = NULL;
+	mudstate.pResultsSet->Release();
+	mudstate.pResultsSet = NULL;
     }
 #endif // HAVE_STUB_SLAVE
 
@@ -266,10 +266,10 @@ static bool que_want(BQUE *entry, dbref ptarg, dbref otarg)
     if (  ptarg != NOTHING
        && ptarg != Owner(entry->executor))
     {
-        return false;
+	return false;
     }
     return (  otarg == NOTHING
-           || otarg == entry->executor);
+	   || otarg == entry->executor);
 }
 
 static void Task_SemaphoreTimeout(void *pExpired, int iUnused)
@@ -306,49 +306,49 @@ static int CallBack_HaltQueue(PTASK_RECORD p)
        || p->fpTask == Task_SQLTimeout
        || p->fpTask == Task_SemaphoreTimeout)
     {
-        // This is a @wait, timed Semaphore Task, or timed SQL Query.
-        //
-        BQUE *point = (BQUE *)(p->arg_voidptr);
-        if (que_want(point, Halt_Player_Target, Halt_Object_Target))
-        {
-            // Accounting for pennies and queue quota.
-            //
-            dbref dbOwner = point->executor;
-            if (!isPlayer(dbOwner))
-            {
-                dbOwner = Owner(dbOwner);
-            }
-            if (dbOwner != Halt_Player_Run)
-            {
-                if (Halt_Player_Run != NOTHING)
-                {
-                    giveto(Halt_Player_Run, mudconf.waitcost * Halt_Entries_Run);
-                    a_Queue(Halt_Player_Run, -Halt_Entries_Run);
-                }
-                Halt_Player_Run = dbOwner;
-                Halt_Entries_Run = 0;
-            }
-            Halt_Entries++;
-            Halt_Entries_Run++;
-            if (p->fpTask == Task_SemaphoreTimeout)
-            {
-                add_to(point->u.s.sem, -1, point->u.s.attr);
-            }
+	// This is a @wait, timed Semaphore Task, or timed SQL Query.
+	//
+	BQUE *point = (BQUE *)(p->arg_voidptr);
+	if (que_want(point, Halt_Player_Target, Halt_Object_Target))
+	{
+	    // Accounting for pennies and queue quota.
+	    //
+	    dbref dbOwner = point->executor;
+	    if (!isPlayer(dbOwner))
+	    {
+		dbOwner = Owner(dbOwner);
+	    }
+	    if (dbOwner != Halt_Player_Run)
+	    {
+		if (Halt_Player_Run != NOTHING)
+		{
+		    giveto(Halt_Player_Run, mudconf.waitcost * Halt_Entries_Run);
+		    a_Queue(Halt_Player_Run, -Halt_Entries_Run);
+		}
+		Halt_Player_Run = dbOwner;
+		Halt_Entries_Run = 0;
+	    }
+	    Halt_Entries++;
+	    Halt_Entries_Run++;
+	    if (p->fpTask == Task_SemaphoreTimeout)
+	    {
+		add_to(point->u.s.sem, -1, point->u.s.attr);
+	    }
 
-            for (int i = 0; i < MAX_GLOBAL_REGS; i++)
-            {
-                if (point->scr[i])
-                {
-                    RegRelease(point->scr[i]);
-                    point->scr[i] = NULL;
-                }
-            }
+	    for (int i = 0; i < MAX_GLOBAL_REGS; i++)
+	    {
+		if (point->scr[i])
+		{
+		    RegRelease(point->scr[i]);
+		    point->scr[i] = NULL;
+		}
+	    }
 
-            MEMFREE(point->text);
-            point->text = NULL;
-            free_qentry(point);
-            return IU_REMOVE_TASK;
-        }
+	    MEMFREE(point->text);
+	    point->text = NULL;
+	    free_qentry(point);
+	    return IU_REMOVE_TASK;
+	}
     }
     return IU_NEXT_TASK;
 }
@@ -377,9 +377,9 @@ int halt_que(dbref executor, dbref object)
 
     if (Halt_Player_Run != NOTHING)
     {
-        giveto(Halt_Player_Run, mudconf.waitcost * Halt_Entries_Run);
-        a_Queue(Halt_Player_Run, -Halt_Entries_Run);
-        Halt_Player_Run = NOTHING;
+	giveto(Halt_Player_Run, mudconf.waitcost * Halt_Entries_Run);
+	a_Queue(Halt_Player_Run, -Halt_Entries_Run);
+	Halt_Player_Run = NOTHING;
     }
     return Halt_Entries;
 }
@@ -399,62 +399,62 @@ void do_halt(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
 
     if ((key & HALT_ALL) && !Can_Halt(executor))
     {
-        notify(executor, NOPERM_MESSAGE);
-        return;
+	notify(executor, NOPERM_MESSAGE);
+	return;
     }
 
     // Figure out what to halt.
     //
     if (!target || !*target)
     {
-        obj_targ = NOTHING;
-        if (key & HALT_ALL)
-        {
-            executor_targ = NOTHING;
-        }
-        else
-        {
-            executor_targ = Owner(executor);
-            if (!isPlayer(executor))
-            {
-                obj_targ = executor;
-            }
-        }
+	obj_targ = NOTHING;
+	if (key & HALT_ALL)
+	{
+	    executor_targ = NOTHING;
+	}
+	else
+	{
+	    executor_targ = Owner(executor);
+	    if (!isPlayer(executor))
+	    {
+		obj_targ = executor;
+	    }
+	}
     }
     else
     {
-        if (Can_Halt(executor))
-        {
-            obj_targ = match_thing(executor, target);
-        }
-        else
-        {
-            obj_targ = match_controlled(executor, target);
-        }
-        if (!Good_obj(obj_targ))
-        {
-            return;
-        }
-        if (key & HALT_ALL)
-        {
-            notify(executor, T("Can\xE2\x80\x99t specify a target and /all"));
-            return;
-        }
-        if (isPlayer(obj_targ))
-        {
-            executor_targ = obj_targ;
-            obj_targ = NOTHING;
-        }
-        else
-        {
-            executor_targ = NOTHING;
-        }
+	if (Can_Halt(executor))
+	{
+	    obj_targ = match_thing(executor, target);
+	}
+	else
+	{
+	    obj_targ = match_controlled(executor, target);
+	}
+	if (!Good_obj(obj_targ))
+	{
+	    return;
+	}
+	if (key & HALT_ALL)
+	{
+	    notify(executor, T("Can\xE2\x80\x99t specify a target and /all"));
+	    return;
+	}
+	if (isPlayer(obj_targ))
+	{
+	    executor_targ = obj_targ;
+	    obj_targ = NOTHING;
+	}
+	else
+	{
+	    executor_targ = NOTHING;
+	}
     }
 
     int numhalted = halt_que(executor_targ, obj_targ);
     if (Quiet(executor))
     {
-        return;
+	return;
     }
     notify(Owner(executor), tprintf(T("%d queue entr%s removed."), numhalted, numhalted == 1 ? "y" : "ies"));
 }
@@ -471,54 +471,54 @@ static int CallBack_NotifySemaphoreDrainOrAll(PTASK_RECORD p)
 {
     if (p->fpTask == Task_SemaphoreTimeout)
     {
-        // This represents a semaphore.
-        //
-        BQUE *point = (BQUE *)(p->arg_voidptr);
-        if (  point->u.s.sem == Notify_Sem
-           && (  point->u.s.attr == Notify_Attr
-              || !Notify_Attr))
-        {
-            Notify_Num_Done++;
-            if (NFY_DRAIN == (Notify_Key & NFY_MASK))
-            {
-                // Discard the command
-                //
-                giveto(point->executor, mudconf.waitcost);
-                a_Queue(Owner(point->executor), -1);
+	// This represents a semaphore.
+	//
+	BQUE *point = (BQUE *)(p->arg_voidptr);
+	if (  point->u.s.sem == Notify_Sem
+	   && (  point->u.s.attr == Notify_Attr
+	      || !Notify_Attr))
+	{
+	    Notify_Num_Done++;
+	    if (NFY_DRAIN == (Notify_Key & NFY_MASK))
+	    {
+		// Discard the command
+		//
+		giveto(point->executor, mudconf.waitcost);
+		a_Queue(Owner(point->executor), -1);
 
-                for (int i = 0; i < MAX_GLOBAL_REGS; i++)
-                {
-                    if (point->scr[i])
-                    {
-                        RegRelease(point->scr[i]);
-                        point->scr[i] = NULL;
-                    }
-                }
+		for (int i = 0; i < MAX_GLOBAL_REGS; i++)
+		{
+		    if (point->scr[i])
+		    {
+			RegRelease(point->scr[i]);
+			point->scr[i] = NULL;
+		    }
+		}
 
-                MEMFREE(point->text);
-                point->text = NULL;
-                free_qentry(point);
+		MEMFREE(point->text);
+		point->text = NULL;
+		free_qentry(point);
 
-                return IU_REMOVE_TASK;
-            }
-            else
-            {
-                // Allow the command to run. The priority may have been
-                // PRIORITY_SUSPEND, so we need to change it.
-                //
-                if (isPlayer(point->enactor))
-                {
-                    p->iPriority = PRIORITY_PLAYER;
-                }
-                else
-                {
-                    p->iPriority = PRIORITY_OBJECT;
-                }
-                p->ltaWhen.GetUTC();
-                p->fpTask = Task_RunQueueEntry;
-                return IU_UPDATE_TASK;
-            }
-        }
+		return IU_REMOVE_TASK;
+	    }
+	    else
+	    {
+		// Allow the command to run. The priority may have been
+		// PRIORITY_SUSPEND, so we need to change it.
+		//
+		if (isPlayer(point->enactor))
+		{
+		    p->iPriority = PRIORITY_PLAYER;
+		}
+		else
+		{
+		    p->iPriority = PRIORITY_OBJECT;
+		}
+		p->ltaWhen.GetUTC();
+		p->fpTask = Task_RunQueueEntry;
+		return IU_UPDATE_TASK;
+	    }
+	}
     }
     return IU_NEXT_TASK;
 }
@@ -532,35 +532,35 @@ static int CallBack_NotifySemaphoreFirst(PTASK_RECORD p)
     if (  NFY_NFY == (Notify_Key & NFY_MASK)
        && Notify_Num_Done >= Notify_Num_Max)
     {
-        return IU_DONE;
+	return IU_DONE;
     }
 
     if (p->fpTask == Task_SemaphoreTimeout)
     {
-        // This represents a semaphore.
-        //
-        BQUE *point = (BQUE *)(p->arg_voidptr);
-        if (  point->u.s.sem == Notify_Sem
-           && (  point->u.s.attr == Notify_Attr
-              || !Notify_Attr))
-        {
-            Notify_Num_Done++;
+	// This represents a semaphore.
+	//
+	BQUE *point = (BQUE *)(p->arg_voidptr);
+	if (  point->u.s.sem == Notify_Sem
+	   && (  point->u.s.attr == Notify_Attr
+	      || !Notify_Attr))
+	{
+	    Notify_Num_Done++;
 
-            // Allow the command to run. The priority may have been
-            // PRIORITY_SUSPEND, so we need to change it.
-            //
-            if (isPlayer(point->enactor))
-            {
-                p->iPriority = PRIORITY_PLAYER;
-            }
-            else
-            {
-                p->iPriority = PRIORITY_OBJECT;
-            }
-            p->ltaWhen.GetUTC();
-            p->fpTask = Task_RunQueueEntry;
-            return IU_UPDATE_TASK;
-        }
+	    // Allow the command to run. The priority may have been
+	    // PRIORITY_SUSPEND, so we need to change it.
+	    //
+	    if (isPlayer(point->enactor))
+	    {
+		p->iPriority = PRIORITY_PLAYER;
+	    }
+	    else
+	    {
+		p->iPriority = PRIORITY_OBJECT;
+	    }
+	    p->ltaWhen.GetUTC();
+	    p->fpTask = Task_RunQueueEntry;
+	    return IU_UPDATE_TASK;
+	}
     }
     return IU_NEXT_TASK;
 }
@@ -573,39 +573,39 @@ int nfy_que(dbref sem, int attr, int key, int count)
     int cSemaphore = 1;
     if (attr)
     {
-        int   aflags;
-        dbref aowner;
-        UTF8 *str = atr_get("nfy_que.562", sem, attr, &aowner, &aflags);
-        cSemaphore = mux_atol(str);
-        free_lbuf(str);
+	int   aflags;
+	dbref aowner;
+	UTF8 *str = atr_get("nfy_que.562", sem, attr, &aowner, &aflags);
+	cSemaphore = mux_atol(str);
+	free_lbuf(str);
     }
 
     Notify_Num_Done = 0;
     if (0 < cSemaphore)
     {
-        Notify_Key     = key;
-        Notify_Sem     = sem;
-        Notify_Attr    = attr;
-        Notify_Num_Max = count;
-        if (NFY_NFY == (key & NFY_MASK))
-        {
-            scheduler.TraverseOrdered(CallBack_NotifySemaphoreFirst);
-        }
-        else
-        {
-            scheduler.TraverseUnordered(CallBack_NotifySemaphoreDrainOrAll);
-        }
+	Notify_Key     = key;
+	Notify_Sem     = sem;
+	Notify_Attr    = attr;
+	Notify_Num_Max = count;
+	if (NFY_NFY == (key & NFY_MASK))
+	{
+	    scheduler.TraverseOrdered(CallBack_NotifySemaphoreFirst);
+	}
+	else
+	{
+	    scheduler.TraverseUnordered(CallBack_NotifySemaphoreDrainOrAll);
+	}
     }
 
     // Update the sem waiters count.
     //
     if (NFY_NFY == (key & NFY_MASK))
     {
-        add_to(sem, -count, attr);
+	add_to(sem, -count, attr);
     }
     else
     {
-        atr_clr(sem, attr);
+	atr_clr(sem, attr);
     }
 
     return Notify_Num_Done;
@@ -642,65 +642,65 @@ void do_notify
     dbref thing = noisy_match_result();
     if (!Good_obj(thing))
     {
-        return;
+	return;
     }
     if (!Controls(executor, thing) && !Link_ok(thing))
     {
-        notify(executor, NOPERM_MESSAGE);
+	notify(executor, NOPERM_MESSAGE);
     }
     else
     {
-        int atr = A_SEMAPHORE;
-        if (  what
-           && what[0] != '\0')
-        {
-            UTF8 *AttributeName = what;
-            int i = mkattr(executor, AttributeName);
-            if (0 < i)
-            {
-                atr = i;
-                if (atr != A_SEMAPHORE)
-                {
-                    // Do they have permission to set this attribute?
-                    //
-                    ATTR *ap = (ATTR *)anum_get(atr);
-                    if (!bCanSetAttr(executor, thing, ap))
-                    {
-                        notify_quiet(executor, NOPERM_MESSAGE);
-                        return;
-                    }
-                }
-            }
-        }
+	int atr = A_SEMAPHORE;
+	if (  what
+	   && what[0] != '\0')
+	{
+	    UTF8 *AttributeName = what;
+	    int i = mkattr(executor, AttributeName);
+	    if (0 < i)
+	    {
+		atr = i;
+		if (atr != A_SEMAPHORE)
+		{
+		    // Do they have permission to set this attribute?
+		    //
+		    ATTR *ap = (ATTR *)anum_get(atr);
+		    if (!bCanSetAttr(executor, thing, ap))
+		    {
+			notify_quiet(executor, NOPERM_MESSAGE);
+			return;
+		    }
+		}
+	    }
+	}
 
-        int loccount;
-        if (  count
-           && count[0] != '\0')
-        {
-            loccount = mux_atol(count);
-        }
-        else
-        {
-            loccount = 1;
-        }
+	int loccount;
+	if (  count
+	   && count[0] != '\0')
+	{
+	    loccount = mux_atol(count);
+	}
+	else
+	{
+	    loccount = 1;
+	}
 
-        if (0 < loccount)
-        {
-            nfy_que(thing, atr, key, loccount);
-            if (  !Quiet(executor)
-               && !Quiet(thing)
-               && !(key & NFY_QUIET))
-            {
-                if (NFY_DRAIN == (key & NFY_MASK))
-                {
-                    notify_quiet(executor, T("Drained."));
-                }
-                else
-                {
-                    notify_quiet(executor, T("Notified."));
-                }
-            }
-        }
+	if (0 < loccount)
+	{
+	    nfy_que(thing, atr, key, loccount);
+	    if (  !Quiet(executor)
+	       && !Quiet(thing)
+	       && !(key & NFY_QUIET))
+	    {
+		if (NFY_DRAIN == (key & NFY_MASK))
+		{
+		    notify_quiet(executor, T("Drained."));
+		}
+		else
+		{
+		    notify_quiet(executor, T("Notified."));
+		}
+	    }
+	}
     }
 }
 
@@ -723,7 +723,7 @@ static BQUE *setup_que
     //
     if (Halted(executor))
     {
-        return NULL;
+	return NULL;
     }
 
     // Make sure executor can afford to do it.
@@ -731,12 +731,12 @@ static BQUE *setup_que
     int a = mudconf.waitcost;
     if (mudconf.machinecost && RandomINT32(0, mudconf.machinecost-1) == 0)
     {
-        a++;
+	a++;
     }
     if (!payfor(executor, a))
     {
-        notify(Owner(executor), T("Not enough money to queue command."));
-        return NULL;
+	notify(Owner(executor), T("Not enough money to queue command."));
+	return NULL;
     }
 
     // Wizards and their objs may queue up to db_top+1 cmds. Players are
@@ -745,16 +745,16 @@ static BQUE *setup_que
     a = QueueMax(Owner(executor));
     if (a < a_Queue(Owner(executor), 1))
     {
-        a_Queue(Owner(executor), -1);
+	a_Queue(Owner(executor), -1);
 
-        notify(Owner(executor),
-            T("Run away objects: too many commands queued.  Halted."));
-        halt_que(Owner(executor), NOTHING);
+	notify(Owner(executor),
+	    T("Run away objects: too many commands queued.  Halted."));
+	halt_que(Owner(executor), NOTHING);
 
-        // Halt also means no command execution allowed.
-        //
-        s_Halted(executor);
-        return NULL;
+	// Halt also means no command execution allowed.
+	//
+	s_Halted(executor);
+	return NULL;
     }
 
     // We passed all the tests.
@@ -768,22 +768,22 @@ static BQUE *setup_que
 
     if (command)
     {
-        nCommand = strlen((char *)command) + 1;
-        tlen = nCommand;
+	nCommand = strlen((char *)command) + 1;
+	tlen = nCommand;
     }
 
     if (NUM_ENV_VARS < nargs)
     {
-        nargs = NUM_ENV_VARS;
+	nargs = NUM_ENV_VARS;
     }
 
     for (a = 0; a < nargs; a++)
     {
-        if (args[a])
-        {
-            nLenEnv[a] = strlen((char *)args[a]) + 1;
-            tlen += nLenEnv[a];
-        }
+	if (args[a])
+	{
+	    nLenEnv[a] = strlen((char *)args[a]) + 1;
+	    tlen += nLenEnv[a];
+	}
     }
 
     // Create the qeue entry and load the save string.
@@ -796,47 +796,47 @@ static BQUE *setup_que
 
     if (command)
     {
-        memcpy(tptr, command, nCommand);
-        tmp->comm = tptr;
-        tptr += nCommand;
+	memcpy(tptr, command, nCommand);
+	tmp->comm = tptr;
+	tptr += nCommand;
     }
 
     for (a = 0; a < nargs; a++)
     {
-        if (args[a])
-        {
-            memcpy(tptr, args[a], nLenEnv[a]);
-            tmp->env[a] = tptr;
-            tptr += nLenEnv[a];
-        }
-        else
-        {
-            tmp->env[a] = NULL;
-        }
+	if (args[a])
+	{
+	    memcpy(tptr, args[a], nLenEnv[a]);
+	    tmp->env[a] = tptr;
+	    tptr += nLenEnv[a];
+	}
+	else
+	{
+	    tmp->env[a] = NULL;
+	}
     }
 
     for ( ; a < NUM_ENV_VARS; a++)
     {
-        tmp->env[a] = NULL;
+	tmp->env[a] = NULL;
     }
 
     if (sargs)
     {
-        for (a = 0; a < MAX_GLOBAL_REGS; a++)
-        {
-            tmp->scr[a] = sargs[a];
-            if (sargs[a])
-            {
-                RegAddRef(sargs[a]);
-            }
-        }
+	for (a = 0; a < MAX_GLOBAL_REGS; a++)
+	{
+	    tmp->scr[a] = sargs[a];
+	    if (sargs[a])
+	    {
+		RegAddRef(sargs[a]);
+	    }
+	}
     }
     else
     {
-        for (a = 0; a < MAX_GLOBAL_REGS; a++)
-        {
-            tmp->scr[a] = NULL;
-        }
+	for (a = 0; a < MAX_GLOBAL_REGS; a++)
+	{
+	    tmp->scr[a] = NULL;
+	}
     }
 
 #if defined(HAVE_STUB_SLAVE)
@@ -844,7 +844,7 @@ static BQUE *setup_que
     tmp->pResultsSet = mudstate.pResultsSet;
     if (NULL != mudstate.pResultsSet)
     {
-        mudstate.pResultsSet->AddRef();
+	mudstate.pResultsSet->AddRef();
     }
 #endif // HAVE_STUB_SLAVE
 
@@ -882,27 +882,27 @@ void wait_que
 {
     if (!(mudconf.control_flags & CF_INTERP))
     {
-        return;
+	return;
     }
 
     BQUE *tmp = setup_que(executor, caller, enactor, eval,
-        command,
-        nargs, args,
-        sargs);
+	command,
+	nargs, args,
+	sargs);
 
     if (!tmp)
     {
-        return;
+	return;
     }
 
     int iPriority;
     if (isPlayer(tmp->enactor))
     {
-        iPriority = PRIORITY_PLAYER;
+	iPriority = PRIORITY_PLAYER;
     }
     else
     {
-        iPriority = PRIORITY_OBJECT;
+	iPriority = PRIORITY_OBJECT;
     }
 
     tmp->IsTimed = bTimed;
@@ -912,29 +912,29 @@ void wait_que
 
     if (sem == NOTHING)
     {
-        // Not a semaphore, so let it run it immediately or put it on
-        // the wait queue.
-        //
-        if (tmp->IsTimed)
-        {
-            scheduler.DeferTask(tmp->waittime, iPriority, Task_RunQueueEntry, tmp, 0);
-        }
-        else
-        {
-            scheduler.DeferImmediateTask(iPriority, Task_RunQueueEntry, tmp, 0);
-        }
+	// Not a semaphore, so let it run it immediately or put it on
+	// the wait queue.
+	//
+	if (tmp->IsTimed)
+	{
+	    scheduler.DeferTask(tmp->waittime, iPriority, Task_RunQueueEntry, tmp, 0);
+	}
+	else
+	{
+	    scheduler.DeferImmediateTask(iPriority, Task_RunQueueEntry, tmp, 0);
+	}
     }
     else
     {
-        if (!tmp->IsTimed)
-        {
-            // In this case, the timeout task below will never run,
-            // but it allows us to manage all semaphores together in
-            // the same data structure.
-            //
-            iPriority = PRIORITY_SUSPEND;
-        }
-        scheduler.DeferTask(tmp->waittime, iPriority, Task_SemaphoreTimeout, tmp, 0);
+	if (!tmp->IsTimed)
+	{
+	    // In this case, the timeout task below will never run,
+	    // but it allows us to manage all semaphores together in
+	    // the same data structure.
+	    //
+	    iPriority = PRIORITY_SUSPEND;
+	}
+	scheduler.DeferTask(tmp->waittime, iPriority, Task_SemaphoreTimeout, tmp, 0);
     }
 }
 
@@ -947,29 +947,29 @@ static int CallBack_QueryComplete(PTASK_RECORD p)
 {
     if (QueryComplete_bDone)
     {
-        return IU_DONE;
+	return IU_DONE;
     }
 
     if (Task_SQLTimeout == p->fpTask)
     {
-        // This represents a query.
-        //
-        BQUE *point = (BQUE *)(p->arg_voidptr);
-        if (point->u.hQuery == QueryComplete_hQuery)
-        {
-            p->iPriority = PRIORITY_OBJECT;
-            p->ltaWhen.GetUTC();
-            p->fpTask    = Task_RunQueueEntry;
+	// This represents a query.
+	//
+	BQUE *point = (BQUE *)(p->arg_voidptr);
+	if (point->u.hQuery == QueryComplete_hQuery)
+	{
+	    p->iPriority = PRIORITY_OBJECT;
+	    p->ltaWhen.GetUTC();
+	    p->fpTask    = Task_RunQueueEntry;
 
-            point->u.s.sem    = NOTHING;
-            point->u.s.attr   = 0;
-            QueryComplete_prsResultsSet->AddRef();
-            point->pResultsSet = QueryComplete_prsResultsSet;
-            point->iRow = RS_TOP;
+	    point->u.s.sem    = NOTHING;
+	    point->u.s.attr   = 0;
+	    QueryComplete_prsResultsSet->AddRef();
+	    point->pResultsSet = QueryComplete_prsResultsSet;
+	    point->iRow = RS_TOP;
 
-            QueryComplete_bDone = true;
-            return IU_UPDATE_TASK;
-        }
+	    QueryComplete_bDone = true;
+	    return IU_UPDATE_TASK;
+	}
     }
     return IU_NEXT_TASK;
 }
@@ -982,7 +982,7 @@ void query_complete(UINT32 hQuery, UINT32 iError, CResultsSet *prsResultsSet)
 {
     if (NULL != prsResultsSet)
     {
-        prsResultsSet->SetError(iError);
+	prsResultsSet->SetError(iError);
     }
 
     QueryComplete_bDone   = false;
@@ -1018,25 +1018,25 @@ void sql_que
     if (  !(mudconf.control_flags & CF_INTERP)
        || NULL == mudstate.pIQueryControl)
     {
-        return;
+	return;
     }
 
     ATTR *pattr = atr_num(attr);
     if (NULL == pattr)
     {
-        return;
+	return;
     }
 
     UTF8 mbuf[MBUF_SIZE];
     mux_sprintf(mbuf, MBUF_SIZE, T("@trigger #%d/%s"), thing, pattr->name);
     BQUE *tmp = setup_que(executor, caller, enactor, eval,
-        mbuf,
-        nargs, args,
-        sargs);
+	mbuf,
+	nargs, args,
+	sargs);
 
     if (!tmp)
     {
-        return;
+	return;
     }
 
     UINT32 hQuery = next_handle++;
@@ -1047,7 +1047,7 @@ void sql_que
     MUX_RESULT mr = mudstate.pIQueryControl->Query(hQuery, dbname, query);
     if (MUX_FAILED(mr))
     {
-        scheduler.CancelTask(Task_SQLTimeout, tmp, next_handle);
+	scheduler.CancelTask(Task_SQLTimeout, tmp, next_handle);
     }
 }
 
@@ -1079,21 +1079,21 @@ void do_wait
     //
     if (is_rational(event))
     {
-        if (key & WAIT_UNTIL)
-        {
-            ltaWhen.SetSecondsString(event);
-        }
-        else
-        {
-            ltaWhen.GetUTC();
-            ltd.SetSecondsString(event);
-            ltaWhen += ltd;
-        }
-        wait_que(executor, caller, enactor, eval, true, ltaWhen, NOTHING, 0,
-            cmd,
-            ncargs, cargs,
-            mudstate.global_regs);
-        return;
+	if (key & WAIT_UNTIL)
+	{
+	    ltaWhen.SetSecondsString(event);
+	}
+	else
+	{
+	    ltaWhen.GetUTC();
+	    ltd.SetSecondsString(event);
+	    ltaWhen += ltd;
+	}
+	wait_que(executor, caller, enactor, eval, true, ltaWhen, NOTHING, 0,
+	    cmd,
+	    ncargs, cargs,
+	    mudstate.global_regs);
+	return;
     }
 
     // Semaphore wait with optional timeout.
@@ -1105,72 +1105,72 @@ void do_wait
     dbref thing = noisy_match_result();
     if (!Good_obj(thing))
     {
-        return;
+	return;
     }
     else if (!Controls(executor, thing) && !Link_ok(thing))
     {
-        notify(executor, NOPERM_MESSAGE);
+	notify(executor, NOPERM_MESSAGE);
     }
     else
     {
-        // Get timeout, default 0.
-        //
-        int atr = A_SEMAPHORE;
-        bool bTimed = false;
-        if (event && *event)
-        {
-            if (is_rational(event))
-            {
-                if (key & WAIT_UNTIL)
-                {
-                    ltaWhen.SetSecondsString(event);
-                }
-                else
-                {
-                    ltaWhen.GetUTC();
-                    ltd.SetSecondsString(event);
-                    ltaWhen += ltd;
-                }
-                bTimed = true;
-            }
-            else
-            {
-                UTF8 *EventAttributeName = (UTF8 *)event;
-                ATTR *ap = atr_str(EventAttributeName);
-                if (!ap)
-                {
-                    atr = mkattr(executor, EventAttributeName);
-                    if (atr <= 0)
-                    {
-                        notify_quiet(executor, T("Invalid attribute."));
-                        return;
-                    }
-                    ap = atr_num(atr);
-                }
-                else
-                {
-                    atr = ap->number;
-                }
-                if (!bCanSetAttr(executor, thing, ap))
-                {
-                    notify_quiet(executor, NOPERM_MESSAGE);
-                    return;
-                }
-            }
-        }
+	// Get timeout, default 0.
+	//
+	int atr = A_SEMAPHORE;
+	bool bTimed = false;
+	if (event && *event)
+	{
+	    if (is_rational(event))
+	    {
+		if (key & WAIT_UNTIL)
+		{
+		    ltaWhen.SetSecondsString(event);
+		}
+		else
+		{
+		    ltaWhen.GetUTC();
+		    ltd.SetSecondsString(event);
+		    ltaWhen += ltd;
+		}
+		bTimed = true;
+	    }
+	    else
+	    {
+		UTF8 *EventAttributeName = (UTF8 *)event;
+		ATTR *ap = atr_str(EventAttributeName);
+		if (!ap)
+		{
+		    atr = mkattr(executor, EventAttributeName);
+		    if (atr <= 0)
+		    {
+			notify_quiet(executor, T("Invalid attribute."));
+			return;
+		    }
+		    ap = atr_num(atr);
+		}
+		else
+		{
+		    atr = ap->number;
+		}
+		if (!bCanSetAttr(executor, thing, ap))
+		{
+		    notify_quiet(executor, NOPERM_MESSAGE);
+		    return;
+		}
+	    }
+	}
 
-        int num = add_to(thing, 1, atr);
-        if (num <= 0)
-        {
-            // Thing over-notified, run the command immediately.
-            //
-            thing = NOTHING;
-            bTimed = false;
-        }
-        wait_que(executor, caller, enactor, eval, bTimed, ltaWhen, thing, atr,
-            cmd,
-            ncargs, cargs,
-            mudstate.global_regs);
+	int num = add_to(thing, 1, atr);
+	if (num <= 0)
+	{
+	    // Thing over-notified, run the command immediately.
+	    //
+	    thing = NOTHING;
+	    bTimed = false;
+	}
+	wait_que(executor, caller, enactor, eval, bTimed, ltaWhen, thing, atr,
+	    cmd,
+	    ncargs, cargs,
+	    mudstate.global_regs);
     }
 }
 
@@ -1197,45 +1197,45 @@ void do_query
 
     if (NULL == mudstate.pIQueryControl)
     {
-        notify_quiet(executor, T("Query server is not available."));
-        return;
+	notify_quiet(executor, T("Query server is not available."));
+	return;
     }
 
     if (key & QUERY_SQL)
     {
-        // SQL Query.
-        //
-        dbref thing;
-        ATTR *pattr;
+	// SQL Query.
+	//
+	dbref thing;
+	ATTR *pattr;
 
-        if (!(  parse_attrib(executor, dbref_attr, &thing, &pattr)
-             && NULL != pattr))
-        {
-            notify_quiet(executor, T("No match."));
-            return;
-        }
+	if (!(  parse_attrib(executor, dbref_attr, &thing, &pattr)
+	     && NULL != pattr))
+	{
+	    notify_quiet(executor, T("No match."));
+	    return;
+	}
 
-        if (!Controls(executor, thing))
-        {
-            notify_quiet(executor, T(NOPERM_MESSAGE));
-            return;
-        }
+	if (!Controls(executor, thing))
+	{
+	    notify_quiet(executor, T(NOPERM_MESSAGE));
+	    return;
+	}
 
-        UTF8 *pQuery = dbname_query;
-        UTF8 *pDBName = parse_to(&pQuery, '/', 0);
+	UTF8 *pQuery = dbname_query;
+	UTF8 *pDBName = parse_to(&pQuery, '/', 0);
 
-        if (NULL == pQuery)
-        {
-            notify(executor, T("QUERY: No Query."));
-            return;
-        }
+	if (NULL == pQuery)
+	{
+	    notify(executor, T("QUERY: No Query."));
+	    return;
+	}
 
-        sql_que(executor, caller, enactor, eval, thing, pattr->number,
-            pDBName, pQuery, ncargs, cargs, mudstate.global_regs);
+	sql_que(executor, caller, enactor, eval, thing, pattr->number,
+	    pDBName, pQuery, ncargs, cargs, mudstate.global_regs);
     }
     else
     {
-        notify_quiet(executor, T("At least one query option is required."));
+	notify_quiet(executor, T("At least one query option is required."));
     }
 }
 
@@ -1262,43 +1262,43 @@ static int CallBack_ShowDispatches(PTASK_RECORD p)
     CLinearTimeDelta ltd = p->ltaWhen - Show_lsaNow;
     if (p->fpTask == dispatch_DatabaseDump)
     {
-        notify(Show_Player, tprintf(T("[%d]auto-@dump"), ltd.ReturnSeconds()));
+	notify(Show_Player, tprintf(T("[%d]auto-@dump"), ltd.ReturnSeconds()));
     }
     else if (p->fpTask == dispatch_FreeListReconstruction)
     {
-        notify(Show_Player, tprintf(T("[%d]auto-@dbck"), ltd.ReturnSeconds()));
+	notify(Show_Player, tprintf(T("[%d]auto-@dbck"), ltd.ReturnSeconds()));
     }
     else if (p->fpTask == dispatch_IdleCheck)
     {
-        notify(Show_Player, tprintf(T("[%d]Check for idle players"), ltd.ReturnSeconds()));
+	notify(Show_Player, tprintf(T("[%d]Check for idle players"), ltd.ReturnSeconds()));
     }
     else if (p->fpTask == dispatch_CheckEvents)
     {
-        notify(Show_Player, tprintf(T("[%d]Test for @daily time"), ltd.ReturnSeconds()));
+	notify(Show_Player, tprintf(T("[%d]Test for @daily time"), ltd.ReturnSeconds()));
     }
 #ifndef HAVE_MEMORY_BASED
     else if (p->fpTask == dispatch_CacheTick)
     {
-        notify(Show_Player, tprintf(T("[%d]Database cache tick"), ltd.ReturnSeconds()));
+	notify(Show_Player, tprintf(T("[%d]Database cache tick"), ltd.ReturnSeconds()));
     }
 #endif
     else if (p->fpTask == Task_ProcessCommand)
     {
-        notify(Show_Player, tprintf(T("[%d]Further command quota"), ltd.ReturnSeconds()));
+	notify(Show_Player, tprintf(T("[%d]Further command quota"), ltd.ReturnSeconds()));
     }
 #if defined(WINDOWS_NETWORKING)
     else if (p->fpTask == Task_FreeDescriptor)
     {
-        notify(Show_Player, tprintf(T("[%d]Delayed descriptor deallocation"), ltd.ReturnSeconds()));
+	notify(Show_Player, tprintf(T("[%d]Delayed descriptor deallocation"), ltd.ReturnSeconds()));
     }
     else if (p->fpTask == Task_DeferredClose)
     {
-        notify(Show_Player, tprintf(T("[%d]Delayed socket close"), ltd.ReturnSeconds()));
+	notify(Show_Player, tprintf(T("[%d]Delayed socket close"), ltd.ReturnSeconds()));
     }
 #endif
     else
     {
-        Total_SystemTasks--;
+	Total_SystemTasks--;
     }
     return IU_NEXT_TASK;
 }
@@ -1308,40 +1308,40 @@ static void ShowPsLine(BQUE *tmp)
     UTF8 *bufp = unparse_object(Show_Player, tmp->executor, false);
     if (tmp->IsTimed && Good_obj(tmp->u.s.sem))
     {
-        CLinearTimeDelta ltd = tmp->waittime - Show_lsaNow;
-        notify(Show_Player, tprintf(T("[#%d/%d]%s:%s"), tmp->u.s.sem, ltd.ReturnSeconds(), bufp, tmp->comm));
+	CLinearTimeDelta ltd = tmp->waittime - Show_lsaNow;
+	notify(Show_Player, tprintf(T("[#%d/%d]%s:%s"), tmp->u.s.sem, ltd.ReturnSeconds(), bufp, tmp->comm));
     }
     else if (tmp->IsTimed)
     {
-        CLinearTimeDelta ltd = tmp->waittime - Show_lsaNow;
-        notify(Show_Player, tprintf(T("[%d]%s:%s"), ltd.ReturnSeconds(), bufp, tmp->comm));
+	CLinearTimeDelta ltd = tmp->waittime - Show_lsaNow;
+	notify(Show_Player, tprintf(T("[%d]%s:%s"), ltd.ReturnSeconds(), bufp, tmp->comm));
     }
     else if (Good_obj(tmp->u.s.sem))
     {
-        notify(Show_Player, tprintf(T("[#%d]%s:%s"), tmp->u.s.sem, bufp, tmp->comm));
+	notify(Show_Player, tprintf(T("[#%d]%s:%s"), tmp->u.s.sem, bufp, tmp->comm));
     }
     else
     {
-        notify(Show_Player, tprintf(T("%s:%s"), bufp, tmp->comm));
+	notify(Show_Player, tprintf(T("%s:%s"), bufp, tmp->comm));
     }
     UTF8 *bp = bufp;
     if (Show_Key == PS_LONG)
     {
-        for (int i = 0; i < tmp->nargs; i++)
-        {
-            if (tmp->env[i] != NULL)
-            {
-                safe_str(T("; Arg"), bufp, &bp);
-                safe_chr((UTF8)(i + '0'), bufp, &bp);
-                safe_str(T("=\xE2\x80\x98"), bufp, &bp);
-                safe_str(tmp->env[i], bufp, &bp);
-                safe_str(T("\xE2\x80\x99"), bufp, &bp);
-            }
-        }
-        *bp = '\0';
-        bp = unparse_object(Show_Player, tmp->enactor, false);
-        notify(Show_Player, tprintf(T("   Enactor: %s%s"), bp, bufp));
-        free_lbuf(bp);
+	for (int i = 0; i < tmp->nargs; i++)
+	{
+	    if (tmp->env[i] != NULL)
+	    {
+		safe_str(T("; Arg"), bufp, &bp);
+		safe_chr((UTF8)(i + '0'), bufp, &bp);
+		safe_str(T("=\xE2\x80\x98"), bufp, &bp);
+		safe_str(tmp->env[i], bufp, &bp);
+		safe_str(T("\xE2\x80\x99"), bufp, &bp);
+	    }
+	}
+	*bp = '\0';
+	bp = unparse_object(Show_Player, tmp->enactor, false);
+	notify(Show_Player, tprintf(T("   Enactor: %s%s"), bp, bufp));
+	free_lbuf(bp);
     }
     free_lbuf(bufp);
 }
@@ -1350,24 +1350,24 @@ static int CallBack_ShowWait(PTASK_RECORD p)
 {
     if (p->fpTask != Task_RunQueueEntry)
     {
-        return IU_NEXT_TASK;
+	return IU_NEXT_TASK;
     }
 
     Total_RunQueueEntry++;
     BQUE *tmp = (BQUE *)(p->arg_voidptr);
     if (que_want(tmp, Show_Player_Target, Show_Object_Target))
     {
-        Shown_RunQueueEntry++;
-        if (Show_Key == PS_SUMM)
-        {
-            return IU_NEXT_TASK;
-        }
-        if (Show_bFirstLine)
-        {
-            notify(Show_Player, T("----- Wait Queue -----"));
-            Show_bFirstLine = false;
-        }
-        ShowPsLine(tmp);
+	Shown_RunQueueEntry++;
+	if (Show_Key == PS_SUMM)
+	{
+	    return IU_NEXT_TASK;
+	}
+	if (Show_bFirstLine)
+	{
+	    notify(Show_Player, T("----- Wait Queue -----"));
+	    Show_bFirstLine = false;
+	}
+	ShowPsLine(tmp);
     }
     return IU_NEXT_TASK;
 }
@@ -1376,24 +1376,24 @@ static int CallBack_ShowSemaphore(PTASK_RECORD p)
 {
     if (p->fpTask != Task_SemaphoreTimeout)
     {
-        return IU_NEXT_TASK;
+	return IU_NEXT_TASK;
     }
 
     Total_SemaphoreTimeout++;
     BQUE *tmp = (BQUE *)(p->arg_voidptr);
     if (que_want(tmp, Show_Player_Target, Show_Object_Target))
     {
-        Shown_SemaphoreTimeout++;
-        if (Show_Key == PS_SUMM)
-        {
-            return IU_NEXT_TASK;
-        }
-        if (Show_bFirstLine)
-        {
-            notify(Show_Player, T("----- Semaphore Queue -----"));
-            Show_bFirstLine = false;
-        }
-        ShowPsLine(tmp);
+	Shown_SemaphoreTimeout++;
+	if (Show_Key == PS_SUMM)
+	{
+	    return IU_NEXT_TASK;
+	}
+	if (Show_bFirstLine)
+	{
+	    notify(Show_Player, T("----- Semaphore Queue -----"));
+	    Show_bFirstLine = false;
+	}
+	ShowPsLine(tmp);
     }
     return IU_NEXT_TASK;
 }
@@ -1402,24 +1402,24 @@ int CallBack_ShowSQLQueries(PTASK_RECORD p)
 {
     if (p->fpTask != Task_SQLTimeout)
     {
-        return IU_NEXT_TASK;
+	return IU_NEXT_TASK;
     }
 
     Total_SQLTimeout++;
     BQUE *tmp = (BQUE *)(p->arg_voidptr);
     if (que_want(tmp, Show_Player_Target, Show_Object_Target))
     {
-        Shown_SQLTimeout++;
-        if (Show_Key == PS_SUMM)
-        {
-            return IU_NEXT_TASK;
-        }
-        if (Show_bFirstLine)
-        {
-            notify(Show_Player, T("----- SQL Queries -----"));
-            Show_bFirstLine = false;
-        }
-        ShowPsLine(tmp);
+	Shown_SQLTimeout++;
+	if (Show_Key == PS_SUMM)
+	{
+	    return IU_NEXT_TASK;
+	}
+	if (Show_bFirstLine)
+	{
+	    notify(Show_Player, T("----- SQL Queries -----"));
+	    Show_bFirstLine = false;
+	}
+	ShowPsLine(tmp);
     }
     return IU_NEXT_TASK;
 }
@@ -1442,43 +1442,43 @@ void do_ps(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8 
     //
     if ((key & PS_ALL) && !See_Queue(executor))
     {
-        notify(executor, NOPERM_MESSAGE);
-        return;
+	notify(executor, NOPERM_MESSAGE);
+	return;
     }
     if (!target || !*target)
     {
-        obj_targ = NOTHING;
-        if (key & PS_ALL)
-        {
-            executor_targ = NOTHING;
-        }
-        else
-        {
-            executor_targ = Owner(executor);
-            if (!isPlayer(executor))
-            {
-                obj_targ = executor;
-            }
-        }
+	obj_targ = NOTHING;
+	if (key & PS_ALL)
+	{
+	    executor_targ = NOTHING;
+	}
+	else
+	{
+	    executor_targ = Owner(executor);
+	    if (!isPlayer(executor))
+	    {
+		obj_targ = executor;
+	    }
+	}
     }
     else
     {
-        executor_targ = Owner(executor);
-        obj_targ = match_controlled(executor, target);
-        if (obj_targ == NOTHING)
-        {
-            return;
-        }
-        if (key & PS_ALL)
-        {
-            notify(executor, T("Can\xE2\x80\x99t specify a target and /all"));
-            return;
-        }
-        if (isPlayer(obj_targ))
-        {
-            executor_targ = obj_targ;
-            obj_targ = NOTHING;
-        }
+	executor_targ = Owner(executor);
+	obj_targ = match_controlled(executor, target);
+	if (obj_targ == NOTHING)
+	{
+	    return;
+	}
+	if (key & PS_ALL)
+	{
+	    notify(executor, T("Can\xE2\x80\x99t specify a target and /all"));
+	    return;
+	}
+	if (isPlayer(obj_targ))
+	{
+	    executor_targ = obj_targ;
+	    obj_targ = NOTHING;
+	}
     }
     key = key & ~PS_ALL;
 
@@ -1487,11 +1487,11 @@ void do_ps(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8 
     case PS_BRIEF:
     case PS_SUMM:
     case PS_LONG:
-        break;
+	break;
 
     default:
-        notify(executor, T("Illegal combination of switches."));
-        return;
+	notify(executor, T("Illegal combination of switches."));
+	return;
     }
 
     Show_lsaNow.GetUTC();
@@ -1514,22 +1514,22 @@ void do_ps(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF8 
     scheduler.TraverseOrdered(CallBack_ShowSQLQueries);
     if (Wizard(executor))
     {
-        notify(executor, T("----- System Queue -----"));
-        scheduler.TraverseOrdered(CallBack_ShowDispatches);
+	notify(executor, T("----- System Queue -----"));
+	scheduler.TraverseOrdered(CallBack_ShowDispatches);
     }
 
     // Display stats.
     //
     bufp = alloc_mbuf("do_ps");
     mux_sprintf(bufp, MBUF_SIZE, T("Totals: Wait Queue...%d/%d  Semaphores...%d/%d  SQL %d/%d"),
-        Shown_RunQueueEntry, Total_RunQueueEntry,
-        Shown_SemaphoreTimeout, Total_SemaphoreTimeout,
-        Shown_SQLTimeout, Total_SQLTimeout);
+	Shown_RunQueueEntry, Total_RunQueueEntry,
+	Shown_SemaphoreTimeout, Total_SemaphoreTimeout,
+	Shown_SQLTimeout, Total_SQLTimeout);
     notify(executor, bufp);
     if (Wizard(executor))
     {
-        mux_sprintf(bufp, MBUF_SIZE, T("        System Tasks.....%d"), Total_SystemTasks);
-        notify(executor, bufp);
+	mux_sprintf(bufp, MBUF_SIZE, T("        System Tasks.....%d"), Total_SystemTasks);
+	notify(executor, bufp);
     }
     free_mbuf(bufp);
 }
@@ -1541,13 +1541,13 @@ static int CallBack_Warp(PTASK_RECORD p)
        || p->fpTask == Task_SQLTimeout
        || p->fpTask == Task_SemaphoreTimeout)
     {
-        BQUE *point = (BQUE *)(p->arg_voidptr);
-        if (point->IsTimed)
-        {
-            point->waittime -= ltdWarp;
-            p->ltaWhen -= ltdWarp;
-            return IU_UPDATE_TASK;
-        }
+	BQUE *point = (BQUE *)(p->arg_voidptr);
+	if (point->IsTimed)
+	{
+	    point->waittime -= ltdWarp;
+	    p->ltaWhen -= ltdWarp;
+	    return IU_UPDATE_TASK;
+	}
     }
     return IU_NEXT_TASK;
 }
@@ -1565,50 +1565,50 @@ void do_queue(dbref executor, dbref caller, dbref enactor, int eval, int key, UT
 
     if (key == QUEUE_KICK)
     {
-        int i = mux_atol(arg);
-        int save_minPriority = scheduler.GetMinPriority();
-        if (save_minPriority <= PRIORITY_CF_DEQUEUE_DISABLED)
-        {
-            notify(executor, T("Warning: automatic dequeueing is disabled."));
-            scheduler.SetMinPriority(PRIORITY_CF_DEQUEUE_ENABLED);
-        }
-        CLinearTimeAbsolute lsaNow;
-        lsaNow.GetUTC();
-        scheduler.ReadyTasks(lsaNow);
-        int ncmds = scheduler.RunTasks(i);
-        scheduler.SetMinPriority(save_minPriority);
+	int i = mux_atol(arg);
+	int save_minPriority = scheduler.GetMinPriority();
+	if (save_minPriority <= PRIORITY_CF_DEQUEUE_DISABLED)
+	{
+	    notify(executor, T("Warning: automatic dequeueing is disabled."));
+	    scheduler.SetMinPriority(PRIORITY_CF_DEQUEUE_ENABLED);
+	}
+	CLinearTimeAbsolute lsaNow;
+	lsaNow.GetUTC();
+	scheduler.ReadyTasks(lsaNow);
+	int ncmds = scheduler.RunTasks(i);
+	scheduler.SetMinPriority(save_minPriority);
 
-        if (!Quiet(executor))
-        {
-            notify(executor, tprintf(T("%d commands processed."), ncmds));
-        }
+	if (!Quiet(executor))
+	{
+	    notify(executor, tprintf(T("%d commands processed."), ncmds));
+	}
     }
     else if (key == QUEUE_WARP)
     {
-        int iWarp = mux_atol(arg);
-        ltdWarp.SetSeconds(iWarp);
-        if (scheduler.GetMinPriority() <= PRIORITY_CF_DEQUEUE_DISABLED)
-        {
-            notify(executor, T("Warning: automatic dequeueing is disabled."));
-        }
+	int iWarp = mux_atol(arg);
+	ltdWarp.SetSeconds(iWarp);
+	if (scheduler.GetMinPriority() <= PRIORITY_CF_DEQUEUE_DISABLED)
+	{
+	    notify(executor, T("Warning: automatic dequeueing is disabled."));
+	}
 
-        scheduler.TraverseUnordered(CallBack_Warp);
+	scheduler.TraverseUnordered(CallBack_Warp);
 
-        if (Quiet(executor))
-        {
-            return;
-        }
-        if (0 < iWarp)
-        {
-            notify(executor, tprintf(T("WaitQ timer advanced %d seconds."), iWarp));
-        }
-        else if (iWarp < 0)
-        {
-            notify(executor, tprintf(T("WaitQ timer set back %d seconds."), iWarp));
-        }
-        else
-        {
-            notify(executor, T("Object queue appended to player queue."));
-        }
+	if (Quiet(executor))
+	{
+	    return;
+	}
+	if (0 < iWarp)
+	{
+	    notify(executor, tprintf(T("WaitQ timer advanced %d seconds."), iWarp));
+	}
+	else if (iWarp < 0)
+	{
+	    notify(executor, tprintf(T("WaitQ timer set back %d seconds."), iWarp));
+	}
+	else
+	{
+	    notify(executor, T("Object queue appended to player queue."));
+	}
     }
 }

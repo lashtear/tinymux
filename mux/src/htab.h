@@ -33,12 +33,12 @@ struct bque
     int     eval;
     union
     {
-        struct
-        {
-            dbref   sem;            // blocking semaphore
-            int     attr;           // blocking attribute
-        } s;
-        UINT32 hQuery;              // blocking query
+	struct
+	{
+	    dbref   sem;            // blocking semaphore
+	    int     attr;           // blocking attribute
+	} s;
+	UINT32 hQuery;              // blocking query
     } u;
     int     nargs;                  // How many args I have
     UTF8    *text;                  // buffer for comm, env, and scr text
@@ -75,11 +75,11 @@ public:
 void hashreset(CHashTable *);
 void *hashfindLEN(const void *pKey, size_t nKey, CHashTable *htab);
 bool hashaddLEN(const void *pKey, size_t nKey, void *pData,
-                CHashTable *htab);
+		CHashTable *htab);
 void hashdeleteLEN(const void *Str, size_t nStr, CHashTable *htab);
 void hashflush(CHashTable *);
 bool hashreplLEN(const void *Str, size_t nStr, void *hashdata,
-                 CHashTable *htab);
+		 CHashTable *htab);
 void hashreplall(const void *, void *, CHashTable *);
 void *hash_nextentry(CHashTable *htab);
 void *hash_firstentry(CHashTable *htab);

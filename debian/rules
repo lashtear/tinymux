@@ -53,7 +53,7 @@ clean:
 	-(cd src/modules; $(MAKE) realclean)
 	-rm -f game/bin/dbconvert game/bin/libmux.so game/bin/netmux game/bin/sample.so \
 		game/bin/slave game/bin/sqlproxy.so game/bin/sqlslave.so game/bin/stubslave \
-                game/bin/sum.so src/unsplit src/buildnum.data src/config.log src/config.status \
+		game/bin/sum.so src/unsplit src/buildnum.data src/config.log src/config.status \
 		src/Makefile src/autoconf.h src/modules/config.status src/modules/Makefile \
 		src/modules/autoconf.h
 

@@ -4,7 +4,7 @@
  * $Id$
  *
  * \verbatim
-           Copyright (c) 1997-2006 University of Cambridge
+	   Copyright (c) 1997-2006 University of Cambridge
 
 -----------------------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
@@ -199,15 +199,15 @@ typedef struct pcre_callout_block {
 /* Exported PCRE functions */
 
 extern pcre *pcre_compile(const char *, int, const char **, int *,
-                  const unsigned char *);
+		  const unsigned char *);
 extern pcre *pcre_compile2(const char *, int, int *, const char **,
-                  int *, const unsigned char *);
+		  int *, const unsigned char *);
 extern int  pcre_copy_substring(const char *, int *, int, int, char *,
-                  int);
+		  int);
 extern int  pcre_exec(const pcre *, const pcre_extra *, PCRE_SPTR,
-                   int, int, int, int *, int);
+		   int, int, int, int *, int);
 extern int  pcre_fullinfo(const pcre *, const pcre_extra *, int,
-                  void *);
+		  void *);
 extern const unsigned char *pcre_maketables(void);
 extern pcre_extra *pcre_study(const pcre *, int, const char **);
 

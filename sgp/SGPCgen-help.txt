@@ -21,7 +21,7 @@
   Statting commands:
   
   +setstat     +settemp     +removestat  +stattype    +setstring   +setlist 
-                                                                                                                                 
+																 
 ------------------------------------------------------------------------------
   DB commands:
   
@@ -38,7 +38,7 @@
   
   FN-DISPLAY-LIST     FN-DISPLAY-LISTS    FN-DISPLAY-STRINGS  FN_FORMAT
   FN-HASLIST          FN_3LISTSCOL        FN_3VCOL            
-                                                                                                                          
+															  
   World of Darkness Specific:
   
   FN_ABILITIES        FN_ARCANOI          FN_ARTS             FN_ATTRIBUTES 
@@ -198,22 +198,22 @@ COMMAND: +create-db
   COMMAND: +statlist/<switch> [[<statlist>]/[<stat>]]
 
     /showlists                   - This command lists out all the stat lists 
-                                  on the List Object. These are the stat lists 
-                                  that will be incorporated into the stat 
-                                  database when +create-db is run.
+				  on the List Object. These are the stat lists 
+				  that will be incorporated into the stat 
+				  database when +create-db is run.
     /addlist <statlist>          - This command adds <statlist> to the list 
-                                  of stat lists used by the database.  
-                                  <statlist> should be a single word with no 
-                                  spaces in it.   
+				  of stat lists used by the database.  
+				  <statlist> should be a single word with no 
+				  spaces in it.   
     /showstats <statlist>        - This command lists out the stats 
-                                  belonging to the stat list <statlist>.
+				  belonging to the stat list <statlist>.
     /addstat <statlist>/<stat>   - This command adds the stat <stat> to the 
-                                  stat list <statlist>.  <stat> may include 
-                                  any characters (including blanks) except 
-                                  for ":" and "|".  
+				  stat list <statlist>.  <stat> may include 
+				  any characters (including blanks) except 
+				  for ":" and "|".  
     /deletestat <statlist>/<stat>- This command deletes the stat <stat> from 
-                                   the stat list <statlist>.  <stat> must, of 
-                                   course, be a stat on the named stat list.  
+				   the stat list <statlist>.  <stat> must, of 
+				   course, be a stat on the named stat list.  
 
   IMPORTANT NOTES: 
     The stat lists can be manually edited by altering the LIST-<statlist> 
@@ -361,7 +361,7 @@ FN_3LISTSCOL
      orange       dog          flower
      mango        canary       shrub
      pear             
-        
+	
 
 & FN_3VCOL 
 FN_3VCOL 

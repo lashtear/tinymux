@@ -204,7 +204,7 @@ interface mux_IFunction : public mux_IUnknown
 {
 public:
     virtual MUX_RESULT Call(unsigned int nKey, __in UTF8 *buff, __deref_inout UTF8 **bufc, dbref executor, dbref caller, dbref enactor,
-        int eval, __in UTF8 *fargs[], int nfargs, __in const UTF8 *cargs[], int ncargs) = 0;
+	int eval, __in UTF8 *fargs[], int nfargs, __in const UTF8 *cargs[], int ncargs) = 0;
 };
 
 interface mux_IFunctionsControl : public mux_IUnknown

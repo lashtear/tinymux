@@ -17,10 +17,10 @@
 #include "powers.h"
 
 #define IS_CLEAN(i) (isGarbage(i) && Going(i) && \
-             ((i) >= 0) && ((i) < mudstate.db_top) && \
-             (Location(i) == NOTHING) && \
-             (Contents(i) == NOTHING) && (Exits(i) == NOTHING) && \
-             (Next(i) == NOTHING) && (Owner(i) == GOD))
+	     ((i) >= 0) && ((i) < mudstate.db_top) && \
+	     (Location(i) == NOTHING) && \
+	     (Contents(i) == NOTHING) && (Exits(i) == NOTHING) && \
+	     (Next(i) == NOTHING) && (Owner(i) == GOD))
 
 static int check_type;
 
@@ -37,17 +37,17 @@ static void Log_pointer_err(dbref prior, dbref obj, dbref loc, dbref ref,
     log_type_and_name(obj);
     if (loc != NOTHING)
     {
-        log_text(T(" in "));
-        log_type_and_name(loc);
+	log_text(T(" in "));
+	log_type_and_name(loc);
     }
     log_text(T(": "));
     if (prior == NOTHING)
     {
-        log_text(reftype);
+	log_text(reftype);
     }
     else
     {
-        log_text(T("Next pointer"));
+	log_text(T("Next pointer"));
     }
     log_text(T(" "));
     log_type_and_name(ref);
@@ -63,19 +63,19 @@ static void Log_header_err(dbref obj, dbref loc, dbref val, bool is_object,
     log_type_and_name(obj);
     if (loc != NOTHING)
     {
-        log_text(T(" in "));
-        log_type_and_name(loc);
+	log_text(T(" in "));
+	log_type_and_name(loc);
     }
     log_text(T(": "));
     log_text(valtype);
     log_text(T(" "));
     if (is_object)
     {
-        log_type_and_name(val);
+	log_type_and_name(val);
     }
     else
     {
-        log_number(val);
+	log_number(val);
     }
     log_text(T(" "));
     log_text(errtype);
@@ -88,8 +88,8 @@ static void Log_simple_err(dbref obj, dbref loc, const UTF8 *errtype)
     log_type_and_name(obj);
     if (loc != NOTHING)
     {
-        log_text(T(" in "));
-        log_type_and_name(loc);
+	log_text(T(" in "));
+	log_type_and_name(loc);
     }
     log_text(T(": "));
     log_text(errtype);
@@ -106,7 +106,7 @@ dbref start_home(void)
 {
     if (mudconf.start_home != NOTHING)
     {
-        return mudconf.start_home;
+	return mudconf.start_home;
     }
     return mudconf.start_room;
 }
@@ -115,11 +115,11 @@ dbref default_home(void)
 {
     if (mudconf.default_home != NOTHING)
     {
-        return mudconf.default_home;
+	return mudconf.default_home;
     }
     if (mudconf.start_home != NOTHING)
     {
-        return mudconf.start_home;
+	return mudconf.start_home;
     }
     return mudconf.start_room;
 }
@@ -130,7 +130,7 @@ bool can_set_home(dbref player, dbref thing, dbref home)
        || !Good_obj(home)
        || thing == home)
     {
-        return false;
+	return false;
     }
 
     switch (Typeof(home))
@@ -138,15 +138,15 @@ bool can_set_home(dbref player, dbref thing, dbref home)
     case TYPE_PLAYER:
     case TYPE_ROOM:
     case TYPE_THING:
-        if (Going(home))
-        {
-            return false;
-        }
-        if (  Controls(player, home)
-           || Abode(home))
-        {
-            return true;
-        }
+	if (Going(home))
+	{
+	    return false;
+	}
+	if (  Controls(player, home)
+	   || Abode(home))
+	{
+	    return true;
+	}
     }
     return false;
 }
@@ -156,12 +156,12 @@ dbref new_home(dbref player)
     dbref loc = Location(player);
     if (can_set_home(Owner(player), player, loc))
     {
-        return loc;
+	return loc;
     }
     loc = Home(Owner(player));
     if (can_set_home(Owner(player), player, loc))
     {
-        return loc;
+	return loc;
     }
     return default_home();
 }
@@ -171,7 +171,7 @@ dbref clone_home(dbref player, dbref thing)
     dbref loc = Home(thing);
     if (can_set_home(Owner(player), player, loc))
     {
-        return loc;
+	return loc;
     }
     return new_home(player);
 }
@@ -186,7 +186,7 @@ static void update_newobjects(dbref player, dbref object_num, int object_type)
     int aflags;
 
     UTF8 *newobject_string = atr_get("update_newobjs.189", player, A_NEWOBJS,
-            &aowner, &aflags);
+	    &aowner, &aflags);
 
     // This leaves room for Room, Thing, Exit, and Player.
     //
@@ -195,24 +195,24 @@ static void update_newobjects(dbref player, dbref object_num, int object_type)
     if (  NULL == newobject_string
        || '\0' == newobject_string[0])
     {
-        for (i = 0; i < 4; i++)
-        {
-            object_list[i] = -1;
-        }
+	for (i = 0; i < 4; i++)
+	{
+	    object_list[i] = -1;
+	}
     }
     else
     {
-        MUX_STRTOK_STATE tts;
-        mux_strtok_src(&tts, newobject_string);
-        mux_strtok_ctl(&tts, T(" "));
+	MUX_STRTOK_STATE tts;
+	mux_strtok_src(&tts, newobject_string);
+	mux_strtok_ctl(&tts, T(" "));
 
-        UTF8* ptr;
-        for ( ptr = mux_strtok_parse(&tts), i = 0;
-              NULL != ptr && i < 4;
-              ptr = mux_strtok_parse(&tts), i++)
-        {
-            object_list[i] = mux_atol(ptr);
-        }
+	UTF8* ptr;
+	for ( ptr = mux_strtok_parse(&tts), i = 0;
+	      NULL != ptr && i < 4;
+	      ptr = mux_strtok_parse(&tts), i++)
+	{
+	    object_list[i] = mux_atol(ptr);
+	}
     }
 
     free_lbuf(newobject_string);
@@ -220,25 +220,25 @@ static void update_newobjects(dbref player, dbref object_num, int object_type)
     switch (object_type)
     {
     case TYPE_ROOM:
-        object_list[0] = object_num;
-        break;
+	object_list[0] = object_num;
+	break;
 
     case TYPE_THING:
-        object_list[1] = object_num;
-        break;
+	object_list[1] = object_num;
+	break;
 
     case TYPE_EXIT:
-        object_list[2] = object_num;
-        break;
+	object_list[2] = object_num;
+	break;
 
     case TYPE_PLAYER:
-        object_list[3] = object_num;
-        break;
+	object_list[3] = object_num;
+	break;
     }
 
     UTF8 tbuf[SBUF_SIZE];
     mux_sprintf(tbuf, SBUF_SIZE, T("%d %d %d %d %d"), object_list[0],
-            object_list[1], object_list[2], object_list[3], object_num);
+	    object_list[1], object_list[2], object_list[3], object_num);
     atr_add_raw(player, A_NEWOBJS, tbuf);
 }
 
@@ -252,51 +252,51 @@ static void ProcessMasterRoomACreate(dbref creator, dbref thing)
     switch (Typeof(thing))
     {
     case TYPE_ROOM:
-        xargs[1] = T("ROOM");
-        break;
+	xargs[1] = T("ROOM");
+	break;
 
     case TYPE_EXIT:
-        xargs[1] = T("EXIT");
-        break;
+	xargs[1] = T("EXIT");
+	break;
 
     case TYPE_PLAYER:
-        xargs[1] = T("PLAYER");
-        break;
+	xargs[1] = T("PLAYER");
+	break;
 
     case TYPE_THING:
-        xargs[1] = T("THING");
-        break;
+	xargs[1] = T("THING");
+	break;
 
     default:
-        xargs[1] = T("#-1");
-        break;
+	xargs[1] = T("#-1");
+	break;
     }
 
     dbref master_room_obj = -1;
     DOLIST(master_room_obj, Contents(mudconf.master_room))
     {
-        if (thing == master_room_obj)
-        {
-            break;
-        }
+	if (thing == master_room_obj)
+	{
+	    break;
+	}
 
-        if (Controls(master_room_obj, thing))
-        {
-            int aowner, aflags;
-            UTF8* act = atr_pget(master_room_obj, A_ACREATE, &aowner, &aflags);
-            if ('\0' != act[0])
-            {
-                CLinearTimeAbsolute lta;
-                UTF8 buf[SBUF_SIZE];
-                mux_sprintf(buf, SBUF_SIZE, T("#%d"), thing);
-                xargs[0] = buf;
-                wait_que(master_room_obj, creator, creator,
-                        AttrTrace(aflags, 0), false, lta, NOTHING, 0, act, nxargs,
-                        (const UTF8 **) xargs, mudstate.global_regs);
+	if (Controls(master_room_obj, thing))
+	{
+	    int aowner, aflags;
+	    UTF8* act = atr_pget(master_room_obj, A_ACREATE, &aowner, &aflags);
+	    if ('\0' != act[0])
+	    {
+		CLinearTimeAbsolute lta;
+		UTF8 buf[SBUF_SIZE];
+		mux_sprintf(buf, SBUF_SIZE, T("#%d"), thing);
+		xargs[0] = buf;
+		wait_que(master_room_obj, creator, creator,
+			AttrTrace(aflags, 0), false, lta, NOTHING, 0, act, nxargs,
+			(const UTF8 **) xargs, mudstate.global_regs);
 
-            }
-            free_lbuf(act);
-        }
+	    }
+	    free_lbuf(act);
+	}
     }
 }
 
@@ -322,134 +322,134 @@ dbref create_obj(dbref player, int objtype, const UTF8 *name, int cost)
     {
     case TYPE_ROOM:
 
-        cost = mudconf.digcost;
-        quota = mudconf.room_quota;
-        f = mudconf.room_flags;
-        target_parent = mudconf.room_parent;
-        pValidName = MakeCanonicalObjectName(name, &nValidName, &okname, mudconf.room_name_charset);
-        tname = T("a room");
-        break;
+	cost = mudconf.digcost;
+	quota = mudconf.room_quota;
+	f = mudconf.room_flags;
+	target_parent = mudconf.room_parent;
+	pValidName = MakeCanonicalObjectName(name, &nValidName, &okname, mudconf.room_name_charset);
+	tname = T("a room");
+	break;
 
     case TYPE_THING:
 
-        if (cost < mudconf.createmin)
-            cost = mudconf.createmin;
-        if (cost > mudconf.createmax)
-            cost = mudconf.createmax;
-        quota = mudconf.thing_quota;
-        f = mudconf.thing_flags;
-        target_parent = mudconf.thing_parent;
-        value = OBJECT_ENDOWMENT(cost);
-        pValidName = MakeCanonicalObjectName(name, &nValidName, &okname, mudconf.thing_name_charset);
-        tname = T("a thing");
-        break;
+	if (cost < mudconf.createmin)
+	    cost = mudconf.createmin;
+	if (cost > mudconf.createmax)
+	    cost = mudconf.createmax;
+	quota = mudconf.thing_quota;
+	f = mudconf.thing_flags;
+	target_parent = mudconf.thing_parent;
+	value = OBJECT_ENDOWMENT(cost);
+	pValidName = MakeCanonicalObjectName(name, &nValidName, &okname, mudconf.thing_name_charset);
+	tname = T("a thing");
+	break;
 
     case TYPE_EXIT:
 
-        cost = mudconf.opencost;
-        quota = mudconf.exit_quota;
-        f = mudconf.exit_flags;
-        target_parent = mudconf.exit_parent;
-        pValidName = MakeCanonicalExitName(name, &nValidName, &okname);
-        tname = T("an exit");
-        break;
+	cost = mudconf.opencost;
+	quota = mudconf.exit_quota;
+	f = mudconf.exit_flags;
+	target_parent = mudconf.exit_parent;
+	pValidName = MakeCanonicalExitName(name, &nValidName, &okname);
+	tname = T("an exit");
+	break;
 
     case TYPE_PLAYER:
 
-        if (cost)
-        {
-            cost = mudconf.robotcost;
-            quota = mudconf.player_quota;
-            f = mudconf.robot_flags;
-            value = 0;
-            tname = T("a robot");
-            require_inherit = true;
-        }
-        else
-        {
-            cost = 0;
-            quota = 0;
-            f = mudconf.player_flags;
-            value = mudconf.paystart;
-            quota = mudconf.start_quota;
-            self_owned = true;
-            tname = T("a player");
-        }
-        target_parent = mudconf.player_parent;
-        buff = munge_space(name);
-        pValidName = name;
-        if (!badname_check(buff))
-        {
-            notify(player, T("That name is not allowed."));
-            free_lbuf(buff);
-            return NOTHING;
-        }
-        if (*buff)
-        {
-            okname = ValidatePlayerName(buff);
-            if (!okname)
-            {
-                notify(player, T("That\xE2\x80\x99s a silly name for a player."));
-                free_lbuf(buff);
-                return NOTHING;
-            }
-        }
-        if (okname)
-        {
-            bool bAlias = false;
-            okname = (lookup_player_name(buff, bAlias) == NOTHING);
-            if (!okname)
-            {
-                notify(player, tprintf(T("The name %s is already taken."), name));
-                free_lbuf(buff);
-                return NOTHING;
-            }
-        }
-        free_lbuf(buff);
-        break;
+	if (cost)
+	{
+	    cost = mudconf.robotcost;
+	    quota = mudconf.player_quota;
+	    f = mudconf.robot_flags;
+	    value = 0;
+	    tname = T("a robot");
+	    require_inherit = true;
+	}
+	else
+	{
+	    cost = 0;
+	    quota = 0;
+	    f = mudconf.player_flags;
+	    value = mudconf.paystart;
+	    quota = mudconf.start_quota;
+	    self_owned = true;
+	    tname = T("a player");
+	}
+	target_parent = mudconf.player_parent;
+	buff = munge_space(name);
+	pValidName = name;
+	if (!badname_check(buff))
+	{
+	    notify(player, T("That name is not allowed."));
+	    free_lbuf(buff);
+	    return NOTHING;
+	}
+	if (*buff)
+	{
+	    okname = ValidatePlayerName(buff);
+	    if (!okname)
+	    {
+		notify(player, T("That\xE2\x80\x99s a silly name for a player."));
+		free_lbuf(buff);
+		return NOTHING;
+	    }
+	}
+	if (okname)
+	{
+	    bool bAlias = false;
+	    okname = (lookup_player_name(buff, bAlias) == NOTHING);
+	    if (!okname)
+	    {
+		notify(player, tprintf(T("The name %s is already taken."), name));
+		free_lbuf(buff);
+		return NOTHING;
+	    }
+	}
+	free_lbuf(buff);
+	break;
 
     default:
-        LOG_SIMPLE(LOG_BUGS, "BUG", "OTYPE", tprintf(T("Bad object type in create_obj: %d."), objtype));
-        return NOTHING;
+	LOG_SIMPLE(LOG_BUGS, "BUG", "OTYPE", tprintf(T("Bad object type in create_obj: %d."), objtype));
+	return NOTHING;
     }
 
     if (!okname)
     {
-        notify(player, tprintf(T("That\xE2\x80\x99s a silly name for %s!"), tname));
-        return NOTHING;
+	notify(player, tprintf(T("That\xE2\x80\x99s a silly name for %s!"), tname));
+	return NOTHING;
     }
 
     if (!self_owned)
     {
-        if (!Good_obj(player))
-        {
-            return NOTHING;
-        }
-        owner = Owner(player);
-        if (!Good_obj(owner))
-        {
-            return NOTHING;
-        }
+	if (!Good_obj(player))
+	{
+	    return NOTHING;
+	}
+	owner = Owner(player);
+	if (!Good_obj(owner))
+	{
+	    return NOTHING;
+	}
     }
     else
     {
-        owner = NOTHING;
+	owner = NOTHING;
     }
 
     if (require_inherit)
     {
-        if (!Inherits(player))
-        {
-            notify(player, NOPERM_MESSAGE);
-            return NOTHING;
-        }
+	if (!Inherits(player))
+	{
+	    notify(player, NOPERM_MESSAGE);
+	    return NOTHING;
+	}
     }
 
     // Make sure the creator can pay for the object.
     //
     if ((player != NOTHING) && !canpayfees(player, player, cost, quota))
     {
-        return NOTHING;
+	return NOTHING;
     }
 
     // Get the first object from the freelist.  If the object is not clean,
@@ -458,22 +458,22 @@ dbref create_obj(dbref player, int objtype, const UTF8 *name, int cost)
     obj = NOTHING;
     if (mudstate.freelist != NOTHING)
     {
-        obj = mudstate.freelist;
-        if (IS_CLEAN(obj))
-        {
-            mudstate.freelist = Link(obj);
-        }
-        else
-        {
-            LOG_SIMPLE(LOG_PROBLEMS, "FRL", "DAMAG", tprintf(T("Freelist damaged, bad object #%d."), obj));
-            obj = NOTHING;
-            mudstate.freelist = NOTHING;
-        }
+	obj = mudstate.freelist;
+	if (IS_CLEAN(obj))
+	{
+	    mudstate.freelist = Link(obj);
+	}
+	else
+	{
+	    LOG_SIMPLE(LOG_PROBLEMS, "FRL", "DAMAG", tprintf(T("Freelist damaged, bad object #%d."), obj));
+	    obj = NOTHING;
+	    mudstate.freelist = NOTHING;
+	}
     }
     if (obj == NOTHING)
     {
-        obj = mudstate.db_top;
-        db_grow(mudstate.db_top + 1);
+	obj = mudstate.db_top;
+	db_grow(mudstate.db_top + 1);
     }
     atr_free(obj);  // just in case.
 
@@ -487,20 +487,20 @@ dbref create_obj(dbref player, int objtype, const UTF8 *name, int cost)
 
     if (Good_obj(target_parent))
     {
-        s_Parent(obj, target_parent);
+	s_Parent(obj, target_parent);
     }
     else
     {
-        s_Parent(obj, NOTHING);
+	s_Parent(obj, NOTHING);
     }
 
     if (mudconf.autozone && player != NOTHING)
     {
-        s_Zone(obj, Zone(player));
+	s_Zone(obj, Zone(player));
     }
     else
     {
-        s_Zone(obj, NOTHING);
+	s_Zone(obj, NOTHING);
     }
     f.word[FLAG_WORD1] |= objtype;
     db[obj].fs = f;
@@ -526,21 +526,21 @@ dbref create_obj(dbref player, int objtype, const UTF8 *name, int cost)
 
     if (objtype == TYPE_PLAYER)
     {
-        atr_add_raw(obj, A_LAST, buff);
+	atr_add_raw(obj, A_LAST, buff);
 
-        buff = alloc_sbuf("create_obj.quota");
-        mux_ltoa(quota, buff);
-        atr_add_raw(obj, A_QUOTA, buff);
-        atr_add_raw(obj, A_RQUOTA, buff);
-        add_player_name(obj, Name(obj), false);
-        free_sbuf(buff);
-        s_Zone(obj, NOTHING);
+	buff = alloc_sbuf("create_obj.quota");
+	mux_ltoa(quota, buff);
+	atr_add_raw(obj, A_QUOTA, buff);
+	atr_add_raw(obj, A_RQUOTA, buff);
+	add_player_name(obj, Name(obj), false);
+	free_sbuf(buff);
+	s_Zone(obj, NOTHING);
     }
 
     if (Good_obj(player))
     {
-        update_newobjects(player, obj, objtype);
-        ProcessMasterRoomACreate(player, obj);
+	update_newobjects(player, obj, objtype);
+	ProcessMasterRoomACreate(player, obj);
     }
 
     return obj;
@@ -556,10 +556,10 @@ static void destroy_bad_obj(dbref obj)
 {
     if (!mudstate.bStandAlone)
     {
-        halt_que(NOTHING, obj);
-        nfy_que(obj, 0, NFY_DRAIN, 0);
-        fwdlist_clr(obj);
-        ReleaseAllResources(obj);
+	halt_que(NOTHING, obj);
+	nfy_que(obj, 0, NFY_DRAIN, 0);
+	fwdlist_clr(obj);
+	ReleaseAllResources(obj);
     }
     atr_free(obj);
     s_Name(obj, NULL);
@@ -583,12 +583,12 @@ void destroy_obj(dbref obj)
 {
     if (!Good_obj(obj))
     {
-        if (  (obj >= 0)
-           && (obj < mudstate.db_top))
-        {
-            destroy_bad_obj(obj);
-        }
-        return;
+	if (  (obj >= 0)
+	   && (obj < mudstate.db_top))
+	{
+	    destroy_bad_obj(obj);
+	}
+	return;
     }
 
     // Validate the owner.
@@ -600,18 +600,18 @@ void destroy_obj(dbref obj)
     //
     if (!mudstate.bStandAlone)
     {
-        if (  halt_que(NOTHING, obj) > 0
-           && good_owner
-           && !Quiet(obj)
-           && !Quiet(owner))
-        {
-            notify(owner, T("Halted."));
-        }
-        nfy_que(obj, 0, NFY_DRAIN, 0);
+	if (  halt_que(NOTHING, obj) > 0
+	   && good_owner
+	   && !Quiet(obj)
+	   && !Quiet(owner))
+	{
+	    notify(owner, T("Halted."));
+	}
+	nfy_que(obj, 0, NFY_DRAIN, 0);
 
-        // Remove forwardlists and stacks.
-        //
-        fwdlist_clr(obj);
+	// Remove forwardlists and stacks.
+	//
+	fwdlist_clr(obj);
     }
 
     // Compensate the owner for the object.
@@ -619,64 +619,64 @@ void destroy_obj(dbref obj)
     if (  good_owner
        && owner != obj)
     {
-        int val = 0;
-        int quota = 0;
-        switch (Typeof(obj))
-        {
-        case TYPE_ROOM:
-            val = mudconf.digcost;
-            quota = mudconf.room_quota;
-            break;
+	int val = 0;
+	int quota = 0;
+	switch (Typeof(obj))
+	{
+	case TYPE_ROOM:
+	    val = mudconf.digcost;
+	    quota = mudconf.room_quota;
+	    break;
 
-        case TYPE_THING:
-            val = OBJECT_DEPOSIT(Pennies(obj));
-            quota = mudconf.thing_quota;
-            break;
+	case TYPE_THING:
+	    val = OBJECT_DEPOSIT(Pennies(obj));
+	    quota = mudconf.thing_quota;
+	    break;
 
-        case TYPE_EXIT:
-            if (Location(obj) == NOTHING)
-            {
-                val = mudconf.opencost;
-            }
-            else
-            {
-                val = mudconf.opencost + mudconf.linkcost;
-            }
-            quota = mudconf.exit_quota;
-            break;
+	case TYPE_EXIT:
+	    if (Location(obj) == NOTHING)
+	    {
+		val = mudconf.opencost;
+	    }
+	    else
+	    {
+		val = mudconf.opencost + mudconf.linkcost;
+	    }
+	    quota = mudconf.exit_quota;
+	    break;
 
-        case TYPE_PLAYER:
-            if (Robot(obj))
-            {
-                val = mudconf.robotcost;
-            }
-            else
-            {
-                val = 0;
-            }
-            quota = mudconf.player_quota;
-            break;
-        }
-        if (val)
-        {
-            giveto(owner, val);
-            if (  !Quiet(owner)
-               && !Quiet(obj))
-            {
-                notify(owner,
-                    tprintf(T("You get back your %d %s deposit for %s(#%d)."),
-                        val, mudconf.one_coin, Moniker(obj), obj));
-            }
-        }
-        if (  mudconf.quotas
-           && quota)
-        {
-            add_quota(owner, quota);
-        }
+	case TYPE_PLAYER:
+	    if (Robot(obj))
+	    {
+		val = mudconf.robotcost;
+	    }
+	    else
+	    {
+		val = 0;
+	    }
+	    quota = mudconf.player_quota;
+	    break;
+	}
+	if (val)
+	{
+	    giveto(owner, val);
+	    if (  !Quiet(owner)
+	       && !Quiet(obj))
+	    {
+		notify(owner,
+		    tprintf(T("You get back your %d %s deposit for %s(#%d)."),
+			val, mudconf.one_coin, Moniker(obj), obj));
+	    }
+	}
+	if (  mudconf.quotas
+	   && quota)
+	{
+	    add_quota(owner, quota);
+	}
     }
     if (!mudstate.bStandAlone)
     {
-        ReleaseAllResources(obj);
+	ReleaseAllResources(obj);
     }
     atr_free(obj);
     s_Name(obj, NULL);
@@ -701,8 +701,8 @@ void destroy_obj(dbref obj)
     ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
-        p->pSink->data_free(obj);
-        p = p->pNext;
+	p->pSink->data_free(obj);
+	p = p->pNext;
     }
 #endif // TINYMUX_MODULES
 }
@@ -719,11 +719,11 @@ static void make_freelist(void)
     mudstate.freelist = NOTHING;
     DO_WHOLE_DB_BACKWARDS(i)
     {
-        if (IS_CLEAN(i))
-        {
-            s_Link(i, mudstate.freelist);
-            mudstate.freelist = i;
-        }
+	if (IS_CLEAN(i))
+	{
+	    s_Link(i, mudstate.freelist);
+	    mudstate.freelist = i;
+	}
     }
 }
 
@@ -738,17 +738,17 @@ void divest_object(dbref thing)
 
     SAFE_DOLIST(curr, temp, Contents(thing))
     {
-        if (  !Controls(thing, curr)
-           && Has_location(curr)
-           && Key(curr))
-        {
-            if (  !Good_obj(Home(curr))
-               || Going(Home(curr)))
-            {
-                s_Home(curr, new_home(curr));
-            }
-            move_via_generic(curr, HOME, NOTHING, 0);
-        }
+	if (  !Controls(thing, curr)
+	   && Has_location(curr)
+	   && Key(curr))
+	{
+	    if (  !Good_obj(Home(curr))
+	       || Going(Home(curr)))
+	    {
+		s_Home(curr, new_home(curr));
+	    }
+	    move_via_generic(curr, HOME, NOTHING, 0);
+	}
     }
 }
 
@@ -765,53 +765,53 @@ void empty_obj(dbref obj)
     //
     SAFE_DOLIST(targ, next, Contents(obj))
     {
-        if (!Has_location(targ))
-        {
-            Log_simple_err(targ, obj,
-                   T("Funny object type in contents list of GOING location. Flush terminated."));
-            break;
-        }
-        else if (Location(targ) != obj)
-        {
-            Log_header_err(targ, obj, Location(targ), true,
-                   T("Location"),
-                   T("indicates object really in another location during cleanup of GOING location.  Flush terminated."));
-            break;
-        }
-        else
-        {
-            s_Location(targ, NOTHING);
-            s_Next(targ, NOTHING);
-            if (  !Good_obj(Home(targ))
-               || Going(Home(targ))
-               || Home(targ) == obj)
-            {
-                s_Home(targ, new_home(targ));
-            }
-            move_via_generic(targ, HOME, NOTHING, 0);
-            divest_object(targ);
-        }
+	if (!Has_location(targ))
+	{
+	    Log_simple_err(targ, obj,
+		   T("Funny object type in contents list of GOING location. Flush terminated."));
+	    break;
+	}
+	else if (Location(targ) != obj)
+	{
+	    Log_header_err(targ, obj, Location(targ), true,
+		   T("Location"),
+		   T("indicates object really in another location during cleanup of GOING location.  Flush terminated."));
+	    break;
+	}
+	else
+	{
+	    s_Location(targ, NOTHING);
+	    s_Next(targ, NOTHING);
+	    if (  !Good_obj(Home(targ))
+	       || Going(Home(targ))
+	       || Home(targ) == obj)
+	    {
+		s_Home(targ, new_home(targ));
+	    }
+	    move_via_generic(targ, HOME, NOTHING, 0);
+	    divest_object(targ);
+	}
     }
 
     // Destroy the exits.
     //
     SAFE_DOLIST(targ, next, Exits(obj))
     {
-        if (!isExit(targ) && !isGarbage(targ))
-        {
-            Log_simple_err(targ, obj, T("Funny object type in exit list of GOING location. Flush terminated."));
-            break;
-        }
-        else if (Exits(targ) != obj)
-        {
-            Log_header_err(targ, obj, Exits(targ), true, T("Location"),
-                   T("indicates exit really in another location during cleanup of GOING location.  Flush terminated."));
-            break;
-        }
-        else
-        {
-            destroy_obj(targ);
-        }
+	if (!isExit(targ) && !isGarbage(targ))
+	{
+	    Log_simple_err(targ, obj, T("Funny object type in exit list of GOING location. Flush terminated."));
+	    break;
+	}
+	else if (Exits(targ) != obj)
+	{
+	    Log_header_err(targ, obj, Exits(targ), true, T("Location"),
+		   T("indicates exit really in another location during cleanup of GOING location.  Flush terminated."));
+	    break;
+	}
+	else
+	{
+	    destroy_obj(targ);
+	}
     }
 }
 
@@ -861,64 +861,64 @@ static void purge_going(void)
     dbref i;
     DO_WHOLE_DB(i)
     {
-        if (!Going(i))
-        {
-            continue;
-        }
+	if (!Going(i))
+	{
+	    continue;
+	}
 
-        const UTF8 *p;
-        switch (Typeof(i))
-        {
-        case TYPE_PLAYER:
-            p = atr_get_raw(i, A_DESTROYER);
-            if (!p)
-            {
-                STARTLOG(LOG_PROBLEMS, "OBJ", "DAMAG");
-                log_type_and_name(i);
-                dbref loc = Location(i);
-                if (loc != NOTHING)
-                {
-                    log_text(T(" in "));
-                    log_type_and_name(loc);
-                }
-                log_text(T("GOING object doesn\xE2\x80\x99t remember its destroyer. GOING reset."));
-                ENDLOG;
-                db[i].fs.word[FLAG_WORD1] &= ~GOING;
-            }
-            else
-            {
-                dbref player = (dbref) mux_atol(p);
-                destroy_player(player, i);
-            }
-            break;
+	const UTF8 *p;
+	switch (Typeof(i))
+	{
+	case TYPE_PLAYER:
+	    p = atr_get_raw(i, A_DESTROYER);
+	    if (!p)
+	    {
+		STARTLOG(LOG_PROBLEMS, "OBJ", "DAMAG");
+		log_type_and_name(i);
+		dbref loc = Location(i);
+		if (loc != NOTHING)
+		{
+		    log_text(T(" in "));
+		    log_type_and_name(loc);
+		}
+		log_text(T("GOING object doesn\xE2\x80\x99t remember its destroyer. GOING reset."));
+		ENDLOG;
+		db[i].fs.word[FLAG_WORD1] &= ~GOING;
+	    }
+	    else
+	    {
+		dbref player = (dbref) mux_atol(p);
+		destroy_player(player, i);
+	    }
+	    break;
 
-        case TYPE_ROOM:
+	case TYPE_ROOM:
 
-            // Room scheduled for destruction... do it.
-            //
-            empty_obj(i);
-            destroy_obj(i);
-            break;
+	    // Room scheduled for destruction... do it.
+	    //
+	    empty_obj(i);
+	    destroy_obj(i);
+	    break;
 
-        case TYPE_THING:
-            destroy_thing(i);
-            break;
+	case TYPE_THING:
+	    destroy_thing(i);
+	    break;
 
-        case TYPE_EXIT:
-            destroy_exit(i);
-            break;
+	case TYPE_EXIT:
+	    destroy_exit(i);
+	    break;
 
-        case TYPE_GARBAGE:
-            break;
+	case TYPE_GARBAGE:
+	    break;
 
-        default:
+	default:
 
-            // Something else... How did this happen?
-            //
-            Log_simple_err(i, NOTHING,
-              T("GOING object with unexpected type.  Destroyed."));
-            destroy_obj(i);
-        }
+	    // Something else... How did this happen?
+	    //
+	    Log_simple_err(i, NOTHING,
+	      T("GOING object with unexpected type.  Destroyed."));
+	    destroy_obj(i);
+	}
     }
 }
 
@@ -929,31 +929,31 @@ static void check_pennies(dbref thing, int limit, const UTF8 *qual)
 {
     if (Going(thing))
     {
-        return;
+	return;
     }
     int j = Pennies(thing);
     if (j)
     {
-        if (isRoom(thing) || isExit(thing))
-        {
-            Log_header_err(thing, NOTHING, j, false, qual, T("is strange.  Reset."));
-            s_Pennies(thing, 0);
-        }
-        else if (j < 0)
-        {
-            Log_header_err(thing, NOTHING, j, false, qual, T("is negative."));
-        }
-        else if (limit < j)
-        {
-            Log_header_err(thing, NOTHING, j, false, qual, T("is excessive."));
-        }
+	if (isRoom(thing) || isExit(thing))
+	{
+	    Log_header_err(thing, NOTHING, j, false, qual, T("is strange.  Reset."));
+	    s_Pennies(thing, 0);
+	}
+	else if (j < 0)
+	{
+	    Log_header_err(thing, NOTHING, j, false, qual, T("is negative."));
+	}
+	else if (limit < j)
+	{
+	    Log_header_err(thing, NOTHING, j, false, qual, T("is excessive."));
+	}
     }
     else
     {
-        if (isPlayer(thing) || isThing(thing))
-        {
-            Log_header_err(thing, NOTHING, j, false, qual, T("is zero."));
-        }
+	if (isPlayer(thing) || isThing(thing))
+	{
+	    Log_header_err(thing, NOTHING, j, false, qual, T("is zero."));
+	}
     }
 }
 
@@ -967,415 +967,415 @@ static void check_dead_refs(void)
 
     DO_WHOLE_DB(i)
     {
-        // Check the owner.
-        //
-        owner = Owner(i);
-        if (!Good_obj(owner))
-        {
-            if (isPlayer(i))
-            {
-                Log_header_err(i, NOTHING, owner, true, T("Owner"),
-                    T("is invalid.  Set to player."));
-                owner = i;
-            }
-            else
-            {
-                Log_header_err(i, NOTHING, owner, true, T("Owner"),
-                    T("is invalid.  Set to GOD."));
-                owner = GOD;
-            }
-            s_Owner(i, owner);
-            if (!mudstate.bStandAlone)
-            {
-                halt_que(NOTHING, i);
-            }
-            s_Halted(i);
-        }
-        else if (check_type & DBCK_FULL)
-        {
-            if (Going(owner))
-            {
-                if (isPlayer(i))
-                {
-                    Log_header_err(i, NOTHING, owner, true,
-                       T("Owner"), T("is set GOING.  Set to player."));
-                    owner = i;
-                }
-                else
-                {
-                    Log_header_err(i, NOTHING, owner, true,
-                       T("Owner"), T("is set GOING.  Set to GOD."));
-                    owner = GOD;
-                }
-                s_Owner(i, owner);
-                if (!mudstate.bStandAlone)
-                {
-                    halt_que(NOTHING, i);
-                }
-                s_Halted(i);
-            }
-            else if (!OwnsOthers(owner))
-            {
-                if (isPlayer(i))
-                {
-                    Log_header_err(i, NOTHING, owner, true,
-                       T("Owner"), T("is not a valid owner type.  Set to player."));
-                    owner = i;
-                }
-                else
-                {
-                    Log_header_err(i, NOTHING, owner, true,
-                       T("Owner"), T("is not a valid owner type.  Set to GOD."));
-                    owner = GOD;
-                }
-                s_Owner(i, owner);
-            }
-        }
+	// Check the owner.
+	//
+	owner = Owner(i);
+	if (!Good_obj(owner))
+	{
+	    if (isPlayer(i))
+	    {
+		Log_header_err(i, NOTHING, owner, true, T("Owner"),
+		    T("is invalid.  Set to player."));
+		owner = i;
+	    }
+	    else
+	    {
+		Log_header_err(i, NOTHING, owner, true, T("Owner"),
+		    T("is invalid.  Set to GOD."));
+		owner = GOD;
+	    }
+	    s_Owner(i, owner);
+	    if (!mudstate.bStandAlone)
+	    {
+		halt_que(NOTHING, i);
+	    }
+	    s_Halted(i);
+	}
+	else if (check_type & DBCK_FULL)
+	{
+	    if (Going(owner))
+	    {
+		if (isPlayer(i))
+		{
+		    Log_header_err(i, NOTHING, owner, true,
+		       T("Owner"), T("is set GOING.  Set to player."));
+		    owner = i;
+		}
+		else
+		{
+		    Log_header_err(i, NOTHING, owner, true,
+		       T("Owner"), T("is set GOING.  Set to GOD."));
+		    owner = GOD;
+		}
+		s_Owner(i, owner);
+		if (!mudstate.bStandAlone)
+		{
+		    halt_que(NOTHING, i);
+		}
+		s_Halted(i);
+	    }
+	    else if (!OwnsOthers(owner))
+	    {
+		if (isPlayer(i))
+		{
+		    Log_header_err(i, NOTHING, owner, true,
+		       T("Owner"), T("is not a valid owner type.  Set to player."));
+		    owner = i;
+		}
+		else
+		{
+		    Log_header_err(i, NOTHING, owner, true,
+		       T("Owner"), T("is not a valid owner type.  Set to GOD."));
+		    owner = GOD;
+		}
+		s_Owner(i, owner);
+	    }
+	}
 
-        // Check the parent
-        //
-        targ = Parent(i);
-        if (Good_obj(targ))
-        {
-            if (Going(targ))
-            {
-                s_Parent(i, NOTHING);
-                if (!mudstate.bStandAlone)
-                {
-                    if (  !Quiet(i)
-                       && !Quiet(owner))
-                    {
-                        notify(owner, tprintf(T("Parent cleared on %s(#%d)"),
-                            Moniker(i), i));
-                    }
-                }
-                else
-                {
-                    Log_header_err(i, Location(i), targ, true, T("Parent"),
-                        T("is invalid.  Cleared."));
-                }
-            }
-        }
-        else if (targ != NOTHING)
-        {
-            Log_header_err(i, Location(i), targ, true,
-                T("Parent"), T("is invalid.  Cleared."));
-            s_Parent(i, NOTHING);
-        }
+	// Check the parent
+	//
+	targ = Parent(i);
+	if (Good_obj(targ))
+	{
+	    if (Going(targ))
+	    {
+		s_Parent(i, NOTHING);
+		if (!mudstate.bStandAlone)
+		{
+		    if (  !Quiet(i)
+		       && !Quiet(owner))
+		    {
+			notify(owner, tprintf(T("Parent cleared on %s(#%d)"),
+			    Moniker(i), i));
+		    }
+		}
+		else
+		{
+		    Log_header_err(i, Location(i), targ, true, T("Parent"),
+			T("is invalid.  Cleared."));
+		}
+	    }
+	}
+	else if (targ != NOTHING)
+	{
+	    Log_header_err(i, Location(i), targ, true,
+		T("Parent"), T("is invalid.  Cleared."));
+	    s_Parent(i, NOTHING);
+	}
 
-        // Check the zone.
-        //
-        targ = Zone(i);
-        if (Good_obj(targ))
-        {
-            if (Going(targ))
-            {
-                s_Zone(i, NOTHING);
-                if (!mudstate.bStandAlone)
-                {
-                    owner = Owner(i);
-                    if (  !Quiet(i)
-                       && !Quiet(owner))
-                    {
-                        notify(owner, tprintf(T("Zone cleared on %s(#%d)"),
-                            Moniker(i), i));
-                    }
-                }
-                else
-                {
-                    Log_header_err(i, Location(i), targ, true, T("Zone"),
-                        T("is invalid.  Cleared."));
-                }
-            }
-        }
-        else if (targ != NOTHING)
-        {
-            Log_header_err(i, Location(i), targ, true, T("Zone"),
-                T("is invalid.  Cleared."));
-            s_Zone(i, NOTHING);
-        }
+	// Check the zone.
+	//
+	targ = Zone(i);
+	if (Good_obj(targ))
+	{
+	    if (Going(targ))
+	    {
+		s_Zone(i, NOTHING);
+		if (!mudstate.bStandAlone)
+		{
+		    owner = Owner(i);
+		    if (  !Quiet(i)
+		       && !Quiet(owner))
+		    {
+			notify(owner, tprintf(T("Zone cleared on %s(#%d)"),
+			    Moniker(i), i));
+		    }
+		}
+		else
+		{
+		    Log_header_err(i, Location(i), targ, true, T("Zone"),
+			T("is invalid.  Cleared."));
+		}
+	    }
+	}
+	else if (targ != NOTHING)
+	{
+	    Log_header_err(i, Location(i), targ, true, T("Zone"),
+		T("is invalid.  Cleared."));
+	    s_Zone(i, NOTHING);
+	}
 
-        // Check forwardlist
-        //
-        fp = fwdlist_get(i);
-        dirty = false;
-        if (fp)
-        {
-            for (j = 0; j < fp->count; j++)
-            {
-                targ = fp->data[j];
-                if (  Good_obj(targ)
-                   && Going(targ))
-                {
-                    fp->data[j] = NOTHING;
-                    dirty = true;
-                }
-                else if (  !Good_obj(targ)
-                        && targ != NOTHING)
-                {
-                    fp->data[j] = NOTHING;
-                    dirty = true;
-                }
-            }
-        }
-        if (dirty)
-        {
-            str = alloc_lbuf("purge_going");
-            (void)fwdlist_rewrite(fp, str);
-            atr_get_info(i, A_FORWARDLIST, &owner, &aflags);
-            atr_add(i, A_FORWARDLIST, str, owner, aflags);
-            free_lbuf(str);
-        }
+	// Check forwardlist
+	//
+	fp = fwdlist_get(i);
+	dirty = false;
+	if (fp)
+	{
+	    for (j = 0; j < fp->count; j++)
+	    {
+		targ = fp->data[j];
+		if (  Good_obj(targ)
+		   && Going(targ))
+		{
+		    fp->data[j] = NOTHING;
+		    dirty = true;
+		}
+		else if (  !Good_obj(targ)
+			&& targ != NOTHING)
+		{
+		    fp->data[j] = NOTHING;
+		    dirty = true;
+		}
+	    }
+	}
+	if (dirty)
+	{
+	    str = alloc_lbuf("purge_going");
+	    (void)fwdlist_rewrite(fp, str);
+	    atr_get_info(i, A_FORWARDLIST, &owner, &aflags);
+	    atr_add(i, A_FORWARDLIST, str, owner, aflags);
+	    free_lbuf(str);
+	}
 
-        if (check_type & DBCK_FULL)
-        {
-            // Check for wizards
-            //
-            if (RealWizard(i))
-            {
-                if (isPlayer(i))
-                {
-                    Log_simple_err(i, NOTHING, T("Player is a WIZARD."));
-                }
-                if (!Wizard(Owner(i)))
-                {
-                    Log_header_err(i, NOTHING, Owner(i), true,
-                               T("Owner"), T("of a WIZARD object is not a wizard"));
-                }
-            }
-        }
+	if (check_type & DBCK_FULL)
+	{
+	    // Check for wizards
+	    //
+	    if (RealWizard(i))
+	    {
+		if (isPlayer(i))
+		{
+		    Log_simple_err(i, NOTHING, T("Player is a WIZARD."));
+		}
+		if (!Wizard(Owner(i)))
+		{
+		    Log_header_err(i, NOTHING, Owner(i), true,
+			       T("Owner"), T("of a WIZARD object is not a wizard"));
+		}
+	    }
+	}
 
-        switch (Typeof(i))
-        {
-        case TYPE_PLAYER:
-            // Check home.
-            //
-            targ = Home(i);
-            if (  !Good_obj(targ)
-               || !Has_contents(targ))
-            {
-                Log_simple_err(i, Location(i), T("Bad home. Reset."));
-                s_Home(i, default_home());
-            }
+	switch (Typeof(i))
+	{
+	case TYPE_PLAYER:
+	    // Check home.
+	    //
+	    targ = Home(i);
+	    if (  !Good_obj(targ)
+	       || !Has_contents(targ))
+	    {
+		Log_simple_err(i, Location(i), T("Bad home. Reset."));
+		s_Home(i, default_home());
+	    }
 
-            // Check the location.
-            //
-            targ = Location(i);
-            if (  !Good_obj(targ)
-               || !Has_contents(targ))
-            {
-                Log_pointer_err(NOTHING, i, NOTHING, targ, T("Location"),
-                    T("is invalid.  Moved to home."));
-                move_object(i, Home(i));
-            }
+	    // Check the location.
+	    //
+	    targ = Location(i);
+	    if (  !Good_obj(targ)
+	       || !Has_contents(targ))
+	    {
+		Log_pointer_err(NOTHING, i, NOTHING, targ, T("Location"),
+		    T("is invalid.  Moved to home."));
+		move_object(i, Home(i));
+	    }
 
-            // Check for self-referential Next().
-            //
-            if (Next(i) == i)
-            {
-                Log_simple_err(i, NOTHING,
-                     T("Next points to self.  Next cleared."));
-                s_Next(i, NOTHING);
-            }
+	    // Check for self-referential Next().
+	    //
+	    if (Next(i) == i)
+	    {
+		Log_simple_err(i, NOTHING,
+		     T("Next points to self.  Next cleared."));
+		s_Next(i, NOTHING);
+	    }
 
-            if (check_type & DBCK_FULL)
-            {
-                // Check wealth.
-                //
-                targ = mudconf.paylimit;
-                check_pennies(i, targ, T("Wealth"));
-            }
-            break;
+	    if (check_type & DBCK_FULL)
+	    {
+		// Check wealth.
+		//
+		targ = mudconf.paylimit;
+		check_pennies(i, targ, T("Wealth"));
+	    }
+	    break;
 
-        case TYPE_THING:
+	case TYPE_THING:
 
-            // Check home.
-            //
-            targ = Home(i);
-            if (  !Good_obj(targ)
-               || !Has_contents(targ))
-            {
-                if (!mudstate.bStandAlone)
-                {
-                    if (  !Quiet(i)
-                       && !Quiet(owner))
-                    {
-                        notify(owner, tprintf(T("Home reset on %s(#%d)"),
-                            Moniker(i), i));
-                    }
-                    else
-                    {
-                        Log_header_err(i, Location(i), targ, true, T("Home"),
-                            T("is invalid.  Cleared."));
-                    }
-                }
-                s_Home(i, new_home(i));
-            }
+	    // Check home.
+	    //
+	    targ = Home(i);
+	    if (  !Good_obj(targ)
+	       || !Has_contents(targ))
+	    {
+		if (!mudstate.bStandAlone)
+		{
+		    if (  !Quiet(i)
+		       && !Quiet(owner))
+		    {
+			notify(owner, tprintf(T("Home reset on %s(#%d)"),
+			    Moniker(i), i));
+		    }
+		    else
+		    {
+			Log_header_err(i, Location(i), targ, true, T("Home"),
+			    T("is invalid.  Cleared."));
+		    }
+		}
+		s_Home(i, new_home(i));
+	    }
 
-            // Check the location.
-            //
-            targ = Location(i);
-            if (  !Good_obj(targ)
-               || !Has_contents(targ))
-            {
-                Log_pointer_err(NOTHING, i, NOTHING, targ, T("Location"),
-                    T("is invalid.  Moved to home."));
-                move_object(i, HOME);
-            }
+	    // Check the location.
+	    //
+	    targ = Location(i);
+	    if (  !Good_obj(targ)
+	       || !Has_contents(targ))
+	    {
+		Log_pointer_err(NOTHING, i, NOTHING, targ, T("Location"),
+		    T("is invalid.  Moved to home."));
+		move_object(i, HOME);
+	    }
 
-            // Check for self-referential Next().
-            //
-            if (Next(i) == i)
-            {
-                Log_simple_err(i, NOTHING,
-                    T("Next points to self.  Next cleared."));
-                s_Next(i, NOTHING);
-            }
-            if (check_type & DBCK_FULL)
-            {
-                // Check value.
-                //
-                targ = OBJECT_ENDOWMENT(mudconf.createmax);
-                check_pennies(i, targ, T("Value"));
-            }
-            break;
+	    // Check for self-referential Next().
+	    //
+	    if (Next(i) == i)
+	    {
+		Log_simple_err(i, NOTHING,
+		    T("Next points to self.  Next cleared."));
+		s_Next(i, NOTHING);
+	    }
+	    if (check_type & DBCK_FULL)
+	    {
+		// Check value.
+		//
+		targ = OBJECT_ENDOWMENT(mudconf.createmax);
+		check_pennies(i, targ, T("Value"));
+	    }
+	    break;
 
-        case TYPE_ROOM:
+	case TYPE_ROOM:
 
-            // Check the dropto.
-            //
-            targ = Dropto(i);
-            if (Good_obj(targ))
-            {
-                if (Going(targ))
-                {
-                    s_Dropto(i, NOTHING);
-                    if (!mudstate.bStandAlone)
-                    {
-                        if (  !Quiet(i)
-                           && !Quiet(owner))
-                        {
-                            notify(owner, tprintf(T("Dropto removed from %s(#%d)"),
-                                Moniker(i), i));
-                        }
-                    }
-                    else
-                    {
-                        Log_header_err(i, NOTHING, targ, true, T("Dropto"),
-                            T("is invalid.  Removed."));
-                    }
-                }
-            }
-            else if (  targ != NOTHING
-                    && targ != HOME)
-            {
-                Log_header_err(i, NOTHING, targ, true, T("Dropto"),
-                    T("is invalid.  Cleared."));
-                s_Dropto(i, NOTHING);
-            }
-            if (check_type & DBCK_FULL)
-            {
-                // NEXT should be null.
-                //
-                if (Next(i) != NOTHING)
-                {
-                    Log_header_err(i, NOTHING, Next(i), true, T("Next pointer"),
-                        T("should be NOTHING.  Reset."));
-                    s_Next(i, NOTHING);
-                }
+	    // Check the dropto.
+	    //
+	    targ = Dropto(i);
+	    if (Good_obj(targ))
+	    {
+		if (Going(targ))
+		{
+		    s_Dropto(i, NOTHING);
+		    if (!mudstate.bStandAlone)
+		    {
+			if (  !Quiet(i)
+			   && !Quiet(owner))
+			{
+			    notify(owner, tprintf(T("Dropto removed from %s(#%d)"),
+				Moniker(i), i));
+			}
+		    }
+		    else
+		    {
+			Log_header_err(i, NOTHING, targ, true, T("Dropto"),
+			    T("is invalid.  Removed."));
+		    }
+		}
+	    }
+	    else if (  targ != NOTHING
+		    && targ != HOME)
+	    {
+		Log_header_err(i, NOTHING, targ, true, T("Dropto"),
+		    T("is invalid.  Cleared."));
+		s_Dropto(i, NOTHING);
+	    }
+	    if (check_type & DBCK_FULL)
+	    {
+		// NEXT should be null.
+		//
+		if (Next(i) != NOTHING)
+		{
+		    Log_header_err(i, NOTHING, Next(i), true, T("Next pointer"),
+			T("should be NOTHING.  Reset."));
+		    s_Next(i, NOTHING);
+		}
 
-                // LINK should be null.
-                //
-                if (Link(i) != NOTHING)
-                {
-                    Log_header_err(i, NOTHING, Link(i), true, T("Link pointer "),
-                        T("should be NOTHING.  Reset."));
-                    s_Link(i, NOTHING);
-                }
+		// LINK should be null.
+		//
+		if (Link(i) != NOTHING)
+		{
+		    Log_header_err(i, NOTHING, Link(i), true, T("Link pointer "),
+			T("should be NOTHING.  Reset."));
+		    s_Link(i, NOTHING);
+		}
 
-                // Check value.
-                //
-                check_pennies(i, 1, T("Value"));
-            }
-            break;
+		// Check value.
+		//
+		check_pennies(i, 1, T("Value"));
+	    }
+	    break;
 
-        case TYPE_EXIT:
+	case TYPE_EXIT:
 
-            // If it points to something GOING, set it going.
-            //
-            targ = Location(i);
-            if (Good_obj(targ))
-            {
-                if (Going(targ))
-                {
-                    s_Going(i);
-                }
-            }
-            else if (targ == HOME)
-            {
-                // null case, HOME is always valid.
-                //
-            }
-            else if (targ != NOTHING)
-            {
-                Log_header_err(i, Exits(i), targ, true, T("Destination"),
-                    T("is invalid.  Exit destroyed."));
-                s_Going(i);
-            }
-            else
-            {
-                if (!Has_contents(targ))
-                {
-                    Log_header_err(i, Exits(i), targ, true, T("Destination"),
-                        T("is not a valid type.  Exit destroyed."));
-                    s_Going(i);
-                }
-            }
+	    // If it points to something GOING, set it going.
+	    //
+	    targ = Location(i);
+	    if (Good_obj(targ))
+	    {
+		if (Going(targ))
+		{
+		    s_Going(i);
+		}
+	    }
+	    else if (targ == HOME)
+	    {
+		// null case, HOME is always valid.
+		//
+	    }
+	    else if (targ != NOTHING)
+	    {
+		Log_header_err(i, Exits(i), targ, true, T("Destination"),
+		    T("is invalid.  Exit destroyed."));
+		s_Going(i);
+	    }
+	    else
+	    {
+		if (!Has_contents(targ))
+		{
+		    Log_header_err(i, Exits(i), targ, true, T("Destination"),
+			T("is not a valid type.  Exit destroyed."));
+		    s_Going(i);
+		}
+	    }
 
-            // Check for self-referential Next().
-            //
-            if (Next(i) == i)
-            {
-                Log_simple_err(i, NOTHING,
-                    T("Next points to self.  Next cleared."));
-                s_Next(i, NOTHING);
-            }
-            if (check_type & DBCK_FULL)
-            {
-                // CONTENTS should be null.
-                //
-                if (Contents(i) != NOTHING)
-                {
-                    Log_header_err(i, Exits(i), Contents(i), true, T("Contents"),
-                        T("should be NOTHING.  Reset."));
-                    s_Contents(i, NOTHING);
-                }
+	    // Check for self-referential Next().
+	    //
+	    if (Next(i) == i)
+	    {
+		Log_simple_err(i, NOTHING,
+		    T("Next points to self.  Next cleared."));
+		s_Next(i, NOTHING);
+	    }
+	    if (check_type & DBCK_FULL)
+	    {
+		// CONTENTS should be null.
+		//
+		if (Contents(i) != NOTHING)
+		{
+		    Log_header_err(i, Exits(i), Contents(i), true, T("Contents"),
+			T("should be NOTHING.  Reset."));
+		    s_Contents(i, NOTHING);
+		}
 
-                // LINK should be null.
-                //
-                if (Link(i) != NOTHING)
-                {
-                    Log_header_err(i, Exits(i), Link(i), true, T("Link"),
-                        T("should be NOTHING.  Reset."));
-                    s_Link(i, NOTHING);
-                }
+		// LINK should be null.
+		//
+		if (Link(i) != NOTHING)
+		{
+		    Log_header_err(i, Exits(i), Link(i), true, T("Link"),
+			T("should be NOTHING.  Reset."));
+		    s_Link(i, NOTHING);
+		}
 
-                // Check value.
-                //
-                check_pennies(i, 1, T("Value"));
-            }
-            break;
+		// Check value.
+		//
+		check_pennies(i, 1, T("Value"));
+	    }
+	    break;
 
-        case TYPE_GARBAGE:
-            break;
+	case TYPE_GARBAGE:
+	    break;
 
-        default:
+	default:
 
-            // Funny object type, destroy it.
-            //
-            Log_simple_err(i, NOTHING, T("Funny object type.  Destroyed."));
-            destroy_obj(i);
-        }
+	    // Funny object type, destroy it.
+	    //
+	    Log_simple_err(i, NOTHING, T("Funny object type.  Destroyed."));
+	    destroy_obj(i);
+	}
     }
 }
 
@@ -1400,7 +1400,7 @@ static void check_loc_exits(dbref loc)
 {
     if (!Good_obj(loc))
     {
-        return;
+	return;
     }
 
     // Only check players, rooms, and things that aren't GOING.
@@ -1408,14 +1408,14 @@ static void check_loc_exits(dbref loc)
     if (  isExit(loc)
        || Going(loc))
     {
-        return;
+	return;
     }
 
     // If marked, we've checked here already.
     //
     if (Marked(loc))
     {
-        return;
+	return;
     }
     Mark(loc);
 
@@ -1426,145 +1426,145 @@ static void check_loc_exits(dbref loc)
     dbref exit = Exits(loc);
     while (exit != NOTHING)
     {
-        exitloc = NOTHING;
-        dest = NOTHING;
+	exitloc = NOTHING;
+	dest = NOTHING;
 
-        if (Good_obj(exit))
-        {
-            exitloc = Exits(exit);
-            dest = Location(exit);
-        }
-        if (!Good_obj(exit))
-        {
-            // A bad pointer - terminate chain.
-            //
-            Log_pointer_err(back, loc, NOTHING, exit, T("Exit list"),
-                T("is invalid.  List nulled."));
-            if (back != NOTHING)
-            {
-                s_Next(back, NOTHING);
-            }
-            else
-            {
-                s_Exits(loc, NOTHING);
-            }
-            exit = NOTHING;
-        }
-        else if (!isExit(exit))
-        {
-            // Not an exit - terminate chain.
-            //
-            Log_pointer_err(back, loc, NOTHING, exit, T("Exitlist member"),
-                T("is not an exit.  List terminated."));
-            if (back != NOTHING)
-            {
-                s_Next(back, NOTHING);
-            }
-            else
-            {
-                s_Exits(loc, NOTHING);
-            }
-            exit = NOTHING;
-        }
-        else if (Going(exit))
-        {
-            // Going - silently filter out.
-            //
-            temp = Next(exit);
-            if (back != NOTHING)
-            {
-                s_Next(back, temp);
-            }
-            else
-            {
-                s_Exits(loc, temp);
-            }
-            destroy_obj(exit);
-            exit = temp;
-            continue;
-        }
-        else if (Marked(exit))
-        {
-            // Already in another list - terminate chain.
-            //
-            Log_pointer_err(back, loc, NOTHING, exit, T("Exitlist member"),
-                T("is in another exitlist.  Cleared."));
-            if (back != NOTHING)
-            {
-                s_Next(back, NOTHING);
-            }
-            else
-            {
-                s_Exits(loc, NOTHING);
-            }
-            exit = NOTHING;
-        }
-        else if (  !Good_obj(dest)
-                && dest != HOME
-                && dest != NOTHING)
-        {
-            // Destination is not in the db.  Null it.
-            //
-            Log_pointer_err(back, loc, NOTHING, exit, T("Destination"),
-                T("is invalid.  Cleared."));
-            s_Location(exit, NOTHING);
-        }
-        else if (exitloc != loc)
-        {
-            // Exit thinks it's in another place.  Check the exitlist there
-            // and see if it contains this exit. If it does, then our exitlist
-            // somehow pointed into the middle of their exitlist. If not,
-            // assume we own the exit.'
-            //
-            check_loc_exits(exitloc);
-            if (Marked(exit))
-            {
-                // It's in the other list, give it up.
-                //
-                Log_pointer_err(back, loc, NOTHING, exit, T(""),
-                    T("is in another exitlist.  List terminated."));
-                if (back != NOTHING)
-                {
-                    s_Next(back, NOTHING);
-                }
-                else
-                {
-                    s_Exits(loc, NOTHING);
-                }
-                exit = NOTHING;
-            }
-            else
-            {
-                // Not in the other list, assume in ours.
-                //
-                Log_header_err(exit, loc, exitloc, true,
-                    T("Not on chain for location"), T("Reset."));
-                s_Exits(exit, loc);
-            }
-        }
+	if (Good_obj(exit))
+	{
+	    exitloc = Exits(exit);
+	    dest = Location(exit);
+	}
+	if (!Good_obj(exit))
+	{
+	    // A bad pointer - terminate chain.
+	    //
+	    Log_pointer_err(back, loc, NOTHING, exit, T("Exit list"),
+		T("is invalid.  List nulled."));
+	    if (back != NOTHING)
+	    {
+		s_Next(back, NOTHING);
+	    }
+	    else
+	    {
+		s_Exits(loc, NOTHING);
+	    }
+	    exit = NOTHING;
+	}
+	else if (!isExit(exit))
+	{
+	    // Not an exit - terminate chain.
+	    //
+	    Log_pointer_err(back, loc, NOTHING, exit, T("Exitlist member"),
+		T("is not an exit.  List terminated."));
+	    if (back != NOTHING)
+	    {
+		s_Next(back, NOTHING);
+	    }
+	    else
+	    {
+		s_Exits(loc, NOTHING);
+	    }
+	    exit = NOTHING;
+	}
+	else if (Going(exit))
+	{
+	    // Going - silently filter out.
+	    //
+	    temp = Next(exit);
+	    if (back != NOTHING)
+	    {
+		s_Next(back, temp);
+	    }
+	    else
+	    {
+		s_Exits(loc, temp);
+	    }
+	    destroy_obj(exit);
+	    exit = temp;
+	    continue;
+	}
+	else if (Marked(exit))
+	{
+	    // Already in another list - terminate chain.
+	    //
+	    Log_pointer_err(back, loc, NOTHING, exit, T("Exitlist member"),
+		T("is in another exitlist.  Cleared."));
+	    if (back != NOTHING)
+	    {
+		s_Next(back, NOTHING);
+	    }
+	    else
+	    {
+		s_Exits(loc, NOTHING);
+	    }
+	    exit = NOTHING;
+	}
+	else if (  !Good_obj(dest)
+		&& dest != HOME
+		&& dest != NOTHING)
+	{
+	    // Destination is not in the db.  Null it.
+	    //
+	    Log_pointer_err(back, loc, NOTHING, exit, T("Destination"),
+		T("is invalid.  Cleared."));
+	    s_Location(exit, NOTHING);
+	}
+	else if (exitloc != loc)
+	{
+	    // Exit thinks it's in another place.  Check the exitlist there
+	    // and see if it contains this exit. If it does, then our exitlist
+	    // somehow pointed into the middle of their exitlist. If not,
+	    // assume we own the exit.'
+	    //
+	    check_loc_exits(exitloc);
+	    if (Marked(exit))
+	    {
+		// It's in the other list, give it up.
+		//
+		Log_pointer_err(back, loc, NOTHING, exit, T(""),
+		    T("is in another exitlist.  List terminated."));
+		if (back != NOTHING)
+		{
+		    s_Next(back, NOTHING);
+		}
+		else
+		{
+		    s_Exits(loc, NOTHING);
+		}
+		exit = NOTHING;
+	    }
+	    else
+	    {
+		// Not in the other list, assume in ours.
+		//
+		Log_header_err(exit, loc, exitloc, true,
+		    T("Not on chain for location"), T("Reset."));
+		s_Exits(exit, loc);
+	    }
+	}
 
-        if (exit != NOTHING)
-        {
-            // All OK (or all was made OK).
-            //
-            if (check_type & DBCK_FULL)
-            {
-                // Make sure exit owner owns at least one of the source or
-                // destination.  Just warn if he doesn't.
-                //
-                temp = Owner(exit);
-                if (  temp != Owner(loc)
-                   && !(  Good_dbref(dest)
-                       && temp == Owner(dest)))
-                {
-                    Log_header_err(exit, loc, temp, true, T("Owner"),
-                        T("does not own either the source or destination."));
-                }
-            }
-            Mark(exit);
-            back = exit;
-            exit = Next(exit);
-        }
+	if (exit != NOTHING)
+	{
+	    // All OK (or all was made OK).
+	    //
+	    if (check_type & DBCK_FULL)
+	    {
+		// Make sure exit owner owns at least one of the source or
+		// destination.  Just warn if he doesn't.
+		//
+		temp = Owner(exit);
+		if (  temp != Owner(loc)
+		   && !(  Good_dbref(dest)
+		       && temp == Owner(dest)))
+		{
+		    Log_header_err(exit, loc, temp, true, T("Owner"),
+			T("does not own either the source or destination."));
+		}
+	    }
+	    Mark(exit);
+	    back = exit;
+	    exit = Next(exit);
+	}
     }
     return;
 }
@@ -1576,16 +1576,16 @@ static void check_exit_chains(void)
     Unmark_all(i);
     DO_WHOLE_DB(i)
     {
-        check_loc_exits(i);
+	check_loc_exits(i);
     }
     DO_WHOLE_DB(i)
     {
-        if (  isExit(i)
-           && !Marked(i))
-        {
-            Log_simple_err(i, NOTHING, T("Disconnected exit.  Destroyed."));
-            destroy_obj(i);
-        }
+	if (  isExit(i)
+	   && !Marked(i))
+	{
+	    Log_simple_err(i, NOTHING, T("Disconnected exit.  Destroyed."));
+	    destroy_obj(i);
+	}
     }
 }
 
@@ -1617,37 +1617,37 @@ static void check_misplaced_obj(dbref *obj, dbref back, dbref loc)
     //
     if (!Good_obj(*obj))
     {
-        return;
+	return;
     }
     loc = Location(*obj);
     Unmark(*obj);
     if (Good_obj(loc))
     {
-        check_loc_contents(loc);
+	check_loc_contents(loc);
     }
     if (Marked(*obj))
     {
-        // It's in the other list, give it up.
-        //
-        Log_pointer_err(back, loc, NOTHING, *obj, T(""),
-            T("is in another contents list.  Cleared."));
-        if (back != NOTHING)
-        {
-            s_Next(back, NOTHING);
-        }
-        else
-        {
-            s_Contents(loc, NOTHING);
-        }
-        *obj = NOTHING;
+	// It's in the other list, give it up.
+	//
+	Log_pointer_err(back, loc, NOTHING, *obj, T(""),
+	    T("is in another contents list.  Cleared."));
+	if (back != NOTHING)
+	{
+	    s_Next(back, NOTHING);
+	}
+	else
+	{
+	    s_Contents(loc, NOTHING);
+	}
+	*obj = NOTHING;
     }
     else
     {
-        // Not in the other list, assume in ours.
-        //
-        Log_header_err(*obj, loc, Contents(*obj), true, T("Location"),
-            T("is invalid.  Reset."));
-        s_Contents(*obj, loc);
+	// Not in the other list, assume in ours.
+	//
+	Log_header_err(*obj, loc, Contents(*obj), true, T("Location"),
+	    T("is invalid.  Reset."));
+	s_Contents(*obj, loc);
     }
     return;
 }
@@ -1656,7 +1656,7 @@ static void check_loc_contents(dbref loc)
 {
     if (!Good_obj(loc))
     {
-        return;
+	return;
     }
 
     // Only check players, rooms, and things that aren't GOING.
@@ -1664,99 +1664,99 @@ static void check_loc_contents(dbref loc)
     if (  isExit(loc)
        || Going(loc))
     {
-        return;
+	return;
     }
 
     dbref back = NOTHING;
     dbref obj = Contents(loc);
     while (obj != NOTHING)
     {
-        if (!Good_obj(obj))
-        {
-            // A bad pointer - terminate chain.
-            //
-            Log_pointer_err(back, loc, NOTHING, obj, T("Contents list"),
-                T("is invalid.  Cleared."));
-            if (back != NOTHING)
-            {
-                s_Next(back, NOTHING);
-            }
-            else
-            {
-                s_Contents(loc, NOTHING);
-            }
-            obj = NOTHING;
-        }
-        else if (!Has_location(obj))
-        {
-            // Not a player or thing - terminate chain.
-            //
-            Log_pointer_err(back, loc, NOTHING, obj, T(""),
-                T("is not a player or thing.  Cleared."));
-            if (back != NOTHING)
-            {
-                s_Next(back, NOTHING);
-            }
-            else
-            {
-                s_Contents(loc, NOTHING);
-            }
-            obj = NOTHING;
-        }
-        else if (Marked(obj))
-        {
-            // Already visited - either truncate or ignore.
-            //
-            if (Location(obj) != loc)
-            {
-                // Location wrong - either truncate or fix.
-                //
-                check_misplaced_obj(&obj, back, loc);
-            }
-            else
-            {
-                // Location right - recursive contents.
-                //
-            }
-        }
-        else if (Location(obj) != loc)
-        {
-            // Location wrong - either truncate or fix.
-            //
-            check_misplaced_obj(&obj, back, loc);
-        }
-        if (obj != NOTHING)
-        {
-            // All OK (or all was made OK).
-            //
-            if (check_type & DBCK_FULL)
-            {
-                // Check for wizard command-handlers inside non-wizard. Just
-                // warn if we find one.
-                //
-                if (  RealWizard(obj)
-                   && !Wizard(loc))
-                {
-                    if (Commer(obj))
-                    {
-                        Log_simple_err(obj, loc,
-                            T("Wizard command handling object inside non-wizard."));
-                    }
-                }
+	if (!Good_obj(obj))
+	{
+	    // A bad pointer - terminate chain.
+	    //
+	    Log_pointer_err(back, loc, NOTHING, obj, T("Contents list"),
+		T("is invalid.  Cleared."));
+	    if (back != NOTHING)
+	    {
+		s_Next(back, NOTHING);
+	    }
+	    else
+	    {
+		s_Contents(loc, NOTHING);
+	    }
+	    obj = NOTHING;
+	}
+	else if (!Has_location(obj))
+	{
+	    // Not a player or thing - terminate chain.
+	    //
+	    Log_pointer_err(back, loc, NOTHING, obj, T(""),
+		T("is not a player or thing.  Cleared."));
+	    if (back != NOTHING)
+	    {
+		s_Next(back, NOTHING);
+	    }
+	    else
+	    {
+		s_Contents(loc, NOTHING);
+	    }
+	    obj = NOTHING;
+	}
+	else if (Marked(obj))
+	{
+	    // Already visited - either truncate or ignore.
+	    //
+	    if (Location(obj) != loc)
+	    {
+		// Location wrong - either truncate or fix.
+		//
+		check_misplaced_obj(&obj, back, loc);
+	    }
+	    else
+	    {
+		// Location right - recursive contents.
+		//
+	    }
+	}
+	else if (Location(obj) != loc)
+	{
+	    // Location wrong - either truncate or fix.
+	    //
+	    check_misplaced_obj(&obj, back, loc);
+	}
+	if (obj != NOTHING)
+	{
+	    // All OK (or all was made OK).
+	    //
+	    if (check_type & DBCK_FULL)
+	    {
+		// Check for wizard command-handlers inside non-wizard. Just
+		// warn if we find one.
+		//
+		if (  RealWizard(obj)
+		   && !Wizard(loc))
+		{
+		    if (Commer(obj))
+		    {
+			Log_simple_err(obj, loc,
+			    T("Wizard command handling object inside non-wizard."));
+		    }
+		}
 
-                // Check for non-wizard objects inside wizard objects.
-                //
-                if (  RealWizard(loc)
-                   && !Wizard(obj)
-                   && !Wizard(Owner(obj)))
-                {
-                    Log_simple_err(obj, loc, T("Non-wizard object inside wizard."));
-                }
-            }
-            Mark(obj);
-            back = obj;
-            obj = Next(obj);
-        }
+		// Check for non-wizard objects inside wizard objects.
+		//
+		if (  RealWizard(loc)
+		   && !Wizard(obj)
+		   && !Wizard(Owner(obj)))
+		{
+		    Log_simple_err(obj, loc, T("Non-wizard object inside wizard."));
+		}
+	    }
+	    Mark(obj);
+	    back = obj;
+	    obj = Next(obj);
+	}
     }
 }
 
@@ -1767,24 +1767,24 @@ static void check_contents_chains(void)
     Unmark_all(i);
     DO_WHOLE_DB(i)
     {
-        check_loc_contents(i);
+	check_loc_contents(i);
     }
     DO_WHOLE_DB(i)
     {
-        if (  !Going(i)
-           && !Marked(i)
-           && Has_location(i))
-        {
-            Log_simple_err(i, Location(i), T("Orphaned object, moved home."));
-            s_Location(i, NOTHING);
-            s_Next(i, NOTHING);
-            if (  !Good_obj(Home(i))
-               || Going(Home(i)))
-            {
-                s_Home(i, new_home(i));
-            }
-            move_via_generic(i, HOME, NOTHING, 0);
-        }
+	if (  !Going(i)
+	   && !Marked(i)
+	   && Has_location(i))
+	{
+	    Log_simple_err(i, Location(i), T("Orphaned object, moved home."));
+	    s_Location(i, NOTHING);
+	    s_Next(i, NOTHING);
+	    if (  !Good_obj(Home(i))
+	       || Going(Home(i)))
+	    {
+		s_Home(i, new_home(i));
+	    }
+	    move_via_generic(i, HOME, NOTHING, 0);
+	}
     }
 }
 
@@ -1800,7 +1800,7 @@ static void mark_place(dbref loc)
     if (  !Good_obj(loc)
        || Marked(loc))
     {
-        return;
+	return;
     }
     Mark(loc);
 
@@ -1809,10 +1809,10 @@ static void mark_place(dbref loc)
     dbref exit;
     for (exit = Exits(loc); exit != NOTHING; exit = Next(exit))
     {
-        if (Good_obj(Location(exit)))
-        {
-            mark_place(Location(exit));
-        }
+	if (Good_obj(Location(exit)))
+	{
+	    mark_place(Location(exit));
+	}
     }
 }
 
@@ -1829,36 +1829,36 @@ static void check_floating(void)
     //
     DO_WHOLE_DB(i)
     {
-        if (  isRoom(i)
-           && Floating(i)
-           && !Going(i))
-        {
-            mark_place(i);
-        }
+	if (  isRoom(i)
+	   && Floating(i)
+	   && !Going(i))
+	{
+	    mark_place(i);
+	}
     }
 
     // Look for unvisited rooms.
     //
     DO_WHOLE_DB(i)
     {
-        if (  isRoom(i)
-           && !Going(i)
-           && !Marked(i))
-        {
-            if (!mudstate.bStandAlone)
-            {
-                dbref owner = Owner(i);
-                if (Good_owner(owner))
-                {
-                    notify(owner, tprintf(T("You own a floating room: %s(#%d)"),
-                        Moniker(i), i));
-                }
-            }
-            else
-            {
-                Log_simple_err(i, NOTHING, T("Disconnected room."));
-            }
-        }
+	if (  isRoom(i)
+	   && !Going(i)
+	   && !Marked(i))
+	{
+	    if (!mudstate.bStandAlone)
+	    {
+		dbref owner = Owner(i);
+		if (Good_owner(owner))
+		{
+		    notify(owner, tprintf(T("You own a floating room: %s(#%d)"),
+			Moniker(i), i));
+		}
+	    }
+	    else
+	    {
+		Log_simple_err(i, NOTHING, T("Disconnected room."));
+	    }
+	}
     }
 }
 
@@ -1881,7 +1881,7 @@ void do_dbck(dbref executor, dbref caller, dbref enactor, int eval, int key)
     if (  !mudstate.bStandAlone
        && executor != NOTHING)
     {
-        Guest.CleanUp();
+	Guest.CleanUp();
     }
     purge_going();
     make_freelist();
@@ -1891,7 +1891,7 @@ void do_dbck(dbref executor, dbref caller, dbref enactor, int eval, int key)
 #if defined(HAVE_STUB_SLAVE)
     if (NULL != mudstate.pISlaveControl)
     {
-        mudstate.pISlaveControl->ModuleMaintenance();
+	mudstate.pISlaveControl->ModuleMaintenance();
     }
 #endif // HAVE_STUB_SLAVE
 #endif // TINYMUX_MODULES
@@ -1903,8 +1903,8 @@ void do_dbck(dbref executor, dbref caller, dbref enactor, int eval, int key)
     ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
-        p->pSink->dbck();
-        p = p->pNext;
+	p->pSink->dbck();
+	p = p->pNext;
     }
 #endif // TINYMUX_MODULES
 
@@ -1912,6 +1912,6 @@ void do_dbck(dbref executor, dbref caller, dbref enactor, int eval, int key)
        && executor != NOTHING
        && !Quiet(executor))
     {
-        notify(executor, T("Done."));
+	notify(executor, T("Done."));
     }
 }

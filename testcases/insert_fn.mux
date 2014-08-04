@@ -19,12 +19,12 @@
 #
 &tr.tc001 test_insert_fn=
   @if strmatch(
-        setr(0,sha1(
-            [insert(This is a test, 4, new)]
-            [insert(Yet@Another@List, 3, Funky, @)]
-          )
-        ),
-        406626B7163831461CDED124D892909E9E351FCB
+	setr(0,sha1(
+	    [insert(This is a test, 4, new)]
+	    [insert(Yet@Another@List, 3, Funky, @)]
+	  )
+	),
+	406626B7163831461CDED124D892909E9E351FCB
       )=
   {
     @log smoke=TC001: Help file examples. Succeeded.
@@ -38,11 +38,11 @@
 #
 &tr.tc002 test_insert_fn=
   @if strmatch(
-        setr(0,sha1(
-            [iter(0 1 2,## [insert(,##,Pear,|)])]
-          )
-        ),
-        6A543151C6BDF80889FEAF3A53079DE952657E2A
+	setr(0,sha1(
+	    [iter(0 1 2,## [insert(,##,Pear,|)])]
+	  )
+	),
+	6A543151C6BDF80889FEAF3A53079DE952657E2A
       )=
   {
     @log smoke=TC002: Empty list, ASCII, positive positions. Succeeded.
@@ -56,13 +56,13 @@
 #
 &tr.tc003 test_insert_fn=
   @if strmatch(
-        setr(0,sha1(
-            [iter(0 1 2 3,## [insert(|,##,Pear,|)])]
-            [iter(0 1 2 3 4,## [insert(||,##,Pear,|)])]
-            [iter(0 1 2 3 4 5,## [insert(|||,##,Pear,|)])]
-          )
-        ),
-        7CEB5283E8F723EF34A3468AE1CAD76D36517DCF
+	setr(0,sha1(
+	    [iter(0 1 2 3,## [insert(|,##,Pear,|)])]
+	    [iter(0 1 2 3 4,## [insert(||,##,Pear,|)])]
+	    [iter(0 1 2 3 4 5,## [insert(|||,##,Pear,|)])]
+	  )
+	),
+	7CEB5283E8F723EF34A3468AE1CAD76D36517DCF
       )=
   {
     @log smoke=TC003: Non-empty lists, ASCII, positive positions. Succeeded.
@@ -76,11 +76,11 @@
 #
 &tr.tc004 test_insert_fn=
   @if strmatch(
-        setr(0,sha1(
-            [iter(-2 -1,## [insert(,##,Pear,|)])]
-          )
-        ),
-        FF317BAF06BA80EED00C1E604E5A94C16EADAA8F
+	setr(0,sha1(
+	    [iter(-2 -1,## [insert(,##,Pear,|)])]
+	  )
+	),
+	FF317BAF06BA80EED00C1E604E5A94C16EADAA8F
       )=
   {
     @log smoke=TC004: Empty list, ASCII, negative positions. Succeeded.
@@ -94,13 +94,13 @@
 #
 &tr.tc005 test_insert_fn=
   @if strmatch(
-        setr(0,sha1(
-            [iter(-3 -2 -1,## [insert(|,##,Pear,|)])]
-            [iter(-4 -3 -2 -1,## [insert(||,##,Pear,|)])]
-            [iter(-5 -4 -3 -2 -1,## [insert(|||,##,Pear,|)])]
-          )
-        ),
-        377189E5484C2F769375C40A0540080FF649CE2F
+	setr(0,sha1(
+	    [iter(-3 -2 -1,## [insert(|,##,Pear,|)])]
+	    [iter(-4 -3 -2 -1,## [insert(||,##,Pear,|)])]
+	    [iter(-5 -4 -3 -2 -1,## [insert(|||,##,Pear,|)])]
+	  )
+	),
+	377189E5484C2F769375C40A0540080FF649CE2F
       )=
   {
     @log smoke=TC005: Non-empty lists, ASCII, negative positions. Succeeded.;

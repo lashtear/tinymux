@@ -212,7 +212,7 @@ struct comuser *select_user(struct channel *ch, dbref player);
 //! \param bValidAlias - is alias valid or not
 //! \return new alias data or NULL on failure
 UTF8 *MakeCanonicalComAlias(const UTF8 *pAlias, size_t *nValidAlias,
-        bool *bValidAlias);
+	bool *bValidAlias);
 
 //! \brief Allocate and initialize a new comsys_t structure
 //! \return initialized memory or NULL if allocation failed

@@ -27,13 +27,13 @@ void dispatch_FreeListReconstruction(void *pUnused, int iUnused)
 
     if (mudconf.control_flags & CF_DBCHECK)
     {
-        const UTF8 *cmdsave = mudstate.debug_cmd;
-        mudstate.debug_cmd = T("< dbck >");
-        do_dbck(NOTHING, NOTHING, NOTHING, 0, 0);
-        Guest.CleanUp();
-        pcache_trim();
-        pool_reset();
-        mudstate.debug_cmd = cmdsave;
+	const UTF8 *cmdsave = mudstate.debug_cmd;
+	mudstate.debug_cmd = T("< dbck >");
+	do_dbck(NOTHING, NOTHING, NOTHING, 0, 0);
+	Guest.CleanUp();
+	pcache_trim();
+	pool_reset();
+	mudstate.debug_cmd = cmdsave;
     }
 
     // Schedule ourselves again.
@@ -44,7 +44,7 @@ void dispatch_FreeListReconstruction(void *pUnused, int iUnused)
     ltd.SetSeconds(mudconf.check_interval);
     mudstate.check_counter = ltaNow + ltd;
     scheduler.DeferTask(mudstate.check_counter, PRIORITY_SYSTEM,
-        dispatch_FreeListReconstruction, 0, 0);
+	dispatch_FreeListReconstruction, 0, 0);
 }
 
 // Database Dump Task routine.
@@ -58,24 +58,24 @@ void dispatch_DatabaseDump(void *pUnused, int iUnused)
 
     if (mudconf.control_flags & CF_CHECKPOINT)
     {
-        const UTF8 *cmdsave = mudstate.debug_cmd;
-        mudstate.debug_cmd = T("< dump >");
+	const UTF8 *cmdsave = mudstate.debug_cmd;
+	mudstate.debug_cmd = T("< dump >");
 #if defined(HAVE_WORKING_FORK)
-        if (mudstate.dumping)
-        {
-            // There is a dump in progress. These usually happen very quickly.
-            // We will reschedule ourselves to try again in 20 seconds.
-            // Ordinarily, you would think "...a dump is a dump...", but some
-            // dumps might not be the type of dump we're going to do.
-            //
-            nNextTimeInSeconds = 20;
-        }
-        else
+	if (mudstate.dumping)
+	{
+	    // There is a dump in progress. These usually happen very quickly.
+	    // We will reschedule ourselves to try again in 20 seconds.
+	    // Ordinarily, you would think "...a dump is a dump...", but some
+	    // dumps might not be the type of dump we're going to do.
+	    //
+	    nNextTimeInSeconds = 20;
+	}
+	else
 #endif // HAVE_WORKING_FORK
-        {
-            fork_and_dump(0);
-        }
-        mudstate.debug_cmd = cmdsave;
+	{
+	    fork_and_dump(0);
+	}
+	mudstate.debug_cmd = cmdsave;
     }
 
     // Schedule ourselves again.
@@ -97,10 +97,10 @@ void dispatch_IdleCheck(void *pUnused, int iUnused)
 
     if (mudconf.control_flags & CF_IDLECHECK)
     {
-        const UTF8 *cmdsave = mudstate.debug_cmd;
-        mudstate.debug_cmd = T("< idlecheck >");
-        check_idle();
-        mudstate.debug_cmd = cmdsave;
+	const UTF8 *cmdsave = mudstate.debug_cmd;
+	mudstate.debug_cmd = T("< idlecheck >");
+	check_idle();
+	mudstate.debug_cmd = cmdsave;
     }
 
     // Schedule ourselves again.
@@ -122,10 +122,10 @@ void dispatch_CheckEvents(void *pUnused, int iUnused)
 
     if (mudconf.control_flags & CF_EVENTCHECK)
     {
-        const UTF8 *cmdsave = mudstate.debug_cmd;
-        mudstate.debug_cmd = T("< eventcheck >");
-        check_events();
-        mudstate.debug_cmd = cmdsave;
+	const UTF8 *cmdsave = mudstate.debug_cmd;
+	mudstate.debug_cmd = T("< eventcheck >");
+	check_events();
+	mudstate.debug_cmd = cmdsave;
     }
 
     // Schedule ourselves again.
@@ -149,7 +149,7 @@ void dispatch_CacheTick(void *pUnused, int iUnused)
     CLinearTimeDelta ltd = 0;
     if (mudconf.cache_tick_period <= ltd)
     {
-        mudconf.cache_tick_period.SetSeconds(1);
+	mudconf.cache_tick_period.SetSeconds(1);
     }
 
     cache_tick();
@@ -200,27 +200,27 @@ void init_timer(void)
     ltd.SetSeconds((mudconf.check_offset == 0) ? mudconf.check_interval : mudconf.check_offset);
     mudstate.check_counter  = ltaNow + ltd;
     scheduler.DeferTask(mudstate.check_counter, PRIORITY_SYSTEM,
-        dispatch_FreeListReconstruction, 0, 0);
+	dispatch_FreeListReconstruction, 0, 0);
 
     // Setup re-occuring Database Dump task.
     //
     ltd.SetSeconds((mudconf.dump_offset == 0) ? mudconf.dump_interval : mudconf.dump_offset);
     mudstate.dump_counter  = ltaNow + ltd;
     scheduler.DeferTask(mudstate.dump_counter, PRIORITY_SYSTEM,
-        dispatch_DatabaseDump, 0, 0);
+	dispatch_DatabaseDump, 0, 0);
 
     // Setup re-occuring Idle Check task.
     //
     ltd.SetSeconds(mudconf.idle_interval);
     mudstate.idle_counter   = ltaNow + ltd;
     scheduler.DeferTask(mudstate.idle_counter, PRIORITY_SYSTEM,
-        dispatch_IdleCheck, 0, 0);
+	dispatch_IdleCheck, 0, 0);
 
     // Setup re-occuring Check Events task.
     //
     mudstate.events_counter = ltaNow + time_15s;
     scheduler.DeferTask(mudstate.events_counter, PRIORITY_SYSTEM,
-        dispatch_CheckEvents, 0, 0);
+	dispatch_CheckEvents, 0, 0);
 
 #ifndef HAVE_MEMORY_BASED
     // Setup re-occuring cache_tick task.
@@ -228,10 +228,10 @@ void init_timer(void)
     ltd.SetSeconds(0);
     if (mudconf.cache_tick_period <= ltd)
     {
-        mudconf.cache_tick_period.SetSeconds(1);
+	mudconf.cache_tick_period.SetSeconds(1);
     }
     scheduler.DeferTask(ltaNow+mudconf.cache_tick_period, PRIORITY_SYSTEM,
-        dispatch_CacheTick, 0, 0);
+	dispatch_CacheTick, 0, 0);
 #endif // !HAVE_MEMORY_BASED
 
 #if 0
@@ -264,7 +264,7 @@ void do_timewarp(dbref executor, dbref caller, dbref enactor, int eval, int key,
     //
     if ((key == 0) || (key & TWARP_QUEUE))
     {
-        do_queue(executor, caller, enactor, 0, QUEUE_WARP, arg, NULL, 0);
+	do_queue(executor, caller, enactor, 0, QUEUE_WARP, arg, NULL, 0);
     }
 
     // Once these are adjusted, we need to Cancel and reschedule the task.
@@ -273,27 +273,27 @@ void do_timewarp(dbref executor, dbref caller, dbref enactor, int eval, int key,
     ltd.SetSeconds(secs);
     if (key & TWARP_DUMP)
     {
-        mudstate.dump_counter -= ltd;
-        scheduler.CancelTask(dispatch_DatabaseDump, 0, 0);
-        scheduler.DeferTask(mudstate.dump_counter, PRIORITY_SYSTEM, dispatch_DatabaseDump, 0, 0);
+	mudstate.dump_counter -= ltd;
+	scheduler.CancelTask(dispatch_DatabaseDump, 0, 0);
+	scheduler.DeferTask(mudstate.dump_counter, PRIORITY_SYSTEM, dispatch_DatabaseDump, 0, 0);
     }
     if (key & TWARP_CLEAN)
     {
-        mudstate.check_counter -= ltd;
-        scheduler.CancelTask(dispatch_FreeListReconstruction, 0, 0);
-        scheduler.DeferTask(mudstate.check_counter, PRIORITY_SYSTEM, dispatch_FreeListReconstruction, 0, 0);
+	mudstate.check_counter -= ltd;
+	scheduler.CancelTask(dispatch_FreeListReconstruction, 0, 0);
+	scheduler.DeferTask(mudstate.check_counter, PRIORITY_SYSTEM, dispatch_FreeListReconstruction, 0, 0);
     }
     if (key & TWARP_IDLE)
     {
-        mudstate.idle_counter -= ltd;
-        scheduler.CancelTask(dispatch_IdleCheck, 0, 0);
-        scheduler.DeferTask(mudstate.idle_counter, PRIORITY_SYSTEM, dispatch_IdleCheck, 0, 0);
+	mudstate.idle_counter -= ltd;
+	scheduler.CancelTask(dispatch_IdleCheck, 0, 0);
+	scheduler.DeferTask(mudstate.idle_counter, PRIORITY_SYSTEM, dispatch_IdleCheck, 0, 0);
     }
     if (key & TWARP_EVENTS)
     {
-        mudstate.events_counter -= ltd;
-        scheduler.CancelTask(dispatch_CheckEvents, 0, 0);
-        scheduler.DeferTask(mudstate.events_counter, PRIORITY_SYSTEM, dispatch_CheckEvents, 0, 0);
+	mudstate.events_counter -= ltd;
+	scheduler.CancelTask(dispatch_CheckEvents, 0, 0);
+	scheduler.DeferTask(mudstate.events_counter, PRIORITY_SYSTEM, dispatch_CheckEvents, 0, 0);
     }
 }
 
@@ -307,7 +307,7 @@ CTaskHeap::CTaskHeap(void)
     m_pHeap = new PTASK_RECORD[m_nAllocated];
     if (!m_pHeap)
     {
-        m_nAllocated = 0;
+	m_nAllocated = 0;
     }
 }
 
@@ -315,16 +315,16 @@ CTaskHeap::~CTaskHeap(void)
 {
     while (m_nCurrent--)
     {
-        PTASK_RECORD pTask = m_pHeap[m_nCurrent];
-        if (pTask)
-        {
-            delete pTask;
-        }
-        m_pHeap[m_nCurrent] = NULL;
+	PTASK_RECORD pTask = m_pHeap[m_nCurrent];
+	if (pTask)
+	{
+	    delete pTask;
+	}
+	m_pHeap[m_nCurrent] = NULL;
     }
     if (m_pHeap)
     {
-        delete [] m_pHeap;
+	delete [] m_pHeap;
     }
 }
 
@@ -332,10 +332,10 @@ bool CTaskHeap::Insert(PTASK_RECORD pTask, SCHCMP *pfCompare)
 {
     if (m_nCurrent == m_nAllocated)
     {
-        if (!Grow())
-        {
-            return false;
-        }
+	if (!Grow())
+	{
+	    return false;
+	}
     }
     pTask->m_iVisitedMark = m_iVisitedMark-1;
 
@@ -353,16 +353,16 @@ bool CTaskHeap::Grow(void)
     PTASK_RECORD *p = NULL;
     try
     {
-        p = new PTASK_RECORD[n];
+	p = new PTASK_RECORD[n];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (!p)
     {
-        return false;
+	return false;
     }
 
     memcpy(p, m_pHeap, sizeof(PTASK_RECORD)*m_nCurrent);
@@ -381,22 +381,22 @@ void CTaskHeap::Shrink(void)
     if (  n <= INITIAL_TASKS
        || n <= m_nCurrent)
     {
-        return;
+	return;
     }
 
     PTASK_RECORD *p = NULL;
     try
     {
-        p = new PTASK_RECORD[n];
+	p = new PTASK_RECORD[n];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (!p)
     {
-        return;
+	return;
     }
 
     memcpy(p, m_pHeap, sizeof(PTASK_RECORD)*m_nCurrent);
@@ -410,7 +410,7 @@ PTASK_RECORD CTaskHeap::PeekAtTopmost(void)
 {
     if (m_nCurrent <= 0)
     {
-        return NULL;
+	return NULL;
     }
     return m_pHeap[0];
 }
@@ -424,13 +424,13 @@ void CTaskHeap::CancelTask(FTASK *fpTask, void *arg_voidptr, int arg_Integer)
 {
     for (int i = 0; i < m_nCurrent; i++)
     {
-        PTASK_RECORD p = m_pHeap[i];
-        if (  p->fpTask == fpTask
-           && p->arg_voidptr == arg_voidptr
-           && p->arg_Integer == arg_Integer)
-        {
-            p->fpTask = NULL;
-        }
+	PTASK_RECORD p = m_pHeap[i];
+	if (  p->fpTask == fpTask
+	   && p->arg_voidptr == arg_voidptr
+	   && p->arg_Integer == arg_Integer)
+	{
+	    p->fpTask = NULL;
+	}
     }
 }
 
@@ -439,9 +439,9 @@ static int ComparePriority(PTASK_RECORD pTaskA, PTASK_RECORD pTaskB)
     int i = (pTaskA->iPriority) - (pTaskB->iPriority);
     if (i == 0)
     {
-        // Must subtract so that ticket rollover is handled properly.
-        //
-        return  (pTaskA->m_Ticket) - (pTaskB->m_Ticket);
+	// Must subtract so that ticket rollover is handled properly.
+	//
+	return  (pTaskA->m_Ticket) - (pTaskB->m_Ticket);
     }
     return i;
 }
@@ -452,22 +452,22 @@ static int CompareWhen(PTASK_RECORD pTaskA, PTASK_RECORD pTaskB)
     //
     if (pTaskA->ltaWhen < pTaskB->ltaWhen)
     {
-        return -1;
+	return -1;
     }
     else if (pTaskA->ltaWhen > pTaskB->ltaWhen)
     {
-        return 1;
+	return 1;
     }
     else
     {
-        // Must subtract so that ticket rollover is handled properly.
-        //
-        return  (pTaskA->m_Ticket) - (pTaskB->m_Ticket);
+	// Must subtract so that ticket rollover is handled properly.
+	//
+	return  (pTaskA->m_Ticket) - (pTaskB->m_Ticket);
     }
 }
 
 void CScheduler::DeferTask(const CLinearTimeAbsolute& ltaWhen, int iPriority,
-                           FTASK *fpTask, void *arg_voidptr, int arg_Integer)
+			   FTASK *fpTask, void *arg_voidptr, int arg_Integer)
 {
     PTASK_RECORD pTask = new TASK_RECORD;
     if (!pTask) return;
@@ -483,7 +483,7 @@ void CScheduler::DeferTask(const CLinearTimeAbsolute& ltaWhen, int iPriority,
     //
     if (!m_WhenHeap.Insert(pTask, CompareWhen))
     {
-        delete pTask;
+	delete pTask;
     }
 }
 
@@ -503,7 +503,7 @@ void CScheduler::DeferImmediateTask(int iPriority, FTASK *fpTask, void *arg_void
     //
     if (!m_WhenHeap.Insert(pTask, CompareWhen))
     {
-        delete pTask;
+	delete pTask;
     }
 }
 
@@ -519,18 +519,18 @@ void CScheduler::ReadyTasks(const CLinearTimeAbsolute& ltaNow)
     //
     PTASK_RECORD pTask = m_WhenHeap.PeekAtTopmost();
     while (  pTask
-          && pTask->ltaWhen < ltaNow)
+	  && pTask->ltaWhen < ltaNow)
     {
-        pTask = m_WhenHeap.RemoveTopmost(CompareWhen);
-        if (pTask)
-        {
-            if (  NULL == pTask->fpTask
-               || !m_PriorityHeap.Insert(pTask, ComparePriority))
-            {
-                delete pTask;
-            }
-        }
-        pTask = m_WhenHeap.PeekAtTopmost();
+	pTask = m_WhenHeap.RemoveTopmost(CompareWhen);
+	if (pTask)
+	{
+	    if (  NULL == pTask->fpTask
+	       || !m_PriorityHeap.Insert(pTask, ComparePriority))
+	    {
+		delete pTask;
+	    }
+	}
+	pTask = m_WhenHeap.PeekAtTopmost();
     }
 }
 
@@ -539,11 +539,11 @@ int CScheduler::RunTasks(const CLinearTimeAbsolute& ltaNow)
     ReadyTasks(ltaNow);
     if (mudconf.active_q_chunk)
     {
-        return RunTasks(mudconf.active_q_chunk);
+	return RunTasks(mudconf.active_q_chunk);
     }
     else
     {
-        return RunAllTasks();
+	return RunAllTasks();
     }
 }
 
@@ -552,27 +552,27 @@ int CScheduler::RunTasks(int iCount)
     int nTasks = 0;
     while (iCount--)
     {
-        PTASK_RECORD pTask = m_PriorityHeap.PeekAtTopmost();
-        if (!pTask) break;
+	PTASK_RECORD pTask = m_PriorityHeap.PeekAtTopmost();
+	if (!pTask) break;
 
-        if (pTask->iPriority > m_minPriority)
-        {
-            // This is related to CF_DEQUEUE and also to untimed (SUSPENDED)
-            // semaphore entries that we would like to manage together with
-            // the timed ones.
-            //
-            break;
-        }
-        pTask = m_PriorityHeap.RemoveTopmost(ComparePriority);
-        if (pTask)
-        {
-            if (pTask->fpTask)
-            {
-                pTask->fpTask(pTask->arg_voidptr, pTask->arg_Integer);
-                nTasks++;
-            }
-            delete pTask;
-        }
+	if (pTask->iPriority > m_minPriority)
+	{
+	    // This is related to CF_DEQUEUE and also to untimed (SUSPENDED)
+	    // semaphore entries that we would like to manage together with
+	    // the timed ones.
+	    //
+	    break;
+	}
+	pTask = m_PriorityHeap.RemoveTopmost(ComparePriority);
+	if (pTask)
+	{
+	    if (pTask->fpTask)
+	    {
+		pTask->fpTask(pTask->arg_voidptr, pTask->arg_Integer);
+		nTasks++;
+	    }
+	    delete pTask;
+	}
     }
     return nTasks;
 }
@@ -584,8 +584,8 @@ int CScheduler::RunAllTasks(void)
     int nTasks;
     do
     {
-        nTasks = RunTasks(100);
-        nTotalTasks += nTasks;
+	nTasks = RunTasks(100);
+	nTotalTasks += nTasks;
     } while (nTasks);
 
     return nTotalTasks;
@@ -598,11 +598,11 @@ bool CScheduler::WhenNext(CLinearTimeAbsolute  *ltaWhen)
     PTASK_RECORD pTask = m_PriorityHeap.PeekAtTopmost();
     if (pTask)
     {
-        if (pTask->iPriority <= m_minPriority)
-        {
-            ltaWhen->SetSeconds(0);
-            return true;
-        }
+	if (pTask->iPriority <= m_minPriority)
+	{
+	    ltaWhen->SetSeconds(0);
+	    return true;
+	}
     }
 
     // Check the When Queue next.
@@ -610,8 +610,8 @@ bool CScheduler::WhenNext(CLinearTimeAbsolute  *ltaWhen)
     pTask = m_WhenHeap.PeekAtTopmost();
     if (pTask)
     {
-        *ltaWhen = pTask->ltaWhen;
-        return true;
+	*ltaWhen = pTask->ltaWhen;
+	return true;
     }
     return false;
 }
@@ -629,20 +629,20 @@ void CTaskHeap::SiftDown(int iSubRoot, SCHCMP *pfCompare)
 
     while (child < m_nCurrent)
     {
-        int rightchild = HEAP_RIGHT_CHILD(parent);
-        if (rightchild < m_nCurrent)
-        {
-            if (pfCompare(m_pHeap[rightchild], m_pHeap[child]) < 0)
-            {
-                child = rightchild;
-            }
-        }
-        if (pfCompare(Ref, m_pHeap[child]) <= 0)
-            break;
+	int rightchild = HEAP_RIGHT_CHILD(parent);
+	if (rightchild < m_nCurrent)
+	{
+	    if (pfCompare(m_pHeap[rightchild], m_pHeap[child]) < 0)
+	    {
+		child = rightchild;
+	    }
+	}
+	if (pfCompare(Ref, m_pHeap[child]) <= 0)
+	    break;
 
-        m_pHeap[parent] = m_pHeap[child];
-        parent = child;
-        child = HEAP_LEFT_CHILD(parent);
+	m_pHeap[parent] = m_pHeap[child];
+	parent = child;
+	child = HEAP_LEFT_CHILD(parent);
     }
     m_pHeap[parent] = Ref;
 }
@@ -651,16 +651,16 @@ void CTaskHeap::SiftUp(int child, SCHCMP *pfCompare)
 {
     while (child)
     {
-        int parent = HEAP_PARENT(child);
-        if (pfCompare(m_pHeap[parent], m_pHeap[child]) <= 0)
-            break;
+	int parent = HEAP_PARENT(child);
+	if (pfCompare(m_pHeap[parent], m_pHeap[child]) <= 0)
+	    break;
 
-        PTASK_RECORD Tmp;
-        Tmp = m_pHeap[child];
-        m_pHeap[child] = m_pHeap[parent];
-        m_pHeap[parent] = Tmp;
+	PTASK_RECORD Tmp;
+	Tmp = m_pHeap[child];
+	m_pHeap[child] = m_pHeap[parent];
+	m_pHeap[parent] = Tmp;
 
-        child = parent;
+	child = parent;
     }
 }
 
@@ -682,7 +682,7 @@ void CTaskHeap::Update(int iNode, SCHCMP *pfCompare)
 {
     if (iNode < 0 || m_nCurrent <= iNode)
     {
-        return;
+	return;
     }
 
     SiftDown(iNode, pfCompare);
@@ -693,7 +693,7 @@ void CScheduler::TraverseUnordered(SCHLOOK *pfLook)
 {
     if (m_WhenHeap.TraverseUnordered(pfLook, CompareWhen))
     {
-        m_PriorityHeap.TraverseUnordered(pfLook, ComparePriority);
+	m_PriorityHeap.TraverseUnordered(pfLook, ComparePriority);
     }
 }
 
@@ -714,49 +714,49 @@ int CTaskHeap::TraverseUnordered(SCHLOOK *pfLook, SCHCMP *pfCompare)
     m_iVisitedMark++;
     if (m_iVisitedMark == 0)
     {
-        // We rolled over. Yeah, this code will probably never run, but
-        // let's go ahead and mark all the records as visited anyway.
-        //
-        for (int i = 0; i < m_nCurrent; i++)
-        {
-            PTASK_RECORD p = m_pHeap[i];
-            p->m_iVisitedMark = m_iVisitedMark;
-        }
-        m_iVisitedMark++;
+	// We rolled over. Yeah, this code will probably never run, but
+	// let's go ahead and mark all the records as visited anyway.
+	//
+	for (int i = 0; i < m_nCurrent; i++)
+	{
+	    PTASK_RECORD p = m_pHeap[i];
+	    p->m_iVisitedMark = m_iVisitedMark;
+	}
+	m_iVisitedMark++;
     }
 
     int bUnvisitedRecords;
     do
     {
-        bUnvisitedRecords = false;
-        for (int i = 0; i < m_nCurrent; i++)
-        {
-            PTASK_RECORD p = m_pHeap[i];
+	bUnvisitedRecords = false;
+	for (int i = 0; i < m_nCurrent; i++)
+	{
+	    PTASK_RECORD p = m_pHeap[i];
 
-            if (p->m_iVisitedMark == m_iVisitedMark)
-            {
-                // We have already seen this one.
-                //
-                continue;
-            }
-            bUnvisitedRecords = true;
-            p->m_iVisitedMark = m_iVisitedMark;
+	    if (p->m_iVisitedMark == m_iVisitedMark)
+	    {
+		// We have already seen this one.
+		//
+		continue;
+	    }
+	    bUnvisitedRecords = true;
+	    p->m_iVisitedMark = m_iVisitedMark;
 
-            int cmd = pfLook(p);
-            switch (cmd)
-            {
-            case IU_REMOVE_TASK:
-                Remove(i, pfCompare);
-                break;
+	    int cmd = pfLook(p);
+	    switch (cmd)
+	    {
+	    case IU_REMOVE_TASK:
+		Remove(i, pfCompare);
+		break;
 
-            case IU_DONE:
-                return false;
+	    case IU_DONE:
+		return false;
 
-            case IU_UPDATE_TASK:
-                Update(i, pfCompare);
-                break;
-            }
-        }
+	    case IU_UPDATE_TASK:
+		Update(i, pfCompare);
+		break;
+	    }
+	}
     } while (bUnvisitedRecords);
     return true;
 }
@@ -771,12 +771,12 @@ int CTaskHeap::TraverseOrdered(SCHLOOK *pfLook, SCHCMP *pfCompare)
 
     for (int i = m_nCurrent-1; i >= 0; i--)
     {
-        PTASK_RECORD p = m_pHeap[i];
-        int cmd = pfLook(p);
-        if (IU_DONE == cmd)
-        {
-            break;
-        }
+	PTASK_RECORD p = m_pHeap[i];
+	int cmd = pfLook(p);
+	if (IU_DONE == cmd)
+	{
+	    break;
+	}
     }
 
     Remake(pfCompare);
@@ -788,10 +788,10 @@ void CTaskHeap::Sort(SCHCMP *pfCompare)
     int s_nCurrent = m_nCurrent;
     while (m_nCurrent--)
     {
-        PTASK_RECORD p = m_pHeap[m_nCurrent];
-        m_pHeap[m_nCurrent] = m_pHeap[0];
-        m_pHeap[0] = p;
-        SiftDown(0, pfCompare);
+	PTASK_RECORD p = m_pHeap[m_nCurrent];
+	m_pHeap[m_nCurrent] = m_pHeap[0];
+	m_pHeap[0] = p;
+	SiftDown(0, pfCompare);
     }
     m_nCurrent = s_nCurrent;
 }
@@ -802,8 +802,8 @@ void CTaskHeap::Remake(SCHCMP *pfCompare)
     m_nCurrent = 0;
     while (s_nCurrent--)
     {
-        m_nCurrent++;
-        SiftUp(m_nCurrent-1, pfCompare);
+	m_nCurrent++;
+	SiftUp(m_nCurrent-1, pfCompare);
     }
 }
 

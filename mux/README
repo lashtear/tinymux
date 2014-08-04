@@ -25,39 +25,39 @@ associated with the care and feeding of your TinyMUX, please refer to the
 following files:
 
   README              General information on the distribution, platforms it
-                      has been shown to run under out of the box, how to
-                      report bugs.
+		      has been shown to run under out of the box, how to
+		      report bugs.
 
   CHANGES             New features, commands, and bug fixes.
 
   INSTALL             How to compile your game, step by step.
 
   NOTES               All kinds of tidbits made much easier to find.
-                      Known compiling issues and known fixes are located
-                      here.  Known OSes that TinyMUX 2.12 will run on and
-                      compiling issues.  Contains basic conversion
-                      information.
+		      Known compiling issues and known fixes are located
+		      here.  Known OSes that TinyMUX 2.12 will run on and
+		      compiling issues.  Contains basic conversion
+		      information.
 
   docs/BACKUP         A file about the TinyMUX 2.12 Backup script.
 
   docs/CONFIGURATION  How to set up your TinyMUX, including an explanation of
-                      the common configuration items, as well as how to set up
-                      your game so that your db files so that they are
-                      customized for your GAMENAME.
+		      the common configuration items, as well as how to set up
+		      your game so that your db files so that they are
+		      customized for your GAMENAME.
 
   docs/CONVERSION     How to convert a game from another type of server to
-                      TinyMUX.
+		      TinyMUX.
 
   docs/CREDITS        The people who helped make this server possible.
 
   docs/GUESTS         How the current guest implementation works and how to
-                      set it up.
+		      set it up.
 
   docs/MEMORY         Explanations about how to set up disk and
-                      memory-based operation plus tips on saving memory.
+		      memory-based operation plus tips on saving memory.
 
   docs/PATCHES        A very basic introduction to applying patches to the
-                      server.
+		      server.
 
 ===========================================================================
 
@@ -161,7 +161,7 @@ due to lack of available time, it is ad-hoc.
 
 -- To use gdb or dbx, make sure you are in the game/ directory, and type
 
-        gdb bin/netmux core     OR      dbx bin/netmux core
+	gdb bin/netmux core     OR      dbx bin/netmux core
 
 -- From there, simply type 'help' for help, or 'quit' to exit.
 

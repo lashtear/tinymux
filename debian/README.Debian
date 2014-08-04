@@ -13,9 +13,9 @@ Notes from the TinyMUX INSTALL file:
       - cd to the game directory. 'cd ../game'
       - Make your configuration file, as described in docs/CONFIGURATION
       - Type './Startmux'.  TinyMUX 2.12 automatically creates a minimal
-        DB if one does not exist in the game/data directory.
+	DB if one does not exist in the game/data directory.
       - Log into the game as player wizard 'connect wizard potrzebie',
-        and shut it down again.
+	and shut it down again.
 
 -  Edit the .txt files in game/text to your liking.  In particular
     connect.txt and motd.txt.

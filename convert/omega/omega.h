@@ -31,7 +31,7 @@ struct ltstr
 {
     bool operator()(const char* s1, const char* s2) const
     {
-        return strcmp(s1, s2) < 0;
+	return strcmp(s1, s2) < 0;
     }
 };
 
@@ -39,7 +39,7 @@ struct lti
 {
     bool operator()(int i1, int i2) const
     {
-        return i1 < i2;
+	return i1 < i2;
     }
 };
 

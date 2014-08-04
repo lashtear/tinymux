@@ -20,12 +20,12 @@
 #
 &tr.tc001 test_mid_fn=
   @if strmatch(
-        setr(0,sha1(
-            [mid(foobar,2,2)]
-            [mid(foobar,2,-2)]
-          )
-        ),
-        973A0ABA88E038ED295728D49D24759890274404
+	setr(0,sha1(
+	    [mid(foobar,2,2)]
+	    [mid(foobar,2,-2)]
+	  )
+	),
+	973A0ABA88E038ED295728D49D24759890274404
       )=
   {
     @log smoke=TC001: mid examples. Succeeded.;

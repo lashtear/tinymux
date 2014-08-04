@@ -203,7 +203,7 @@ case "$1" in
      mkcdir text
      mkshrlns badsite.txt connect.txt create_reg.txt down.txt full.txt guest.txt \
      	help.txt motd.txt news.txt newuser.txt plushelp.txt quit.txt \
-        register.txt staffhelp.txt wizhelp.txt wizmotd.txt wiznews.txt
+	register.txt staffhelp.txt wizhelp.txt wizmotd.txt wiznews.txt
 
      echo "Done"
      echo "** Be sure to change the 'port' entry in tinymux/game/netmux.conf to the"

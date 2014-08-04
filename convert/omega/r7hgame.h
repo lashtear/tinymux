@@ -561,18 +561,18 @@ class R7H_LOCKEXP
 public:
     typedef enum
     {
-        le_is,
-        le_carry,
-        le_indirect,
-        le_owner,
-        le_and,
-        le_or,
-        le_not,
-        le_attr,
-        le_eval,
-        le_ref,
-        le_text,
-        le_none,
+	le_is,
+	le_carry,
+	le_indirect,
+	le_owner,
+	le_and,
+	le_or,
+	le_not,
+	le_attr,
+	le_eval,
+	le_ref,
+	le_text,
+	le_none,
     } R7H_OP;
 
     R7H_OP m_op;
@@ -583,62 +583,62 @@ public:
 
     void SetIs(R7H_LOCKEXP *p)
     {
-        m_op = le_is;
-        m_le[0] = p;
+	m_op = le_is;
+	m_le[0] = p;
     }
     void SetCarry(R7H_LOCKEXP *p)
     {
-        m_op = le_carry;
-        m_le[0] = p;
+	m_op = le_carry;
+	m_le[0] = p;
     }
     void SetIndir(R7H_LOCKEXP *p)
     {
-        m_op = le_indirect;
-        m_le[0] = p;
+	m_op = le_indirect;
+	m_le[0] = p;
     }
     void SetOwner(R7H_LOCKEXP *p)
     {
-        m_op = le_owner;
-        m_le[0] = p;
+	m_op = le_owner;
+	m_le[0] = p;
     }
     void SetAnd(R7H_LOCKEXP *p, R7H_LOCKEXP *q)
     {
-        m_op = le_and;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_and;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetOr(R7H_LOCKEXP *p, R7H_LOCKEXP *q)
     {
-        m_op = le_or;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_or;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetNot(R7H_LOCKEXP *p)
     {
-        m_op = le_not;
-        m_le[0] = p;
+	m_op = le_not;
+	m_le[0] = p;
     }
     void SetAttr(R7H_LOCKEXP *p, R7H_LOCKEXP *q)
     {
-        m_op = le_attr;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_attr;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetEval(R7H_LOCKEXP *p, R7H_LOCKEXP *q)
     {
-        m_op = le_eval;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_eval;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetRef(int dbRef)
     {
-        m_op = le_ref;
-        m_dbRef = dbRef;
+	m_op = le_ref;
+	m_dbRef = dbRef;
     }
     void SetText(char *p)
     {
-        m_op = le_text;
-        m_p[0] = p;
+	m_op = le_text;
+	m_p[0] = p;
     }
 
     void Write(FILE *fp);
@@ -648,19 +648,19 @@ public:
 
     R7H_LOCKEXP()
     {
-        m_op = le_none;
-        m_le[0] = m_le[1] = NULL;
-        m_p[0] = m_p[1] = NULL;
-        m_dbRef = 0;
+	m_op = le_none;
+	m_le[0] = m_le[1] = NULL;
+	m_p[0] = m_p[1] = NULL;
+	m_dbRef = 0;
     }
     ~R7H_LOCKEXP()
     {
-        delete m_le[0];
-        delete m_le[1];
-        free(m_p[0]);
-        free(m_p[1]);
-        m_le[0] = m_le[1] = NULL;
-        m_p[0] = m_p[1] = NULL;
+	delete m_le[0];
+	delete m_le[1];
+	free(m_p[0]);
+	free(m_p[1]);
+	m_le[0] = m_le[1] = NULL;
+	m_p[0] = m_p[1] = NULL;
     }
 };
 
@@ -678,13 +678,13 @@ public:
 
     R7H_ATTRNAMEINFO()
     {
-        m_fNumAndName = false;
-        m_pName = NULL;
+	m_fNumAndName = false;
+	m_pName = NULL;
     }
     ~R7H_ATTRNAMEINFO()
     {
-        free(m_pName);
-        m_pName = NULL;
+	free(m_pName);
+	m_pName = NULL;
     }
 };
 
@@ -708,9 +708,9 @@ public:
 
     enum
     {
-        kNone,
-        kEncode,
-        kDecode,
+	kNone,
+	kEncode,
+	kDecode,
     } m_kState;
     void EncodeDecode(int dbObj);
 
@@ -720,26 +720,26 @@ public:
 
     R7H_ATTRINFO()
     {
-        m_fNumAndValue = false;
-        m_pAllocated = NULL;
-        m_pValueEncoded = NULL;
-        m_pValueUnencoded = NULL;
-        m_fIsLock = false;
-        m_pKeyTree = NULL;
-        m_iFlags = 0;
-        m_dbOwner = R7H_NOTHING;
-        m_kState = kNone;
+	m_fNumAndValue = false;
+	m_pAllocated = NULL;
+	m_pValueEncoded = NULL;
+	m_pValueUnencoded = NULL;
+	m_fIsLock = false;
+	m_pKeyTree = NULL;
+	m_iFlags = 0;
+	m_dbOwner = R7H_NOTHING;
+	m_kState = kNone;
     }
     ~R7H_ATTRINFO()
     {
-        free(m_pAllocated);
-        delete m_pKeyTree;
-        m_pAllocated = NULL;
-        m_pValueEncoded = NULL;
-        m_pValueUnencoded = NULL;
-        m_pKeyTree = NULL;
-        m_iFlags = 0;
-        m_dbOwner = R7H_NOTHING;
+	free(m_pAllocated);
+	delete m_pKeyTree;
+	m_pAllocated = NULL;
+	m_pValueEncoded = NULL;
+	m_pValueUnencoded = NULL;
+	m_pKeyTree = NULL;
+	m_iFlags = 0;
+	m_dbOwner = R7H_NOTHING;
     }
 };
 
@@ -855,50 +855,50 @@ public:
 
     R7H_OBJECTINFO()
     {
-        m_fRef = false;
-        m_pName = NULL;
-        m_fLocation = false;
-        m_fContents = false;
-        m_fExits = false;
-        m_fNext = false;
-        m_fParent = false;
-        m_fOwner = false;
-        m_fZone = false;
-        m_fPennies = false;
-        m_fFlags1 = false;
-        m_fFlags2 = false;
-        m_fFlags3 = false;
-        m_fFlags4 = false;
-        m_fToggles1 = false;
-        m_fToggles2 = false;
-        m_fToggles3 = false;
-        m_fToggles4 = false;
-        m_fToggles5 = false;
-        m_fToggles6 = false;
-        m_fToggles7 = false;
-        m_fToggles8 = false;
-        m_fAttrCount = false;
-        m_pvai = NULL;
-        m_ple = NULL;
-        m_pvz = NULL;
+	m_fRef = false;
+	m_pName = NULL;
+	m_fLocation = false;
+	m_fContents = false;
+	m_fExits = false;
+	m_fNext = false;
+	m_fParent = false;
+	m_fOwner = false;
+	m_fZone = false;
+	m_fPennies = false;
+	m_fFlags1 = false;
+	m_fFlags2 = false;
+	m_fFlags3 = false;
+	m_fFlags4 = false;
+	m_fToggles1 = false;
+	m_fToggles2 = false;
+	m_fToggles3 = false;
+	m_fToggles4 = false;
+	m_fToggles5 = false;
+	m_fToggles6 = false;
+	m_fToggles7 = false;
+	m_fToggles8 = false;
+	m_fAttrCount = false;
+	m_pvai = NULL;
+	m_ple = NULL;
+	m_pvz = NULL;
     }
     ~R7H_OBJECTINFO()
     {
-        free(m_pName);
-        delete m_ple;
-        delete m_pvz;
-        m_pName = NULL;
-        m_ple = NULL;
-        m_pvz = NULL;
-        if (NULL != m_pvai)
-        {
-            for (vector<R7H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
-            {
-               delete *it;
-            }
-            delete m_pvai;
-            m_pvai = NULL;
-        }
+	free(m_pName);
+	delete m_ple;
+	delete m_pvz;
+	m_pName = NULL;
+	m_ple = NULL;
+	m_pvz = NULL;
+	if (NULL != m_pvai)
+	{
+	    for (vector<R7H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
+	    {
+	       delete *it;
+	    }
+	    delete m_pvai;
+	    m_pvai = NULL;
+	}
     }
 };
 
@@ -943,23 +943,23 @@ public:
 
     R7H_GAME()
     {
-        m_flags = 0;
-        m_fSizeHint = false;
-        m_fNextAttr = false;
-        m_fRecordPlayers = false;
+	m_flags = 0;
+	m_fSizeHint = false;
+	m_fNextAttr = false;
+	m_fRecordPlayers = false;
     }
     ~R7H_GAME()
     {
-        for (vector<R7H_ATTRNAMEINFO *>::iterator it = m_vAttrNames.begin(); it != m_vAttrNames.end(); ++it)
-        {
-            delete *it;
-        }
-        m_vAttrNames.clear();
-        for (map<int, R7H_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
-        {
-            delete it->second;
-        }
-        m_mObjects.clear();
+	for (vector<R7H_ATTRNAMEINFO *>::iterator it = m_vAttrNames.begin(); it != m_vAttrNames.end(); ++it)
+	{
+	    delete *it;
+	}
+	m_vAttrNames.clear();
+	for (map<int, R7H_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
+	{
+	    delete it->second;
+	}
+	m_mObjects.clear();
     }
 };
 

@@ -32,28 +32,28 @@ extern "C" MUX_RESULT DCL_API Stub_PipePump(void)
     static UINT8 arg[QUEUE_BLOCK_SIZE];
     size_t nWanted = sizeof(arg);
     while (  Pipe_GetBytes(&Queue_Out, &nWanted, arg)
-          && 0 < nWanted)
+	  && 0 < nWanted)
     {
-        if (write(1, arg, nWanted) < 0)
-        {
-            return MUX_E_FAIL;
-        }
-        nWanted = sizeof(arg);
+	if (write(1, arg, nWanted) < 0)
+	{
+	    return MUX_E_FAIL;
+	}
+	nWanted = sizeof(arg);
     }
 
     // If we are shutting down, don't wait for any more input from the pipe.
     //
     if (!bStubSlaveShutdown)
     {
-        int len = read(0, arg, sizeof(arg));
-        if (0 < len)
-        {
-            Pipe_AppendBytes(&Queue_In, len, arg);
-        }
-        else if (len < 0)
-        {
-            return MUX_E_FAIL;
-        }
+	int len = read(0, arg, sizeof(arg));
+	if (0 < len)
+	{
+	    Pipe_AppendBytes(&Queue_In, len, arg);
+	}
+	else if (len < 0)
+	{
+	    return MUX_E_FAIL;
+	}
     }
     return MUX_S_OK;
 }
@@ -65,10 +65,10 @@ void Stub_ShoveChars(void)
 
     MUX_RESULT mr = MUX_S_OK;
     while (  !bStubSlaveShutdown
-          && MUX_SUCCEEDED(mr))
+	  && MUX_SUCCEEDED(mr))
     {
-        mr = Stub_PipePump();
-        Pipe_DecodeFrames(CHANNEL_INVALID, &Queue_Frame);
+	mr = Stub_PipePump();
+	Pipe_DecodeFrames(CHANNEL_INVALID, &Queue_Frame);
     }
     Stub_PipePump();
 }
@@ -79,23 +79,23 @@ extern "C" MUX_RESULT DCL_API stubslave_GetClassObject(MUX_CID cid, MUX_IID iid,
 
     if (CID_StubSlave == cid)
     {
-        CStubSlaveFactory *pStubSlaveFactory = NULL;
-        try
-        {
-            pStubSlaveFactory = new CStubSlaveFactory;
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	CStubSlaveFactory *pStubSlaveFactory = NULL;
+	try
+	{
+	    pStubSlaveFactory = new CStubSlaveFactory;
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pStubSlaveFactory)
-        {
-            return MUX_E_OUTOFMEMORY;
-        }
+	if (NULL == pStubSlaveFactory)
+	{
+	    return MUX_E_OUTOFMEMORY;
+	}
 
-        mr = pStubSlaveFactory->QueryInterface(iid, ppv);
-        pStubSlaveFactory->Release();
+	mr = pStubSlaveFactory->QueryInterface(iid, ppv);
+	pStubSlaveFactory->Release();
     }
     return mr;
 }
@@ -109,13 +109,13 @@ int main(int argc, char *argv[])
     mr = mux_InitModuleLibrary(IsSlaveProcess, Stub_PipePump, &Queue_In, &Queue_Out);
     if (MUX_SUCCEEDED(mr))
     {
-        mr = mux_RegisterClassObjects(NUM_CLASSES, stubslave_classes, stubslave_GetClassObject);
-        if (MUX_SUCCEEDED(mr))
-        {
-            Stub_ShoveChars();
-            mr = mux_RevokeClassObjects(NUM_CLASSES, stubslave_classes);
-        }
-        mr = mux_FinalizeModuleLibrary();
+	mr = mux_RegisterClassObjects(NUM_CLASSES, stubslave_classes, stubslave_GetClassObject);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    Stub_ShoveChars();
+	    mr = mux_RevokeClassObjects(NUM_CLASSES, stubslave_classes);
+	}
+	mr = mux_FinalizeModuleLibrary();
     }
 
     return MUX_RESULT_TO_EXIT_STATUS(mr);
@@ -171,20 +171,20 @@ MUX_RESULT CStubSlave::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_ISlaveControl *>(this);
+	*ppv = static_cast<mux_ISlaveControl *>(this);
     }
     else if (IID_ISlaveControl == iid)
     {
-        *ppv = static_cast<mux_ISlaveControl *>(this);
+	*ppv = static_cast<mux_ISlaveControl *>(this);
     }
     else if (mux_IID_IMarshal == iid)
     {
-        *ppv = static_cast<mux_IMarshal *>(this);
+	*ppv = static_cast<mux_IMarshal *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -201,8 +201,8 @@ UINT32 CStubSlave::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -213,15 +213,15 @@ MUX_RESULT CStubSlave::GetUnmarshalClass(MUX_IID riid, marshal_context ctx, MUX_
 
     if (NULL == pcid)
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
     else if (  IID_ISlaveControl == riid
-            && CrossProcess == ctx)
+	    && CrossProcess == ctx)
     {
-        // We only support cross-process at the moment.
-        //
-        *pcid = CID_StubSlaveProxy;
-        return MUX_S_OK;
+	// We only support cross-process at the moment.
+	//
+	*pcid = CID_StubSlaveProxy;
+	return MUX_S_OK;
     }
     return MUX_E_NOTIMPLEMENTED;
 }
@@ -242,12 +242,12 @@ MUX_RESULT CStubSlave_Disconnect(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
 
     if (NULL != pIUnknown)
     {
-        pIUnknown->Release();
-        return MUX_S_OK;
+	pIUnknown->Release();
+	return MUX_S_OK;
     }
     else
     {
-        return MUX_E_NOINTERFACE;
+	return MUX_E_NOINTERFACE;
     }
 }
 
@@ -256,7 +256,7 @@ MUX_RESULT CStubSlave_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     mux_ISlaveControl *pISlaveControl = static_cast<mux_ISlaveControl *>(pci->pInterface);
     if (NULL == pISlaveControl)
     {
-        return MUX_E_NOINTERFACE;
+	return MUX_E_NOINTERFACE;
     }
 
     UINT32 iMethod;
@@ -264,7 +264,7 @@ MUX_RESULT CStubSlave_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     if (  !Pipe_GetBytes(pqi, &nWanted, &iMethod)
        || nWanted != sizeof(iMethod))
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     MUX_RESULT mr = MUX_S_OK;
@@ -277,212 +277,212 @@ MUX_RESULT CStubSlave_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     switch (iMethod)
     {
     case 3: // MUX_RESULT AddModule(const UTF8 aModuleName[], const UTF8/UTF16 aFileName[]);
-        {
-            struct FRAME
-            {
-                size_t nModuleName;
-                size_t nFileName;
-            } CallFrame;
+	{
+	    struct FRAME
+	    {
+		size_t nModuleName;
+		size_t nFileName;
+	    } CallFrame;
 
-            nWanted = sizeof(CallFrame);
-            if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
-               || nWanted != sizeof(CallFrame))
-            {
-                return MUX_E_INVALIDARG;
-            }
+	    nWanted = sizeof(CallFrame);
+	    if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
+	       || nWanted != sizeof(CallFrame))
+	    {
+		return MUX_E_INVALIDARG;
+	    }
 
-            UTF8  *pModuleName = NULL;
+	    UTF8  *pModuleName = NULL;
 #if defined(WINDOWS_FILES)
-            UTF16 *pFileName = NULL;
+	    UTF16 *pFileName = NULL;
 #elif defined(UNIX_FILES)
-            UTF8  *pFileName = NULL;
+	    UTF8  *pFileName = NULL;
 #endif // UNIX_FILES
 
-            try
-            {
-                pModuleName = new UTF8[CallFrame.nModuleName];
+	    try
+	    {
+		pModuleName = new UTF8[CallFrame.nModuleName];
 #if defined(WINDOWS_FILES)
-                pFileName   = new UTF16[CallFrame.nFileName];
+		pFileName   = new UTF16[CallFrame.nFileName];
 #elif defined(UNIX_FILES)
-                pFileName   = new UTF8[CallFrame.nFileName];
+		pFileName   = new UTF8[CallFrame.nFileName];
 #endif // UNIX_FILES
-            }
-            catch (...)
-            {
-                ; // Nothing.
-            }
+	    }
+	    catch (...)
+	    {
+		; // Nothing.
+	    }
 
-            if (  NULL != pModuleName
-               && NULL != pFileName)
-            {
-                nWanted = CallFrame.nModuleName;
-                if (  Pipe_GetBytes(pqi, &nWanted, pModuleName)
-                   && nWanted == CallFrame.nModuleName)
-                {
-                    nWanted = CallFrame.nFileName;
-                    if (  Pipe_GetBytes(pqi, &nWanted, pFileName)
-                       && nWanted == CallFrame.nFileName)
-                    {
-                        struct RETURN
-                        {
-                            MUX_RESULT mr;
-                        } ReturnFrame;
+	    if (  NULL != pModuleName
+	       && NULL != pFileName)
+	    {
+		nWanted = CallFrame.nModuleName;
+		if (  Pipe_GetBytes(pqi, &nWanted, pModuleName)
+		   && nWanted == CallFrame.nModuleName)
+		{
+		    nWanted = CallFrame.nFileName;
+		    if (  Pipe_GetBytes(pqi, &nWanted, pFileName)
+		       && nWanted == CallFrame.nFileName)
+		    {
+			struct RETURN
+			{
+			    MUX_RESULT mr;
+			} ReturnFrame;
 
-                        ReturnFrame.mr = pISlaveControl->AddModule(pModuleName, pFileName);
+			ReturnFrame.mr = pISlaveControl->AddModule(pModuleName, pFileName);
 
-                        Pipe_EmptyQueue(pqi);
-                        Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
-                        mr = MUX_S_OK;
-                    }
-                }
-            }
-            else
-            {
-                mr = MUX_E_OUTOFMEMORY;
-            }
+			Pipe_EmptyQueue(pqi);
+			Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
+			mr = MUX_S_OK;
+		    }
+		}
+	    }
+	    else
+	    {
+		mr = MUX_E_OUTOFMEMORY;
+	    }
 
-            if (NULL != pModuleName)
-            {
-                delete pModuleName;
-                pModuleName = NULL;
-            }
-            if (NULL != pFileName)
-            {
-                delete pFileName;
-                pFileName = NULL;
-            }
-        }
-        break;
+	    if (NULL != pModuleName)
+	    {
+		delete pModuleName;
+		pModuleName = NULL;
+	    }
+	    if (NULL != pFileName)
+	    {
+		delete pFileName;
+		pFileName = NULL;
+	    }
+	}
+	break;
 
     case 4: // MUX_RESULT RemoveModule(const UTF8 aModuleName[]);
-        {
-            struct FRAME
-            {
-                size_t nModuleName;
-            } CallFrame;
+	{
+	    struct FRAME
+	    {
+		size_t nModuleName;
+	    } CallFrame;
 
-            nWanted = sizeof(CallFrame);
-            if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
-               || nWanted != sizeof(CallFrame))
-            {
-                return MUX_E_INVALIDARG;
-            }
+	    nWanted = sizeof(CallFrame);
+	    if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
+	       || nWanted != sizeof(CallFrame))
+	    {
+		return MUX_E_INVALIDARG;
+	    }
 
-            UTF8  *pModuleName = NULL;
+	    UTF8  *pModuleName = NULL;
 
-            try
-            {
-                pModuleName = new UTF8[CallFrame.nModuleName];
-            }
-            catch (...)
-            {
-                ; // Nothing.
-            }
+	    try
+	    {
+		pModuleName = new UTF8[CallFrame.nModuleName];
+	    }
+	    catch (...)
+	    {
+		; // Nothing.
+	    }
 
-            if (NULL != pModuleName)
-            {
-                nWanted = CallFrame.nModuleName;
-                if (  Pipe_GetBytes(pqi, &nWanted, pModuleName)
-                   && nWanted == CallFrame.nModuleName)
-                {
-                    struct RETURN
-                    {
-                        MUX_RESULT mr;
-                    } ReturnFrame;
+	    if (NULL != pModuleName)
+	    {
+		nWanted = CallFrame.nModuleName;
+		if (  Pipe_GetBytes(pqi, &nWanted, pModuleName)
+		   && nWanted == CallFrame.nModuleName)
+		{
+		    struct RETURN
+		    {
+			MUX_RESULT mr;
+		    } ReturnFrame;
 
-                    ReturnFrame.mr = pISlaveControl->RemoveModule(pModuleName);
+		    ReturnFrame.mr = pISlaveControl->RemoveModule(pModuleName);
 
-                    Pipe_EmptyQueue(pqi);
-                    Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
-                    mr = MUX_S_OK;
-                }
-            }
-            else
-            {
-                mr = MUX_E_OUTOFMEMORY;
-            }
+		    Pipe_EmptyQueue(pqi);
+		    Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
+		    mr = MUX_S_OK;
+		}
+	    }
+	    else
+	    {
+		mr = MUX_E_OUTOFMEMORY;
+	    }
 
-            if (NULL != pModuleName)
-            {
-                delete pModuleName;
-                pModuleName = NULL;
-            }
-        }
-        break;
+	    if (NULL != pModuleName)
+	    {
+		delete pModuleName;
+		pModuleName = NULL;
+	    }
+	}
+	break;
 
     case 5: // MUX_RESULT ModuleInfo(int iModule, MUX_MODULE_INFO *pModuleInfo);
-        {
-            struct FRAME
-            {
-                int iModule;
-            } CallFrame;
+	{
+	    struct FRAME
+	    {
+		int iModule;
+	    } CallFrame;
 
-            nWanted = sizeof(CallFrame);
-            if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
-               || nWanted != sizeof(CallFrame))
-            {
-                return MUX_E_INVALIDARG;
-            }
+	    nWanted = sizeof(CallFrame);
+	    if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
+	       || nWanted != sizeof(CallFrame))
+	    {
+		return MUX_E_INVALIDARG;
+	    }
 
-            struct RETURN
-            {
-                size_t     nName;
-                bool       bLoaded;
-                MUX_RESULT mr;
-            } ReturnFrame;
+	    struct RETURN
+	    {
+		size_t     nName;
+		bool       bLoaded;
+		MUX_RESULT mr;
+	    } ReturnFrame;
 
-            MUX_MODULE_INFO ModuleInfo;
-            ReturnFrame.mr = pISlaveControl->ModuleInfo(CallFrame.iModule, &ModuleInfo);
+	    MUX_MODULE_INFO ModuleInfo;
+	    ReturnFrame.mr = pISlaveControl->ModuleInfo(CallFrame.iModule, &ModuleInfo);
 
-            Pipe_EmptyQueue(pqi);
-            if (  MUX_SUCCEEDED(ReturnFrame.mr)
-               && MUX_S_FALSE != ReturnFrame.mr)
-            {
-                ReturnFrame.bLoaded = ModuleInfo.bLoaded;
-                ReturnFrame.nName   = strlen((const char *)ModuleInfo.pName)+1;
-            }
-            else
-            {
-                ReturnFrame.bLoaded = false;
-                ReturnFrame.nName   = 0;
-            }
+	    Pipe_EmptyQueue(pqi);
+	    if (  MUX_SUCCEEDED(ReturnFrame.mr)
+	       && MUX_S_FALSE != ReturnFrame.mr)
+	    {
+		ReturnFrame.bLoaded = ModuleInfo.bLoaded;
+		ReturnFrame.nName   = strlen((const char *)ModuleInfo.pName)+1;
+	    }
+	    else
+	    {
+		ReturnFrame.bLoaded = false;
+		ReturnFrame.nName   = 0;
+	    }
 
-            Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
-            Pipe_AppendBytes(pqi, ReturnFrame.nName, ModuleInfo.pName);
+	    Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
+	    Pipe_AppendBytes(pqi, ReturnFrame.nName, ModuleInfo.pName);
 
-            mr = MUX_S_OK;
-        }
-        break;
+	    mr = MUX_S_OK;
+	}
+	break;
 
     case 6: // MUX_RESULT ModuleMaintenance(void);
-        {
-            struct RETURN
-            {
-                MUX_RESULT mr;
-            } ReturnFrame;
+	{
+	    struct RETURN
+	    {
+		MUX_RESULT mr;
+	    } ReturnFrame;
 
-            ReturnFrame.mr = pISlaveControl->ModuleMaintenance();
+	    ReturnFrame.mr = pISlaveControl->ModuleMaintenance();
 
-            Pipe_EmptyQueue(pqi);
-            Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
-            mr = MUX_S_OK;
-        }
-        break;
+	    Pipe_EmptyQueue(pqi);
+	    Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
+	    mr = MUX_S_OK;
+	}
+	break;
 
     case 7: // MUX_RESULT ShutdownSlave(void);
-        {
-            struct RETURN
-            {
-                MUX_RESULT mr;
-            } ReturnFrame;
+	{
+	    struct RETURN
+	    {
+		MUX_RESULT mr;
+	    } ReturnFrame;
 
-            ReturnFrame.mr = pISlaveControl->ShutdownSlave();
+	    ReturnFrame.mr = pISlaveControl->ShutdownSlave();
 
-            Pipe_EmptyQueue(pqi);
-            Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
-            mr = MUX_S_OK;
-        }
-        break;
+	    Pipe_EmptyQueue(pqi);
+	    Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
+	    mr = MUX_S_OK;
+	}
+	break;
     }
     return mr;
 }
@@ -494,46 +494,46 @@ MUX_RESULT CStubSlave::MarshalInterface(QUEUE_INFO *pqi, MUX_IID riid, void *pv,
     MUX_RESULT mr = MUX_S_OK;
     if (NULL == pqi)
     {
-        mr = MUX_E_INVALIDARG;
+	mr = MUX_E_INVALIDARG;
     }
     else if (IID_ISlaveControl != riid)
     {
-        mr = MUX_E_FAIL;
+	mr = MUX_E_FAIL;
     }
     else if (CrossProcess != ctx)
     {
-        mr = MUX_E_NOTIMPLEMENTED;
+	mr = MUX_E_NOTIMPLEMENTED;
     }
     else
     {
-        mux_ISlaveControl *pISlaveControl = NULL;
-        if (NULL == pv)
-        {
-            mr = QueryInterface(IID_ISlaveControl, (void **)&pISlaveControl);
-        }
-        else
-        {
-            mux_IUnknown *pIUnknown = static_cast<mux_IUnknown *>(pv);
-            mr = pIUnknown->QueryInterface(IID_ISlaveControl, (void **)&pISlaveControl);
-        }
-        if (MUX_SUCCEEDED(mr))
-        {
-            // Construct a packet sufficient to allow the proxy to communicate with us.
-            //
-            CHANNEL_INFO *pChannel = Pipe_AllocateChannel(CStubSlave_Call, NULL, CStubSlave_Disconnect);
-            if (NULL != pChannel)
-            {
-                pChannel->pInterface = pISlaveControl;
-                Pipe_AppendBytes(pqi, sizeof(pChannel->nChannel), (UTF8*)(&pChannel->nChannel));
-                mr =  MUX_S_OK;
-            }
-            else
-            {
-                pISlaveControl->Release();
-                pISlaveControl = NULL;
-                mr = MUX_E_OUTOFMEMORY;
-            }
-        }
+	mux_ISlaveControl *pISlaveControl = NULL;
+	if (NULL == pv)
+	{
+	    mr = QueryInterface(IID_ISlaveControl, (void **)&pISlaveControl);
+	}
+	else
+	{
+	    mux_IUnknown *pIUnknown = static_cast<mux_IUnknown *>(pv);
+	    mr = pIUnknown->QueryInterface(IID_ISlaveControl, (void **)&pISlaveControl);
+	}
+	if (MUX_SUCCEEDED(mr))
+	{
+	    // Construct a packet sufficient to allow the proxy to communicate with us.
+	    //
+	    CHANNEL_INFO *pChannel = Pipe_AllocateChannel(CStubSlave_Call, NULL, CStubSlave_Disconnect);
+	    if (NULL != pChannel)
+	    {
+		pChannel->pInterface = pISlaveControl;
+		Pipe_AppendBytes(pqi, sizeof(pChannel->nChannel), (UTF8*)(&pChannel->nChannel));
+		mr =  MUX_S_OK;
+	    }
+	    else
+	    {
+		pISlaveControl->Release();
+		pISlaveControl = NULL;
+		mr = MUX_E_OUTOFMEMORY;
+	    }
+	}
     }
     return mr;
 }
@@ -555,11 +555,11 @@ MUX_RESULT CStubSlave::ReleaseMarshalData(QUEUE_INFO *pqi)
     if (  Pipe_GetBytes(pqi, &nWanted, &nChannel)
        && sizeof(nChannel) == nWanted)
     {
-        CHANNEL_INFO *pChannel = Pipe_FindChannel(nChannel);
-        if (NULL != pChannel)
-        {
-            CStubSlave_Disconnect(pChannel, pqi);
-        }
+	CHANNEL_INFO *pChannel = Pipe_FindChannel(nChannel);
+	if (NULL != pChannel)
+	{
+	    CStubSlave_Disconnect(pChannel, pqi);
+	}
     }
     return MUX_S_OK;
 }
@@ -620,16 +620,16 @@ MUX_RESULT CStubSlaveFactory::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else if (mux_IID_IClassFactory == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -646,8 +646,8 @@ UINT32 CStubSlaveFactory::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -658,22 +658,22 @@ MUX_RESULT CStubSlaveFactory::CreateInstance(mux_IUnknown *pUnknownOuter, MUX_II
     //
     if (NULL != pUnknownOuter)
     {
-        return MUX_E_NOAGGREGATION;
+	return MUX_E_NOAGGREGATION;
     }
 
     CStubSlave *pStubSlave = NULL;
     try
     {
-        pStubSlave = new CStubSlave;
+	pStubSlave = new CStubSlave;
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL == pStubSlave)
     {
-        return MUX_E_OUTOFMEMORY;
+	return MUX_E_OUTOFMEMORY;
     }
 
     MUX_RESULT mr = pStubSlave->QueryInterface(iid, ppv);

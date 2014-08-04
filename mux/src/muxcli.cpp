@@ -22,18 +22,18 @@ static int iArgType(char *pArg)
     int iType = 0;
     for (; iType < 3 && aHHN[iType] == pArg[iType]; iType++)
     {
-        // Nothing
+	// Nothing
     }
     if (iType > 3)
     {
-        iType = 3;
+	iType = 3;
     }
 
     // "-" is a special case. It is a non-option argument.
     //
     if (iType == 1 && pArg[1] == '\0')
     {
-        iType = 0;
+	iType = 0;
     }
     return iType;
 }
@@ -60,166 +60,166 @@ void CLI_Process
     int bEndOfOptions = 0;
     for (int i = 1; i < argc; i++)
     {
-        char *pArgv = argv[i];
-        int iType = 0;
-        if (!bEndOfOptions)
-        {
-            iType = iArgType(pArgv);
-        }
+	char *pArgv = argv[i];
+	int iType = 0;
+	if (!bEndOfOptions)
+	{
+	    iType = iArgType(pArgv);
+	}
 
-        if (iType == 0)
-        {
-            // Non-option argument.
-            //
-            if (minNonOption <= i)
-            {
-                // We haven't associated it with an option, yet, so
-                // pass it in by itself.
-                //
-                pFunc(0, pArgv);
-            }
-            continue;
-        }
+	if (iType == 0)
+	{
+	    // Non-option argument.
+	    //
+	    if (minNonOption <= i)
+	    {
+		// We haven't associated it with an option, yet, so
+		// pass it in by itself.
+		//
+		pFunc(0, pArgv);
+	    }
+	    continue;
+	}
 
-        if (minNonOption < i+1)
-        {
-            minNonOption = i+1;
-        }
+	if (minNonOption < i+1)
+	{
+	    minNonOption = i+1;
+	}
 
-        if (iType == 3)
-        {
-            // A "--" causes the remaining unpaired arguments to be
-            // treated as non-option arguments.
-            //
-            bEndOfOptions = 1;
-            continue;
-        }
+	if (iType == 3)
+	{
+	    // A "--" causes the remaining unpaired arguments to be
+	    // treated as non-option arguments.
+	    //
+	    bEndOfOptions = 1;
+	    continue;
+	}
 
-        const char *p = pArgv+iType;
+	const char *p = pArgv+iType;
 
-        if (iType == 2)
-        {
-            // We have a long option.
-            //
-            const char *pEqual = strchr(p, '=');
-            size_t nLen;
-            if (pEqual)
-            {
-                nLen = pEqual - p;
-            }
-            else
-            {
-                nLen = strlen(p);
-            }
-            for (int j = 0; j < nOptionTable; j++)
-            {
-                if (  !strncmp(aOptionTable[j].m_Flag, p, nLen)
-                   && aOptionTable[j].m_Flag[nLen] == '\0')
-                {
-                    switch (aOptionTable[j].m_ArgControl)
-                    {
-                    case CLI_NONE:
-                        pFunc(aOptionTable + j, 0);
-                        break;
+	if (iType == 2)
+	{
+	    // We have a long option.
+	    //
+	    const char *pEqual = strchr(p, '=');
+	    size_t nLen;
+	    if (pEqual)
+	    {
+		nLen = pEqual - p;
+	    }
+	    else
+	    {
+		nLen = strlen(p);
+	    }
+	    for (int j = 0; j < nOptionTable; j++)
+	    {
+		if (  !strncmp(aOptionTable[j].m_Flag, p, nLen)
+		   && aOptionTable[j].m_Flag[nLen] == '\0')
+		{
+		    switch (aOptionTable[j].m_ArgControl)
+		    {
+		    case CLI_NONE:
+			pFunc(aOptionTable + j, 0);
+			break;
 
-                    case CLI_OPTIONAL:
-                    case CLI_REQUIRED:
-                        if (pEqual)
-                        {
-                            pFunc(aOptionTable + j, pEqual+1);
-                            break;
-                        }
-                        int bFound = 0;
-                        for (; minNonOption < argc; minNonOption++)
-                        {
-                            int iType2 = iArgType(argv[minNonOption]);
-                            if (iType2 == 0)
-                            {
-                                pFunc(aOptionTable + j, argv[minNonOption]);
-                                minNonOption++;
-                                bFound = 1;
-                                break;
-                            }
-                            else if (iType2 == 3)
-                            {
-                                // End of options. Stop.
-                                //
-                                break;
-                            }
-                        }
-                        if (  !bFound
-                           && aOptionTable[j].m_ArgControl == CLI_OPTIONAL)
-                        {
-                            pFunc(aOptionTable + j, 0);
-                        }
-                        break;
-                    }
-                    break;
-                }
-            }
-            continue;
-        }
+		    case CLI_OPTIONAL:
+		    case CLI_REQUIRED:
+			if (pEqual)
+			{
+			    pFunc(aOptionTable + j, pEqual+1);
+			    break;
+			}
+			int bFound = 0;
+			for (; minNonOption < argc; minNonOption++)
+			{
+			    int iType2 = iArgType(argv[minNonOption]);
+			    if (iType2 == 0)
+			    {
+				pFunc(aOptionTable + j, argv[minNonOption]);
+				minNonOption++;
+				bFound = 1;
+				break;
+			    }
+			    else if (iType2 == 3)
+			    {
+				// End of options. Stop.
+				//
+				break;
+			    }
+			}
+			if (  !bFound
+			   && aOptionTable[j].m_ArgControl == CLI_OPTIONAL)
+			{
+			    pFunc(aOptionTable + j, 0);
+			}
+			break;
+		    }
+		    break;
+		}
+	    }
+	    continue;
+	}
 
-        // At this point, the only possibilities left are a short
-        // option.
-        //
-        while (*p)
-        {
-            int ch = *p++;
-            for (int j = 0; j < nOptionTable; j++)
-            {
-                if (  aOptionTable[j].m_Flag[0] == ch
-                   && aOptionTable[j].m_Flag[1] == '\0')
-                {
-                    switch (aOptionTable[j].m_ArgControl)
-                    {
-                    case CLI_NONE:
-                        pFunc(aOptionTable + j, 0);
-                        break;
+	// At this point, the only possibilities left are a short
+	// option.
+	//
+	while (*p)
+	{
+	    int ch = *p++;
+	    for (int j = 0; j < nOptionTable; j++)
+	    {
+		if (  aOptionTable[j].m_Flag[0] == ch
+		   && aOptionTable[j].m_Flag[1] == '\0')
+		{
+		    switch (aOptionTable[j].m_ArgControl)
+		    {
+		    case CLI_NONE:
+			pFunc(aOptionTable + j, 0);
+			break;
 
-                    case CLI_OPTIONAL:
-                    case CLI_REQUIRED:
-                        if (*p)
-                        {
-                            // Value follows option letter
-                            //
-                            if (*p == '=')
-                            {
-                                p++;
-                            }
+		    case CLI_OPTIONAL:
+		    case CLI_REQUIRED:
+			if (*p)
+			{
+			    // Value follows option letter
+			    //
+			    if (*p == '=')
+			    {
+				p++;
+			    }
 
-                            pFunc(aOptionTable + j, p);
-                            p = "";
-                            break;
-                        }
-                        int bFound = 0;
-                        for (; minNonOption < argc; minNonOption++)
-                        {
-                            int iType2 = iArgType(argv[minNonOption]);
-                            if (iType2 == 0)
-                            {
-                                pFunc(aOptionTable + j, argv[minNonOption]);
-                                minNonOption++;
-                                bFound = 1;
-                                break;
-                            }
-                            else if (iType2 == 3)
-                            {
-                                // End of options. Stop.
-                                //
-                                break;
-                            }
-                        }
-                        if (  !bFound
-                           && aOptionTable[j].m_ArgControl == CLI_OPTIONAL)
-                        {
-                            pFunc(aOptionTable + j, 0);
-                        }
-                        break;
-                    }
-                    break;
-                }
-            }
-        }
+			    pFunc(aOptionTable + j, p);
+			    p = "";
+			    break;
+			}
+			int bFound = 0;
+			for (; minNonOption < argc; minNonOption++)
+			{
+			    int iType2 = iArgType(argv[minNonOption]);
+			    if (iType2 == 0)
+			    {
+				pFunc(aOptionTable + j, argv[minNonOption]);
+				minNonOption++;
+				bFound = 1;
+				break;
+			    }
+			    else if (iType2 == 3)
+			    {
+				// End of options. Stop.
+				//
+				break;
+			    }
+			}
+			if (  !bFound
+			   && aOptionTable[j].m_ArgControl == CLI_OPTIONAL)
+			{
+			    pFunc(aOptionTable + j, 0);
+			}
+			break;
+		    }
+		    break;
+		}
+	    }
+	}
     }
 }

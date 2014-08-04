@@ -13,183 +13,183 @@
 %x str
 %%
 
-                 char aQuotedString[65536];
-                 char *pQuotedString;
-                 int  iPreStrContext;
+		 char aQuotedString[65536];
+		 char *pQuotedString;
+		 int  iPreStrContext;
 
 <INITIAL>{
   ^\+V[0-9]+     {
-                     p6hlval.i = ((atoi(p6htext+2) - 2) / 256) - 5;
-                     BEGIN(afterhdr);
-                     return VHDR;
-                 }
+		     p6hlval.i = ((atoi(p6htext+2) - 2) / 256) - 5;
+		     BEGIN(afterhdr);
+		     return VHDR;
+		 }
 }
 <afterhdr>{
   savedtime      {
-                     return SAVEDTIME;
-                 }
+		     return SAVEDTIME;
+		 }
   ^\+FLAGS[\t ]+LIST  {
-                     return FLAGSLIST;
-                 }
+		     return FLAGSLIST;
+		 }
   ^\+POWER[\t ]+LIST  {
-                     return POWERLIST;
-                 }
+		     return POWERLIST;
+		 }
   flagcount      {
-                     return FLAGCOUNT;
-                 }
+		     return FLAGCOUNT;
+		 }
   flagaliascount {
-                     return FLAGALIASCOUNT;
-                 }
+		     return FLAGALIASCOUNT;
+		 }
   name           {
-                     return NAME;
-                 }
+		     return NAME;
+		 }
   letter         {
-                     return LETTER;
-                 }
+		     return LETTER;
+		 }
   type           {
-                     return TYPE;
-                 }
+		     return TYPE;
+		 }
   perms          {
-                     return PERMS;
-                 }
+		     return PERMS;
+		 }
   negate_perms   {
-                     return NEGATE_PERMS;
-                 }
+		     return NEGATE_PERMS;
+		 }
   alias          {
-                     return ALIAS;
-                 }
+		     return ALIAS;
+		 }
   -?[0-9]+       {
-                     p6hlval.i = atoi(p6htext);
-                     return INTEGER;
-                 }
+		     p6hlval.i = atoi(p6htext);
+		     return INTEGER;
+		 }
   ~[0-9]+        {
-                     p6hlval.i = atoi(p6htext+1);
-                     return SIZEHINT;
-                 }
+		     p6hlval.i = atoi(p6htext+1);
+		     return SIZEHINT;
+		 }
   ![0-9]+        {
-                     p6hlval.i = atoi(p6htext+1);
-                     BEGIN(object);
-                     return OBJECT;
-                 }
+		     p6hlval.i = atoi(p6htext+1);
+		     BEGIN(object);
+		     return OBJECT;
+		 }
 }
 
 <object>{
   ![0-9]+        {
-                     p6hlval.i = atoi(p6htext+1);
-                     return OBJECT;
-                 }
+		     p6hlval.i = atoi(p6htext+1);
+		     return OBJECT;
+		 }
   name           {
-                     return NAME;
-                 }
+		     return NAME;
+		 }
   \#-?[0-9]+     {
-                     p6hlval.i = atoi(p6htext+1);
-                     return DBREF;
-                 }
+		     p6hlval.i = atoi(p6htext+1);
+		     return DBREF;
+		 }
   -?[0-9]+       {
-                     p6hlval.i = atoi(p6htext);
-                     return INTEGER;
-                 }
+		     p6hlval.i = atoi(p6htext);
+		     return INTEGER;
+		 }
   location       {
-                     return LOCATION;
-                 }
+		     return LOCATION;
+		 }
   contents       {
-                     return CONTENTS;
-                 }
+		     return CONTENTS;
+		 }
   exits          {
-                     return EXITS;
-                 }
+		     return EXITS;
+		 }
   next           {
-                     return NEXT;
-                 }
+		     return NEXT;
+		 }
   parent         {
-                     return PARENT;
-                 }
+		     return PARENT;
+		 }
   lockcount      {
-                     return LOCKCOUNT;
-                 }
+		     return LOCKCOUNT;
+		 }
   owner          {
-                     return OWNER;
-                 }
+		     return OWNER;
+		 }
   zone           {
-                     return ZONE;
-                 }
+		     return ZONE;
+		 }
   pennies        {
-                     return PENNIES;
-                 }
+		     return PENNIES;
+		 }
   type           {
-                     return TYPE;
-                 }
+		     return TYPE;
+		 }
   flags          {
-                     return FLAGS;
-                 }
+		     return FLAGS;
+		 }
   powers         {
-                     return POWERS;
-                 }
+		     return POWERS;
+		 }
   warnings       {
-                     return WARNINGS;
-                 }
+		     return WARNINGS;
+		 }
   created        {
-                     return CREATED;
-                 }
+		     return CREATED;
+		 }
   modified       {
-                     return MODIFIED;
-                 }
+		     return MODIFIED;
+		 }
   attrcount      {
-                     return ATTRCOUNT;
-                 }
+		     return ATTRCOUNT;
+		 }
   derefs         {
-                     return DEREFS;
-                 }
+		     return DEREFS;
+		 }
   value          {
-                     return VALUE;
-                 }
+		     return VALUE;
+		 }
   creator        {
-                     return CREATOR;
-                 }
+		     return CREATOR;
+		 }
   key            {
-                     return KEY;
-                 }
+		     return KEY;
+		 }
   "***END OF DUMP***" {
-                     return EOD;
-                 }
+		     return EOD;
+		 }
  \][A-Z0-9!"#$&'*+,-./;<=>?@_~`]+   {
-                     p6hlval.p = StringClone(p6htext+1);
-                     return ATTRNAME;
-                 }
+		     p6hlval.p = StringClone(p6htext+1);
+		     return ATTRNAME;
+		 }
  \^              {
-                     return '^';
-                 }
+		     return '^';
+		 }
  \<              {
-                     return '<';
-                 }
+		     return '<';
+		 }
 }
 
 \"               {
-                     pQuotedString = aQuotedString;
-                     iPreStrContext = YY_START;
-                     BEGIN(str);
-                 }
+		     pQuotedString = aQuotedString;
+		     iPreStrContext = YY_START;
+		     BEGIN(str);
+		 }
 <str>{
   \"             {
-                     *pQuotedString = '\0';
-                     p6hlval.p = StringClone(aQuotedString);
-                     BEGIN(iPreStrContext);
-                     return STRING;
-                 }
+		     *pQuotedString = '\0';
+		     p6hlval.p = StringClone(aQuotedString);
+		     BEGIN(iPreStrContext);
+		     return STRING;
+		 }
   \\[\\\"]       {
-                     if (pQuotedString < aQuotedString + sizeof(aQuotedString) - 1)
-                     {
-                         *pQuotedString++ = p6htext[1];
-                     }
-                 }
+		     if (pQuotedString < aQuotedString + sizeof(aQuotedString) - 1)
+		     {
+			 *pQuotedString++ = p6htext[1];
+		     }
+		 }
   [^\\\"]+       {
-                     char *p = p6htext;
-                     while (  '\0' != *p
-                           && pQuotedString < aQuotedString + sizeof(aQuotedString) - 1)
-                     {
-                         *pQuotedString++ = *p++;
-                     }
-                 }
+		     char *p = p6htext;
+		     while (  '\0' != *p
+			   && pQuotedString < aQuotedString + sizeof(aQuotedString) - 1)
+		     {
+			 *pQuotedString++ = *p++;
+		     }
+		 }
 }
 
 [\n\t ]+         /* ignore whitespace */ ;

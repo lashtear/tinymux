@@ -73,34 +73,34 @@ int mux_fpclass(double result)
 
     if ((u.i64 & IEEE_MASK_EXPONENT) == 0)
     {
-        if (u.i64 & IEEE_MASK_MANTISSA)
-        {
-            if (u.i64 & IEEE_MASK_SIGN) return MUX_FPCLASS_ND;
-            else                        return MUX_FPCLASS_PD;
-        }
-        else
-        {
-            if (u.i64 & IEEE_MASK_SIGN) return MUX_FPCLASS_NZ;
-            else                        return MUX_FPCLASS_PZ;
-        }
+	if (u.i64 & IEEE_MASK_MANTISSA)
+	{
+	    if (u.i64 & IEEE_MASK_SIGN) return MUX_FPCLASS_ND;
+	    else                        return MUX_FPCLASS_PD;
+	}
+	else
+	{
+	    if (u.i64 & IEEE_MASK_SIGN) return MUX_FPCLASS_NZ;
+	    else                        return MUX_FPCLASS_PZ;
+	}
     }
     else if ((u.i64 & IEEE_MASK_EXPONENT) == IEEE_MASK_EXPONENT)
     {
-        if (u.i64 & IEEE_MASK_MANTISSA)
-        {
-            if (u.i64 & IEEE_MASK_QNAN) return MUX_FPCLASS_QNAN;
-            else                        return MUX_FPCLASS_SNAN;
-        }
-        else
-        {
-            if (u.i64 & IEEE_MASK_SIGN) return MUX_FPCLASS_NINF;
-            else                        return MUX_FPCLASS_PINF;
-        }
+	if (u.i64 & IEEE_MASK_MANTISSA)
+	{
+	    if (u.i64 & IEEE_MASK_QNAN) return MUX_FPCLASS_QNAN;
+	    else                        return MUX_FPCLASS_SNAN;
+	}
+	else
+	{
+	    if (u.i64 & IEEE_MASK_SIGN) return MUX_FPCLASS_NINF;
+	    else                        return MUX_FPCLASS_PINF;
+	}
     }
     else
     {
-        if (u.i64 & IEEE_MASK_SIGN)     return MUX_FPCLASS_NN;
-        else                            return MUX_FPCLASS_PN;
+	if (u.i64 & IEEE_MASK_SIGN)     return MUX_FPCLASS_NN;
+	else                            return MUX_FPCLASS_PN;
     }
 }
 #endif // HAVE_IEEE_FP_FORMAT
@@ -137,8 +137,8 @@ double NearestPretty(double R)
     size_t nDigitsR0 = rve - p;
     if (nDigitsR0 < nDigits)
     {
-        nDigits = rve - p;
-        R  = R0;
+	nDigits = rve - p;
+	R  = R0;
     }
 
     // R+ulp(R)
@@ -147,8 +147,8 @@ double NearestPretty(double R)
     size_t nDigitsR1 = rve - p;
     if (nDigitsR1 < nDigits)
     {
-        nDigits = rve - p;
-        R = R1;
+	nDigits = rve - p;
+	R = R1;
     }
     return R;
 }
@@ -162,11 +162,11 @@ static int DCL_CDECL f_comp_abs(const void *s1, const void *s2)
 
     if (a > b)
     {
-        return -1;
+	return -1;
     }
     else if (a < b)
     {
-        return 1;
+	return 1;
     }
     return 0;
 }
@@ -182,17 +182,17 @@ double AddDoubles(__in int n, __in_ecount(n) double pd[])
     double sum = 0.0;
     if (0 < n)
     {
-        sum = pd[0];
-        double sum_err = 0.0;
-        int i;
-        for (i = 1; i < n; i++)
-        {
-            double addend_err;
-            double addend = AddWithError(addend_err, sum_err, pd[i]);
-            double sum1_err;
-            double sum1 = AddWithError(sum1_err, sum, addend);
-            sum = AddWithError(sum_err, sum1, addend_err + sum1_err);
-        }
+	sum = pd[0];
+	double sum_err = 0.0;
+	int i;
+	for (i = 1; i < n; i++)
+	{
+	    double addend_err;
+	    double addend = AddWithError(addend_err, sum_err, pd[i]);
+	    double sum1_err;
+	    double sum1 = AddWithError(sum1_err, sum, addend);
+	    sum = AddWithError(sum_err, sum1, addend_err + sum1_err);
+	}
     }
     return NearestPretty(sum);
 }
@@ -209,24 +209,24 @@ void fval(UTF8 *buff, UTF8 **bufc, double result)
     if (MUX_FPGROUP(fpc) == MUX_FPGROUP_PASS)
     {
 #endif // HAVE_IEEE_FP_FORMAT
-        double rIntegerPart;
-        double rFractionalPart = modf(result, &rIntegerPart);
-        if (  0.0 == rFractionalPart
-           && LONG_MIN <= rIntegerPart
-           && rIntegerPart <= LONG_MAX)
-        {
-            long i = (long)rIntegerPart;
-            safe_ltoa(i, buff, bufc);
-        }
-        else
-        {
-            safe_str(mux_ftoa(result, false, 0), buff, bufc);
-        }
+	double rIntegerPart;
+	double rFractionalPart = modf(result, &rIntegerPart);
+	if (  0.0 == rFractionalPart
+	   && LONG_MIN <= rIntegerPart
+	   && rIntegerPart <= LONG_MAX)
+	{
+	    long i = (long)rIntegerPart;
+	    safe_ltoa(i, buff, bufc);
+	}
+	else
+	{
+	    safe_str(mux_ftoa(result, false, 0), buff, bufc);
+	}
 #ifdef HAVE_IEEE_FP_FORMAT
     }
     else
     {
-        safe_str(mux_FPStrings[MUX_FPCLASS(fpc)], buff, bufc);
+	safe_str(mux_FPStrings[MUX_FPCLASS(fpc)], buff, bufc);
     }
 #endif // HAVE_IEEE_FP_FORMAT
 }
@@ -250,84 +250,84 @@ bool ParseFloat(__out PARSE_FLOAT_RESULT *pfr, __in_z const UTF8 *str, bool bStr
     if (  !mux_isdigit(*str)
        && *str != '.')
     {
-        while (mux_isspace(*str))
-        {
-            str++;
-        }
+	while (mux_isspace(*str))
+	{
+	    str++;
+	}
 
-        pfr->pMeat = str;
-        if (*str == '-')
-        {
-            pfr->iLeadingSign = '-';
-            str++;
-        }
-        else if (*str == '+')
-        {
-            pfr->iLeadingSign = '+';
-            str++;
-        }
+	pfr->pMeat = str;
+	if (*str == '-')
+	{
+	    pfr->iLeadingSign = '-';
+	    str++;
+	}
+	else if (*str == '+')
+	{
+	    pfr->iLeadingSign = '+';
+	    str++;
+	}
 
-        if (  !mux_isdigit(*str)
-           && *str != '.')
-        {
-            // Look for three magic strings.
-            //
-            if (  'I' == str[0]
-               || 'i' == str[0])
-            {
-                // Could be 'Inf' or 'Ind'
-                //
-                if (  'N' == str[1]
-                   || 'n' == str[1])
-                {
-                    if (  'F' == str[2]
-                       || 'f' == str[2])
-                    {
-                        // Inf
-                        //
-                        if (pfr->iLeadingSign == '-')
-                        {
-                            pfr->iString = IEEE_MAKE_NINF;
-                        }
-                        else
-                        {
-                            pfr->iString = IEEE_MAKE_PINF;
-                        }
-                        str += 3;
-                        goto LastSpaces;
-                    }
-                    else if (  'D' == str[2]
-                            || 'd' == str[2])
-                    {
-                        // Ind
-                        //
-                        pfr->iString = IEEE_MAKE_IND;
-                        str += 3;
-                        goto LastSpaces;
-                    }
-                }
-            }
-            else if (  'N' == str[0]
-                    || 'n' == str[0])
-            {
-                // Could be 'Nan'
-                //
-                if (  'A' == str[1]
-                   || 'a' == str[1])
-                {
-                    if (  'N' == str[2]
-                       || 'n' == str[2])
-                    {
-                        // Nan
-                        //
-                        pfr->iString = IEEE_MAKE_NAN;
-                        str += 3;
-                        goto LastSpaces;
-                    }
-                }
-            }
-            return false;
-        }
+	if (  !mux_isdigit(*str)
+	   && *str != '.')
+	{
+	    // Look for three magic strings.
+	    //
+	    if (  'I' == str[0]
+	       || 'i' == str[0])
+	    {
+		// Could be 'Inf' or 'Ind'
+		//
+		if (  'N' == str[1]
+		   || 'n' == str[1])
+		{
+		    if (  'F' == str[2]
+		       || 'f' == str[2])
+		    {
+			// Inf
+			//
+			if (pfr->iLeadingSign == '-')
+			{
+			    pfr->iString = IEEE_MAKE_NINF;
+			}
+			else
+			{
+			    pfr->iString = IEEE_MAKE_PINF;
+			}
+			str += 3;
+			goto LastSpaces;
+		    }
+		    else if (  'D' == str[2]
+			    || 'd' == str[2])
+		    {
+			// Ind
+			//
+			pfr->iString = IEEE_MAKE_IND;
+			str += 3;
+			goto LastSpaces;
+		    }
+		}
+	    }
+	    else if (  'N' == str[0]
+		    || 'n' == str[0])
+	    {
+		// Could be 'Nan'
+		//
+		if (  'A' == str[1]
+		   || 'a' == str[1])
+		{
+		    if (  'N' == str[2]
+		       || 'n' == str[2])
+		    {
+			// Nan
+			//
+			pfr->iString = IEEE_MAKE_NAN;
+			str += 3;
+			goto LastSpaces;
+		    }
+		}
+	    }
+	    return false;
+	}
     }
 
     // At this point, we have processed the leading sign, handled all
@@ -337,56 +337,56 @@ bool ParseFloat(__out PARSE_FLOAT_RESULT *pfr, __in_z const UTF8 *str, bool bStr
     pfr->pDigitsA = str;
     while (mux_isdigit(*str))
     {
-        pfr->nDigitsA++;
-        str++;
+	pfr->nDigitsA++;
+	str++;
     }
 
     if (*str == '.')
     {
-        str++;
+	str++;
     }
 
     pfr->pDigitsB = str;
     while (mux_isdigit(*str))
     {
-        pfr->nDigitsB++;
-        str++;
+	pfr->nDigitsB++;
+	str++;
     }
 
     if (  pfr->nDigitsA == 0
        && pfr->nDigitsB == 0)
     {
-        return false;
+	return false;
     }
 
     if (  'E' == *str
        || 'e' == *str)
     {
-        // There is an exponent portion.
-        //
-        str++;
-        if (*str == '-')
-        {
-            pfr->iExponentSign = '-';
-            str++;
-        }
-        else if (*str == '+')
-        {
-            pfr->iExponentSign = '+';
-            str++;
-        }
-        pfr->pDigitsC = str;
-        while (mux_isdigit(*str))
-        {
-            pfr->nDigitsC++;
-            str++;
-        }
+	// There is an exponent portion.
+	//
+	str++;
+	if (*str == '-')
+	{
+	    pfr->iExponentSign = '-';
+	    str++;
+	}
+	else if (*str == '+')
+	{
+	    pfr->iExponentSign = '+';
+	    str++;
+	}
+	pfr->pDigitsC = str;
+	while (mux_isdigit(*str))
+	{
+	    pfr->nDigitsC++;
+	    str++;
+	}
 
-        if (  pfr->nDigitsC < 1
-           || 4 < pfr->nDigitsC)
-        {
-            return false;
-        }
+	if (  pfr->nDigitsC < 1
+	   || 4 < pfr->nDigitsC)
+	{
+	    return false;
+	}
     }
 
 LastSpaces:
@@ -397,27 +397,27 @@ LastSpaces:
     //
     while (mux_isspace(*str))
     {
-        str++;
+	str++;
     }
 
     if (bStrict)
     {
-        return (!*str);
+	return (!*str);
     }
     else
     {
-        return true;
+	return true;
     }
 }
 
 #define ATOF_LIMIT 100
 static const double powerstab[10] =
 {
-            1.0,
-           10.0,
-          100.0,
-         1000.0,
-        10000.0,
+	    1.0,
+	   10.0,
+	  100.0,
+	 1000.0,
+	10000.0,
        100000.0,
       1000000.0,
      10000000.0,
@@ -430,18 +430,18 @@ double mux_atof(__in_z const UTF8 *szString, bool bStrict)
     PARSE_FLOAT_RESULT pfr;
     if (!ParseFloat(&pfr, szString, bStrict))
     {
-        return 0.0;
+	return 0.0;
     }
 
     if (pfr.iString)
     {
-        // Return the double value which corresponds to the
-        // string when HAVE_IEEE_FORMAT.
-        //
+	// Return the double value which corresponds to the
+	// string when HAVE_IEEE_FORMAT.
+	//
 #ifdef HAVE_IEEE_FP_FORMAT
-        return MakeSpecialFloat(pfr.iString);
+	return MakeSpecialFloat(pfr.iString);
 #else // HAVE_IEEE_FP_FORMAT
-        return 0.0;
+	return 0.0;
 #endif // HAVE_IEEE_FP_FORMAT
     }
 
@@ -451,37 +451,37 @@ double mux_atof(__in_z const UTF8 *szString, bool bStrict)
     if (  pfr.nDigitsA <= 9
        && pfr.nDigitsC == 0)
     {
-        if (pfr.nDigitsB <= 9)
-        {
-            if (pfr.nDigitsB == 0)
-            {
-                // This 'floating-point' number is just an integer.
-                //
-                ret = (double)mux_atol(pfr.pDigitsA);
-            }
-            else
-            {
-                // This 'floating-point' number is fixed-point.
-                //
-                double rA = (double)mux_atol(pfr.pDigitsA);
-                double rB = (double)mux_atol(pfr.pDigitsB);
-                double rScale = powerstab[pfr.nDigitsB];
-                ret = rA + rB/rScale;
+	if (pfr.nDigitsB <= 9)
+	{
+	    if (pfr.nDigitsB == 0)
+	    {
+		// This 'floating-point' number is just an integer.
+		//
+		ret = (double)mux_atol(pfr.pDigitsA);
+	    }
+	    else
+	    {
+		// This 'floating-point' number is fixed-point.
+		//
+		double rA = (double)mux_atol(pfr.pDigitsA);
+		double rB = (double)mux_atol(pfr.pDigitsB);
+		double rScale = powerstab[pfr.nDigitsB];
+		ret = rA + rB/rScale;
 
-                // As it is, ret is within a single bit of what a
-                // a call to atof would return. However, we can
-                // achieve that last lowest bit of precision by
-                // computing a residual.
-                //
-                double residual = (ret - rA)*rScale;
-                ret += (rB - residual)/rScale;
-            }
-            if (pfr.iLeadingSign == '-')
-            {
-                ret = -ret;
-            }
-            return ret;
-        }
+		// As it is, ret is within a single bit of what a
+		// a call to atof would return. However, we can
+		// achieve that last lowest bit of precision by
+		// computing a residual.
+		//
+		double residual = (ret - rA)*rScale;
+		ret += (rB - residual)/rScale;
+	    }
+	    if (pfr.iLeadingSign == '-')
+	    {
+		ret = -ret;
+	    }
+	    return ret;
+	}
     }
 
     const UTF8 *p = pfr.pMeat;
@@ -493,17 +493,17 @@ double mux_atof(__in_z const UTF8 *szString, bool bStrict)
     UTF8 *pTmp = NULL;
     if (n > ATOF_LIMIT)
     {
-        pTmp = alloc_lbuf("mux_atof");
-        memcpy(pTmp, p, ATOF_LIMIT);
-        pTmp[ATOF_LIMIT] = '\0';
-        p = pTmp;
+	pTmp = alloc_lbuf("mux_atof");
+	memcpy(pTmp, p, ATOF_LIMIT);
+	pTmp[ATOF_LIMIT] = '\0';
+	p = pTmp;
     }
 
     ret = mux_strtod(p, NULL);
 
     if (pTmp)
     {
-        free_lbuf(pTmp);
+	free_lbuf(pTmp);
     }
 
     return ret;
@@ -525,135 +525,135 @@ UTF8 *mux_ftoa(double r, bool bRounded, int frac)
     //
     if (0 <= mudconf.float_precision)
     {
-        mode = 5;
-        if (mudconf.float_precision < nRequestMaximum)
-        {
-            nRequestMaximum = mudconf.float_precision;
-            nRequest        = mudconf.float_precision;
-        }
+	mode = 5;
+	if (mudconf.float_precision < nRequestMaximum)
+	{
+	    nRequestMaximum = mudconf.float_precision;
+	    nRequest        = mudconf.float_precision;
+	}
     }
 
     if (bRounded)
     {
-        mode = 5;
-        nRequest = frac;
-        if (nRequestMaximum < nRequest)
-        {
-            nRequest = nRequestMaximum;
-        }
-        else if (nRequest < nRequestMinimum)
-        {
-            nRequest = nRequestMinimum;
-        }
+	mode = 5;
+	nRequest = frac;
+	if (nRequestMaximum < nRequest)
+	{
+	    nRequest = nRequestMaximum;
+	}
+	else if (nRequest < nRequestMinimum)
+	{
+	    nRequest = nRequestMinimum;
+	}
     }
 
     UTF8 *p = mux_dtoa(r, mode, nRequest, &iDecimalPoint, &bNegative, &rve);
     size_t nSize = rve - p;
     if (nSize > 50)
     {
-        nSize = 50;
+	nSize = 50;
     }
 
     if (bNegative)
     {
-        *q++ = '-';
+	*q++ = '-';
     }
 
     if (iDecimalPoint == 9999)
     {
-        // Inf or NaN
-        //
-        memcpy(q, p, nSize);
-        q += nSize;
+	// Inf or NaN
+	//
+	memcpy(q, p, nSize);
+	q += nSize;
     }
     else if (nSize <= 0)
     {
-        // Zero
-        //
-        if (bNegative)
-        {
-            // If we laid down a minus sign, we should remove it.
-            //
-            q--;
-        }
-        *q++ = '0';
-        if (  bRounded
-           && 0 < nRequest)
-        {
-            *q++ = '.';
-            memset(q, '0', nRequest);
-            q += nRequest;
-        }
+	// Zero
+	//
+	if (bNegative)
+	{
+	    // If we laid down a minus sign, we should remove it.
+	    //
+	    q--;
+	}
+	*q++ = '0';
+	if (  bRounded
+	   && 0 < nRequest)
+	{
+	    *q++ = '.';
+	    memset(q, '0', nRequest);
+	    q += nRequest;
+	}
     }
     else if (  iDecimalPoint <= -6
-            || 18 <= iDecimalPoint)
+	    || 18 <= iDecimalPoint)
     {
-        *q++ = *p++;
-        if (1 < nSize)
-        {
-            *q++ = '.';
-            memcpy(q, p, nSize-1);
-            q += nSize-1;
-        }
-        *q++ = 'E';
-        q += mux_ltoa(iDecimalPoint-1, q);
+	*q++ = *p++;
+	if (1 < nSize)
+	{
+	    *q++ = '.';
+	    memcpy(q, p, nSize-1);
+	    q += nSize-1;
+	}
+	*q++ = 'E';
+	q += mux_ltoa(iDecimalPoint-1, q);
     }
     else if (iDecimalPoint <= 0)
     {
-        // iDecimalPoint = -5 to 0
-        //
-        *q++ = '0';
-        *q++ = '.';
-        memset(q, '0', -iDecimalPoint);
-        q += -iDecimalPoint;
-        memcpy(q, p, nSize);
-        q += nSize;
-        if (bRounded)
-        {
-            size_t nPad = nRequest - (nSize - iDecimalPoint);
-            if (0 < nPad)
-            {
-                memset(q, '0', nPad);
-                q += nPad;
-            }
-        }
+	// iDecimalPoint = -5 to 0
+	//
+	*q++ = '0';
+	*q++ = '.';
+	memset(q, '0', -iDecimalPoint);
+	q += -iDecimalPoint;
+	memcpy(q, p, nSize);
+	q += nSize;
+	if (bRounded)
+	{
+	    size_t nPad = nRequest - (nSize - iDecimalPoint);
+	    if (0 < nPad)
+	    {
+		memset(q, '0', nPad);
+		q += nPad;
+	    }
+	}
     }
     else
     {
-        // iDecimalPoint = 1 to 17
-        //
-        if (nSize <= static_cast<size_t>(iDecimalPoint))
-        {
-            memcpy(q, p, nSize);
-            q += nSize;
-            memset(q, '0', iDecimalPoint - nSize);
-            q += iDecimalPoint - nSize;
-            if (  bRounded
-               && 0 < nRequest)
-            {
-                *q++ = '.';
-                memset(q, '0', nRequest);
-                q += nRequest;
-            }
-        }
-        else
-        {
-            memcpy(q, p, iDecimalPoint);
-            q += iDecimalPoint;
-            p += iDecimalPoint;
-            *q++ = '.';
-            memcpy(q, p, nSize - iDecimalPoint);
-            q += nSize - iDecimalPoint;
-            if (bRounded)
-            {
-                size_t nPad = nRequest - (nSize - iDecimalPoint);
-                if (0 < nPad)
-                {
-                    memset(q, '0', nPad);
-                    q += nPad;
-                }
-            }
-        }
+	// iDecimalPoint = 1 to 17
+	//
+	if (nSize <= static_cast<size_t>(iDecimalPoint))
+	{
+	    memcpy(q, p, nSize);
+	    q += nSize;
+	    memset(q, '0', iDecimalPoint - nSize);
+	    q += iDecimalPoint - nSize;
+	    if (  bRounded
+	       && 0 < nRequest)
+	    {
+		*q++ = '.';
+		memset(q, '0', nRequest);
+		q += nRequest;
+	    }
+	}
+	else
+	{
+	    memcpy(q, p, iDecimalPoint);
+	    q += iDecimalPoint;
+	    p += iDecimalPoint;
+	    *q++ = '.';
+	    memcpy(q, p, nSize - iDecimalPoint);
+	    q += nSize - iDecimalPoint;
+	    if (bRounded)
+	    {
+		size_t nPad = nRequest - (nSize - iDecimalPoint);
+		if (0 < nPad)
+		{
+		    memset(q, '0', nPad);
+		    q += nPad;
+		}
+	    }
+	}
     }
     *q = '\0';
     return buffer;
@@ -668,16 +668,16 @@ static void ReverseDigits(UTF8 *pFirst, UTF8 *pLast)
     //
     while (pFirst < pLast)
     {
-        // Swap characters at *pFirst and *pLast.
-        //
-        UTF8 temp = *pLast;
-        *pLast = *pFirst;
-        *pFirst = temp;
+	// Swap characters at *pFirst and *pLast.
+	//
+	UTF8 temp = *pLast;
+	*pLast = *pFirst;
+	*pFirst = temp;
 
-        // Move pFirst and pLast towards the middle.
-        //
-        --pLast;
-        ++pFirst;
+	// Move pFirst and pLast towards the middle.
+	//
+	--pLast;
+	++pFirst;
     }
 }
 
@@ -692,8 +692,8 @@ size_t mux_utox(unsigned long uval, UTF8 *buf, bool bUpperCase)
 
     while (uval > 15)
     {
-        *p++ = pDigits[uval % 16];
-        uval /= 16;
+	*p++ = pDigits[uval % 16];
+	uval /= 16;
     }
     *p++ = pDigits[uval];
     *p = '\0';
@@ -709,8 +709,8 @@ size_t mux_ui64tox(UINT64 uval, UTF8 *buf, bool bUpperCase)
 
     while (uval > 15)
     {
-        *p++ = pDigits[uval % 16];
-        uval /= 16;
+	*p++ = pDigits[uval % 16];
+	uval /= 16;
     }
     *p++ = pDigits[uval];
     *p = '\0';
@@ -732,16 +732,16 @@ size_t mux_utoa(unsigned long uval, UTF8 *buf)
     const UTF8 *z;
     while (uval > 99)
     {
-        z = Digits100 + ((uval % 100) << 1);
-        uval /= 100;
-        *p++ = *z;
-        *p++ = *(z+1);
+	z = Digits100 + ((uval % 100) << 1);
+	uval /= 100;
+	*p++ = *z;
+	*p++ = *(z+1);
     }
     z = Digits100 + (uval << 1);
     *p++ = *z;
     if (uval > 9)
     {
-        *p++ = *(z+1);
+	*p++ = *(z+1);
     }
     *p = '\0';
     ReverseDigits(q, p-1);
@@ -753,8 +753,8 @@ size_t mux_ltoa(long val, UTF8 *buf)
     UTF8 *p = buf;
     if (val < 0)
     {
-        *p++ = '-';
-        val = -val;
+	*p++ = '-';
+	val = -val;
     }
     p += mux_utoa((unsigned long)val, p);
     return p - buf;
@@ -782,16 +782,16 @@ size_t mux_ui64toa(UINT64 uval, UTF8 *buf)
     const UTF8 *z;
     while (uval > 99)
     {
-        z = Digits100 + ((uval % 100) << 1);
-        uval /= 100;
-        *p++ = *z;
-        *p++ = *(z+1);
+	z = Digits100 + ((uval % 100) << 1);
+	uval /= 100;
+	*p++ = *z;
+	*p++ = *(z+1);
     }
     z = Digits100 + (uval << 1);
     *p++ = *z;
     if (uval > 9)
     {
-        *p++ = *(z+1);
+	*p++ = *(z+1);
     }
     *p = '\0';
     ReverseDigits(q, p-1);
@@ -804,8 +804,8 @@ size_t mux_i64toa(INT64 val, UTF8 *buf)
 
     if (val < 0)
     {
-        *p++ = '-';
-        val = -val;
+	*p++ = '-';
+	val = -val;
     }
     UINT64 uval = (UINT64)val;
 
@@ -854,43 +854,43 @@ long mux_atol(const UTF8 *pString)
     unsigned int c0 = pString[0];
     if (!mux_isdigit(c0))
     {
-        while (mux_isspace(pString[0]))
-        {
-            pString++;
-        }
-        LeadingCharacter = pString[0];
-        if (  LeadingCharacter == '-'
-           || LeadingCharacter == '+')
-        {
-            pString++;
-        }
-        c0 = pString[0];
-        if (!mux_isdigit(c0))
-        {
-            return 0;
-        }
+	while (mux_isspace(pString[0]))
+	{
+	    pString++;
+	}
+	LeadingCharacter = pString[0];
+	if (  LeadingCharacter == '-'
+	   || LeadingCharacter == '+')
+	{
+	    pString++;
+	}
+	c0 = pString[0];
+	if (!mux_isdigit(c0))
+	{
+	    return 0;
+	}
     }
 
     do
     {
-        c1 = pString[1];
-        if (mux_isdigit(c1))
-        {
-            sum = 100 * sum + TableATOI[c0-'0'][c1-'0'];
-            pString += 2;
-        }
-        else
-        {
-            sum = 10 * sum + (c0-'0');
-            break;
-        }
+	c1 = pString[1];
+	if (mux_isdigit(c1))
+	{
+	    sum = 100 * sum + TableATOI[c0-'0'][c1-'0'];
+	    pString += 2;
+	}
+	else
+	{
+	    sum = 10 * sum + (c0-'0');
+	    break;
+	}
     } while (mux_isdigit(c0 = pString[0]));
 
     // Interpret sign
     //
     if (LeadingCharacter == '-')
     {
-        sum = -sum;
+	sum = -sum;
     }
     return sum;
 }
@@ -906,43 +906,43 @@ INT64 mux_atoi64(const UTF8 *pString)
     unsigned int c0 = pString[0];
     if (!mux_isdigit(c0))
     {
-        while (mux_isspace(pString[0]))
-        {
-            pString++;
-        }
-        LeadingCharacter = pString[0];
-        if (  LeadingCharacter == '-'
-           || LeadingCharacter == '+')
-        {
-            pString++;
-        }
-        c0 = pString[0];
-        if (!mux_isdigit(c0))
-        {
-            return 0;
-        }
+	while (mux_isspace(pString[0]))
+	{
+	    pString++;
+	}
+	LeadingCharacter = pString[0];
+	if (  LeadingCharacter == '-'
+	   || LeadingCharacter == '+')
+	{
+	    pString++;
+	}
+	c0 = pString[0];
+	if (!mux_isdigit(c0))
+	{
+	    return 0;
+	}
     }
 
     do
     {
-        c1 = pString[1];
-        if (mux_isdigit(c1))
-        {
-            sum = 100 * sum + TableATOI[c0-'0'][c1-'0'];
-            pString += 2;
-        }
-        else
-        {
-            sum = 10 * sum + (c0-'0');
-            break;
-        }
+	c1 = pString[1];
+	if (mux_isdigit(c1))
+	{
+	    sum = 100 * sum + TableATOI[c0-'0'][c1-'0'];
+	    pString += 2;
+	}
+	else
+	{
+	    sum = 10 * sum + (c0-'0');
+	    break;
+	}
     } while (mux_isdigit(c0 = pString[0]));
 
     // Interpret sign
     //
     if (LeadingCharacter == '-')
     {
-        sum = -sum;
+	sum = -sum;
     }
     return sum;
 }
@@ -953,55 +953,55 @@ bool is_integer(__in_z const UTF8 *str, int *pDigits)
     int nDigits = 0;
     if (pDigits)
     {
-        *pDigits = 0;
+	*pDigits = 0;
     }
 
     // Leading spaces.
     //
     while (mux_isspace(str[i]))
     {
-        i++;
+	i++;
     }
 
     // Leading minus or plus
     //
     if (str[i] == '-' || str[i] == '+')
     {
-        i++;
+	i++;
 
-        // Just a sign by itself isn't an integer.
-        //
-        if (!str[i])
-        {
-            return false;
-        }
+	// Just a sign by itself isn't an integer.
+	//
+	if (!str[i])
+	{
+	    return false;
+	}
     }
 
     // Need at least 1 integer
     //
     if (!mux_isdigit(str[i]))
     {
-        return false;
+	return false;
     }
 
     // The number (int)
     //
     do
     {
-        i++;
-        nDigits++;
+	i++;
+	nDigits++;
     } while (mux_isdigit(str[i]));
 
     if (pDigits)
     {
-        *pDigits = nDigits;
+	*pDigits = nDigits;
     }
 
     // Trailing Spaces.
     //
     while (mux_isspace(str[i]))
     {
-        i++;
+	i++;
     }
 
     return (!str[i]);
@@ -1015,21 +1015,21 @@ bool is_rational(__in_z const UTF8 *str)
     //
     while (mux_isspace(str[i]))
     {
-        i++;
+	i++;
     }
 
     // Leading minus or plus sign.
     //
     if (str[i] == '-' || str[i] == '+')
     {
-        i++;
+	i++;
 
-        // But not if just a sign.
-        //
-        if (!str[i])
-        {
-            return false;
-        }
+	// But not if just a sign.
+	//
+	if (!str[i])
+	{
+	    return false;
+	}
     }
 
     // Need at least one digit.
@@ -1037,47 +1037,47 @@ bool is_rational(__in_z const UTF8 *str)
     bool got_one = false;
     if (mux_isdigit(str[i]))
     {
-        got_one = true;
+	got_one = true;
     }
 
     // The number (int)
     //
     while (mux_isdigit(str[i]))
     {
-        i++;
+	i++;
     }
 
     // Decimal point.
     //
     if (str[i] == '.')
     {
-        i++;
+	i++;
     }
 
     // Need at least one digit
     //
     if (mux_isdigit(str[i]))
     {
-        got_one = true;
+	got_one = true;
     }
 
     if (!got_one)
     {
-        return false;
+	return false;
     }
 
     // The number (fract)
     //
     while (mux_isdigit(str[i]))
     {
-        i++;
+	i++;
     }
 
     // Trailing spaces.
     //
     while (mux_isspace(str[i]))
     {
-        i++;
+	i++;
     }
 
     // There must be nothing else after the trailing spaces.

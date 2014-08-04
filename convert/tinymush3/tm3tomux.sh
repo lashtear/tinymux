@@ -72,19 +72,19 @@ then
       CCT=`gcc -v 2>&1|grep -c ersion`
       if [ $CCT -gt 0 ]
       then
-         echo "GNU-C found (gcc)"
-         CC=gcc
+	 echo "GNU-C found (gcc)"
+	 CC=gcc
       else
-         CCT=`cc -v 2>&1|grep -c ersion`
-         if [ $CCT -gt 0 ]
-         then
-            echo "ANSI C found (cc)"
-            CC=cc
-         else
-            echo "No C compiler detected.  Please pass C compiler as 3rd argument (full path)"
-            echo "Example: $0 $1 $2 /usr/local/bin/gcc"
-            exit 1
-         fi
+	 CCT=`cc -v 2>&1|grep -c ersion`
+	 if [ $CCT -gt 0 ]
+	 then
+	    echo "ANSI C found (cc)"
+	    CC=cc
+	 else
+	    echo "No C compiler detected.  Please pass C compiler as 3rd argument (full path)"
+	    echo "Example: $0 $1 $2 /usr/local/bin/gcc"
+	    exit 1
+	 fi
       fi
    fi
    echo "Compiling converters..."|tr -d '\012'
@@ -155,11 +155,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -174,11 +174,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -193,11 +193,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -212,11 +212,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -231,11 +231,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -250,11 +250,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -269,11 +269,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -288,11 +288,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -307,11 +307,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -326,11 +326,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -345,11 +345,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -364,11 +364,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -383,11 +383,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -402,11 +402,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -422,11 +422,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -441,11 +441,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -460,11 +460,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -479,11 +479,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -498,11 +498,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -517,11 +517,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -536,11 +536,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -555,11 +555,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -574,11 +574,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -595,11 +595,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -624,18 +624,18 @@ then
    do
       if [ "$LASTQ" = "$Q" ]
       then
-         continue
+	 continue
       fi
       LASTQ=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -651,11 +651,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -672,11 +672,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -692,11 +692,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -712,11 +712,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -732,11 +732,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -752,11 +752,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -773,11 +773,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -793,11 +793,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -820,18 +820,18 @@ then
    do
       if [ "$LASTQ" = "$q" ]
       then
-         continue
+	 continue
       fi
       LASTq=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -847,11 +847,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -867,11 +867,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -887,11 +887,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -907,11 +907,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -928,11 +928,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -948,11 +948,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -968,11 +968,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -988,11 +988,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1008,11 +1008,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1028,11 +1028,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1056,18 +1056,18 @@ then
    do
       if [ "$LASTQ" = "$q" ]
       then
-         continue
+	 continue
       fi
       LASTq=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1083,11 +1083,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1103,11 +1103,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1123,11 +1123,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1151,18 +1151,18 @@ then
    do
       if [ "$LASTQ" = "$q" ]
       then
-         continue
+	 continue
       fi
       LASTq=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1186,18 +1186,18 @@ then
    do
       if [ "$LASTQ" = "$q" ]
       then
-         continue
+	 continue
       fi
       LASTq=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1223,18 +1223,18 @@ then
    do
       if [ "$LASTQ" = "$q" ]
       then
-         continue
+	 continue
       fi
       LASTq=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi
@@ -1249,11 +1249,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1269,11 +1269,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1289,11 +1289,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1309,11 +1309,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1329,11 +1329,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1349,11 +1349,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1369,11 +1369,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1389,11 +1389,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1409,11 +1409,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1429,11 +1429,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1449,11 +1449,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1469,11 +1469,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1489,11 +1489,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1509,11 +1509,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1529,11 +1529,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1549,11 +1549,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1569,11 +1569,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1589,11 +1589,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1609,11 +1609,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1629,11 +1629,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1649,11 +1649,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1669,11 +1669,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1689,11 +1689,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -1708,11 +1708,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -1727,11 +1727,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -1746,11 +1746,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
 fi   
@@ -1773,18 +1773,18 @@ then
    do
       if [ "$LASTQ" = "$q" ]
       then
-         continue
+	 continue
       fi
       LASTq=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1800,11 +1800,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1820,11 +1820,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1848,18 +1848,18 @@ then
    do
       if [ "$LASTQ" = "$q" ]
       then
-         continue
+	 continue
       fi
       LASTq=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1875,11 +1875,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1895,11 +1895,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1915,11 +1915,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1935,11 +1935,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1955,11 +1955,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1975,11 +1975,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -1995,11 +1995,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2016,11 +2016,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2036,11 +2036,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2056,11 +2056,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2076,11 +2076,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2096,11 +2096,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2116,11 +2116,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2136,11 +2136,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2156,11 +2156,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2176,11 +2176,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2196,11 +2196,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2216,11 +2216,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2236,11 +2236,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2256,11 +2256,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2276,11 +2276,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2296,11 +2296,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2316,11 +2316,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2336,11 +2336,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2356,11 +2356,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2376,11 +2376,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2396,11 +2396,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2416,11 +2416,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2436,11 +2436,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2456,11 +2456,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2476,11 +2476,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2496,11 +2496,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2516,11 +2516,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2536,11 +2536,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2556,11 +2556,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2582,11 +2582,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2602,11 +2602,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2622,11 +2622,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2642,11 +2642,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2662,11 +2662,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2682,11 +2682,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2702,11 +2702,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2722,11 +2722,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2742,11 +2742,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2762,11 +2762,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2782,11 +2782,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2802,11 +2802,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2822,11 +2822,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2846,18 +2846,18 @@ then
    do
       if [ "$LASTQ" = "$q" ]
       then
-         continue
+	 continue
       fi
       LASTQ=$q
       TVAL=`./do_detail 1 $q $2`
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1
@@ -2873,11 +2873,11 @@ then
       TVAR2=`echo $TVAL|cut -f2 -d" "`
       if [ "$TVAR2" -gt "255" ]
       then
-         ./do_detail 2 $TVAL $2
+	 ./do_detail 2 $TVAL $2
       else
-         TVAR=`echo $TVAL|cut -f1 -d" "`
-         GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
-         echo "      >Object #$TVAR Attrib: $GVAL"
+	 TVAR=`echo $TVAL|cut -f1 -d" "`
+	 GVAL=`grep " $TVAR2 " muxattrs|cut -f1 -d" "`
+	 echo "      >Object #$TVAR Attrib: $GVAL"
       fi
    done
    FND=1

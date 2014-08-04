@@ -788,12 +788,12 @@ void commands_no_arg_add(CMDENT_NO_ARG cmdent[])
     CMDENT_NO_ARG *cp0a;
     for (cp0a = cmdent; cp0a->cmdname; cp0a++)
     {
-        if (!hashfindLEN(cp0a->cmdname, strlen((char *)cp0a->cmdname),
-                         &mudstate.command_htab))
-        {
-            hashaddLEN(cp0a->cmdname, strlen((char *)cp0a->cmdname), cp0a,
-                       &mudstate.command_htab);
-        }
+	if (!hashfindLEN(cp0a->cmdname, strlen((char *)cp0a->cmdname),
+			 &mudstate.command_htab))
+	{
+	    hashaddLEN(cp0a->cmdname, strlen((char *)cp0a->cmdname), cp0a,
+		       &mudstate.command_htab);
+	}
     }
 }
 
@@ -802,12 +802,12 @@ void commands_one_arg_add(CMDENT_ONE_ARG cmdent[])
     CMDENT_ONE_ARG *cp1a;
     for (cp1a = cmdent; cp1a->cmdname; cp1a++)
     {
-        if (!hashfindLEN(cp1a->cmdname, strlen((char *)cp1a->cmdname),
-                        &mudstate.command_htab))
-        {
-            hashaddLEN(cp1a->cmdname, strlen((char *)cp1a->cmdname), cp1a,
-                       &mudstate.command_htab);
-        }
+	if (!hashfindLEN(cp1a->cmdname, strlen((char *)cp1a->cmdname),
+			&mudstate.command_htab))
+	{
+	    hashaddLEN(cp1a->cmdname, strlen((char *)cp1a->cmdname), cp1a,
+		       &mudstate.command_htab);
+	}
     }
 }
 
@@ -816,12 +816,12 @@ void commands_two_arg_add(CMDENT_TWO_ARG cmdent[])
     CMDENT_TWO_ARG *cp2a;
     for (cp2a = cmdent; cp2a->cmdname; cp2a++)
     {
-        if (!hashfindLEN(cp2a->cmdname, strlen((char *)cp2a->cmdname),
-                         &mudstate.command_htab))
-        {
-            hashaddLEN(cp2a->cmdname, strlen((char *)cp2a->cmdname), cp2a,
-                       &mudstate.command_htab);
-        }
+	if (!hashfindLEN(cp2a->cmdname, strlen((char *)cp2a->cmdname),
+			 &mudstate.command_htab))
+	{
+	    hashaddLEN(cp2a->cmdname, strlen((char *)cp2a->cmdname), cp2a,
+		       &mudstate.command_htab);
+	}
     }
 }
 
@@ -830,12 +830,12 @@ void commands_two_arg_argv_add(CMDENT_TWO_ARG_ARGV cmdent[])
     CMDENT_TWO_ARG_ARGV *cp2aa;
     for (cp2aa = cmdent; cp2aa->cmdname; cp2aa++)
     {
-        if (!hashfindLEN(cp2aa->cmdname, strlen((char *)cp2aa->cmdname),
-                         &mudstate.command_htab))
-        {
-            hashaddLEN(cp2aa->cmdname, strlen((char *)cp2aa->cmdname), cp2aa,
-                       &mudstate.command_htab);
-        }
+	if (!hashfindLEN(cp2aa->cmdname, strlen((char *)cp2aa->cmdname),
+			 &mudstate.command_htab))
+	{
+	    hashaddLEN(cp2aa->cmdname, strlen((char *)cp2aa->cmdname), cp2aa,
+		       &mudstate.command_htab);
+	}
     }
 }
 
@@ -847,48 +847,48 @@ void init_cmdtab(void)
     //
     for (ap = AttrTable; ap->name; ap++)
     {
-        if (ap->flags & AF_NOCMD)
-        {
-            continue;
-        }
+	if (ap->flags & AF_NOCMD)
+	{
+	    continue;
+	}
 
-        size_t nBuffer;
-        bool bValid;
-        UTF8 *cbuff = MakeCanonicalAttributeCommand(ap->name, &nBuffer, &bValid);
-        if (!bValid)
-        {
-            continue;
-        }
+	size_t nBuffer;
+	bool bValid;
+	UTF8 *cbuff = MakeCanonicalAttributeCommand(ap->name, &nBuffer, &bValid);
+	if (!bValid)
+	{
+	    continue;
+	}
 
-        CMDENT_TWO_ARG *cp2a = NULL;
-        try
-        {
-            cp2a = new CMDENT_TWO_ARG;
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	CMDENT_TWO_ARG *cp2a = NULL;
+	try
+	{
+	    cp2a = new CMDENT_TWO_ARG;
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL != cp2a)
-        {
-            cp2a->cmdname = StringClone(cbuff);
-            cp2a->perms = CA_NO_GUEST | CA_NO_SLAVE;
-            cp2a->switches = NULL;
-            if (ap->flags & (AF_WIZARD | AF_MDARK))
-            {
-                cp2a->perms |= CA_WIZARD;
-            }
-            cp2a->extra = ap->number;
-            cp2a->callseq = CS_TWO_ARG;
-            cp2a->flags = CEF_ALLOC;
-            cp2a->handler = do_setattr;
-            hashaddLEN(cp2a->cmdname, nBuffer, cp2a, &mudstate.command_htab);
-        }
-        else
-        {
-            ISOUTOFMEMORY(cp2a);
-        }
+	if (NULL != cp2a)
+	{
+	    cp2a->cmdname = StringClone(cbuff);
+	    cp2a->perms = CA_NO_GUEST | CA_NO_SLAVE;
+	    cp2a->switches = NULL;
+	    if (ap->flags & (AF_WIZARD | AF_MDARK))
+	    {
+		cp2a->perms |= CA_WIZARD;
+	    }
+	    cp2a->extra = ap->number;
+	    cp2a->callseq = CS_TWO_ARG;
+	    cp2a->flags = CEF_ALLOC;
+	    cp2a->handler = do_setattr;
+	    hashaddLEN(cp2a->cmdname, nBuffer, cp2a, &mudstate.command_htab);
+	}
+	else
+	{
+	    ISOUTOFMEMORY(cp2a);
+	}
     }
 
     // Load the builtin commands
@@ -909,7 +909,7 @@ void clear_prefix_cmds()
 {
     for (int i = 0; i < 256; i++)
     {
-        g_prefix_cmds[i] = NULL;
+	g_prefix_cmds[i] = NULL;
     }
 }
 
@@ -924,46 +924,46 @@ void finish_cmdtab()
     CHashTable ht;
     CMDENT *cmdp;
     for (cmdp = (CMDENT *)hash_firstentry(&mudstate.command_htab);
-         cmdp != NULL;
-         cmdp = (CMDENT *)hash_nextentry(&mudstate.command_htab))
+	 cmdp != NULL;
+	 cmdp = (CMDENT *)hash_nextentry(&mudstate.command_htab))
     {
-        if (0 == (cmdp->flags & CEF_VISITED))
-        {
-            cmdp->flags |= CEF_VISITED;
-            hashaddLEN(cmdp->cmdname, strlen((char *)cmdp->cmdname), cmdp, &ht);
-        }
+	if (0 == (cmdp->flags & CEF_VISITED))
+	{
+	    cmdp->flags |= CEF_VISITED;
+	    hashaddLEN(cmdp->cmdname, strlen((char *)cmdp->cmdname), cmdp, &ht);
+	}
     }
     hashflush(&mudstate.command_htab);
 
     // Second pass is to free unique CMDENTs and related things.
     //
     for (cmdp = (CMDENT *)hash_firstentry(&ht);
-         cmdp != NULL;
-         cmdp = (CMDENT *)hash_nextentry(&ht))
+	 cmdp != NULL;
+	 cmdp = (CMDENT *)hash_nextentry(&ht))
     {
-        if (cmdp->callseq & CS_ADDED)
-        {
-            ADDENT *nextp = cmdp->addent;
-            while (NULL != nextp)
-            {
-                ADDENT *add = nextp;
-                nextp = nextp->next;
+	if (cmdp->callseq & CS_ADDED)
+	{
+	    ADDENT *nextp = cmdp->addent;
+	    while (NULL != nextp)
+	    {
+		ADDENT *add = nextp;
+		nextp = nextp->next;
 
-                MEMFREE(add->name);
-                add->name = NULL;
-                MEMFREE(add);
-                add = NULL;
-            }
-            cmdp->addent = NULL;
-        }
+		MEMFREE(add->name);
+		add->name = NULL;
+		MEMFREE(add);
+		add = NULL;
+	    }
+	    cmdp->addent = NULL;
+	}
 
-        if (cmdp->flags & CEF_ALLOC)
-        {
-            MEMFREE(cmdp->cmdname);
-            cmdp->cmdname = NULL;
-            delete cmdp;
-            cmdp = NULL;
-        }
+	if (cmdp->flags & CEF_ALLOC)
+	{
+	    MEMFREE(cmdp->cmdname);
+	    cmdp->cmdname = NULL;
+	    delete cmdp;
+	    cmdp = NULL;
+	}
     }
 }
 #endif
@@ -981,7 +981,7 @@ void cache_prefix_cmds(void)
     clear_prefix_cmds();
 
 #define SET_PREFIX_CMD(s) g_prefix_cmds[(unsigned char)(s)[0]] = \
-        (CMDENT *) hashfindLEN((char *)(s), 1, &mudstate.command_htab)
+	(CMDENT *) hashfindLEN((char *)(s), 1, &mudstate.command_htab)
     SET_PREFIX_CMD("\"");
     SET_PREFIX_CMD(":");
     SET_PREFIX_CMD(";");
@@ -1001,35 +1001,35 @@ inline bool is_prefix_cmd(const UTF8 *pCommand, size_t *pnPrefix, CMDENT **ppcmd
 
     if (NULL != pCommand)
     {
-        pcmd = g_prefix_cmds[(unsigned char)pCommand[0]];
-        if (NULL != pcmd)
-        {
-            nPrefix = 1;
-            fReturn = true;
-        }
-        else if (  0xE2 == pCommand[0]
-                && 0x80 == pCommand[1]
-                && 0x9C == pCommand[2])
-        {
-            // U+201C is a Unicode quote typically sent instead of ASCII double quote.
-            //
-            pcmd = g_prefix_cmds[(unsigned char)'"'];
-            if (NULL != pcmd)
-            {
-                nPrefix = 3;
-                fReturn = true;
-            }
-        }
+	pcmd = g_prefix_cmds[(unsigned char)pCommand[0]];
+	if (NULL != pcmd)
+	{
+	    nPrefix = 1;
+	    fReturn = true;
+	}
+	else if (  0xE2 == pCommand[0]
+		&& 0x80 == pCommand[1]
+		&& 0x9C == pCommand[2])
+	{
+	    // U+201C is a Unicode quote typically sent instead of ASCII double quote.
+	    //
+	    pcmd = g_prefix_cmds[(unsigned char)'"'];
+	    if (NULL != pcmd)
+	    {
+		nPrefix = 3;
+		fReturn = true;
+	    }
+	}
     }
 
     if (NULL != pnPrefix)
     {
-        *pnPrefix = nPrefix;
+	*pnPrefix = nPrefix;
     }
 
     if (NULL != ppcmd)
     {
-        *ppcmd = pcmd;
+	*ppcmd = pcmd;
     }
     return fReturn;
 }
@@ -1041,46 +1041,46 @@ bool check_access(dbref player, int mask)
 {
     if (mask & (CA_DISABLED|CA_STATIC))
     {
-        return false;
+	return false;
     }
     if (  God(player)
        || mudstate.bReadingConfiguration)
     {
-        return true;
+	return true;
     }
 
     if (mask & CA_MUSTBE_MASK)
     {
-        // Since CA_GOD by itself is a frequent case, for the sake of
-        // performance, we test CA_GOD specifically. If CA_GOD were ever
-        // combined with anything, it would be passed through to the general
-        // case.
-        //
-        if ((mask & CA_MUSTBE_MASK) == CA_GOD)
-        {
-            return false;
-        }
+	// Since CA_GOD by itself is a frequent case, for the sake of
+	// performance, we test CA_GOD specifically. If CA_GOD were ever
+	// combined with anything, it would be passed through to the general
+	// case.
+	//
+	if ((mask & CA_MUSTBE_MASK) == CA_GOD)
+	{
+	    return false;
+	}
 
-        // Since God(player) is always false here, CA_GOD is still handled by
-        // the following code even though it doesn't appear in any of the
-        // cases explicitly.  CA_WIZARD by itself is also a common case, but
-        // since we have have a bit (mask & CA_MUSTBE_MASK), and since that
-        // bit is not a lone CA_GOD bit (handled above), and since CA_WIZARD
-        // it tested first below, it doesn't make sense to test CA_WIZARD
-        // as a special case.
-        //
-        if (!(  ((mask & CA_WIZARD)   && Wizard(player))
-             || ((mask & CA_ADMIN)    && WizRoy(player))
-             || ((mask & CA_BUILDER)  && Builder(player))
-             || ((mask & CA_STAFF)    && Staff(player))
-             || ((mask & CA_HEAD)     && Head(player))
-             || ((mask & CA_ANNOUNCE) && Announce(player))
-             || ((mask & CA_IMMORTAL) && Immortal(player))
-             || ((mask & CA_UNINS)    && Uninspected(player))
-             || ((mask & CA_ROBOT)    && Robot(player))))
-        {
-            return false;
-        }
+	// Since God(player) is always false here, CA_GOD is still handled by
+	// the following code even though it doesn't appear in any of the
+	// cases explicitly.  CA_WIZARD by itself is also a common case, but
+	// since we have have a bit (mask & CA_MUSTBE_MASK), and since that
+	// bit is not a lone CA_GOD bit (handled above), and since CA_WIZARD
+	// it tested first below, it doesn't make sense to test CA_WIZARD
+	// as a special case.
+	//
+	if (!(  ((mask & CA_WIZARD)   && Wizard(player))
+	     || ((mask & CA_ADMIN)    && WizRoy(player))
+	     || ((mask & CA_BUILDER)  && Builder(player))
+	     || ((mask & CA_STAFF)    && Staff(player))
+	     || ((mask & CA_HEAD)     && Head(player))
+	     || ((mask & CA_ANNOUNCE) && Announce(player))
+	     || ((mask & CA_IMMORTAL) && Immortal(player))
+	     || ((mask & CA_UNINS)    && Uninspected(player))
+	     || ((mask & CA_ROBOT)    && Robot(player))))
+	{
+	    return false;
+	}
     }
 
     // Check for forbidden flags.
@@ -1088,15 +1088,15 @@ bool check_access(dbref player, int mask)
     if (  (mask & CA_CANTBE_MASK)
        && !Wizard(player))
     {
-        if (  ((mask & CA_NO_HAVEN)   && Player_haven(player))
-           || ((mask & CA_NO_ROBOT)   && Robot(player))
-           || ((mask & CA_NO_SLAVE)   && Slave(player))
-           || ((mask & CA_NO_SUSPECT) && Suspect(player))
-           || ((mask & CA_NO_GUEST)   && Guest(player))
-           || ((mask & CA_NO_UNINS)   && Uninspected(player)))
-        {
-            return false;
-        }
+	if (  ((mask & CA_NO_HAVEN)   && Player_haven(player))
+	   || ((mask & CA_NO_ROBOT)   && Robot(player))
+	   || ((mask & CA_NO_SLAVE)   && Slave(player))
+	   || ((mask & CA_NO_SUSPECT) && Suspect(player))
+	   || ((mask & CA_NO_GUEST)   && Guest(player))
+	   || ((mask & CA_NO_UNINS)   && Uninspected(player)))
+	{
+	    return false;
+	}
     }
     return true;
 }
@@ -1112,42 +1112,42 @@ static UTF8 *hook_name(const UTF8 *pCommand, int key)
     switch (key)
     {
     case CEF_HOOK_AFAIL:
-        keylet = "AF";
-        break;
+	keylet = "AF";
+	break;
     case CEF_HOOK_AFTER:
-        keylet = "A";
-        break;
+	keylet = "A";
+	break;
     case CEF_HOOK_BEFORE:
-        keylet = "B";
-        break;
+	keylet = "B";
+	break;
     case CEF_HOOK_IGNORE:
-        keylet = "I";
-        break;
+	keylet = "I";
+	break;
     case CEF_HOOK_PERMIT:
-        keylet = "P";
-        break;
+	keylet = "P";
+	break;
     case CEF_HOOK_ARGS:
-        keylet = "R";
-        break;
+	keylet = "R";
+	break;
     default:
-        return NULL;
+	return NULL;
     }
 
     const UTF8 *cmdName = pCommand;
     if (  pCommand[0]
        && !pCommand[1])
     {
-        switch (pCommand[0])
-        {
-        case '"' : cmdName = T("say");    break;
-        case ':' :
-        case ';' : cmdName = T("pose");   break;
-        case '\\': cmdName = T("@emit");  break;
-        case '#' : cmdName = T("@force"); break;
-        case '&' : cmdName = T("@set");   break;
-        case '-' : cmdName = T("@mail");  break;
-        case '~' : cmdName = T("@mail");  break;
-        }
+	switch (pCommand[0])
+	{
+	case '"' : cmdName = T("say");    break;
+	case ':' :
+	case ';' : cmdName = T("pose");   break;
+	case '\\': cmdName = T("@emit");  break;
+	case '#' : cmdName = T("@force"); break;
+	case '&' : cmdName = T("@set");   break;
+	case '-' : cmdName = T("@mail");  break;
+	case '~' : cmdName = T("@mail");  break;
+	}
     }
 
     return tprintf(T("%s_%s"), keylet, cmdName);
@@ -1159,32 +1159,32 @@ static bool process_hook(dbref executor, CMDENT *cmdp, int key, bool save_flg)
     ATTR *hk_attr = atr_str(hook_name(cmdp->cmdname, key));
     if (hk_attr)
     {
-        dbref aowner;
-        int aflags;
-        UTF8 *atext = atr_get("process_hook.1060", mudconf.hook_obj,
-                              hk_attr->number, &aowner, &aflags);
-        if (atext[0] && !(aflags & AF_NOPROG))
-        {
-            reg_ref **preserve = NULL;
-            if (save_flg)
-            {
-                preserve = PushRegisters(MAX_GLOBAL_REGS);
-                save_global_regs(preserve);
-            }
-            UTF8 *buff, *bufc;
-            bufc = buff = alloc_lbuf("process_hook");
-            mux_exec(atext, LBUF_SIZE-1, buff, &bufc, mudconf.hook_obj, executor,
-                     executor, AttrTrace(aflags, EV_FCHECK|EV_EVAL), NULL, 0);
-            *bufc = '\0';
-            if (save_flg)
-            {
-                restore_global_regs(preserve);
-                PopRegisters(preserve, MAX_GLOBAL_REGS);
-            }
-            retval = xlate(buff);
-            free_lbuf(buff);
-        }
-        free_lbuf(atext);
+	dbref aowner;
+	int aflags;
+	UTF8 *atext = atr_get("process_hook.1060", mudconf.hook_obj,
+			      hk_attr->number, &aowner, &aflags);
+	if (atext[0] && !(aflags & AF_NOPROG))
+	{
+	    reg_ref **preserve = NULL;
+	    if (save_flg)
+	    {
+		preserve = PushRegisters(MAX_GLOBAL_REGS);
+		save_global_regs(preserve);
+	    }
+	    UTF8 *buff, *bufc;
+	    bufc = buff = alloc_lbuf("process_hook");
+	    mux_exec(atext, LBUF_SIZE-1, buff, &bufc, mudconf.hook_obj, executor,
+		     executor, AttrTrace(aflags, EV_FCHECK|EV_EVAL), NULL, 0);
+	    *bufc = '\0';
+	    if (save_flg)
+	    {
+		restore_global_regs(preserve);
+		PopRegisters(preserve, MAX_GLOBAL_REGS);
+	    }
+	    retval = xlate(buff);
+	    free_lbuf(buff);
+	}
+	free_lbuf(atext);
     }
     return retval;
 }
@@ -1194,83 +1194,83 @@ void process_hook_args(dbref executor, CMDENT *cmdp, UTF8* arg1, UTF8* arg2, UTF
     ATTR *hk_attr = atr_str(hook_name(cmdp->cmdname, CEF_HOOK_ARGS));
     if (hk_attr)
     {
-        dbref aowner;
-        int aflags;
-        UTF8 *atext = atr_get("process_hook_args.1093", mudconf.hook_obj,
-                              hk_attr->number, &aowner, &aflags);
-        if (atext[0] && !(aflags & AF_NOPROG))
-        {
-            reg_ref **preserve = NULL;
-            preserve = PushRegisters(MAX_GLOBAL_REGS);
-            save_global_regs(preserve);
-            UTF8 *bufc = NULL;
-            UTF8* inargs[5];
-            if (arg1)
-            {
-                inargs[0] = alloc_lbuf("process_hook_args.1103");
-                mux_strncpy(inargs[0], arg1, LBUF_SIZE-1);
-            }
-            else
-            {
-                inargs[0] = (UTF8*)"";
-            }
+	dbref aowner;
+	int aflags;
+	UTF8 *atext = atr_get("process_hook_args.1093", mudconf.hook_obj,
+			      hk_attr->number, &aowner, &aflags);
+	if (atext[0] && !(aflags & AF_NOPROG))
+	{
+	    reg_ref **preserve = NULL;
+	    preserve = PushRegisters(MAX_GLOBAL_REGS);
+	    save_global_regs(preserve);
+	    UTF8 *bufc = NULL;
+	    UTF8* inargs[5];
+	    if (arg1)
+	    {
+		inargs[0] = alloc_lbuf("process_hook_args.1103");
+		mux_strncpy(inargs[0], arg1, LBUF_SIZE-1);
+	    }
+	    else
+	    {
+		inargs[0] = (UTF8*)"";
+	    }
 
-            if (arg2)
-            {
-                inargs[1] = alloc_lbuf("process_hook_args.1110");
-                mux_strncpy(inargs[1], arg2, LBUF_SIZE-1);
-            }
-            else
-            {
-                inargs[1] = (UTF8*)"";
-            }
+	    if (arg2)
+	    {
+		inargs[1] = alloc_lbuf("process_hook_args.1110");
+		mux_strncpy(inargs[1], arg2, LBUF_SIZE-1);
+	    }
+	    else
+	    {
+		inargs[1] = (UTF8*)"";
+	    }
 
-            inargs[2] = (UTF8*)"";
-            inargs[4] = sw;
+	    inargs[2] = (UTF8*)"";
+	    inargs[4] = sw;
 
-            if (arg1)
-            {
-                bufc = arg1;
-                inargs[3] = (UTF8*)"0";
-                mux_exec(atext, LBUF_SIZE-1, arg1, &bufc, mudconf.hook_obj, executor,
-                         executor, AttrTrace(aflags, EV_FCHECK|EV_EVAL), (const UTF8**)inargs, 5);
-            }
+	    if (arg1)
+	    {
+		bufc = arg1;
+		inargs[3] = (UTF8*)"0";
+		mux_exec(atext, LBUF_SIZE-1, arg1, &bufc, mudconf.hook_obj, executor,
+			 executor, AttrTrace(aflags, EV_FCHECK|EV_EVAL), (const UTF8**)inargs, 5);
+	    }
 
-            if (arg2)
-            {
-                bufc = arg2;
-                inargs[3] = (UTF8*)"1";
-                mux_exec(atext, LBUF_SIZE-1, arg2, &bufc, mudconf.hook_obj, executor,
-                         executor, AttrTrace(aflags, EV_FCHECK|EV_EVAL), (const UTF8**)inargs, 5);
-            }
+	    if (arg2)
+	    {
+		bufc = arg2;
+		inargs[3] = (UTF8*)"1";
+		mux_exec(atext, LBUF_SIZE-1, arg2, &bufc, mudconf.hook_obj, executor,
+			 executor, AttrTrace(aflags, EV_FCHECK|EV_EVAL), (const UTF8**)inargs, 5);
+	    }
 
-            if (nargs)
-            {
-                inargs[2] = alloc_lbuf("process_hook_args.1135");
-                UTF8 qbuff[I64BUF_SIZE];
-                inargs[3] = qbuff;
-                for (int i = 0; i < nargs; i++)
-                {
-                    mux_i64toa(i+2, qbuff);
-                    bufc = args[i];
-                    mux_strncpy(inargs[2], args[i], LBUF_SIZE-1);
-                    mux_exec(atext, LBUF_SIZE-1, args[i], &bufc, mudconf.hook_obj, executor,
-                            executor, AttrTrace(aflags, EV_FCHECK|EV_EVAL), (const UTF8**)inargs, 5);
-                }
-                free_lbuf(inargs[2]);
-            }
+	    if (nargs)
+	    {
+		inargs[2] = alloc_lbuf("process_hook_args.1135");
+		UTF8 qbuff[I64BUF_SIZE];
+		inargs[3] = qbuff;
+		for (int i = 0; i < nargs; i++)
+		{
+		    mux_i64toa(i+2, qbuff);
+		    bufc = args[i];
+		    mux_strncpy(inargs[2], args[i], LBUF_SIZE-1);
+		    mux_exec(atext, LBUF_SIZE-1, args[i], &bufc, mudconf.hook_obj, executor,
+			    executor, AttrTrace(aflags, EV_FCHECK|EV_EVAL), (const UTF8**)inargs, 5);
+		}
+		free_lbuf(inargs[2]);
+	    }
 
-            if (arg2) free_lbuf(inargs[1]);
-            if (arg1) free_lbuf(inargs[0]);
+	    if (arg2) free_lbuf(inargs[1]);
+	    if (arg1) free_lbuf(inargs[0]);
 
-            if (NULL != bufc)
-            {
-                *bufc = '\0';
-            }
-            restore_global_regs(preserve);
-            PopRegisters(preserve, MAX_GLOBAL_REGS);
-        }
-        free_lbuf(atext);
+	    if (NULL != bufc)
+	    {
+		*bufc = '\0';
+	    }
+	    restore_global_regs(preserve);
+	    PopRegisters(preserve, MAX_GLOBAL_REGS);
+	}
+	free_lbuf(atext);
     }
 }
 
@@ -1280,23 +1280,23 @@ void process_hook_args(dbref executor, CMDENT *cmdp, UTF8* arg1, UTF8* arg2, UTF
  */
 
 static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref caller,
-            dbref enactor, int eval, bool interactive, UTF8 *arg, UTF8 *unp_command,
-            const UTF8 *cargs[], int ncargs)
+	    dbref enactor, int eval, bool interactive, UTF8 *arg, UTF8 *unp_command,
+	    const UTF8 *cargs[], int ncargs)
 {
     // Perform object type checks.
     //
     if (Invalid_Objtype(executor))
     {
-        notify(executor, T("Command incompatible with executor type."));
-        return;
+	notify(executor, T("Command incompatible with executor type."));
+	return;
     }
 
     // Check if we have permission to execute the command.
     //
     if (!check_access(executor, cmdp->perms))
     {
-        notify(executor, NOPERM_MESSAGE);
-        return;
+	notify(executor, NOPERM_MESSAGE);
+	return;
     }
 
     // Check global flags
@@ -1305,13 +1305,13 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
        && Protect(CA_GBL_BUILD)
        && !(mudconf.control_flags & CF_BUILD))
     {
-        notify(executor, T("Sorry, building is not allowed now."));
-        return;
+	notify(executor, T("Sorry, building is not allowed now."));
+	return;
     }
     if (Protect(CA_GBL_INTERP) && !(mudconf.control_flags & CF_INTERP))
     {
-        notify(executor, T("Sorry, queueing and triggering are not allowed now."));
-        return;
+	notify(executor, T("Sorry, queueing and triggering are not allowed now."));
+	return;
     }
 
     UTF8 *buf1, *buf2, tchar, *bp, *str, *buff, *j, *new0;
@@ -1324,12 +1324,12 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
     key = cmdp->extra & ~SW_MULTIPLE;
     if (key & SW_GOT_UNIQUE)
     {
-        i = 1;
-        key = key & ~SW_GOT_UNIQUE;
+	i = 1;
+	key = key & ~SW_GOT_UNIQUE;
     }
     else
     {
-        i = 0;
+	i = 0;
     }
 
     // Check command switches.  Note that there may be more than one,
@@ -1339,50 +1339,50 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
     //
     if (switchp && cmdp->switches)
     {
-        do
-        {
-            buf1 = (UTF8 *)strchr((char *)switchp, '/');
-            if (buf1)
-            {
-                *buf1++ = '\0';
-            }
-            if (!search_nametab(executor, cmdp->switches, switchp, (unsigned int *) &xkey))
-            {
-                if (xkey == -1)
-                {
-                    notify(executor,
-                       tprintf(T("Unrecognized switch \xE2\x80\x98%s\xE2\x80\x99 for command \xE2\x80\x98%s\xE2\x80\x99."),
-                       switchp, cmdp->cmdname));
-                    return;
-                }
-                else if (xkey == -2)
-                {
-                    notify(executor, NOPERM_MESSAGE);
-                    return;
-                }
-            }
-            else if (!(xkey & SW_MULTIPLE))
-            {
-                if (i == 1)
-                {
-                    notify(executor, T("Illegal combination of switches."));
-                    return;
-                }
-                i = 1;
-            }
-            else
-            {
-                xkey &= ~SW_MULTIPLE;
-            }
-            key |= xkey;
-            switchp = buf1;
-        } while (buf1);
+	do
+	{
+	    buf1 = (UTF8 *)strchr((char *)switchp, '/');
+	    if (buf1)
+	    {
+		*buf1++ = '\0';
+	    }
+	    if (!search_nametab(executor, cmdp->switches, switchp, (unsigned int *) &xkey))
+	    {
+		if (xkey == -1)
+		{
+		    notify(executor,
+		       tprintf(T("Unrecognized switch \xE2\x80\x98%s\xE2\x80\x99 for command \xE2\x80\x98%s\xE2\x80\x99."),
+		       switchp, cmdp->cmdname));
+		    return;
+		}
+		else if (xkey == -2)
+		{
+		    notify(executor, NOPERM_MESSAGE);
+		    return;
+		}
+	    }
+	    else if (!(xkey & SW_MULTIPLE))
+	    {
+		if (i == 1)
+		{
+		    notify(executor, T("Illegal combination of switches."));
+		    return;
+		}
+		i = 1;
+	    }
+	    else
+	    {
+		xkey &= ~SW_MULTIPLE;
+	    }
+	    key |= xkey;
+	    switchp = buf1;
+	} while (buf1);
     }
     else if (switchp && !(cmdp->callseq & CS_ADDED))
     {
-        notify(executor, tprintf(T("Command %s does not take switches."),
-            cmdp->cmdname));
-        return;
+	notify(executor, tprintf(T("Command %s does not take switches."),
+	    cmdp->cmdname));
+	return;
     }
 
     bool bGoodHookObj = (Good_obj(mudconf.hook_obj) && !Going(mudconf.hook_obj));
@@ -1393,7 +1393,7 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
     if (  (cmdp->flags & CEF_HOOK_BEFORE)
        && bGoodHookObj)
     {
-        process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
+	process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
     }
 
     // We are allowed to run the command.  Now, call the handler using
@@ -1402,33 +1402,33 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
     //if ((cmdp->callseq & CS_INTERP) && (key & SW_NOEVAL))
     if (key & SW_NOEVAL)
     {
-        // The user specified /noeval on a @pemit or a @npemit,
-        // just do EV_STRIP_CURLY and remove the SW_NOEVAL from the
-        // 'key'.
-        //
-        interp = 0;
-        key &= ~SW_NOEVAL;
+	// The user specified /noeval on a @pemit or a @npemit,
+	// just do EV_STRIP_CURLY and remove the SW_NOEVAL from the
+	// 'key'.
+	//
+	interp = 0;
+	key &= ~SW_NOEVAL;
     }
     else if (  (cmdp->callseq & CS_INTERP)
-            || !( interactive
-               || (cmdp->callseq & CS_NOINTERP)))
+	    || !( interactive
+	       || (cmdp->callseq & CS_NOINTERP)))
     {
-        // If the command is interpreted, or we're interactive (and
-        // the command isn't specified CS_NOINTERP), eval the args.
-        //
-        interp = EV_EVAL | EV_STRIP_CURLY;
+	// If the command is interpreted, or we're interactive (and
+	// the command isn't specified CS_NOINTERP), eval the args.
+	//
+	interp = EV_EVAL | EV_STRIP_CURLY;
     }
     else if (cmdp->callseq & CS_STRIP)
     {
-        interp = EV_STRIP_CURLY;
+	interp = EV_STRIP_CURLY;
     }
     else if (cmdp->callseq & CS_STRIP_AROUND)
     {
-        interp = EV_STRIP_AROUND;
+	interp = EV_STRIP_AROUND;
     }
     else
     {
-        interp = 0;
+	interp = 0;
     }
 
     UTF8 *aargs[NUM_ENV_VARS];
@@ -1436,280 +1436,280 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
     switch (cmdp->callseq & CS_NARG_MASK)
     {
     case CS_NO_ARGS: // <cmd>   (no args)
-        (*(((CMDENT_NO_ARG *)cmdp)->handler))(executor, caller, enactor, eval, key);
-        break;
+	(*(((CMDENT_NO_ARG *)cmdp)->handler))(executor, caller, enactor, eval, key);
+	break;
 
     case CS_ONE_ARG:    // <cmd> <arg>
 
-        // If an unparsed command, just give it to the handler
-        //
+	// If an unparsed command, just give it to the handler
+	//
 #if 0
-        // This never happens.
-        //
-        if (cmdp->callseq & CS_UNPARSE)
-        {
-            // Add CEF_HOOK_ARGS before uncommenting
-            (*(((CMDENT_ONE_ARG *)cmdp)->handler))(executor, unp_command);
-            break;
-        }
+	// This never happens.
+	//
+	if (cmdp->callseq & CS_UNPARSE)
+	{
+	    // Add CEF_HOOK_ARGS before uncommenting
+	    (*(((CMDENT_ONE_ARG *)cmdp)->handler))(executor, unp_command);
+	    break;
+	}
 #endif
-        // Interpret if necessary, but not twice for CS_ADDED.
-        //
-        if ((interp & EV_EVAL) && !(cmdp->callseq & CS_ADDED))
-        {
-            buf1 = bp = alloc_lbuf("process_cmdent");
-            str = arg;
+	// Interpret if necessary, but not twice for CS_ADDED.
+	//
+	if ((interp & EV_EVAL) && !(cmdp->callseq & CS_ADDED))
+	{
+	    buf1 = bp = alloc_lbuf("process_cmdent");
+	    str = arg;
 
-            // Copy and skip first character for CS_LEADIN, to
-            // prevent the \ prefix command from escaping part of
-            // its argument.
-            //
-            if (  (cmdp->callseq & CS_LEADIN)
-               && UTF8_SIZE1 == utf8_FirstByte[(unsigned char)str[0]])
-            {
-                UTF8 ch = *str++;
-                *bp++ = ch;
+	    // Copy and skip first character for CS_LEADIN, to
+	    // prevent the \ prefix command from escaping part of
+	    // its argument.
+	    //
+	    if (  (cmdp->callseq & CS_LEADIN)
+	       && UTF8_SIZE1 == utf8_FirstByte[(unsigned char)str[0]])
+	    {
+		UTF8 ch = *str++;
+		*bp++ = ch;
 
-                if (  mudconf.space_compress
-                   && (  ';' == ch
-                      || ':' == ch)
-                   && str[0] == ' ')
-                {
-                    // Skip following space to prevent the parser from space
-                    // compressing it.
-                    //
-                    *bp++ = *str++;
-                }
-            }
-            mux_exec(str, LBUF_SIZE-1, buf1, &bp, executor, caller, enactor,
-                eval|interp|EV_FCHECK|EV_TOP, cargs, ncargs);
-            *bp = '\0';
-        }
-        else
-        {
-            buf1 = parse_to(&arg, '\0', interp | EV_TOP);
-        }
+		if (  mudconf.space_compress
+		   && (  ';' == ch
+		      || ':' == ch)
+		   && str[0] == ' ')
+		{
+		    // Skip following space to prevent the parser from space
+		    // compressing it.
+		    //
+		    *bp++ = *str++;
+		}
+	    }
+	    mux_exec(str, LBUF_SIZE-1, buf1, &bp, executor, caller, enactor,
+		eval|interp|EV_FCHECK|EV_TOP, cargs, ncargs);
+	    *bp = '\0';
+	}
+	else
+	{
+	    buf1 = parse_to(&arg, '\0', interp | EV_TOP);
+	}
 
-        // Call the correct handler.
-        //
-        if (cmdp->callseq & CS_ADDED)
-        {
-            for (add = cmdp->addent; add != NULL; add = add->next)
-            {
-                buff = atr_get("process_cmdent.1347", add->thing, add->atr, &aowner, &aflags);
+	// Call the correct handler.
+	//
+	if (cmdp->callseq & CS_ADDED)
+	{
+	    for (add = cmdp->addent; add != NULL; add = add->next)
+	    {
+		buff = atr_get("process_cmdent.1347", add->thing, add->atr, &aowner, &aflags);
 
-                // Attribute should contain at least two characters and first
-                // character is '$'.
-                //
-                if (  AMATCH_CMD != buff[0]
-                   || '\0' == buff[1])
-                {
-                    free_lbuf(buff);
-                    break;
-                }
+		// Attribute should contain at least two characters and first
+		// character is '$'.
+		//
+		if (  AMATCH_CMD != buff[0]
+		   || '\0' == buff[1])
+		{
+		    free_lbuf(buff);
+		    break;
+		}
 
-                // Skip the '$' character and the next to allow "$::cmd".
-                //
-                size_t iBuff;
-                for (iBuff = 2;  '\0' != buff[iBuff]
-                              && ':'  != buff[iBuff]; iBuff++)
-                {
-                    ; // Nothing.
-                }
+		// Skip the '$' character and the next to allow "$::cmd".
+		//
+		size_t iBuff;
+		for (iBuff = 2;  '\0' != buff[iBuff]
+			      && ':'  != buff[iBuff]; iBuff++)
+		{
+		    ; // Nothing.
+		}
 
-                if ('\0' == buff[iBuff])
-                {
-                    free_lbuf(buff);
-                    break;
-                }
-                buff[iBuff++] = '\0';
+		if ('\0' == buff[iBuff])
+		{
+		    free_lbuf(buff);
+		    break;
+		}
+		buff[iBuff++] = '\0';
 
-                if (!(cmdp->callseq & CS_LEADIN))
-                {
-                    for (j = unp_command; *j && (*j != ' '); j++)
-                    {
-                        ; // Nothing.
-                    }
-                }
-                else
-                {
-                    for (j = unp_command; *j; j++)
-                    {
-                        ; // Nothing.
-                    }
-                }
+		if (!(cmdp->callseq & CS_LEADIN))
+		{
+		    for (j = unp_command; *j && (*j != ' '); j++)
+		    {
+			; // Nothing.
+		    }
+		}
+		else
+		{
+		    for (j = unp_command; *j; j++)
+		    {
+			; // Nothing.
+		    }
+		}
 
-                new0 = alloc_lbuf("process_cmdent.soft");
-                bp = new0;
-                if (!*j)
-                {
-                    // No args.
-                    //
-                    if (!(cmdp->callseq & CS_LEADIN))
-                    {
-                        safe_str(cmdp->cmdname, new0, &bp);
-                    }
-                    else
-                    {
-                        safe_str(unp_command, new0, &bp);
-                    }
-                    if (switchp)
-                    {
-                        safe_chr('/', new0, &bp);
-                        safe_str(switchp, new0, &bp);
-                    }
-                    *bp = '\0';
-                }
-                else
-                {
-                    j++;
-                    safe_str(cmdp->cmdname, new0, &bp);
-                    if (switchp)
-                    {
-                        safe_chr('/', new0, &bp);
-                        safe_str(switchp, new0, &bp);
-                    }
-                    safe_chr(' ', new0, &bp);
-                    safe_str(j, new0, &bp);
-                    *bp = '\0';
-                }
+		new0 = alloc_lbuf("process_cmdent.soft");
+		bp = new0;
+		if (!*j)
+		{
+		    // No args.
+		    //
+		    if (!(cmdp->callseq & CS_LEADIN))
+		    {
+			safe_str(cmdp->cmdname, new0, &bp);
+		    }
+		    else
+		    {
+			safe_str(unp_command, new0, &bp);
+		    }
+		    if (switchp)
+		    {
+			safe_chr('/', new0, &bp);
+			safe_str(switchp, new0, &bp);
+		    }
+		    *bp = '\0';
+		}
+		else
+		{
+		    j++;
+		    safe_str(cmdp->cmdname, new0, &bp);
+		    if (switchp)
+		    {
+			safe_chr('/', new0, &bp);
+			safe_str(switchp, new0, &bp);
+		    }
+		    safe_chr(' ', new0, &bp);
+		    safe_str(j, new0, &bp);
+		    *bp = '\0';
+		}
 
-                if (  (  (aflags & AF_REGEXP)
-                      && regexp_match(buff + 1, new0,
-                             ((aflags & AF_CASE) ? 0 : PCRE_CASELESS), aargs,
-                             NUM_ENV_VARS))
-                   || (  (aflags & AF_REGEXP) == 0
-                      && wild(buff + 1, new0, aargs, NUM_ENV_VARS)))
-                {
-                    CLinearTimeAbsolute lta;
-                    wait_que(add->thing, caller, executor,
-                        AttrTrace(aflags, 0), false, lta, NOTHING, 0,
-                        buff + iBuff,
-                        NUM_ENV_VARS, (const UTF8 **)aargs,
-                        mudstate.global_regs);
+		if (  (  (aflags & AF_REGEXP)
+		      && regexp_match(buff + 1, new0,
+			     ((aflags & AF_CASE) ? 0 : PCRE_CASELESS), aargs,
+			     NUM_ENV_VARS))
+		   || (  (aflags & AF_REGEXP) == 0
+		      && wild(buff + 1, new0, aargs, NUM_ENV_VARS)))
+		{
+		    CLinearTimeAbsolute lta;
+		    wait_que(add->thing, caller, executor,
+			AttrTrace(aflags, 0), false, lta, NOTHING, 0,
+			buff + iBuff,
+			NUM_ENV_VARS, (const UTF8 **)aargs,
+			mudstate.global_regs);
 
-                    for (i = 0; i < NUM_ENV_VARS; i++)
-                    {
-                        if (aargs[i])
-                        {
-                            free_lbuf(aargs[i]);
-                        }
-                    }
-                }
-                free_lbuf(new0);
-                free_lbuf(buff);
-            }
-        }
-        else
-        {
-            if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
-            {
-                process_hook_args(executor, cmdp, buf1, NULL, NULL, 0, sw);
-            }
-            (*(((CMDENT_ONE_ARG *)cmdp)->handler))(executor, caller,
-                enactor, eval, key, buf1, cargs, ncargs);
-        }
+		    for (i = 0; i < NUM_ENV_VARS; i++)
+		    {
+			if (aargs[i])
+			{
+			    free_lbuf(aargs[i]);
+			}
+		    }
+		}
+		free_lbuf(new0);
+		free_lbuf(buff);
+	    }
+	}
+	else
+	{
+	    if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
+	    {
+		process_hook_args(executor, cmdp, buf1, NULL, NULL, 0, sw);
+	    }
+	    (*(((CMDENT_ONE_ARG *)cmdp)->handler))(executor, caller,
+		enactor, eval, key, buf1, cargs, ncargs);
+	}
 
-        // Free the buffer if one was allocated.
-        //
-        if ((interp & EV_EVAL) && !(cmdp->callseq & CS_ADDED))
-        {
-            free_lbuf(buf1);
-        }
-        break;
+	// Free the buffer if one was allocated.
+	//
+	if ((interp & EV_EVAL) && !(cmdp->callseq & CS_ADDED))
+	{
+	    free_lbuf(buf1);
+	}
+	break;
 
     case CS_TWO_ARG: // <cmd> <arg1> = <arg2>
 
-        // Interpret ARG1
-        //
-        buf2 = parse_to(&arg, '=', EV_STRIP_TS);
+	// Interpret ARG1
+	//
+	buf2 = parse_to(&arg, '=', EV_STRIP_TS);
 
-        nargs2 = 0;
-        if (buf2)
-        {
-            if (arg)
-            {
-                nargs2 = 2;
-            }
-            else
-            {
-                nargs2 = 1;
-            }
-        }
+	nargs2 = 0;
+	if (buf2)
+	{
+	    if (arg)
+	    {
+		nargs2 = 2;
+	    }
+	    else
+	    {
+		nargs2 = 1;
+	    }
+	}
 
-        // Handle when no '=' was specified.
-        //
-        if (!arg || (arg && !*arg))
-        {
-            arg = &tchar;
-            *arg = '\0';
-        }
-        buf1 = bp = alloc_lbuf("process_cmdent.2");
-        mux_exec(buf2, LBUF_SIZE-1, buf1, &bp, executor, caller, enactor,
-            eval|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL|EV_TOP, cargs, ncargs);
-        *bp = '\0';
+	// Handle when no '=' was specified.
+	//
+	if (!arg || (arg && !*arg))
+	{
+	    arg = &tchar;
+	    *arg = '\0';
+	}
+	buf1 = bp = alloc_lbuf("process_cmdent.2");
+	mux_exec(buf2, LBUF_SIZE-1, buf1, &bp, executor, caller, enactor,
+	    eval|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL|EV_TOP, cargs, ncargs);
+	*bp = '\0';
 
-        if (cmdp->callseq & CS_ARGV)
-        {
-            // Arg2 is ARGV style.  Go get the args.
-            //
-            parse_arglist(executor, caller, enactor, arg,
-                eval|interp|EV_STRIP_LS|EV_STRIP_TS, args, MAX_ARG, cargs,
-                ncargs, &nargs);
+	if (cmdp->callseq & CS_ARGV)
+	{
+	    // Arg2 is ARGV style.  Go get the args.
+	    //
+	    parse_arglist(executor, caller, enactor, arg,
+		eval|interp|EV_STRIP_LS|EV_STRIP_TS, args, MAX_ARG, cargs,
+		ncargs, &nargs);
 
-            if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
-            {
-                process_hook_args(executor, cmdp, buf1, NULL, args, nargs, sw);
-            }
-            (*(((CMDENT_TWO_ARG_ARGV *)cmdp)->handler))(executor, caller,
-                enactor, eval, key, buf1, args, nargs, cargs, ncargs);
+	    if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
+	    {
+		process_hook_args(executor, cmdp, buf1, NULL, args, nargs, sw);
+	    }
+	    (*(((CMDENT_TWO_ARG_ARGV *)cmdp)->handler))(executor, caller,
+		enactor, eval, key, buf1, args, nargs, cargs, ncargs);
 
-            // Free the argument buffers.
-            //
-            for (i = 0; i < nargs; i++)
-            {
-                free_lbuf(args[i]);
-            }
-        }
-        else
-        {
-            // Arg2 is normal style.  Interpret if needed.
-            //
-            if (interp & EV_EVAL)
-            {
-                buf2 = bp = alloc_lbuf("process_cmdent.3");
-                mux_exec(arg, LBUF_SIZE-1, buf2, &bp, executor, caller, enactor,
-                    eval|interp|EV_FCHECK|EV_TOP, cargs, ncargs);
-                *bp = '\0';
-            }
-            else if (cmdp->callseq & CS_UNPARSE)
-            {
-                buf2 = parse_to(&arg, '\0', eval|interp|EV_TOP|EV_NO_COMPRESS);
-            }
-            else
-            {
-                buf2 = parse_to(&arg, '\0', eval|interp|EV_STRIP_LS|EV_STRIP_TS|EV_TOP);
-            }
+	    // Free the argument buffers.
+	    //
+	    for (i = 0; i < nargs; i++)
+	    {
+		free_lbuf(args[i]);
+	    }
+	}
+	else
+	{
+	    // Arg2 is normal style.  Interpret if needed.
+	    //
+	    if (interp & EV_EVAL)
+	    {
+		buf2 = bp = alloc_lbuf("process_cmdent.3");
+		mux_exec(arg, LBUF_SIZE-1, buf2, &bp, executor, caller, enactor,
+		    eval|interp|EV_FCHECK|EV_TOP, cargs, ncargs);
+		*bp = '\0';
+	    }
+	    else if (cmdp->callseq & CS_UNPARSE)
+	    {
+		buf2 = parse_to(&arg, '\0', eval|interp|EV_TOP|EV_NO_COMPRESS);
+	    }
+	    else
+	    {
+		buf2 = parse_to(&arg, '\0', eval|interp|EV_STRIP_LS|EV_STRIP_TS|EV_TOP);
+	    }
 
-            if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
-            {
-                process_hook_args(executor, cmdp, nargs2>=1?buf1:NULL, nargs2>=2?buf2:NULL, NULL, 0, sw);
-            }
-            (*(((CMDENT_TWO_ARG *)cmdp)->handler))(executor, caller,
-                enactor, eval, key, nargs2, buf1, buf2, cargs, ncargs);
+	    if ((cmdp->flags & CEF_HOOK_ARGS) && bGoodHookObj)
+	    {
+		process_hook_args(executor, cmdp, nargs2>=1?buf1:NULL, nargs2>=2?buf2:NULL, NULL, 0, sw);
+	    }
+	    (*(((CMDENT_TWO_ARG *)cmdp)->handler))(executor, caller,
+		enactor, eval, key, nargs2, buf1, buf2, cargs, ncargs);
 
-            // Free the buffer, if needed.
-            //
-            if (interp & EV_EVAL)
-            {
-                free_lbuf(buf2);
-            }
-        }
+	    // Free the buffer, if needed.
+	    //
+	    if (interp & EV_EVAL)
+	    {
+		free_lbuf(buf2);
+	    }
+	}
 
-        // Free the buffer obtained by evaluating Arg1.
-        //
-        free_lbuf(buf1);
-        break;
+	// Free the buffer obtained by evaluating Arg1.
+	//
+	free_lbuf(buf1);
+	break;
     }
 
     // 'After' hooks.
@@ -1718,7 +1718,7 @@ static void process_cmdent(CMDENT *cmdp, UTF8 *switchp, dbref executor, dbref ca
     if (  (cmdp->flags & CEF_HOOK_AFTER)
        && bGoodHookObj)
     {
-        process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
+	process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
     }
 }
 
@@ -1734,25 +1734,25 @@ static int cmdtest(dbref player, const UTF8 *cmd)
     pt1 = buff1;
     while (pt1 && *pt1)
     {
-        pt2 = (const UTF8 *)strchr((const char *)pt1, ':');
-        if (!pt2 || (pt2 == pt1))
-            break;
-        if (!strncmp((const char *)pt2+1, (const char *)cmd, strlen((const char *)cmd)))
-        {
-            if (*(pt2-1) == '1')
-                rval = 1;
-            else
-                rval = 2;
-            break;
-        }
-        pt1 = (const UTF8 *)strchr((const char *)pt2+1, ' ');
-        if (pt1 && *pt1)
-        {
-            while (mux_isspace(*pt1))
-            {
-                pt1++;
-            }
-        }
+	pt2 = (const UTF8 *)strchr((const char *)pt1, ':');
+	if (!pt2 || (pt2 == pt1))
+	    break;
+	if (!strncmp((const char *)pt2+1, (const char *)cmd, strlen((const char *)cmd)))
+	{
+	    if (*(pt2-1) == '1')
+		rval = 1;
+	    else
+		rval = 2;
+	    break;
+	}
+	pt1 = (const UTF8 *)strchr((const char *)pt2+1, ' ');
+	if (pt1 && *pt1)
+	{
+	    while (mux_isspace(*pt1))
+	    {
+		pt1++;
+	    }
+	}
     }
     free_lbuf(buff1);
     return rval;
@@ -1762,24 +1762,24 @@ static int zonecmdtest(dbref player, const UTF8 *cmd)
 {
     if (!Good_obj(player) || God(player))
     {
-        return 0;
+	return 0;
     }
     dbref loc = Location(player);
 
     int i_ret = 0;
     if (Good_obj(loc))
     {
-        i_ret = cmdtest(loc, cmd);
-        if (i_ret == 0)
-        {
-            dbref zone = Zone(loc);
-            if (  Good_obj(zone)
-               && (  isRoom(zone)
-                  || isThing(zone)))
-            {
-                i_ret = cmdtest(zone, cmd);
-            }
-        }
+	i_ret = cmdtest(loc, cmd);
+	if (i_ret == 0)
+	{
+	    dbref zone = Zone(loc);
+	    if (  Good_obj(zone)
+	       && (  isRoom(zone)
+		  || isThing(zone)))
+	    {
+		i_ret = cmdtest(zone, cmd);
+	    }
+	}
     }
     return i_ret;
 }
@@ -1815,41 +1815,41 @@ UTF8 *process_command
 
     if (!Good_obj(executor))
     {
-        STARTLOG(LOG_BUGS, T("CMD"), T("PLYR"));
-        log_printf(T("Bad player in process_command: %d"), executor);
-        ENDLOG;
-        mudstate.debug_cmd = cmdsave;
-        return pOriginalCommand;
+	STARTLOG(LOG_BUGS, T("CMD"), T("PLYR"));
+	log_printf(T("Bad player in process_command: %d"), executor);
+	ENDLOG;
+	mudstate.debug_cmd = cmdsave;
+	return pOriginalCommand;
     }
 
     // Make sure player isn't going or halted.
     //
     if (  Going(executor)
        || (  Halted(executor)
-          && !(  isPlayer(executor)
-              && interactive)))
+	  && !(  isPlayer(executor)
+	      && interactive)))
     {
-        notify(Owner(executor),
-            tprintf(T("Attempt to execute command by halted object #%d"), executor));
-        mudstate.debug_cmd = cmdsave;
-        return pOriginalCommand;
+	notify(Owner(executor),
+	    tprintf(T("Attempt to execute command by halted object #%d"), executor));
+	mudstate.debug_cmd = cmdsave;
+	return pOriginalCommand;
     }
     if (  Suspect(executor)
        && (mudconf.log_options & LOG_SUSPECTCMDS))
     {
-        STARTLOG(LOG_SUSPECTCMDS, T("CMD"), T("SUSP"));
-        log_name_and_loc(executor);
-        log_text(T(" entered: "));
-        log_text(pOriginalCommand);
-        ENDLOG;
+	STARTLOG(LOG_SUSPECTCMDS, T("CMD"), T("SUSP"));
+	log_name_and_loc(executor);
+	log_text(T(" entered: "));
+	log_text(pOriginalCommand);
+	ENDLOG;
     }
     else
     {
-        STARTLOG(LOG_ALLCOMMANDS, T("CMD"), T("ALL"));
-        log_name_and_loc(executor);
-        log_text(T(" entered: "));
-        log_text(pOriginalCommand);
-        ENDLOG;
+	STARTLOG(LOG_ALLCOMMANDS, T("CMD"), T("ALL"));
+	log_name_and_loc(executor);
+	log_text(T(" entered: "));
+	log_text(pOriginalCommand);
+	ENDLOG;
     }
 
     // Reset recursion limits.
@@ -1861,14 +1861,14 @@ UTF8 *process_command
 
     if (Verbose(executor))
     {
-        notify(Owner(executor), tprintf(T("%s] %s"), Name(executor), pOriginalCommand));
+	notify(Owner(executor), tprintf(T("%s] %s"), Name(executor), pOriginalCommand));
     }
 
     // Eat leading whitespace, and space-compress if configured.
     //
     while (mux_isspace(*pOriginalCommand))
     {
-        pOriginalCommand++;
+	pOriginalCommand++;
     }
     mux_strncpy(preserve_cmd, pOriginalCommand, sizeof(preserve_cmd)-1);
     mudstate.debug_cmd = pOriginalCommand;
@@ -1881,41 +1881,41 @@ UTF8 *process_command
 
     if (mudconf.space_compress)
     {
-        // Compress out the spaces and use that as the command
-        //
-        pCommand = SpaceCompressCommand;
+	// Compress out the spaces and use that as the command
+	//
+	pCommand = SpaceCompressCommand;
 
-        p = pOriginalCommand;
-        q = SpaceCompressCommand;
-        while (  *p
-              && q < SpaceCompressCommand + LBUF_SIZE)
-        {
-            while (  *p
-                  && !mux_isspace(*p)
-                  && q < SpaceCompressCommand + LBUF_SIZE)
-            {
-                *q++ = *p++;
-            }
+	p = pOriginalCommand;
+	q = SpaceCompressCommand;
+	while (  *p
+	      && q < SpaceCompressCommand + LBUF_SIZE)
+	{
+	    while (  *p
+		  && !mux_isspace(*p)
+		  && q < SpaceCompressCommand + LBUF_SIZE)
+	    {
+		*q++ = *p++;
+	    }
 
-            while (mux_isspace(*p))
-            {
-                p++;
-            }
+	    while (mux_isspace(*p))
+	    {
+		p++;
+	    }
 
-            if (  *p
-               && q < SpaceCompressCommand + LBUF_SIZE)
-            {
-                *q++ = ' ';
-            }
-        }
-        *q = '\0';
+	    if (  *p
+	       && q < SpaceCompressCommand + LBUF_SIZE)
+	    {
+		*q++ = ' ';
+	    }
+	}
+	*q = '\0';
     }
     else
     {
-        // Don't compress the spaces. Use the original command
-        // (without leading spaces) as the command to use.
-        //
-        pCommand = pOriginalCommand;
+	// Don't compress the spaces. Use the original command
+	// (without leading spaces) as the command to use.
+	//
+	pCommand = pOriginalCommand;
     }
 
     // Now comes the fun stuff.  First check for single-letter leadins.
@@ -1931,88 +1931,88 @@ UTF8 *process_command
     CMDENT *cmdp = NULL;
     if (is_prefix_cmd(pCommand, &nPrefix, &cmdp))
     {
-        // CmdCheck tests for @icmd. higcheck tests for i/p hooks.
-        // Both from RhostMUSH.
-        // cval/hval values: 0 normal, 1 disable, 2 ignore
-        //
-        UTF8 check2[UTF8_SIZE4+1];
-        memcpy(check2, pCommand, nPrefix);
-        check2[nPrefix] = '\0';
-        if (CmdCheck(executor))
-        {
-            cval = cmdtest(executor, check2);
-        }
-        else if (CmdCheck(Owner(executor)))
-        {
-            cval = cmdtest(Owner(executor), check2);
-        }
-        else
-        {
-            cval = 0;
-        }
+	// CmdCheck tests for @icmd. higcheck tests for i/p hooks.
+	// Both from RhostMUSH.
+	// cval/hval values: 0 normal, 1 disable, 2 ignore
+	//
+	UTF8 check2[UTF8_SIZE4+1];
+	memcpy(check2, pCommand, nPrefix);
+	check2[nPrefix] = '\0';
+	if (CmdCheck(executor))
+	{
+	    cval = cmdtest(executor, check2);
+	}
+	else if (CmdCheck(Owner(executor)))
+	{
+	    cval = cmdtest(Owner(executor), check2);
+	}
+	else
+	{
+	    cval = 0;
+	}
 
-        if (cval == 0)
-        {
-            cval = zonecmdtest(executor, check2);
-        }
+	if (cval == 0)
+	{
+	    cval = zonecmdtest(executor, check2);
+	}
 
-        hval = 0;
-        if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
-           && bGoodHookObj)
-        {
-            if (  (cmdp->flags & CEF_HOOK_IGNORE)
-               && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
-            {
-                hval = 2;
-            }
-            else if (  (cmdp->flags & CEF_HOOK_PERMIT)
-                    && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
-            {
-                hval = 1;
-            }
-        }
+	hval = 0;
+	if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
+	   && bGoodHookObj)
+	{
+	    if (  (cmdp->flags & CEF_HOOK_IGNORE)
+	       && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
+	    {
+		hval = 2;
+	    }
+	    else if (  (cmdp->flags & CEF_HOOK_PERMIT)
+		    && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
+	    {
+		hval = 1;
+	    }
+	}
 
-        if (  cval != 2
-           && hval != 2)
-        {
-            if (  cval == 1
-               || hval == 1)
-            {
-                if (  (cmdp->flags & CEF_HOOK_AFAIL)
-                   && bGoodHookObj)
-                {
-                    process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
-                }
-                else
-                {
-                    notify(executor, NOPERM_MESSAGE);
-                }
-                mudstate.debug_cmd = cmdsave;
-                return preserve_cmd;
-            }
-            process_cmdent(cmdp, NULL, executor, caller, enactor,
-                eval, interactive, pCommand, pCommand, args, nargs);
-            if (mudstate.bStackLimitReached)
-            {
-                STARTLOG(LOG_ALWAYS, T("CMD"), T("SPAM"));
-                log_name_and_loc(executor);
-                log_text(T(" entered: "));
-                log_text(pOriginalCommand);
-                ENDLOG;
-            }
-            mudstate.bStackLimitReached = false;
+	if (  cval != 2
+	   && hval != 2)
+	{
+	    if (  cval == 1
+	       || hval == 1)
+	    {
+		if (  (cmdp->flags & CEF_HOOK_AFAIL)
+		   && bGoodHookObj)
+		{
+		    process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
+		}
+		else
+		{
+		    notify(executor, NOPERM_MESSAGE);
+		}
+		mudstate.debug_cmd = cmdsave;
+		return preserve_cmd;
+	    }
+	    process_cmdent(cmdp, NULL, executor, caller, enactor,
+		eval, interactive, pCommand, pCommand, args, nargs);
+	    if (mudstate.bStackLimitReached)
+	    {
+		STARTLOG(LOG_ALWAYS, T("CMD"), T("SPAM"));
+		log_name_and_loc(executor);
+		log_text(T(" entered: "));
+		log_text(pOriginalCommand);
+		ENDLOG;
+	    }
+	    mudstate.bStackLimitReached = false;
 
-            mudstate.debug_cmd = cmdsave;
-            return preserve_cmd;
-        }
+	    mudstate.debug_cmd = cmdsave;
+	    return preserve_cmd;
+	}
     }
 
     if (  mudconf.have_comsys
        && !Slave(executor)
        && !do_comsystem(executor, pCommand))
     {
-        mudstate.debug_cmd = cmdsave;
-        return preserve_cmd;
+	mudstate.debug_cmd = cmdsave;
+	return preserve_cmd;
     }
 
     // Check for the HOME command.
@@ -2020,160 +2020,160 @@ UTF8 *process_command
     if (  Has_location(executor)
        && string_compare(pCommand, T("home")) == 0)
     {
-        // CmdCheck tests for @icmd. higcheck tests for i/p hooks.
-        // Both from RhostMUSH.
-        // cval/hval values: 0 normal, 1 disable, 2 ignore.
-        //
-        if (CmdCheck(executor))
-        {
-            cval = cmdtest(executor, T("home"));
-        }
-        else if (CmdCheck(Owner(executor)))
-        {
-            cval = cmdtest(Owner(executor), T("home"));
-        }
-        else
-        {
-            cval = 0;
-        }
+	// CmdCheck tests for @icmd. higcheck tests for i/p hooks.
+	// Both from RhostMUSH.
+	// cval/hval values: 0 normal, 1 disable, 2 ignore.
+	//
+	if (CmdCheck(executor))
+	{
+	    cval = cmdtest(executor, T("home"));
+	}
+	else if (CmdCheck(Owner(executor)))
+	{
+	    cval = cmdtest(Owner(executor), T("home"));
+	}
+	else
+	{
+	    cval = 0;
+	}
 
-        if (cval == 0)
-        {
-            cval = zonecmdtest(executor, T("home"));
-        }
+	if (cval == 0)
+	{
+	    cval = zonecmdtest(executor, T("home"));
+	}
 
-        if (cval != 2)
-        {
-            if (!check_access(executor, mudconf.restrict_home))
-            {
-                notify(executor, NOPERM_MESSAGE);
-                mudstate.debug_cmd = cmdsave;
-                return preserve_cmd;
-            }
-            if (cval == 1)
-            {
-                notify(executor, NOPERM_MESSAGE);
-                mudstate.debug_cmd = cmdsave;
-                return preserve_cmd;
-            }
-            if (  (  Fixed(executor)
-                  || Fixed(Owner(executor)))
-               && !WizRoy(executor))
-            {
-                notify(executor, mudconf.fixed_home_msg);
-                mudstate.debug_cmd = cmdsave;
-                return preserve_cmd;
-            }
-            do_move(executor, caller, enactor, eval, 0, (UTF8 *)"home", NULL, 0);
-            mudstate.debug_cmd = cmdsave;
-            return preserve_cmd;
-        }
+	if (cval != 2)
+	{
+	    if (!check_access(executor, mudconf.restrict_home))
+	    {
+		notify(executor, NOPERM_MESSAGE);
+		mudstate.debug_cmd = cmdsave;
+		return preserve_cmd;
+	    }
+	    if (cval == 1)
+	    {
+		notify(executor, NOPERM_MESSAGE);
+		mudstate.debug_cmd = cmdsave;
+		return preserve_cmd;
+	    }
+	    if (  (  Fixed(executor)
+		  || Fixed(Owner(executor)))
+	       && !WizRoy(executor))
+	    {
+		notify(executor, mudconf.fixed_home_msg);
+		mudstate.debug_cmd = cmdsave;
+		return preserve_cmd;
+	    }
+	    do_move(executor, caller, enactor, eval, 0, (UTF8 *)"home", NULL, 0);
+	    mudstate.debug_cmd = cmdsave;
+	    return preserve_cmd;
+	}
     }
 
     // Only check for exits if we may use the goto command.
     //
     if (check_access(executor, goto_cmdp->perms))
     {
-        // CmdCheck tests for @icmd. higcheck tests for i/p hooks.
-        // Both from RhostMUSH.
-        // cval/hval values: 0 normal, 1 disable, 2 ignore
-        // Master room exits are not affected.
-        //
-        if (CmdCheck(executor))
-        {
-            cval = cmdtest(executor, T("goto"));
-        }
-        else if (CmdCheck(Owner(executor)))
-        {
-            cval = cmdtest(Owner(executor), T("goto"));
-        }
-        else
-        {
-            cval = 0;
-        }
+	// CmdCheck tests for @icmd. higcheck tests for i/p hooks.
+	// Both from RhostMUSH.
+	// cval/hval values: 0 normal, 1 disable, 2 ignore
+	// Master room exits are not affected.
+	//
+	if (CmdCheck(executor))
+	{
+	    cval = cmdtest(executor, T("goto"));
+	}
+	else if (CmdCheck(Owner(executor)))
+	{
+	    cval = cmdtest(Owner(executor), T("goto"));
+	}
+	else
+	{
+	    cval = 0;
+	}
 
-        if (cval == 0)
-        {
-            cval = zonecmdtest(executor, T("goto"));
-        }
+	if (cval == 0)
+	{
+	    cval = zonecmdtest(executor, T("goto"));
+	}
 
-        hval = 0;
-        if (  (goto_cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
-           && bGoodHookObj)
-        {
-            if (  (goto_cmdp->flags & CEF_HOOK_IGNORE)
-               && !process_hook(executor, goto_cmdp, CEF_HOOK_IGNORE, true))
-            {
-                hval = 2;
-            }
-            else if (  (goto_cmdp->flags & CEF_HOOK_PERMIT)
-                    && !process_hook(executor, goto_cmdp, CEF_HOOK_PERMIT, true))
-            {
-                hval = 1;
-            }
-        }
+	hval = 0;
+	if (  (goto_cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
+	   && bGoodHookObj)
+	{
+	    if (  (goto_cmdp->flags & CEF_HOOK_IGNORE)
+	       && !process_hook(executor, goto_cmdp, CEF_HOOK_IGNORE, true))
+	    {
+		hval = 2;
+	    }
+	    else if (  (goto_cmdp->flags & CEF_HOOK_PERMIT)
+		    && !process_hook(executor, goto_cmdp, CEF_HOOK_PERMIT, true))
+	    {
+		hval = 1;
+	    }
+	}
 
-        if (  cval != 2
-           && hval != 2)
-        {
-            // Check for an exit name.
-            //
-            init_match_check_keys(executor, pCommand, TYPE_EXIT);
-            match_exit_with_parents();
-            exit = last_match_result();
-            bool bMaster = (NOTHING == exit);
+	if (  cval != 2
+	   && hval != 2)
+	{
+	    // Check for an exit name.
+	    //
+	    init_match_check_keys(executor, pCommand, TYPE_EXIT);
+	    match_exit_with_parents();
+	    exit = last_match_result();
+	    bool bMaster = (NOTHING == exit);
 
-            if (bMaster)
-            {
-                // Check for an exit in the master room.
-                //
-                init_match_check_keys(executor, pCommand, TYPE_EXIT);
-                match_master_exit();
-                exit = last_match_result();
-            }
+	    if (bMaster)
+	    {
+		// Check for an exit in the master room.
+		//
+		init_match_check_keys(executor, pCommand, TYPE_EXIT);
+		match_master_exit();
+		exit = last_match_result();
+	    }
 
-            if (exit != NOTHING)
-            {
-                if (  1 == cval
-                   || 1 == hval)
-                {
-                    if (  (goto_cmdp->flags & CEF_HOOK_AFAIL)
-                       && bGoodHookObj)
-                    {
-                        process_hook(executor, goto_cmdp, CEF_HOOK_AFAIL, false);
-                    }
-                    else
-                    {
-                        notify(executor, NOPERM_MESSAGE);
-                    }
-                    mudstate.debug_cmd = cmdsave;
-                    return preserve_cmd;
-                }
+	    if (exit != NOTHING)
+	    {
+		if (  1 == cval
+		   || 1 == hval)
+		{
+		    if (  (goto_cmdp->flags & CEF_HOOK_AFAIL)
+		       && bGoodHookObj)
+		    {
+			process_hook(executor, goto_cmdp, CEF_HOOK_AFAIL, false);
+		    }
+		    else
+		    {
+			notify(executor, NOPERM_MESSAGE);
+		    }
+		    mudstate.debug_cmd = cmdsave;
+		    return preserve_cmd;
+		}
 
-                if (  (goto_cmdp->flags & CEF_HOOK_BEFORE)
-                   && bGoodHookObj)
-                {
-                    process_hook(executor, goto_cmdp, CEF_HOOK_BEFORE, false);
-                }
+		if (  (goto_cmdp->flags & CEF_HOOK_BEFORE)
+		   && bGoodHookObj)
+		{
+		    process_hook(executor, goto_cmdp, CEF_HOOK_BEFORE, false);
+		}
 
-                if (!bMaster)
-                {
-                    move_exit(executor, exit, false, T("You can\xE2\x80\x99t go that way."), 0);
-                }
-                else
-                {
-                    move_exit(executor, exit, true, NULL, 0);
-                }
+		if (!bMaster)
+		{
+		    move_exit(executor, exit, false, T("You can\xE2\x80\x99t go that way."), 0);
+		}
+		else
+		{
+		    move_exit(executor, exit, true, NULL, 0);
+		}
 
-                if (  (goto_cmdp->flags & CEF_HOOK_AFTER)
-                    && bGoodHookObj)
-                {
-                    process_hook(executor, goto_cmdp, CEF_HOOK_AFTER, false);
-                }
-                mudstate.debug_cmd = cmdsave;
-                return preserve_cmd;
-            }
-        }
+		if (  (goto_cmdp->flags & CEF_HOOK_AFTER)
+		    && bGoodHookObj)
+		{
+		    process_hook(executor, goto_cmdp, CEF_HOOK_AFTER, false);
+		}
+		mudstate.debug_cmd = cmdsave;
+		return preserve_cmd;
+	    }
+	}
     }
 
     // Set up a lowercase command and an arg pointer for the hashed
@@ -2187,12 +2187,12 @@ UTF8 *process_command
     //
     size_t nLowerCaseCommand = 0, iPos = 0;
     while (  pCommand[iPos]
-          && !mux_isspace(pCommand[iPos])
-          && nLowerCaseCommand < LBUF_SIZE - 1)
+	  && !mux_isspace(pCommand[iPos])
+	  && nLowerCaseCommand < LBUF_SIZE - 1)
     {
-        LowerCaseCommand[nLowerCaseCommand] = mux_tolower_ascii(pCommand[iPos]);
-        iPos++;
-        nLowerCaseCommand++;
+	LowerCaseCommand[nLowerCaseCommand] = mux_tolower_ascii(pCommand[iPos]);
+	iPos++;
+	nLowerCaseCommand++;
     }
     LowerCaseCommand[nLowerCaseCommand] = '\0';
 
@@ -2200,7 +2200,7 @@ UTF8 *process_command
     //
     while (mux_isspace(pCommand[iPos]))
     {
-        iPos++;
+	iPos++;
     }
 
     // Remember where arg starts
@@ -2212,8 +2212,8 @@ UTF8 *process_command
     UTF8 *pSlash = (UTF8 *)strchr((char *)LowerCaseCommand, '/');
     if (pSlash)
     {
-        nLowerCaseCommand = pSlash - LowerCaseCommand;
-        *pSlash++ = '\0';
+	nLowerCaseCommand = pSlash - LowerCaseCommand;
+	*pSlash++ = '\0';
     }
 
     // Check for a builtin command (or an alias of a builtin command)
@@ -2223,142 +2223,142 @@ UTF8 *process_command
     /* If command is checked to ignore NONMATCHING switches, fall through */
     if (cmdp)
     {
-        // CmdCheck tests for @icmd. higcheck tests for i/p hooks.
-        // Both from RhostMUSH.
-        // cval/hval values: 0 normal, 1 disable, 2 ignore
-        //
-        if (CmdCheck(executor))
-        {
-            cval = cmdtest(executor, cmdp->cmdname);
-        }
-        else if (CmdCheck(Owner(executor)))
-        {
-            cval = cmdtest(Owner(executor), cmdp->cmdname);
-        }
-        else
-        {
-            cval = 0;
-        }
+	// CmdCheck tests for @icmd. higcheck tests for i/p hooks.
+	// Both from RhostMUSH.
+	// cval/hval values: 0 normal, 1 disable, 2 ignore
+	//
+	if (CmdCheck(executor))
+	{
+	    cval = cmdtest(executor, cmdp->cmdname);
+	}
+	else if (CmdCheck(Owner(executor)))
+	{
+	    cval = cmdtest(Owner(executor), cmdp->cmdname);
+	}
+	else
+	{
+	    cval = 0;
+	}
 
-        if (cval == 0)
-        {
-            cval = zonecmdtest(executor, cmdp->cmdname);
-        }
+	if (cval == 0)
+	{
+	    cval = zonecmdtest(executor, cmdp->cmdname);
+	}
 
-        hval = 0;
-        if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
-           && bGoodHookObj)
-        {
-            if (  (cmdp->flags & CEF_HOOK_IGNORE)
-               && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
-            {
-                hval = 2;
-            }
-            else if (  (cmdp->flags & CEF_HOOK_PERMIT)
-                    && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
-            {
-                hval = 1;
-            }
-        }
+	hval = 0;
+	if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
+	   && bGoodHookObj)
+	{
+	    if (  (cmdp->flags & CEF_HOOK_IGNORE)
+	       && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
+	    {
+		hval = 2;
+	    }
+	    else if (  (cmdp->flags & CEF_HOOK_PERMIT)
+		    && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
+	    {
+		hval = 1;
+	    }
+	}
 
-        // If the command contains a switch, but the command doesn't support
-        // any switches or the command contains one that isn't supported,
-        // CEF_HOOK_IGSWITCH will allow us to treat the entire command as if it
-        // weren't a built-in command.
-        //
-        unsigned int flagvalue;
-        if (  (cmdp->flags & CEF_HOOK_IGSWITCH)
-           && pSlash)
-        {
-            if (cmdp->switches)
-            {
-                search_nametab(executor, cmdp->switches, pSlash, &flagvalue);
-                if (flagvalue & SW_MULTIPLE)
-                {
-                    MUX_STRTOK_STATE ttswitch;
-                    // All the switches given a command shouldn't exceed 200 chars together
-                    UTF8 switch_buff[200];
-                    UTF8 *switch_ptr;
-                    mux_strncpy(switch_buff, pSlash, sizeof(switch_buff)-1);
-                    mux_strtok_src(&ttswitch, switch_buff);
-                    mux_strtok_ctl(&ttswitch, T("/"));
-                    switch_ptr = mux_strtok_parse(&ttswitch);
-                    while (  switch_ptr
-                          && *switch_ptr)
-                    {
-                        search_nametab(executor, cmdp->switches, switch_ptr, &flagvalue);
-                        if (flagvalue == (unsigned int) -1)
-                        {
-                            break;
-                        }
-                        switch_ptr = mux_strtok_parse(&ttswitch);
-                    }
-                }
-                if (flagvalue == (unsigned int) -1)
-                {
-                    cval = 2;
-                }
-            }
-            else
-            {
-                // Switch exists but no switches allowed for command.
-                //
-                cval = 2;
-            }
-        }
+	// If the command contains a switch, but the command doesn't support
+	// any switches or the command contains one that isn't supported,
+	// CEF_HOOK_IGSWITCH will allow us to treat the entire command as if it
+	// weren't a built-in command.
+	//
+	unsigned int flagvalue;
+	if (  (cmdp->flags & CEF_HOOK_IGSWITCH)
+	   && pSlash)
+	{
+	    if (cmdp->switches)
+	    {
+		search_nametab(executor, cmdp->switches, pSlash, &flagvalue);
+		if (flagvalue & SW_MULTIPLE)
+		{
+		    MUX_STRTOK_STATE ttswitch;
+		    // All the switches given a command shouldn't exceed 200 chars together
+		    UTF8 switch_buff[200];
+		    UTF8 *switch_ptr;
+		    mux_strncpy(switch_buff, pSlash, sizeof(switch_buff)-1);
+		    mux_strtok_src(&ttswitch, switch_buff);
+		    mux_strtok_ctl(&ttswitch, T("/"));
+		    switch_ptr = mux_strtok_parse(&ttswitch);
+		    while (  switch_ptr
+			  && *switch_ptr)
+		    {
+			search_nametab(executor, cmdp->switches, switch_ptr, &flagvalue);
+			if (flagvalue == (unsigned int) -1)
+			{
+			    break;
+			}
+			switch_ptr = mux_strtok_parse(&ttswitch);
+		    }
+		}
+		if (flagvalue == (unsigned int) -1)
+		{
+		    cval = 2;
+		}
+	    }
+	    else
+	    {
+		// Switch exists but no switches allowed for command.
+		//
+		cval = 2;
+	    }
+	}
 
-        if (  cval != 2
-           && hval != 2)
-        {
-            if (  cval == 1
-               || hval == 1)
-            {
-                if (  (cmdp->flags & CEF_HOOK_AFAIL)
-                   && bGoodHookObj)
-                {
-                    process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
-                }
-                else
-                {
-                    notify(executor, NOPERM_MESSAGE);
-                }
-                mudstate.debug_cmd = cmdsave;
-                return preserve_cmd;
-            }
-            if (  mudconf.space_compress
-               && (cmdp->callseq & CS_NOSQUISH))
-            {
-                // We handle this specially -- there is no space compression
-                // involved, so we must go back to the original command.
-                // We skip over the command and a single space to position
-                // arg at the arguments.
-                //
-                arg = pCommand = pOriginalCommand;
-                while (*arg && !mux_isspace(*arg))
-                {
-                    arg++;
-                }
-                if (*arg)
-                {
-                    // We stopped on the space, advance to next.
-                    //
-                    arg++;
-                }
-            }
-            process_cmdent(cmdp, pSlash, executor, caller, enactor, eval,
-                interactive, arg, pCommand, args, nargs);
-            if (mudstate.bStackLimitReached)
-            {
-                STARTLOG(LOG_ALWAYS, T("CMD"), T("SPAM"));
-                log_name_and_loc(executor);
-                log_text(T(" entered: "));
-                log_text(pOriginalCommand);
-                ENDLOG;
-            }
-            mudstate.bStackLimitReached = false;
-            mudstate.debug_cmd = cmdsave;
-            return preserve_cmd;
-        }
+	if (  cval != 2
+	   && hval != 2)
+	{
+	    if (  cval == 1
+	       || hval == 1)
+	    {
+		if (  (cmdp->flags & CEF_HOOK_AFAIL)
+		   && bGoodHookObj)
+		{
+		    process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
+		}
+		else
+		{
+		    notify(executor, NOPERM_MESSAGE);
+		}
+		mudstate.debug_cmd = cmdsave;
+		return preserve_cmd;
+	    }
+	    if (  mudconf.space_compress
+	       && (cmdp->callseq & CS_NOSQUISH))
+	    {
+		// We handle this specially -- there is no space compression
+		// involved, so we must go back to the original command.
+		// We skip over the command and a single space to position
+		// arg at the arguments.
+		//
+		arg = pCommand = pOriginalCommand;
+		while (*arg && !mux_isspace(*arg))
+		{
+		    arg++;
+		}
+		if (*arg)
+		{
+		    // We stopped on the space, advance to next.
+		    //
+		    arg++;
+		}
+	    }
+	    process_cmdent(cmdp, pSlash, executor, caller, enactor, eval,
+		interactive, arg, pCommand, args, nargs);
+	    if (mudstate.bStackLimitReached)
+	    {
+		STARTLOG(LOG_ALWAYS, T("CMD"), T("SPAM"));
+		log_name_and_loc(executor);
+		log_text(T(" entered: "));
+		log_text(pOriginalCommand);
+		ENDLOG;
+	    }
+	    mudstate.bStackLimitReached = false;
+	    mudstate.debug_cmd = cmdsave;
+	    return preserve_cmd;
+	}
     }
 
     // Check for enter and leave aliases, user-defined commands on the
@@ -2369,7 +2369,7 @@ UTF8 *process_command
     //
     bp = LowerCaseCommand;
     mux_exec(pCommand, LBUF_SIZE-1, LowerCaseCommand, &bp, executor, caller, enactor,
-        eval|EV_EVAL|EV_FCHECK|EV_STRIP_CURLY|EV_TOP, args, nargs);
+	eval|EV_EVAL|EV_FCHECK|EV_STRIP_CURLY|EV_TOP, args, nargs);
     *bp = '\0';
     bool succ = false;
 
@@ -2377,334 +2377,334 @@ UTF8 *process_command
     //
     if (Has_location(executor) && Good_obj(Location(executor)))
     {
-        // Check for a leave alias.
-        //
-        p = atr_pget(Location(executor), A_LALIAS, &aowner, &aflags);
-        if (*p)
-        {
-            if (matches_exit_from_list(LowerCaseCommand, p))
-            {
-                free_lbuf(p);
+	// Check for a leave alias.
+	//
+	p = atr_pget(Location(executor), A_LALIAS, &aowner, &aflags);
+	if (*p)
+	{
+	    if (matches_exit_from_list(LowerCaseCommand, p))
+	    {
+		free_lbuf(p);
 
-                // CmdCheck tests for @icmd. higcheck tests for i/p hooks.
-                // Both from RhostMUSH.
-                // cval/hval values: 0 normal, 1 disable, 2 ignore
-                //
-                if (CmdCheck(executor))
-                {
-                    cval = cmdtest(executor, T("leave"));
-                }
-                else if (CmdCheck(Owner(executor)))
-                {
-                    cval = cmdtest(Owner(executor), T("leave"));
-                }
-                else
-                {
-                    cval = 0;
-                }
+		// CmdCheck tests for @icmd. higcheck tests for i/p hooks.
+		// Both from RhostMUSH.
+		// cval/hval values: 0 normal, 1 disable, 2 ignore
+		//
+		if (CmdCheck(executor))
+		{
+		    cval = cmdtest(executor, T("leave"));
+		}
+		else if (CmdCheck(Owner(executor)))
+		{
+		    cval = cmdtest(Owner(executor), T("leave"));
+		}
+		else
+		{
+		    cval = 0;
+		}
 
-                if (cval == 0)
-                {
-                    cval = zonecmdtest(executor, T("leave"));
-                }
+		if (cval == 0)
+		{
+		    cval = zonecmdtest(executor, T("leave"));
+		}
 
-                cmdp = (CMDENT *)hashfindLEN("leave", strlen("leave"), &mudstate.command_htab);
+		cmdp = (CMDENT *)hashfindLEN("leave", strlen("leave"), &mudstate.command_htab);
 
-                hval = 0;
-                if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
-                   && bGoodHookObj)
-                {
-                    if (  (cmdp->flags & CEF_HOOK_IGNORE)
-                       && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
-                    {
-                        hval = 2;
-                    }
-                    else if (  (cmdp->flags & CEF_HOOK_PERMIT)
-                            && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
-                    {
-                        hval = 1;
-                    }
-                }
+		hval = 0;
+		if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
+		   && bGoodHookObj)
+		{
+		    if (  (cmdp->flags & CEF_HOOK_IGNORE)
+		       && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
+		    {
+			hval = 2;
+		    }
+		    else if (  (cmdp->flags & CEF_HOOK_PERMIT)
+			    && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
+		    {
+			hval = 1;
+		    }
+		}
 
-                if (  cval != 2
-                   && hval != 2)
-                {
-                    if (  cval == 1
-                       || hval == 1)
-                    {
-                        if (  (cmdp->flags & CEF_HOOK_AFAIL)
-                           && bGoodHookObj)
-                        {
-                            process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
-                        }
-                        else
-                        {
-                            notify(executor, NOPERM_MESSAGE);
-                        }
-                        mudstate.debug_cmd = cmdsave;
-                        return preserve_cmd;
-                    }
+		if (  cval != 2
+		   && hval != 2)
+		{
+		    if (  cval == 1
+		       || hval == 1)
+		    {
+			if (  (cmdp->flags & CEF_HOOK_AFAIL)
+			   && bGoodHookObj)
+			{
+			    process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
+			}
+			else
+			{
+			    notify(executor, NOPERM_MESSAGE);
+			}
+			mudstate.debug_cmd = cmdsave;
+			return preserve_cmd;
+		    }
 
-                    if (  (cmdp->flags & CEF_HOOK_BEFORE)
-                       && bGoodHookObj)
-                    {
-                        process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
-                    }
+		    if (  (cmdp->flags & CEF_HOOK_BEFORE)
+		       && bGoodHookObj)
+		    {
+			process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
+		    }
 
-                    do_leave(executor, caller, executor, 0, 0);
+		    do_leave(executor, caller, executor, 0, 0);
 
-                    if (  (cmdp->flags & CEF_HOOK_AFTER)
-                        && bGoodHookObj)
-                    {
-                        process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
-                    }
+		    if (  (cmdp->flags & CEF_HOOK_AFTER)
+			&& bGoodHookObj)
+		    {
+			process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
+		    }
 
-                    mudstate.debug_cmd = cmdsave;
-                    return preserve_cmd;
-                }
-            }
-        }
-        free_lbuf(p);
+		    mudstate.debug_cmd = cmdsave;
+		    return preserve_cmd;
+		}
+	    }
+	}
+	free_lbuf(p);
 
-        DOLIST(exit, Contents(Location(executor)))
-        {
-            p = atr_pget(exit, A_EALIAS, &aowner, &aflags);
-            if (*p)
-            {
-                if (matches_exit_from_list(LowerCaseCommand, p))
-                {
-                    free_lbuf(p);
+	DOLIST(exit, Contents(Location(executor)))
+	{
+	    p = atr_pget(exit, A_EALIAS, &aowner, &aflags);
+	    if (*p)
+	    {
+		if (matches_exit_from_list(LowerCaseCommand, p))
+		{
+		    free_lbuf(p);
 
-                    // Check for enter aliases.
-                    //
-                    // CmdCheck tests for @icmd. higcheck tests for i/p hooks.
-                    // Both from RhostMUSH.
-                    // cval/hval values: 0 normal, 1 disable, 2 ignore
-                    //
-                    if (CmdCheck(executor))
-                    {
-                        cval = cmdtest(executor, T("enter"));
-                    }
-                    else if (CmdCheck(Owner(executor)))
-                    {
-                        cval = cmdtest(Owner(executor), T("enter"));
-                    }
-                    else
-                    {
-                        cval = 0;
-                    }
+		    // Check for enter aliases.
+		    //
+		    // CmdCheck tests for @icmd. higcheck tests for i/p hooks.
+		    // Both from RhostMUSH.
+		    // cval/hval values: 0 normal, 1 disable, 2 ignore
+		    //
+		    if (CmdCheck(executor))
+		    {
+			cval = cmdtest(executor, T("enter"));
+		    }
+		    else if (CmdCheck(Owner(executor)))
+		    {
+			cval = cmdtest(Owner(executor), T("enter"));
+		    }
+		    else
+		    {
+			cval = 0;
+		    }
 
-                    if (cval == 0)
-                    {
-                        cval = zonecmdtest(executor, T("enter"));
-                    }
+		    if (cval == 0)
+		    {
+			cval = zonecmdtest(executor, T("enter"));
+		    }
 
-                    cmdp = (CMDENT *)hashfindLEN("enter", strlen("enter"), &mudstate.command_htab);
+		    cmdp = (CMDENT *)hashfindLEN("enter", strlen("enter"), &mudstate.command_htab);
 
-                    hval = 0;
-                    if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
-                       && bGoodHookObj)
-                    {
-                        if (  (cmdp->flags & CEF_HOOK_IGNORE)
-                           && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
-                        {
-                            hval = 2;
-                        }
-                        else if (  (cmdp->flags & CEF_HOOK_PERMIT)
-                                && !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
-                        {
-                            hval = 1;
-                        }
-                    }
+		    hval = 0;
+		    if (  (cmdp->flags & (CEF_HOOK_IGNORE|CEF_HOOK_PERMIT))
+		       && bGoodHookObj)
+		    {
+			if (  (cmdp->flags & CEF_HOOK_IGNORE)
+			   && !process_hook(executor, cmdp, CEF_HOOK_IGNORE, true))
+			{
+			    hval = 2;
+			}
+			else if (  (cmdp->flags & CEF_HOOK_PERMIT)
+				&& !process_hook(executor, cmdp, CEF_HOOK_PERMIT, true))
+			{
+			    hval = 1;
+			}
+		    }
 
-                    if (  cval != 2
-                       && hval != 2)
-                    {
-                        if (  cval == 1
-                           || hval == 1)
-                        {
-                            if (  (cmdp->flags & CEF_HOOK_AFAIL)
-                               && bGoodHookObj)
-                            {
-                                process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
-                            }
-                            else
-                            {
-                                notify(executor, NOPERM_MESSAGE);
-                            }
-                            mudstate.debug_cmd = cmdsave;
-                            return preserve_cmd;
-                        }
+		    if (  cval != 2
+		       && hval != 2)
+		    {
+			if (  cval == 1
+			   || hval == 1)
+			{
+			    if (  (cmdp->flags & CEF_HOOK_AFAIL)
+			       && bGoodHookObj)
+			    {
+				process_hook(executor, cmdp, CEF_HOOK_AFAIL, false);
+			    }
+			    else
+			    {
+				notify(executor, NOPERM_MESSAGE);
+			    }
+			    mudstate.debug_cmd = cmdsave;
+			    return preserve_cmd;
+			}
 
-                        if (  (cmdp->flags & CEF_HOOK_BEFORE)
-                           && bGoodHookObj)
-                        {
-                            process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
-                        }
+			if (  (cmdp->flags & CEF_HOOK_BEFORE)
+			   && bGoodHookObj)
+			{
+			    process_hook(executor, cmdp, CEF_HOOK_BEFORE, false);
+			}
 
-                        do_enter_internal(executor, exit, false);
+			do_enter_internal(executor, exit, false);
 
-                        if (  (cmdp->flags & CEF_HOOK_AFTER)
-                            && bGoodHookObj)
-                        {
-                            process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
-                        }
-                        mudstate.debug_cmd = cmdsave;
-                        return preserve_cmd;
-                    }
-                    else if (cval == 1)
-                    {
-                        notify_quiet(executor, NOPERM_MESSAGE);
-                        mudstate.debug_cmd = cmdsave;
-                        return preserve_cmd;
-                    }
-                }
-            }
-            free_lbuf(p);
-        }
+			if (  (cmdp->flags & CEF_HOOK_AFTER)
+			    && bGoodHookObj)
+			{
+			    process_hook(executor, cmdp, CEF_HOOK_AFTER, false);
+			}
+			mudstate.debug_cmd = cmdsave;
+			return preserve_cmd;
+		    }
+		    else if (cval == 1)
+		    {
+			notify_quiet(executor, NOPERM_MESSAGE);
+			mudstate.debug_cmd = cmdsave;
+			return preserve_cmd;
+		    }
+		}
+	    }
+	    free_lbuf(p);
+	}
     }
 
     // Check for $-command matches on me.
     //
     if (mudconf.match_mine && !No_Command(executor))
     {
-        if (  (  !isPlayer(executor)
-              || mudconf.match_mine_pl)
-           && atr_match(executor, executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true))
-        {
-            succ = true;
-        }
+	if (  (  !isPlayer(executor)
+	      || mudconf.match_mine_pl)
+	   && atr_match(executor, executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true))
+	{
+	    succ = true;
+	}
     }
 
     // Check for $-command matches on nearby things and on my room.
     //
     if (Has_location(executor))
     {
-        succ |= list_check(Contents(Location(executor)), executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
+	succ |= list_check(Contents(Location(executor)), executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
 
-        if (!No_Command(Location(executor)))
-        {
-            succ |= atr_match(Location(executor), executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
-        }
+	if (!No_Command(Location(executor)))
+	{
+	    succ |= atr_match(Location(executor), executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
+	}
     }
 
     // Check for $-command matches in my inventory.
     //
     if (Has_contents(executor))
     {
-        succ |= list_check(Contents(executor), executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
+	succ |= list_check(Contents(executor), executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
     }
 
     if (  !succ
        && mudconf.have_zones)
     {
-        // now do check on zones.
-        //
-        dbref zone = Zone(executor);
-        dbref loc = Location(executor);
-        dbref zone_loc = NOTHING;
-        if (  Good_obj(loc)
-           && Good_obj(zone_loc = Zone(loc)))
-        {
-            if (isRoom(zone_loc))
-            {
-                // zone of player's location is a parent room.
-                //
-                if (loc != zone)
-                {
-                    // check parent room exits.
-                    //
-                    init_match_check_keys(executor, pCommand, TYPE_EXIT);
-                    match_zone_exit();
-                    exit = last_match_result();
-                    if (exit != NOTHING)
-                    {
-                        move_exit(executor, exit, true, NULL, 0);
-                        mudstate.debug_cmd = cmdsave;
-                        return preserve_cmd;
-                    }
-                    succ |= list_check(Contents(zone_loc), executor,
-                               AMATCH_CMD, LowerCaseCommand, preserve_cmd,
-                               true);
+	// now do check on zones.
+	//
+	dbref zone = Zone(executor);
+	dbref loc = Location(executor);
+	dbref zone_loc = NOTHING;
+	if (  Good_obj(loc)
+	   && Good_obj(zone_loc = Zone(loc)))
+	{
+	    if (isRoom(zone_loc))
+	    {
+		// zone of player's location is a parent room.
+		//
+		if (loc != zone)
+		{
+		    // check parent room exits.
+		    //
+		    init_match_check_keys(executor, pCommand, TYPE_EXIT);
+		    match_zone_exit();
+		    exit = last_match_result();
+		    if (exit != NOTHING)
+		    {
+			move_exit(executor, exit, true, NULL, 0);
+			mudstate.debug_cmd = cmdsave;
+			return preserve_cmd;
+		    }
+		    succ |= list_check(Contents(zone_loc), executor,
+			       AMATCH_CMD, LowerCaseCommand, preserve_cmd,
+			       true);
 
-                    // end of parent room checks.
-                    //
-                }
-            }
-            else
-            {
-                // try matching commands on area zone object.
-                //
-                if (!No_Command(zone_loc))
-                {
-                    succ |= atr_match(zone_loc, executor, AMATCH_CMD,
-                       LowerCaseCommand, preserve_cmd, true);
-                }
-            }
-        }
+		    // end of parent room checks.
+		    //
+		}
+	    }
+	    else
+	    {
+		// try matching commands on area zone object.
+		//
+		if (!No_Command(zone_loc))
+		{
+		    succ |= atr_match(zone_loc, executor, AMATCH_CMD,
+		       LowerCaseCommand, preserve_cmd, true);
+		}
+	    }
+	}
 
-        // End of matching on zone of player's location.
-        //
+	// End of matching on zone of player's location.
+	//
 
-        // if nothing matched with parent room/zone object, try matching
-        // zone commands on the player's personal zone.
-        //
-        if (  !succ
-           && Good_obj(zone)
-           && !No_Command(zone)
-           && zone_loc != zone)
-        {
-            succ |= atr_match(zone, executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
-        }
+	// if nothing matched with parent room/zone object, try matching
+	// zone commands on the player's personal zone.
+	//
+	if (  !succ
+	   && Good_obj(zone)
+	   && !No_Command(zone)
+	   && zone_loc != zone)
+	{
+	    succ |= atr_match(zone, executor, AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
+	}
     }
 
     // If we didn't find anything, try in the master room.
     //
     if (!succ)
     {
-        if (  Good_obj(mudconf.master_room)
-           && Has_contents(mudconf.master_room))
-        {
-            succ |= list_check(Contents(mudconf.master_room), executor,
-                AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
+	if (  Good_obj(mudconf.master_room)
+	   && Has_contents(mudconf.master_room))
+	{
+	    succ |= list_check(Contents(mudconf.master_room), executor,
+		AMATCH_CMD, LowerCaseCommand, preserve_cmd, true);
 
-            if (!No_Command(mudconf.master_room))
-            {
-                succ |= atr_match(mudconf.master_room, executor, AMATCH_CMD,
-                    LowerCaseCommand, preserve_cmd, false);
-            }
-        }
+	    if (!No_Command(mudconf.master_room))
+	    {
+		succ |= atr_match(mudconf.master_room, executor, AMATCH_CMD,
+		    LowerCaseCommand, preserve_cmd, false);
+	    }
+	}
     }
 
     // If we still didn't find anything, tell how to get help.
     //
     if (!succ)
     {
-        if (  Good_obj(mudconf.global_error_obj)
-           && !Going(mudconf.global_error_obj))
-        {
-            UTF8 *errtext = atr_get("process_command.2491", mudconf.global_error_obj, A_VA, &aowner, &aflags);
-            UTF8 *errbuff = alloc_lbuf("process_command.error_msg");
-            UTF8 *errbufc = errbuff;
-            mux_exec(errtext, LBUF_SIZE-1, errbuff, &errbufc, mudconf.global_error_obj, caller, enactor,
-                AttrTrace(aflags, EV_EVAL|EV_FCHECK|EV_STRIP_CURLY|EV_TOP),
-                (const UTF8 **)&pCommand, 1);
-            *errbufc = '\0';
-            notify(executor, errbuff);
-            free_lbuf(errtext);
-            free_lbuf(errbuff);
-        }
-        else
-        {
-            // We use LowerCaseCommand for another purpose.
-            //
-            notify(executor, T("Huh?  (Type \xE2\x80\x9Chelp\xE2\x80\x9D for help.)"));
-            STARTLOG(LOG_BADCOMMANDS, "CMD", "BAD");
-            log_name_and_loc(executor);
-            log_text(T(" entered: "));
-            log_text(pCommand);
-            ENDLOG;
-        }
+	if (  Good_obj(mudconf.global_error_obj)
+	   && !Going(mudconf.global_error_obj))
+	{
+	    UTF8 *errtext = atr_get("process_command.2491", mudconf.global_error_obj, A_VA, &aowner, &aflags);
+	    UTF8 *errbuff = alloc_lbuf("process_command.error_msg");
+	    UTF8 *errbufc = errbuff;
+	    mux_exec(errtext, LBUF_SIZE-1, errbuff, &errbufc, mudconf.global_error_obj, caller, enactor,
+		AttrTrace(aflags, EV_EVAL|EV_FCHECK|EV_STRIP_CURLY|EV_TOP),
+		(const UTF8 **)&pCommand, 1);
+	    *errbufc = '\0';
+	    notify(executor, errbuff);
+	    free_lbuf(errtext);
+	    free_lbuf(errbuff);
+	}
+	else
+	{
+	    // We use LowerCaseCommand for another purpose.
+	    //
+	    notify(executor, T("Huh?  (Type \xE2\x80\x9Chelp\xE2\x80\x9D for help.)"));
+	    STARTLOG(LOG_BADCOMMANDS, "CMD", "BAD");
+	    log_name_and_loc(executor);
+	    log_text(T(" entered: "));
+	    log_text(pCommand);
+	    ENDLOG;
+	}
     }
     mudstate.debug_cmd = cmdsave;
     return preserve_cmd;
@@ -2722,61 +2722,61 @@ static void list_cmdtable(dbref player)
     ItemToList_AddString(&itl, T("Commands:"));
 
     for ( CMDENT_NO_ARG *cmdp0a = command_table_no_arg;
-          cmdp0a->cmdname;
-          cmdp0a++)
+	  cmdp0a->cmdname;
+	  cmdp0a++)
     {
-        if (  check_access(player, cmdp0a->perms)
-            && !(cmdp0a->perms & CF_DARK))
-        {
-            ItemToList_AddString(&itl, cmdp0a->cmdname);
-        }
+	if (  check_access(player, cmdp0a->perms)
+	    && !(cmdp0a->perms & CF_DARK))
+	{
+	    ItemToList_AddString(&itl, cmdp0a->cmdname);
+	}
     }
 
     for ( CMDENT_ONE_ARG *cmdp1a = command_table_one_arg;
-          cmdp1a->cmdname;
-          cmdp1a++)
+	  cmdp1a->cmdname;
+	  cmdp1a++)
     {
-        if (  check_access(player, cmdp1a->perms)
-            && !(cmdp1a->perms & CF_DARK))
-        {
-            ItemToList_AddString(&itl, cmdp1a->cmdname);
-        }
+	if (  check_access(player, cmdp1a->perms)
+	    && !(cmdp1a->perms & CF_DARK))
+	{
+	    ItemToList_AddString(&itl, cmdp1a->cmdname);
+	}
     }
 
     for ( CMDENT_TWO_ARG *cmdp2a = command_table_two_arg;
-          cmdp2a->cmdname;
-          cmdp2a++)
+	  cmdp2a->cmdname;
+	  cmdp2a++)
     {
-        if (  check_access(player, cmdp2a->perms)
-            && !(cmdp2a->perms & CF_DARK))
-        {
-            ItemToList_AddString(&itl, cmdp2a->cmdname);
-        }
+	if (  check_access(player, cmdp2a->perms)
+	    && !(cmdp2a->perms & CF_DARK))
+	{
+	    ItemToList_AddString(&itl, cmdp2a->cmdname);
+	}
     }
 
     for ( CMDENT_TWO_ARG_ARGV *cmdp2av = command_table_two_arg_argv;
-          cmdp2av->cmdname;
-          cmdp2av++)
+	  cmdp2av->cmdname;
+	  cmdp2av++)
     {
-        if (  check_access(player, cmdp2av->perms)
-            && !(cmdp2av->perms & CF_DARK))
-        {
-            ItemToList_AddString(&itl, cmdp2av->cmdname);
-        }
+	if (  check_access(player, cmdp2av->perms)
+	    && !(cmdp2av->perms & CF_DARK))
+	{
+	    ItemToList_AddString(&itl, cmdp2av->cmdname);
+	}
     }
 
     // Players get the list of logged-out cmds too
     //
     if (isPlayer(player))
     {
-        for (NAMETAB *nt = logout_cmdtable; nt->name; nt++)
-        {
-            if (  God(player)
-               || check_access(player, nt->perm))
-            {
-                ItemToList_AddString(&itl, nt->name);
-            }
-        }
+	for (NAMETAB *nt = logout_cmdtable; nt->name; nt++)
+	{
+	    if (  God(player)
+	       || check_access(player, nt->perm))
+	    {
+		ItemToList_AddString(&itl, nt->name);
+	    }
+	}
     }
     ItemToList_Final(&itl);
 
@@ -2796,10 +2796,10 @@ static void list_attrtable(dbref player)
     ItemToList_AddString(&itl, T("Attributes:"));
     for (ATTR *ap = AttrTable; ap->name; ap++)
     {
-        if (See_attr(player, player, ap))
-        {
-            ItemToList_AddString(&itl, ap->name);
-        }
+	if (See_attr(player, player, ap))
+	{
+	    ItemToList_AddString(&itl, ap->name);
+	}
     }
     ItemToList_Final(&itl);
     *bp = '\0';
@@ -2840,71 +2840,71 @@ NAMETAB access_nametab[] =
 static void list_cmdaccess(dbref player)
 {
     for ( CMDENT_NO_ARG *cmdp0a = command_table_no_arg;
-          cmdp0a->cmdname;
-          cmdp0a++)
+	  cmdp0a->cmdname;
+	  cmdp0a++)
     {
-        if (  check_access(player, cmdp0a->perms)
-           && !(cmdp0a->perms & CF_DARK))
-        {
-            listset_nametab(player, access_nametab, cmdp0a->perms, cmdp0a->cmdname, true);
-        }
+	if (  check_access(player, cmdp0a->perms)
+	   && !(cmdp0a->perms & CF_DARK))
+	{
+	    listset_nametab(player, access_nametab, cmdp0a->perms, cmdp0a->cmdname, true);
+	}
     }
 
     for ( CMDENT_ONE_ARG *cmdp1a = command_table_one_arg;
-          cmdp1a->cmdname;
-          cmdp1a++)
+	  cmdp1a->cmdname;
+	  cmdp1a++)
     {
-        if (  check_access(player, cmdp1a->perms)
-           && !(cmdp1a->perms & CF_DARK))
-        {
-            listset_nametab(player, access_nametab, cmdp1a->perms, cmdp1a->cmdname, true);
-        }
+	if (  check_access(player, cmdp1a->perms)
+	   && !(cmdp1a->perms & CF_DARK))
+	{
+	    listset_nametab(player, access_nametab, cmdp1a->perms, cmdp1a->cmdname, true);
+	}
     }
 
     for ( CMDENT_TWO_ARG *cmdp2a = command_table_two_arg;
-          cmdp2a->cmdname;
-          cmdp2a++)
+	  cmdp2a->cmdname;
+	  cmdp2a++)
     {
-        if (  check_access(player, cmdp2a->perms)
-           && !(cmdp2a->perms & CF_DARK))
-        {
-            listset_nametab(player, access_nametab, cmdp2a->perms, cmdp2a->cmdname, true);
-        }
+	if (  check_access(player, cmdp2a->perms)
+	   && !(cmdp2a->perms & CF_DARK))
+	{
+	    listset_nametab(player, access_nametab, cmdp2a->perms, cmdp2a->cmdname, true);
+	}
     }
 
     for ( CMDENT_TWO_ARG_ARGV *cmdp2av = command_table_two_arg_argv;
-          cmdp2av->cmdname;
-          cmdp2av++)
+	  cmdp2av->cmdname;
+	  cmdp2av++)
     {
-        if (  check_access(player, cmdp2av->perms)
-           && !(cmdp2av->perms & CF_DARK))
-        {
-            listset_nametab(player, access_nametab, cmdp2av->perms, cmdp2av->cmdname, true);
-        }
+	if (  check_access(player, cmdp2av->perms)
+	   && !(cmdp2av->perms & CF_DARK))
+	{
+	    listset_nametab(player, access_nametab, cmdp2av->perms, cmdp2av->cmdname, true);
+	}
     }
 
     for (ATTR *ap = AttrTable; ap->name; ap++)
     {
-        if (ap->flags & AF_NOCMD)
-        {
-            continue;
-        }
+	if (ap->flags & AF_NOCMD)
+	{
+	    continue;
+	}
 
-        size_t nBuffer;
-        bool bValid;
-        UTF8 *buff2 = MakeCanonicalAttributeCommand(ap->name, &nBuffer, &bValid);
-        if (!bValid)
-        {
-            continue;
-        }
+	size_t nBuffer;
+	bool bValid;
+	UTF8 *buff2 = MakeCanonicalAttributeCommand(ap->name, &nBuffer, &bValid);
+	if (!bValid)
+	{
+	    continue;
+	}
 
-        CMDENT *cmdp = (CMDENT *)hashfindLEN(buff2, nBuffer, &mudstate.command_htab);
-        if (  NULL != cmdp
-           && check_access(player, cmdp->perms)
-           && !(cmdp->perms & CF_DARK))
-        {
-            listset_nametab(player, access_nametab, cmdp->perms, cmdp->cmdname, true);
-        }
+	CMDENT *cmdp = (CMDENT *)hashfindLEN(buff2, nBuffer, &mudstate.command_htab);
+	if (  NULL != cmdp
+	   && check_access(player, cmdp->perms)
+	   && !(cmdp->perms & CF_DARK))
+	{
+	    listset_nametab(player, access_nametab, cmdp->perms, cmdp->cmdname, true);
+	}
     }
 }
 
@@ -2914,51 +2914,51 @@ static void list_cmdaccess(dbref player)
 static void list_cmdswitches(dbref player)
 {
     for ( CMDENT_NO_ARG *cmdp0a = command_table_no_arg;
-          cmdp0a->cmdname;
-          cmdp0a++)
+	  cmdp0a->cmdname;
+	  cmdp0a++)
     {
-        if (  cmdp0a->switches
-           && check_access(player, cmdp0a->perms)
-           && !(cmdp0a->perms & CF_DARK))
-        {
-            display_nametab(player, cmdp0a->switches, cmdp0a->cmdname, false);
-        }
+	if (  cmdp0a->switches
+	   && check_access(player, cmdp0a->perms)
+	   && !(cmdp0a->perms & CF_DARK))
+	{
+	    display_nametab(player, cmdp0a->switches, cmdp0a->cmdname, false);
+	}
     }
 
     for ( CMDENT_ONE_ARG *cmdp1a = command_table_one_arg;
-          cmdp1a->cmdname;
-          cmdp1a++)
+	  cmdp1a->cmdname;
+	  cmdp1a++)
     {
-        if (  cmdp1a->switches
-           && check_access(player, cmdp1a->perms)
-           && !(cmdp1a->perms & CF_DARK))
-        {
-            display_nametab(player, cmdp1a->switches, cmdp1a->cmdname, false);
-        }
+	if (  cmdp1a->switches
+	   && check_access(player, cmdp1a->perms)
+	   && !(cmdp1a->perms & CF_DARK))
+	{
+	    display_nametab(player, cmdp1a->switches, cmdp1a->cmdname, false);
+	}
     }
 
     for ( CMDENT_TWO_ARG *cmdp2a = command_table_two_arg;
-          cmdp2a->cmdname;
-          cmdp2a++)
+	  cmdp2a->cmdname;
+	  cmdp2a++)
     {
-        if (  cmdp2a->switches
-           && check_access(player, cmdp2a->perms)
-           && !(cmdp2a->perms & CF_DARK))
-        {
-            display_nametab(player, cmdp2a->switches, cmdp2a->cmdname, false);
-        }
+	if (  cmdp2a->switches
+	   && check_access(player, cmdp2a->perms)
+	   && !(cmdp2a->perms & CF_DARK))
+	{
+	    display_nametab(player, cmdp2a->switches, cmdp2a->cmdname, false);
+	}
     }
 
     for ( CMDENT_TWO_ARG_ARGV *cmdp2av = command_table_two_arg_argv;
-          cmdp2av->cmdname;
-          cmdp2av++)
+	  cmdp2av->cmdname;
+	  cmdp2av++)
     {
-        if (  cmdp2av->switches
-           && check_access(player, cmdp2av->perms)
-           && !(cmdp2av->perms & CF_DARK))
-        {
-            display_nametab(player, cmdp2av->switches, cmdp2av->cmdname, false);
-        }
+	if (  cmdp2av->switches
+	   && check_access(player, cmdp2av->perms)
+	   && !(cmdp2av->perms & CF_DARK))
+	{
+	    display_nametab(player, cmdp2av->switches, cmdp2av->cmdname, false);
+	}
     }
 }
 
@@ -3005,10 +3005,10 @@ static void list_attraccess(dbref player)
 {
     for (ATTR *ap = AttrTable; ap->name; ap++)
     {
-        if (bCanReadAttr(player, player, ap, false))
-        {
-            listset_nametab(player, attraccess_nametab, ap->flags, ap->name, true);
-        }
+	if (bCanReadAttr(player, player, ap, false))
+	{
+	    listset_nametab(player, attraccess_nametab, ap->flags, ap->name, true);
+	}
     }
 }
 
@@ -3026,45 +3026,45 @@ CF_HAND(cf_access)
     for (ap = str; *ap && !mux_isspace(*ap) && (*ap != '/'); ap++) ;
     if (*ap == '/')
     {
-        set_switch = true;
-        *ap++ = '\0';
+	set_switch = true;
+	*ap++ = '\0';
     }
     else
     {
-        set_switch = false;
-        if (*ap)
-        {
-            *ap++ = '\0';
-        }
-        while (mux_isspace(*ap))
-        {
-            ap++;
-        }
+	set_switch = false;
+	if (*ap)
+	{
+	    *ap++ = '\0';
+	}
+	while (mux_isspace(*ap))
+	{
+	    ap++;
+	}
     }
 
     cmdp = (CMDENT *)hashfindLEN(str, strlen((char *)str), &mudstate.command_htab);
     if (cmdp != NULL)
     {
-        if (set_switch)
-        {
-            return cf_ntab_access((int *)cmdp->switches, ap, pExtra, nExtra,
-                                  player, cmd);
-        }
-        else
-        {
-            return cf_modify_bits((int *) &(cmdp->perms), ap, pExtra, nExtra, player,
-                                  cmd);
-        }
+	if (set_switch)
+	{
+	    return cf_ntab_access((int *)cmdp->switches, ap, pExtra, nExtra,
+				  player, cmd);
+	}
+	else
+	{
+	    return cf_modify_bits((int *) &(cmdp->perms), ap, pExtra, nExtra, player,
+				  cmd);
+	}
     }
     else
     {
-        if (!mux_stricmp(str, T("home")))
-        {
-            return cf_modify_bits(&(mudconf.restrict_home), ap, pExtra,
-                                  nExtra, player, cmd);
-        }
-        cf_log_notfound(player, cmd, T("Command"), str);
-        return -1;
+	if (!mux_stricmp(str, T("home")))
+	{
+	    return cf_modify_bits(&(mudconf.restrict_home), ap, pExtra,
+				  nExtra, player, cmd);
+	}
+	cf_log_notfound(player, cmd, T("Command"), str);
+	return -1;
     }
 }
 
@@ -3079,26 +3079,26 @@ CF_HAND(cf_acmd_access)
 
     for (ap = AttrTable; ap->name; ap++)
     {
-        size_t nBuffer;
-        bool bValid;
-        UTF8 *buff = MakeCanonicalAttributeCommand(ap->name, &nBuffer, &bValid);
-        if (!bValid)
-        {
-            continue;
-        }
+	size_t nBuffer;
+	bool bValid;
+	UTF8 *buff = MakeCanonicalAttributeCommand(ap->name, &nBuffer, &bValid);
+	if (!bValid)
+	{
+	    continue;
+	}
 
-        CMDENT *cmdp = (CMDENT *)hashfindLEN(buff, nBuffer, &mudstate.command_htab);
-        if (cmdp != NULL)
-        {
-            int save = cmdp->perms;
-            int failure = cf_modify_bits((int *) &(cmdp->perms), str, pExtra, nExtra,
-                 player, cmd);
-            if (failure != 0)
-            {
-                cmdp->perms = save;
-                return -1;
-            }
-        }
+	CMDENT *cmdp = (CMDENT *)hashfindLEN(buff, nBuffer, &mudstate.command_htab);
+	if (cmdp != NULL)
+	{
+	    int save = cmdp->perms;
+	    int failure = cf_modify_bits((int *) &(cmdp->perms), str, pExtra, nExtra,
+		 player, cmd);
+	    if (failure != 0)
+	    {
+		cmdp->perms = save;
+		return -1;
+	    }
+	}
     }
     return 0;
 }
@@ -3115,26 +3115,26 @@ CF_HAND(cf_attr_access)
 
     for (sp = str; *sp && !mux_isspace(*sp); sp++)
     {
-        ; // Nothing
+	; // Nothing
     }
     if (*sp)
     {
-        *sp++ = '\0';
+	*sp++ = '\0';
     }
     while (mux_isspace(*sp))
     {
-        sp++;
+	sp++;
     }
 
     ap = atr_str((UTF8 *)str);
     if (ap)
     {
-        return cf_modify_bits(&(ap->flags), sp, pExtra, nExtra, player, cmd);
+	return cf_modify_bits(&(ap->flags), sp, pExtra, nExtra, player, cmd);
     }
     else
     {
-        cf_log_notfound(player, cmd, T("Attribute"), str);
-        return -1;
+	cf_log_notfound(player, cmd, T("Attribute"), str);
+	return -1;
     }
 }
 
@@ -3158,77 +3158,77 @@ CF_HAND(cf_cmd_alias)
 
     if (!orig)
     {
-        // We only got one argument to @alias. Bad.
-        //
-        return -1;
+	// We only got one argument to @alias. Bad.
+	//
+	return -1;
     }
 
     for (ap = orig; *ap && (*ap != '/'); ap++) ;
     if (*ap == '/')
     {
-        // Switch form of command aliasing: create an alias for
-        // a command + a switch
-        //
-        *ap++ = '\0';
+	// Switch form of command aliasing: create an alias for
+	// a command + a switch
+	//
+	*ap++ = '\0';
 
-        // Look up the command
-        //
-        cmdp = (CMDENT *) hashfindLEN(orig, strlen((char *)orig), (CHashTable *) vp);
-        if (cmdp == NULL || cmdp->switches == NULL)
-        {
-            cf_log_notfound(player, cmd, T("Command"), orig);
-            return -1;
-        }
+	// Look up the command
+	//
+	cmdp = (CMDENT *) hashfindLEN(orig, strlen((char *)orig), (CHashTable *) vp);
+	if (cmdp == NULL || cmdp->switches == NULL)
+	{
+	    cf_log_notfound(player, cmd, T("Command"), orig);
+	    return -1;
+	}
 
-        // Look up the switch
-        //
-        nt = find_nametab_ent(player, (NAMETAB *) cmdp->switches, ap);
-        if (!nt)
-        {
-            cf_log_notfound(player, cmd, T("Switch"), ap);
-            return -1;
-        }
+	// Look up the switch
+	//
+	nt = find_nametab_ent(player, (NAMETAB *) cmdp->switches, ap);
+	if (!nt)
+	{
+	    cf_log_notfound(player, cmd, T("Switch"), ap);
+	    return -1;
+	}
 
-        if (!hashfindLEN(alias, strlen((char *)alias), (CHashTable *)vp))
-        {
-            // Create the new command table entry.
-            //
-            cmd2 = NULL;
-            try
-            {
-                cmd2 = new CMDENT;
-            }
-            catch (...)
-            {
-                ; // Nothing.
-            }
-            ISOUTOFMEMORY(cmd2);
-            cmd2->cmdname = StringClone(alias);
-            cmd2->switches = cmdp->switches;
-            cmd2->perms = cmdp->perms | nt->perm;
-            cmd2->extra = (cmdp->extra | nt->flag) & ~SW_MULTIPLE;
-            if (!(nt->flag & SW_MULTIPLE))
-            {
-                cmd2->extra |= SW_GOT_UNIQUE;
-            }
-            cmd2->callseq = cmdp->callseq;
-            cmd2->handler = cmdp->handler;
-            cmd2->flags = CEF_ALLOC;
+	if (!hashfindLEN(alias, strlen((char *)alias), (CHashTable *)vp))
+	{
+	    // Create the new command table entry.
+	    //
+	    cmd2 = NULL;
+	    try
+	    {
+		cmd2 = new CMDENT;
+	    }
+	    catch (...)
+	    {
+		; // Nothing.
+	    }
+	    ISOUTOFMEMORY(cmd2);
+	    cmd2->cmdname = StringClone(alias);
+	    cmd2->switches = cmdp->switches;
+	    cmd2->perms = cmdp->perms | nt->perm;
+	    cmd2->extra = (cmdp->extra | nt->flag) & ~SW_MULTIPLE;
+	    if (!(nt->flag & SW_MULTIPLE))
+	    {
+		cmd2->extra |= SW_GOT_UNIQUE;
+	    }
+	    cmd2->callseq = cmdp->callseq;
+	    cmd2->handler = cmdp->handler;
+	    cmd2->flags = CEF_ALLOC;
 
-            hashaddLEN(cmd2->cmdname, strlen((char *)cmd2->cmdname), cmd2, (CHashTable *) vp);
-        }
+	    hashaddLEN(cmd2->cmdname, strlen((char *)cmd2->cmdname), cmd2, (CHashTable *) vp);
+	}
     }
     else
     {
-        // A normal (non-switch) alias
-        //
-        void *hp = hashfindLEN(orig, strlen((char *)orig), (CHashTable *) vp);
-        if (hp == NULL)
-        {
-            cf_log_notfound(player, cmd, T("Entry"), orig);
-            return -1;
-        }
-        hashaddLEN(alias, strlen((char *)alias), hp, (CHashTable *) vp);
+	// A normal (non-switch) alias
+	//
+	void *hp = hashfindLEN(orig, strlen((char *)orig), (CHashTable *) vp);
+	if (hp == NULL)
+	{
+	    cf_log_notfound(player, cmd, T("Entry"), orig);
+	    return -1;
+	}
+	hashaddLEN(alias, strlen((char *)alias), hp, (CHashTable *) vp);
     }
     return 0;
 }
@@ -3262,8 +3262,8 @@ static void list_df_flags(dbref player)
 
     UTF8 *buff = alloc_lbuf("list_df_flags");
     mux_sprintf(buff, LBUF_SIZE,
-        T("Default flags: Players...%s Rooms...%s Exits...%s Things...%s Robots...%s"),
-        playerb, roomb, exitb, thingb, robotb);
+	T("Default flags: Players...%s Rooms...%s Exits...%s Things...%s Robots...%s"),
+	playerb, roomb, exitb, thingb, robotb);
 
     free_sbuf(playerb);
     free_sbuf(roomb);
@@ -3286,114 +3286,114 @@ static void list_costs(dbref player)
 
     if (mudconf.quotas)
     {
-        mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.room_quota);
+	mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.room_quota);
     }
     notify(player,
-           tprintf(T("Digging a room costs %d %s%s."),
-               mudconf.digcost, coin_name(mudconf.digcost), buff));
+	   tprintf(T("Digging a room costs %d %s%s."),
+	       mudconf.digcost, coin_name(mudconf.digcost), buff));
     if (mudconf.quotas)
     {
-        mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.exit_quota);
+	mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.exit_quota);
     }
     notify(player,
-           tprintf(T("Opening a new exit costs %d %s%s."),
-               mudconf.opencost, coin_name(mudconf.opencost), buff));
+	   tprintf(T("Opening a new exit costs %d %s%s."),
+	       mudconf.opencost, coin_name(mudconf.opencost), buff));
     notify(player,
-           tprintf(T("Linking an exit, home, or dropto costs %d %s."),
-               mudconf.linkcost, coin_name(mudconf.linkcost)));
+	   tprintf(T("Linking an exit, home, or dropto costs %d %s."),
+	       mudconf.linkcost, coin_name(mudconf.linkcost)));
     if (mudconf.quotas)
     {
-        mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.thing_quota);
+	mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.thing_quota);
     }
     if (mudconf.createmin == mudconf.createmax)
     {
-        raw_notify(player,
-               tprintf(T("Creating a new thing costs %d %s%s."),
-                   mudconf.createmin,
-                   coin_name(mudconf.createmin), buff));
+	raw_notify(player,
+	       tprintf(T("Creating a new thing costs %d %s%s."),
+		   mudconf.createmin,
+		   coin_name(mudconf.createmin), buff));
     }
     else
     {
-        raw_notify(player,
-        tprintf(T("Creating a new thing costs between %d and %d %s%s."),
-            mudconf.createmin, mudconf.createmax,
-            mudconf.many_coins, buff));
+	raw_notify(player,
+	tprintf(T("Creating a new thing costs between %d and %d %s%s."),
+	    mudconf.createmin, mudconf.createmax,
+	    mudconf.many_coins, buff));
     }
     if (mudconf.quotas)
     {
-        mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.player_quota);
+	mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.player_quota);
     }
     notify(player,
-           tprintf(T("Creating a robot costs %d %s%s."),
-               mudconf.robotcost, coin_name(mudconf.robotcost), buff));
+	   tprintf(T("Creating a robot costs %d %s%s."),
+	       mudconf.robotcost, coin_name(mudconf.robotcost), buff));
     if (mudconf.killmin == mudconf.killmax)
     {
-        int chance = 100;
-        if (0 < mudconf.killguarantee)
-        {
-            chance = (mudconf.killmin * 100) / mudconf.killguarantee;
-        }
-        raw_notify(player, tprintf(T("Killing costs %d %s, with a %d%% chance of success."),
-            mudconf.killmin, coin_name(mudconf.digcost), chance));
+	int chance = 100;
+	if (0 < mudconf.killguarantee)
+	{
+	    chance = (mudconf.killmin * 100) / mudconf.killguarantee;
+	}
+	raw_notify(player, tprintf(T("Killing costs %d %s, with a %d%% chance of success."),
+	    mudconf.killmin, coin_name(mudconf.digcost), chance));
     }
     else
     {
-        int cost_surething;
-        raw_notify(player, tprintf(T("Killing costs between %d and %d %s."),
-            mudconf.killmin, mudconf.killmax, mudconf.many_coins));
-        if (0 < mudconf.killguarantee)
-        {
-            cost_surething = mudconf.killguarantee;
-        }
-        else
-        {
-            cost_surething = mudconf.killmin;
-        }
-        raw_notify(player, tprintf(T("You must spend %d %s to guarantee success."),
-            cost_surething, coin_name(cost_surething)));
+	int cost_surething;
+	raw_notify(player, tprintf(T("Killing costs between %d and %d %s."),
+	    mudconf.killmin, mudconf.killmax, mudconf.many_coins));
+	if (0 < mudconf.killguarantee)
+	{
+	    cost_surething = mudconf.killguarantee;
+	}
+	else
+	{
+	    cost_surething = mudconf.killmin;
+	}
+	raw_notify(player, tprintf(T("You must spend %d %s to guarantee success."),
+	    cost_surething, coin_name(cost_surething)));
     }
     raw_notify(player,
-           tprintf(T("Computationally expensive commands and functions (ie: @entrances, @find, @search, @stats (with an argument or switch), search(), and stats()) cost %d %s."),
-            mudconf.searchcost, coin_name(mudconf.searchcost)));
+	   tprintf(T("Computationally expensive commands and functions (ie: @entrances, @find, @search, @stats (with an argument or switch), search(), and stats()) cost %d %s."),
+	    mudconf.searchcost, coin_name(mudconf.searchcost)));
     if (mudconf.machinecost > 0)
-        raw_notify(player,
-           tprintf(T("Each command run from the queue costs 1/%d %s."),
-               mudconf.machinecost, mudconf.one_coin));
+	raw_notify(player,
+	   tprintf(T("Each command run from the queue costs 1/%d %s."),
+	       mudconf.machinecost, mudconf.one_coin));
     if (mudconf.waitcost > 0)
     {
-        raw_notify(player,
-               tprintf(T("A %d %s deposit is charged for putting a command on the queue."),
-                   mudconf.waitcost, mudconf.one_coin));
-        raw_notify(player, T("The deposit is refunded when the command is run or canceled."));
+	raw_notify(player,
+	       tprintf(T("A %d %s deposit is charged for putting a command on the queue."),
+		   mudconf.waitcost, mudconf.one_coin));
+	raw_notify(player, T("The deposit is refunded when the command is run or canceled."));
     }
     if (mudconf.sacfactor == 0)
     {
-        mux_ltoa(mudconf.sacadjust, buff);
+	mux_ltoa(mudconf.sacadjust, buff);
     }
     else if (mudconf.sacfactor == 1)
     {
-        if (mudconf.sacadjust < 0)
-            mux_sprintf(buff, MBUF_SIZE, T("<create cost> - %d"), -mudconf.sacadjust);
-        else if (mudconf.sacadjust > 0)
-            mux_sprintf(buff, MBUF_SIZE, T("<create cost> + %d"), mudconf.sacadjust);
-        else
-            mux_sprintf(buff, MBUF_SIZE, T("<create cost>"));
+	if (mudconf.sacadjust < 0)
+	    mux_sprintf(buff, MBUF_SIZE, T("<create cost> - %d"), -mudconf.sacadjust);
+	else if (mudconf.sacadjust > 0)
+	    mux_sprintf(buff, MBUF_SIZE, T("<create cost> + %d"), mudconf.sacadjust);
+	else
+	    mux_sprintf(buff, MBUF_SIZE, T("<create cost>"));
     }
     else
     {
-        if (mudconf.sacadjust < 0)
-            mux_sprintf(buff, MBUF_SIZE, T("(<create cost> / %d) - %d"), mudconf.sacfactor, -mudconf.sacadjust);
-        else if (mudconf.sacadjust > 0)
-            mux_sprintf(buff, MBUF_SIZE, T("(<create cost> / %d) + %d"), mudconf.sacfactor, mudconf.sacadjust);
-        else
-            mux_sprintf(buff, MBUF_SIZE, T("<create cost> / %d"), mudconf.sacfactor);
+	if (mudconf.sacadjust < 0)
+	    mux_sprintf(buff, MBUF_SIZE, T("(<create cost> / %d) - %d"), mudconf.sacfactor, -mudconf.sacadjust);
+	else if (mudconf.sacadjust > 0)
+	    mux_sprintf(buff, MBUF_SIZE, T("(<create cost> / %d) + %d"), mudconf.sacfactor, mudconf.sacadjust);
+	else
+	    mux_sprintf(buff, MBUF_SIZE, T("<create cost> / %d"), mudconf.sacfactor);
     }
     raw_notify(player, tprintf(T("The value of an object is %s."), buff));
     if (mudconf.clone_copy_cost)
-        raw_notify(player, T("The default value of cloned objects is the value of the original object."));
+	raw_notify(player, T("The default value of cloned objects is the value of the original object."));
     else
-        raw_notify(player, tprintf(T("The default value of cloned objects is %d %s."),
-                mudconf.createmin, coin_name(mudconf.createmin)));
+	raw_notify(player, tprintf(T("The default value of cloned objects is %d %s."),
+		mudconf.createmin, coin_name(mudconf.createmin)));
 
     free_mbuf(buff);
 }
@@ -3427,129 +3427,129 @@ static void list_options(dbref player)
     ltaNow.GetUTC();
 
     if (mudconf.quotas)
-        raw_notify(player, T("Building quotas are enforced."));
+	raw_notify(player, T("Building quotas are enforced."));
     if (mudconf.name_spaces)
-        raw_notify(player, T("Player names may contain spaces."));
+	raw_notify(player, T("Player names may contain spaces."));
     else
-        raw_notify(player, T("Player names may not contain spaces."));
+	raw_notify(player, T("Player names may not contain spaces."));
     if (!mudconf.robot_speak)
-        raw_notify(player, T("Robots are not allowed to speak in public areas."));
+	raw_notify(player, T("Robots are not allowed to speak in public areas."));
     if (mudconf.player_listen)
-        raw_notify(player, T("The @Listen/@Ahear attribute set works on player objects."));
+	raw_notify(player, T("The @Listen/@Ahear attribute set works on player objects."));
     if (mudconf.ex_flags)
     {
-        // Using \230 instead \x98 because \x98c is making gcc choke.
-        //
-        raw_notify(player, T("The \xE2\x80\230examine\xE2\x80\x99 command lists the flag names for the object\xE2\x80\x99s flags."));
+	// Using \230 instead \x98 because \x98c is making gcc choke.
+	//
+	raw_notify(player, T("The \xE2\x80\230examine\xE2\x80\x99 command lists the flag names for the object\xE2\x80\x99s flags."));
     }
     if (!mudconf.quiet_look)
-        raw_notify(player, T("The \xE2\x80\x98look\xE2\x80\x99 command shows visible attributes in addition to the description."));
+	raw_notify(player, T("The \xE2\x80\x98look\xE2\x80\x99 command shows visible attributes in addition to the description."));
     if (mudconf.see_own_dark)
-        raw_notify(player, T("The \xE2\x80\x98look\xE2\x80\x99 command lists DARK objects owned by you."));
+	raw_notify(player, T("The \xE2\x80\x98look\xE2\x80\x99 command lists DARK objects owned by you."));
     if (!mudconf.dark_sleepers)
-        raw_notify(player, T("The \xE2\x80\x98look\xE2\x80\x99 command shows disconnected players."));
+	raw_notify(player, T("The \xE2\x80\x98look\xE2\x80\x99 command shows disconnected players."));
     if (mudconf.terse_look)
-        raw_notify(player, T("The \xE2\x80\x98look\xE2\x80\x99 command obeys the TERSE flag."));
+	raw_notify(player, T("The \xE2\x80\x98look\xE2\x80\x99 command obeys the TERSE flag."));
     if (mudconf.trace_topdown)
     {
-        raw_notify(player, T("Trace output is presented top-down (whole expression first, then sub-exprs)."));
-        raw_notify(player, tprintf(T("Only %d lines of trace output are displayed."), mudconf.trace_limit));
+	raw_notify(player, T("Trace output is presented top-down (whole expression first, then sub-exprs)."));
+	raw_notify(player, tprintf(T("Only %d lines of trace output are displayed."), mudconf.trace_limit));
     }
     else
     {
-        raw_notify(player, T("Trace output is presented bottom-up (subexpressions first)."));
+	raw_notify(player, T("Trace output is presented bottom-up (subexpressions first)."));
     }
     if (!mudconf.quiet_whisper)
-        raw_notify(player, T("The \xE2\x80\x98whisper\xE2\x80\x99 command lets others in the room with you know you whispered."));
+	raw_notify(player, T("The \xE2\x80\x98whisper\xE2\x80\x99 command lets others in the room with you know you whispered."));
     if (mudconf.pemit_players)
-        raw_notify(player, T("The \xE2\x80\x98@pemit\xE2\x80\x99 command may be used to emit to faraway players."));
+	raw_notify(player, T("The \xE2\x80\x98@pemit\xE2\x80\x99 command may be used to emit to faraway players."));
     if (!mudconf.terse_contents)
-        raw_notify(player, T("The TERSE flag suppresses listing the contents of a location."));
+	raw_notify(player, T("The TERSE flag suppresses listing the contents of a location."));
     if (!mudconf.terse_exits)
-        raw_notify(player, T("The TERSE flag suppresses listing obvious exits in a location."));
+	raw_notify(player, T("The TERSE flag suppresses listing obvious exits in a location."));
     if (!mudconf.terse_movemsg)
-        raw_notify(player, T("The TERSE flag suppresses enter/leave/succ/drop messages generated by moving."));
+	raw_notify(player, T("The TERSE flag suppresses enter/leave/succ/drop messages generated by moving."));
     if (mudconf.pub_flags)
     {
-        // Using \230 instead \x98 because \x98c is making gcc choke.
-        //
-        raw_notify(player, T("The \xE2\x80\230flags()\xE2\x80\x99 function will return the flags of any object."));
+	// Using \230 instead \x98 because \x98c is making gcc choke.
+	//
+	raw_notify(player, T("The \xE2\x80\230flags()\xE2\x80\x99 function will return the flags of any object."));
     }
     if (mudconf.read_rem_desc)
-        raw_notify(player, T("The \xE2\x80\x98get()\xE2\x80\x99 function will return the description of faraway objects,"));
+	raw_notify(player, T("The \xE2\x80\x98get()\xE2\x80\x99 function will return the description of faraway objects,"));
     if (mudconf.read_rem_name)
-        raw_notify(player, T("The \xE2\x80\x98name()\xE2\x80\x99 function will return the name of faraway objects."));
+	raw_notify(player, T("The \xE2\x80\x98name()\xE2\x80\x99 function will return the name of faraway objects."));
     raw_notify(player, tprintf(T("The default switch for the \xE2\x80\x98@switch\xE2\x80\x99 command is %s."), switchd[mudconf.switch_df_all]));
 
     // Using \230 instead \x98 because \x98c is making gcc choke.
     //
     raw_notify(player, tprintf(T("The default switch for the \xE2\x80\230examine\xE2\x80\x99 command is %s."), examd[mudconf.exam_public]));
     if (mudconf.sweep_dark)
-        raw_notify(player, T("Players may @sweep dark locations."));
+	raw_notify(player, T("Players may @sweep dark locations."));
     if (mudconf.fascist_tport)
-        raw_notify(player, T("You may only @teleport out of locations that are JUMP_OK or that you control."));
+	raw_notify(player, T("You may only @teleport out of locations that are JUMP_OK or that you control."));
     raw_notify(player,
-           tprintf(T("Players may have at most %d commands in the queue at one time."),
-               mudconf.queuemax));
+	   tprintf(T("Players may have at most %d commands in the queue at one time."),
+	       mudconf.queuemax));
     if (mudconf.match_mine)
     {
-        if (mudconf.match_mine_pl)
-            raw_notify(player, T("All objects search themselves for $-commands."));
-        else
-            raw_notify(player, T("Objects other than players search themselves for $-commands."));
+	if (mudconf.match_mine_pl)
+	    raw_notify(player, T("All objects search themselves for $-commands."));
+	else
+	    raw_notify(player, T("Objects other than players search themselves for $-commands."));
     }
     if (!Wizard(player))
-        return;
+	return;
     buff = alloc_mbuf("list_options");
 
     raw_notify(player,
-           tprintf(T("%d commands are run from the queue when there is no net activity."),
-               mudconf.queue_chunk));
+	   tprintf(T("%d commands are run from the queue when there is no net activity."),
+	       mudconf.queue_chunk));
     raw_notify(player,
-           tprintf(T("%d commands are run from the queue when there is net activity."),
-               mudconf.active_q_chunk));
+	   tprintf(T("%d commands are run from the queue when there is net activity."),
+	       mudconf.active_q_chunk));
     if (mudconf.idle_wiz_dark)
-        raw_notify(player, T("Wizards idle for longer than the default timeout are automatically set DARK."));
+	raw_notify(player, T("Wizards idle for longer than the default timeout are automatically set DARK."));
     if (mudconf.safe_unowned)
-        raw_notify(player, T("Objects not owned by you are automatically considered SAFE."));
+	raw_notify(player, T("Objects not owned by you are automatically considered SAFE."));
     if (mudconf.paranoid_alloc)
-        raw_notify(player, T("The buffer pools are checked for consistency on each allocate or free."));
+	raw_notify(player, T("The buffer pools are checked for consistency on each allocate or free."));
     if (mudconf.cache_names)
-        raw_notify(player, T("A separate name cache is used."));
+	raw_notify(player, T("A separate name cache is used."));
 #if defined(HAVE_WORKING_FORK)
     if (mudconf.fork_dump)
     {
-        raw_notify(player, T("Database dumps are performed by a fork()ed process."));
+	raw_notify(player, T("Database dumps are performed by a fork()ed process."));
     }
 #endif // HAVE_WORKING_FORK
     if (mudconf.max_players >= 0)
-        raw_notify(player,
-        tprintf(T("There may be at most %d players logged in at once."),
-            mudconf.max_players));
+	raw_notify(player,
+	tprintf(T("There may be at most %d players logged in at once."),
+	    mudconf.max_players));
     if (mudconf.quotas)
-        mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.start_quota);
+	mux_sprintf(buff, MBUF_SIZE, T(" and %d quota"), mudconf.start_quota);
     else
-        *buff = '\0';
+	*buff = '\0';
     raw_notify(player,
-           tprintf(T("New players are given %d %s to start with."),
-               mudconf.paystart, mudconf.many_coins));
+	   tprintf(T("New players are given %d %s to start with."),
+	       mudconf.paystart, mudconf.many_coins));
     raw_notify(player,
-           tprintf(T("Players are given %d %s each day they connect."),
-               mudconf.paycheck, mudconf.many_coins));
+	   tprintf(T("Players are given %d %s each day they connect."),
+	       mudconf.paycheck, mudconf.many_coins));
     raw_notify(player,
       tprintf(T("Earning money is difficult if you have more than %d %s."),
-          mudconf.paylimit, mudconf.many_coins));
+	  mudconf.paylimit, mudconf.many_coins));
     if (mudconf.payfind > 0)
-        raw_notify(player,
-               tprintf(T("Players have a 1 in %d chance of finding a %s each time they move."),
-                   mudconf.payfind, mudconf.one_coin));
+	raw_notify(player,
+	       tprintf(T("Players have a 1 in %d chance of finding a %s each time they move."),
+		   mudconf.payfind, mudconf.one_coin));
     raw_notify(player,
-           tprintf(T("The head of the object freelist is #%d."),
-               mudstate.freelist));
+	   tprintf(T("The head of the object freelist is #%d."),
+	       mudstate.freelist));
 
     mux_sprintf(buff, MBUF_SIZE, T("Intervals: Dump...%d  Clean...%d  Idlecheck...%d"),
-        mudconf.dump_interval, mudconf.check_interval,
-        mudconf.idle_interval);
+	mudconf.dump_interval, mudconf.check_interval,
+	mudconf.idle_interval);
     raw_notify(player, buff);
 
     CLinearTimeDelta ltdDump = mudstate.dump_counter - ltaNow;
@@ -3560,31 +3560,31 @@ static void list_options(dbref player)
     long lCheck = ltdCheck.ReturnSeconds();
     long lIdle  = ltdIdle.ReturnSeconds();
     mux_sprintf(buff, MBUF_SIZE, T("Timers: Dump...%ld  Clean...%ld  Idlecheck...%ld"),
-        lDump, lCheck, lIdle);
+	lDump, lCheck, lIdle);
     raw_notify(player, buff);
 
     mux_sprintf(buff, MBUF_SIZE, T("Timeouts: Idle...%d  Connect...%d  Tries...%d"),
-        mudconf.idle_timeout, mudconf.conn_timeout,
-        mudconf.retry_limit);
+	mudconf.idle_timeout, mudconf.conn_timeout,
+	mudconf.retry_limit);
     raw_notify(player, buff);
 
     mux_sprintf(buff, MBUF_SIZE, T("Scheduling: Timeslice...%s  Max_Quota...%d  Increment...%d"),
-        mudconf.timeslice.ReturnSecondsString(3), mudconf.cmd_quota_max,
-        mudconf.cmd_quota_incr);
+	mudconf.timeslice.ReturnSecondsString(3), mudconf.cmd_quota_max,
+	mudconf.cmd_quota_incr);
     raw_notify(player, buff);
 
     mux_sprintf(buff, MBUF_SIZE, T("Spaces...%s  Savefiles...%s"),
-        ed[mudconf.space_compress], ed[mudconf.compress_db]);
+	ed[mudconf.space_compress], ed[mudconf.compress_db]);
     raw_notify(player, buff);
 
     mux_sprintf(buff, MBUF_SIZE, T("New characters: Room...#%d  Home...#%d  DefaultHome...#%d  Quota...%d"),
-        mudconf.start_room, mudconf.start_home, mudconf.default_home,
-        mudconf.start_quota);
+	mudconf.start_room, mudconf.start_home, mudconf.default_home,
+	mudconf.start_quota);
     raw_notify(player, buff);
 
     mux_sprintf(buff, MBUF_SIZE, T("Misc: GuestChar...#%d  IdleQueueChunk...%d  ActiveQueueChunk...%d  Master_room...#%d"),
-        mudconf.guest_char, mudconf.queue_chunk,
-        mudconf.active_q_chunk, mudconf.master_room);
+	mudconf.guest_char, mudconf.queue_chunk,
+	mudconf.active_q_chunk, mudconf.master_room);
     raw_notify(player, buff);
 
     free_mbuf(buff);
@@ -3596,14 +3596,14 @@ static void list_options(dbref player)
 static void list_vattrs(dbref player, UTF8 *s_mask)
 {
     bool wild_mtch =  s_mask
-                   && s_mask[0] != '\0';
+		   && s_mask[0] != '\0';
 
     UTF8 *buff = alloc_lbuf("list_vattrs");
 
     // If wild_match, then only list attributes that match wildcard(s)
     //
     UTF8 *p = tprintf(T("--- User-Defined Attributes %s---"),
-        wild_mtch ? "(wildmatched) " : "");
+	wild_mtch ? "(wildmatched) " : "");
     raw_notify(player, p);
 
     ATTR *va;
@@ -3612,32 +3612,32 @@ static void list_vattrs(dbref player, UTF8 *s_mask)
 
     for (va = vattr_first(), na = 0; va; va = vattr_next(va), na++)
     {
-        if (!(va->flags & AF_DELETED))
-        {
-            // We need to be extremely careful that s_mask is !null and valid
-            //
-            if (wild_mtch)
-            {
-                mudstate.wild_invk_ctr = 0;
-                if (!quick_wild(s_mask, va->name))
-                {
-                    continue;
-                }
-                wna++;
-            }
-            mux_sprintf(buff, LBUF_SIZE, T("%s(%d)"), va->name, va->number);
-            listset_nametab(player, attraccess_nametab, va->flags, buff, true);
-        }
+	if (!(va->flags & AF_DELETED))
+	{
+	    // We need to be extremely careful that s_mask is !null and valid
+	    //
+	    if (wild_mtch)
+	    {
+		mudstate.wild_invk_ctr = 0;
+		if (!quick_wild(s_mask, va->name))
+		{
+		    continue;
+		}
+		wna++;
+	    }
+	    mux_sprintf(buff, LBUF_SIZE, T("%s(%d)"), va->name, va->number);
+	    listset_nametab(player, attraccess_nametab, va->flags, buff, true);
+	}
     }
 
     if (wild_mtch)
     {
-        p = tprintf(T("%d attributes matched, %d attributes total, next=%d"), wna,
-            na, mudstate.attr_next);
+	p = tprintf(T("%d attributes matched, %d attributes total, next=%d"), wna,
+	    na, mudstate.attr_next);
     }
     else
     {
-        p = tprintf(T("%d attributes, next=%d"), na, mudstate.attr_next);
+	p = tprintf(T("%d attributes, next=%d"), na, mudstate.attr_next);
     }
     raw_notify(player, p);
     free_lbuf(buff);
@@ -3648,7 +3648,7 @@ size_t LeftJustifyString(UTF8 *field, size_t nWidth, const UTF8 *value)
     size_t n = strlen((char *)value);
     if (n > nWidth)
     {
-        n = nWidth;
+	n = nWidth;
     }
     memcpy(field, value, n);
     memset(field+n, ' ', nWidth-n);
@@ -3661,18 +3661,18 @@ size_t RightJustifyNumber(UTF8 *field, size_t nWidth, INT64 value, UTF8 chFill)
     size_t nReturn = 0;
     if (nWidth < sizeof(buffer))
     {
-        size_t n = mux_i64toa(value, buffer);
-        if (n < sizeof(buffer))
-        {
-            nReturn = n;
-            if (n < nWidth)
-            {
-                memset(field, chFill, nWidth-n);
-                field += nWidth-n;
-                nReturn = nWidth;
-            }
-            memcpy(field, buffer, n);
-        }
+	size_t n = mux_i64toa(value, buffer);
+	if (n < sizeof(buffer))
+	{
+	    nReturn = n;
+	    if (n < nWidth)
+	    {
+		memset(field, chFill, nWidth-n);
+		field += nWidth-n;
+		nReturn = nWidth;
+	    }
+	    memcpy(field, buffer, n);
+	}
     }
     return nReturn;
 }
@@ -3686,7 +3686,7 @@ static void list_hashstat(dbref player, const UTF8 *tab_name, CHashTable *htab)
     INT64        deletes, scans, hits, checks;
 
     htab->GetStats(&hashsize, &entries, &deletes, &scans, &hits, &checks,
-        &max_scan);
+	&max_scan);
 
     UTF8 buff[MBUF_SIZE];
     UTF8 *p = buff;
@@ -3723,8 +3723,8 @@ static void list_hashstats(dbref player)
 #endif // HAVE_MEMORY_BASED
     for (int i = 0; i < mudstate.nHelpDesc; i++)
     {
-        list_hashstat(player, mudstate.aHelpDesc[i].pBaseFilename,
-            mudstate.aHelpDesc[i].ht);
+	list_hashstat(player, mudstate.aHelpDesc[i].pBaseFilename,
+	    mudstate.aHelpDesc[i].ht);
     }
 }
 
@@ -3769,18 +3769,18 @@ static void list_process(dbref player)
     dur = mudstate.mstat_secs[curr] - mudstate.mstat_secs[last];
     if (dur > 0)
     {
-        ixrss = (mudstate.mstat_ixrss[curr] -
-             mudstate.mstat_ixrss[last]) / dur;
-        idrss = (mudstate.mstat_idrss[curr] -
-             mudstate.mstat_idrss[last]) / dur;
-        isrss = (mudstate.mstat_isrss[curr] -
-             mudstate.mstat_isrss[last]) / dur;
+	ixrss = (mudstate.mstat_ixrss[curr] -
+	     mudstate.mstat_ixrss[last]) / dur;
+	idrss = (mudstate.mstat_idrss[curr] -
+	     mudstate.mstat_idrss[last]) / dur;
+	isrss = (mudstate.mstat_isrss[curr] -
+	     mudstate.mstat_isrss[last]) / dur;
     }
     else
     {
-        ixrss = 0;
-        idrss = 0;
-        isrss = 0;
+	ixrss = 0;
+	idrss = 0;
+	isrss = 0;
     }
 #endif // HAVE_GETRUSAGE
 
@@ -3798,29 +3798,29 @@ static void list_process(dbref player)
 
 #ifdef HAVE_GETRUSAGE
     raw_notify(player, tprintf(T("Time used:   %10d user   %10d sys"),
-               usage.ru_utime.tv_sec, usage.ru_stime.tv_sec));
+	       usage.ru_utime.tv_sec, usage.ru_stime.tv_sec));
     raw_notify(player, tprintf(T("Resident mem:%10d shared %10d private%10d stack"),
-           ixrss, idrss, isrss));
+	   ixrss, idrss, isrss));
     raw_notify(player,
-           tprintf(T("Integral mem:%10ld shared %10ld private%10ld stack"),
-               usage.ru_ixrss, usage.ru_idrss, usage.ru_isrss));
+	   tprintf(T("Integral mem:%10ld shared %10ld private%10ld stack"),
+	       usage.ru_ixrss, usage.ru_idrss, usage.ru_isrss));
     raw_notify(player,
-           tprintf(T("Max res mem: %10ld pages  %10ld bytes"),
-               usage.ru_maxrss, (usage.ru_maxrss * psize)));
+	   tprintf(T("Max res mem: %10ld pages  %10ld bytes"),
+	       usage.ru_maxrss, (usage.ru_maxrss * psize)));
     raw_notify(player,
-           tprintf(T("Page faults: %10ld hard   %10ld soft   %10ld swapouts"),
-               usage.ru_majflt, usage.ru_minflt, usage.ru_nswap));
+	   tprintf(T("Page faults: %10ld hard   %10ld soft   %10ld swapouts"),
+	       usage.ru_majflt, usage.ru_minflt, usage.ru_nswap));
     raw_notify(player,
-           tprintf(T("Disk I/O:    %10ld reads  %10ld writes"),
-               usage.ru_inblock, usage.ru_oublock));
+	   tprintf(T("Disk I/O:    %10ld reads  %10ld writes"),
+	       usage.ru_inblock, usage.ru_oublock));
     raw_notify(player,
-           tprintf(T("Network I/O: %10ld in     %10ld out"),
-               usage.ru_msgrcv, usage.ru_msgsnd));
+	   tprintf(T("Network I/O: %10ld in     %10ld out"),
+	       usage.ru_msgrcv, usage.ru_msgsnd));
     raw_notify(player,
-           tprintf(T("Context swi: %10ld vol    %10ld forced %10ld sigs"),
-               usage.ru_nvcsw, usage.ru_nivcsw, usage.ru_nsignals));
+	   tprintf(T("Context swi: %10ld vol    %10ld forced %10ld sigs"),
+	       usage.ru_nvcsw, usage.ru_nivcsw, usage.ru_nsignals));
     raw_notify(player,
-           tprintf(T("Descs avail: %10d"), maxfds));
+	   tprintf(T("Descs avail: %10d"), maxfds));
 #endif // HAVE_GETRUSAGE
 }
 
@@ -3835,32 +3835,32 @@ static void list_modules(dbref executor)
     int i;
     for (i = 0; ; i++)
     {
-        MUX_MODULE_INFO ModuleInfo;
-        MUX_RESULT mr = mux_ModuleInfo(i, &ModuleInfo);
-        if (  MUX_FAILED(mr)
-           || MUX_S_FALSE == mr)
-        {
-            break;
-        }
+	MUX_MODULE_INFO ModuleInfo;
+	MUX_RESULT mr = mux_ModuleInfo(i, &ModuleInfo);
+	if (  MUX_FAILED(mr)
+	   || MUX_S_FALSE == mr)
+	{
+	    break;
+	}
 
-        raw_notify(executor, tprintf(T("%s (%s)"), ModuleInfo.pName, ModuleInfo.bLoaded ? T("loaded") : T("unloaded")));
+	raw_notify(executor, tprintf(T("%s (%s)"), ModuleInfo.pName, ModuleInfo.bLoaded ? T("loaded") : T("unloaded")));
     }
 
 #ifdef HAVE_STUB_SLAVE
     if (NULL != mudstate.pISlaveControl)
     {
-        for (i = 0; ; i++)
-        {
-            MUX_MODULE_INFO ModuleInfo;
-            MUX_RESULT mr = mudstate.pISlaveControl->ModuleInfo(i, &ModuleInfo);
-            if (  MUX_FAILED(mr)
-               || MUX_S_FALSE == mr)
-            {
-                break;
-            }
+	for (i = 0; ; i++)
+	{
+	    MUX_MODULE_INFO ModuleInfo;
+	    MUX_RESULT mr = mudstate.pISlaveControl->ModuleInfo(i, &ModuleInfo);
+	    if (  MUX_FAILED(mr)
+	       || MUX_S_FALSE == mr)
+	    {
+		break;
+	    }
 
-            raw_notify(executor, tprintf(T("%s (%s) by stubslave"), ModuleInfo.pName, ModuleInfo.bLoaded ? T("loaded") : T("unloaded")));
-        }
+	    raw_notify(executor, tprintf(T("%s (%s) by stubslave"), ModuleInfo.pName, ModuleInfo.bLoaded ? T("loaded") : T("unloaded")));
+	}
     }
 #endif
 #else
@@ -3879,9 +3879,9 @@ static void list_rlevels(dbref player)
     raw_notify(player, T("Reality levels:"));
     for (i = 0; i < mudconf.no_levels; ++i)
     {
-        raw_notify(player, tprintf(T("    Level: %-20.20s    Value: 0x%08x     Desc: %s"),
-            mudconf.reality_level[i].name, mudconf.reality_level[i].value,
-                mudconf.reality_level[i].attr));
+	raw_notify(player, tprintf(T("    Level: %-20.20s    Value: 0x%08x     Desc: %s"),
+	    mudconf.reality_level[i].name, mudconf.reality_level[i].value,
+		mudconf.reality_level[i].attr));
     }
     raw_notify(player, T("--Completed."));
 }
@@ -3970,160 +3970,160 @@ void do_list(dbref executor, dbref caller, dbref enactor, int eval, int key,
     unsigned int flagvalue;
     if (!search_nametab(executor, list_names, arg, &flagvalue))
     {
-        if (flagvalue == (unsigned int) -1)
-        {
-            display_nametab(executor, list_names, T("Unknown option.  Use one of"), true);
-        }
-        else
-        {
-            notify(executor, NOPERM_MESSAGE);
-        }
-        return;
+	if (flagvalue == (unsigned int) -1)
+	{
+	    display_nametab(executor, list_names, T("Unknown option.  Use one of"), true);
+	}
+	else
+	{
+	    notify(executor, NOPERM_MESSAGE);
+	}
+	return;
     }
 
     switch (flagvalue)
     {
     case LIST_ALLOCATOR:
-        list_bufstats(executor);
-        break;
+	list_bufstats(executor);
+	break;
     case LIST_BUFTRACE:
-        list_buftrace(executor);
-        break;
+	list_buftrace(executor);
+	break;
     case LIST_ATTRIBUTES:
-        list_attrtable(executor);
-        break;
+	list_attrtable(executor);
+	break;
     case LIST_COMMANDS:
-        list_cmdtable(executor);
-        break;
+	list_cmdtable(executor);
+	break;
     case LIST_SWITCHES:
-        list_cmdswitches(executor);
-        break;
+	list_cmdswitches(executor);
+	break;
     case LIST_COSTS:
-        list_costs(executor);
-        break;
+	list_costs(executor);
+	break;
     case LIST_OPTIONS:
-        list_options(executor);
-        break;
+	list_options(executor);
+	break;
     case LIST_HASHSTATS:
-        list_hashstats(executor);
-        break;
+	list_hashstats(executor);
+	break;
     case LIST_SITEINFO:
-        list_siteinfo(executor);
-        break;
+	list_siteinfo(executor);
+	break;
     case LIST_FLAGS:
-        display_flagtab(executor);
-        break;
+	display_flagtab(executor);
+	break;
     case LIST_FUNCTIONS:
-        list_functable(executor);
-        break;
+	list_functable(executor);
+	break;
     case LIST_GLOBALS:
-        interp_nametab(executor, enable_names, mudconf.control_flags,
-                T("Global parameters:"), T("enabled"), T("disabled"));
-        break;
+	interp_nametab(executor, enable_names, mudconf.control_flags,
+		T("Global parameters:"), T("enabled"), T("disabled"));
+	break;
     case LIST_DF_FLAGS:
-        list_df_flags(executor);
-        break;
+	list_df_flags(executor);
+	break;
     case LIST_PERMS:
-        list_cmdaccess(executor);
-        break;
+	list_cmdaccess(executor);
+	break;
     case LIST_CONF_PERMS:
-        list_cf_access(executor);
-        break;
+	list_cf_access(executor);
+	break;
     case LIST_POWERS:
-        display_powertab(executor);
-        break;
+	display_powertab(executor);
+	break;
     case LIST_ATTRPERMS:
-        list_attraccess(executor);
-        break;
+	list_attraccess(executor);
+	break;
     case LIST_VATTRS:
-        s_option = mux_strtok_parse(&tts);
-        list_vattrs(executor, s_option);
-        break;
+	s_option = mux_strtok_parse(&tts);
+	list_vattrs(executor, s_option);
+	break;
     case LIST_LOGGING:
-        interp_nametab(executor, logoptions_nametab, mudconf.log_options,
-                   T("Events Logged:"), T("enabled"), T("disabled"));
-        interp_nametab(executor, logdata_nametab, mudconf.log_info,
-                   T("Information Logged:"), T("yes"), T("no"));
-        break;
+	interp_nametab(executor, logoptions_nametab, mudconf.log_options,
+		   T("Events Logged:"), T("enabled"), T("disabled"));
+	interp_nametab(executor, logdata_nametab, mudconf.log_info,
+		   T("Information Logged:"), T("yes"), T("no"));
+	break;
     case LIST_DB_STATS:
-        list_db_stats(executor);
-        break;
+	list_db_stats(executor);
+	break;
     case LIST_PROCESS:
-        list_process(executor);
-        break;
+	list_process(executor);
+	break;
     case LIST_BADNAMES:
-        badname_list(executor, T("Disallowed names:"));
-        break;
+	badname_list(executor, T("Disallowed names:"));
+	break;
     case LIST_RESOURCES:
-        list_system_resources(executor);
-        break;
+	list_system_resources(executor);
+	break;
     case LIST_GUESTS:
-        Guest.ListAll(executor);
-        break;
+	Guest.ListAll(executor);
+	break;
     case LIST_MODULES:
-        list_modules(executor);
-        break;
+	list_modules(executor);
+	break;
 #ifdef HAVE_REALITY_LVLS
     case LIST_RLEVELS:
-        list_rlevels(executor);
-        break;
+	list_rlevels(executor);
+	break;
 #endif
     }
 }
 
 void do_assert(dbref executor, dbref caller, dbref enactor, int eval, int key,
-               int nargs, UTF8 *arg1, UTF8 *command, const UTF8 *cargs[], int ncargs)
+	       int nargs, UTF8 *arg1, UTF8 *command, const UTF8 *cargs[], int ncargs)
 {
     UNUSED_PARAMETER(key);
     UNUSED_PARAMETER(nargs);
 
     if (!xlate(arg1))
     {
-        break_called = true;
-        if (  NULL != command
-           && '\0' != command[0])
-        {
-            if (key & BREAK_INLINE)
-            {
-                process_command(executor, caller, enactor, eval, false, command, cargs, ncargs);
-            }
-            else
-            {
-                CLinearTimeAbsolute lta;
-                wait_que(executor, caller, enactor, eval, false, lta, NOTHING, 0,
-                    command,
-                    ncargs, cargs,
-                    mudstate.global_regs);
-            }
-        }
+	break_called = true;
+	if (  NULL != command
+	   && '\0' != command[0])
+	{
+	    if (key & BREAK_INLINE)
+	    {
+		process_command(executor, caller, enactor, eval, false, command, cargs, ncargs);
+	    }
+	    else
+	    {
+		CLinearTimeAbsolute lta;
+		wait_que(executor, caller, enactor, eval, false, lta, NOTHING, 0,
+		    command,
+		    ncargs, cargs,
+		    mudstate.global_regs);
+	    }
+	}
     }
 }
 
 void do_break(dbref executor, dbref caller, dbref enactor, int eval, int key,
-              int nargs, UTF8 *arg1, UTF8 *command, const UTF8 *cargs[], int ncargs)
+	      int nargs, UTF8 *arg1, UTF8 *command, const UTF8 *cargs[], int ncargs)
 {
     UNUSED_PARAMETER(key);
     UNUSED_PARAMETER(nargs);
 
     if (xlate(arg1))
     {
-        break_called = true;
-        if (  NULL != command
-           && '\0' != command[0])
-        {
-            if (key & BREAK_INLINE)
-            {
-                process_command(executor, caller, enactor, eval, false, command, cargs, ncargs);
-            }
-            else
-            {
-                CLinearTimeAbsolute lta;
-                wait_que(executor, caller, enactor, eval, false, lta, NOTHING, 0,
-                    command,
-                    ncargs, cargs,
-                    mudstate.global_regs);
-            }
-        }
+	break_called = true;
+	if (  NULL != command
+	   && '\0' != command[0])
+	{
+	    if (key & BREAK_INLINE)
+	    {
+		process_command(executor, caller, enactor, eval, false, command, cargs, ncargs);
+	    }
+	    else
+	    {
+		CLinearTimeAbsolute lta;
+		wait_que(executor, caller, enactor, eval, false, lta, NOTHING, 0,
+		    command,
+		    ncargs, cargs,
+		    mudstate.global_regs);
+	    }
+	}
     }
 }
 
@@ -4132,7 +4132,7 @@ void do_break(dbref executor, dbref caller, dbref enactor, int eval, int key,
 // Bludgeoned into MUX by Jake Nelson 7/2002.
 //
 void do_icmd(dbref player, dbref cause, dbref enactor, int eval, int key,
-             UTF8 *name, UTF8 *args[], int nargs, const UTF8 *cargs[], int ncargs)
+	     UTF8 *name, UTF8 *args[], int nargs, const UTF8 *cargs[], int ncargs)
 {
     UNUSED_PARAMETER(eval);
     UNUSED_PARAMETER(cause);
@@ -4154,346 +4154,346 @@ void do_icmd(dbref player, dbref cause, dbref enactor, int eval, int key,
        || key == ICMD_LROOM
        || key == ICMD_LALLROOM)
     {
-        if (key != ICMD_LALLROOM)
-        {
-            target = match_thing_quiet(player, name);
-        }
-        if (  key != ICMD_LALLROOM
-           && (  !Good_obj(target)
-              || !( isRoom(target)
-                 || isThing(target))))
-        {
-            notify(player, T("@icmd: Bad Location."));
-            return;
-        }
-        if (key == ICMD_CROOM)
-        {
-            atr_clr(target, A_CMDCHECK);
-            notify(player, T("@icmd: Location - All cleared."));
-            notify(player, T("@icmd: Done."));
-            return;
-        }
-        else if (key == ICMD_LROOM)
-        {
-            atrpt = atr_get("do_icmd.4060", target, A_CMDCHECK, &aowner, &aflags);
-            if (*atrpt)
-            {
-                notify(player, T("Location CmdCheck attribute is:"));
-                notify(player, atrpt);
-            }
-            else
-            {
-                notify(player, T("Location CmdCheck attribute is empty."));
-            }
-            free_lbuf(atrpt);
-            notify(player, T("@icmd: Done."));
-            return;
-        }
-        else if (key == ICMD_LALLROOM)
-        {
-            target = Location(player);
-            if (  !Good_obj(target)
-               || Going(target)
-               || isPlayer(target))
-            {
-                notify(player, T("@icmd: Bad Location."));
-                return;
-            }
-            notify(player, T("Scanning all locations and zones from your current location:"));
-            bFound = false;
-            atrpt = atr_get("do_icmd.4086", target, A_CMDCHECK, &aowner, &aflags);
-            if (*atrpt)
-            {
-                notify(player, tprintf(T("%c     --- At %s(#%d) :"),
-                    (Zone(target) == target ? '*' : ' '), Name(target), target));
-                notify(player, atrpt);
-                bFound = true;
-            }
-            free_lbuf(atrpt);
-            if (Zone(target) != target)
-            {
-                zone = Zone(target);
-                if (  Good_obj(zone)
-                   && (  isRoom(zone)
-                      || isThing(zone)))
-                {
-                    atrpt = atr_get("do_icmd.4102", zone, A_CMDCHECK, &aowner, &aflags);
-                    if (*atrpt)
-                    {
-                        notify(player, tprintf(T("%c     z-- At %s(#%d) :"),
-                            '*', Name(zone), zone));
-                        notify(player, atrpt);
-                        bFound = true;
-                    }
-                    free_lbuf(atrpt);
-                }
-            }
-            if (!bFound)
-            {
-                notify(player, T("@icmd: Location - No icmds found at current location."));
-            }
-            notify(player, T("@icmd: Done."));
-            return;
-        }
-        else if (key == ICMD_IROOM)
-        {
-            loc_set = 1;
-        }
-        else if (key == ICMD_DROOM)
-        {
-            loc_set = 0;
-        }
+	if (key != ICMD_LALLROOM)
+	{
+	    target = match_thing_quiet(player, name);
+	}
+	if (  key != ICMD_LALLROOM
+	   && (  !Good_obj(target)
+	      || !( isRoom(target)
+		 || isThing(target))))
+	{
+	    notify(player, T("@icmd: Bad Location."));
+	    return;
+	}
+	if (key == ICMD_CROOM)
+	{
+	    atr_clr(target, A_CMDCHECK);
+	    notify(player, T("@icmd: Location - All cleared."));
+	    notify(player, T("@icmd: Done."));
+	    return;
+	}
+	else if (key == ICMD_LROOM)
+	{
+	    atrpt = atr_get("do_icmd.4060", target, A_CMDCHECK, &aowner, &aflags);
+	    if (*atrpt)
+	    {
+		notify(player, T("Location CmdCheck attribute is:"));
+		notify(player, atrpt);
+	    }
+	    else
+	    {
+		notify(player, T("Location CmdCheck attribute is empty."));
+	    }
+	    free_lbuf(atrpt);
+	    notify(player, T("@icmd: Done."));
+	    return;
+	}
+	else if (key == ICMD_LALLROOM)
+	{
+	    target = Location(player);
+	    if (  !Good_obj(target)
+	       || Going(target)
+	       || isPlayer(target))
+	    {
+		notify(player, T("@icmd: Bad Location."));
+		return;
+	    }
+	    notify(player, T("Scanning all locations and zones from your current location:"));
+	    bFound = false;
+	    atrpt = atr_get("do_icmd.4086", target, A_CMDCHECK, &aowner, &aflags);
+	    if (*atrpt)
+	    {
+		notify(player, tprintf(T("%c     --- At %s(#%d) :"),
+		    (Zone(target) == target ? '*' : ' '), Name(target), target));
+		notify(player, atrpt);
+		bFound = true;
+	    }
+	    free_lbuf(atrpt);
+	    if (Zone(target) != target)
+	    {
+		zone = Zone(target);
+		if (  Good_obj(zone)
+		   && (  isRoom(zone)
+		      || isThing(zone)))
+		{
+		    atrpt = atr_get("do_icmd.4102", zone, A_CMDCHECK, &aowner, &aflags);
+		    if (*atrpt)
+		    {
+			notify(player, tprintf(T("%c     z-- At %s(#%d) :"),
+			    '*', Name(zone), zone));
+			notify(player, atrpt);
+			bFound = true;
+		    }
+		    free_lbuf(atrpt);
+		}
+	    }
+	    if (!bFound)
+	    {
+		notify(player, T("@icmd: Location - No icmds found at current location."));
+	    }
+	    notify(player, T("@icmd: Done."));
+	    return;
+	}
+	else if (key == ICMD_IROOM)
+	{
+	    loc_set = 1;
+	}
+	else if (key == ICMD_DROOM)
+	{
+	    loc_set = 0;
+	}
     }
 
     if (loc_set == -1 )
     {
-        target = lookup_player(player, name, false);
-        if (!Good_obj(target) || God(target))
-        {
-            notify(player, T("@icmd: Bad player."));
-            return;
-        }
-        if ((key == ICMD_OFF) || (key == ICMD_CLEAR))
-        {
-            s_Flags(target, FLAG_WORD3, Flags3(target) & ~CMDCHECK);
-            if (key == ICMD_CLEAR)
-            {
-                atr_clr(target, A_CMDCHECK);
-            }
-            notify(player, T("@icmd: All cleared."));
-            notify(player, T("@icmd: Done."));
-            return;
-        }
-        else if (key == ICMD_ON)
-        {
-            s_Flags(target, FLAG_WORD3, Flags3(target) | CMDCHECK);
-            notify(player, T("@icmd: Activated."));
-            notify(player, T("@icmd: Done."));
-            return;
-        }
-        else if (key == ICMD_CHECK)
-        {
-            if (CmdCheck(target))
-            {
-                notify(player, T("CmdCheck is active."));
-            }
-            else
-            {
-                notify(player, T("CmdCheck is not active."));
-            }
-            atrpt = atr_get("do_icmd.4166", target, A_CMDCHECK, &aowner, &aflags);
-            if (*atrpt)
-            {
-                notify(player, T("CmdCheck attribute is:"));
-                notify(player, atrpt);
-            }
-            else
-            {
-                notify(player, T("CmdCheck attribute is empty."));
-            }
-            free_lbuf(atrpt);
-            notify(player, T("@icmd: Done."));
-            return;
-        }
+	target = lookup_player(player, name, false);
+	if (!Good_obj(target) || God(target))
+	{
+	    notify(player, T("@icmd: Bad player."));
+	    return;
+	}
+	if ((key == ICMD_OFF) || (key == ICMD_CLEAR))
+	{
+	    s_Flags(target, FLAG_WORD3, Flags3(target) & ~CMDCHECK);
+	    if (key == ICMD_CLEAR)
+	    {
+		atr_clr(target, A_CMDCHECK);
+	    }
+	    notify(player, T("@icmd: All cleared."));
+	    notify(player, T("@icmd: Done."));
+	    return;
+	}
+	else if (key == ICMD_ON)
+	{
+	    s_Flags(target, FLAG_WORD3, Flags3(target) | CMDCHECK);
+	    notify(player, T("@icmd: Activated."));
+	    notify(player, T("@icmd: Done."));
+	    return;
+	}
+	else if (key == ICMD_CHECK)
+	{
+	    if (CmdCheck(target))
+	    {
+		notify(player, T("CmdCheck is active."));
+	    }
+	    else
+	    {
+		notify(player, T("CmdCheck is not active."));
+	    }
+	    atrpt = atr_get("do_icmd.4166", target, A_CMDCHECK, &aowner, &aflags);
+	    if (*atrpt)
+	    {
+		notify(player, T("CmdCheck attribute is:"));
+		notify(player, atrpt);
+	    }
+	    else
+	    {
+		notify(player, T("CmdCheck attribute is empty."));
+	    }
+	    free_lbuf(atrpt);
+	    notify(player, T("@icmd: Done."));
+	    return;
+	}
     }
     else
     {
-        key = loc_set;
+	key = loc_set;
     }
 
     const UTF8 *message = T("");
     buff1 = alloc_lbuf("do_icmd");
     for (x = 0; x < nargs; x++)
     {
-        pt1 = args[x];
-        pt2 = buff1;
-        while (  *pt1
-              && pt2 < buff1 + LBUF_SIZE)
-        {
-            *pt2++ = mux_tolower_ascii(*pt1++);
-        }
-        *pt2 = '\0';
-        if (  buff1[0] == '!'
-           && buff1[1] != '\0')
-        {
-            pt1 = buff1 + 1;
-            set = false;
-        }
-        else
-        {
-            pt1 = buff1;
-            set = true;
-        }
-        if (*pt1)
-        {
-            bool bHome, bColon = false;
-            if (!string_compare(pt1, T("home")))
-            {
-                bHome = true;
-                cmdp = NULL;
-            }
-            else
-            {
-                bHome = false;
-                cmdp = (CMDENT *) hashfindLEN(pt1, strlen((char *)pt1), &mudstate.command_htab);
-            }
-            if (cmdp || bHome)
-            {
-                atrpt = atr_get("do_icmd.4223", target, A_CMDCHECK, &aowner, &aflags);
-                if (cmdp)
-                {
-                    aflags = (int)strlen((char *)cmdp->cmdname);
-                    bColon = (  aflags == 1
-                             && *(cmdp->cmdname) == ':');
-                }
-                else
-                {
-                    aflags = 4;
-                }
-                pt5 = atrpt;
-                while (pt1)
-                {
-                    if (cmdp)
-                    {
-                        if (bColon)
-                        {
-                            pt1 = (UTF8 *)strstr((char *)pt5, "::");
-                            if (pt1)
-                            {
-                                pt1++;
-                            }
-                        }
-                        else
-                        {
-                            pt1 = (UTF8 *)strstr((char *)pt5, (char *)cmdp->cmdname);
-                        }
-                    }
-                    else
-                    {
-                        pt1 = (UTF8 *)strstr((char *)pt5, "home");
-                    }
-                    if (  pt1
-                       && (pt1 > atrpt)
-                       && (*(pt1 - 1) == ':')
-                       && (  mux_isspace(*(pt1 + aflags))
-                          || !*(pt1 + aflags)))
-                    {
-                        break;
-                    }
-                    else if (pt1)
-                    {
-                        if (*pt1)
-                        {
-                            pt5 = pt1 + 1;
-                        }
-                        else
-                        {
-                            pt1 = NULL;
-                            break;
-                        }
-                    }
-                }
-                if (set)
-                {
-                    if (!pt1)
-                    {
-                        if (cmdp)
-                        {
-                            pt3 = tprintf(T(" %d:%s"), key + 1, cmdp->cmdname);
-                        }
-                        else
-                        {
-                            pt3 = tprintf(T(" %d:home"), key + 1);
-                        }
+	pt1 = args[x];
+	pt2 = buff1;
+	while (  *pt1
+	      && pt2 < buff1 + LBUF_SIZE)
+	{
+	    *pt2++ = mux_tolower_ascii(*pt1++);
+	}
+	*pt2 = '\0';
+	if (  buff1[0] == '!'
+	   && buff1[1] != '\0')
+	{
+	    pt1 = buff1 + 1;
+	    set = false;
+	}
+	else
+	{
+	    pt1 = buff1;
+	    set = true;
+	}
+	if (*pt1)
+	{
+	    bool bHome, bColon = false;
+	    if (!string_compare(pt1, T("home")))
+	    {
+		bHome = true;
+		cmdp = NULL;
+	    }
+	    else
+	    {
+		bHome = false;
+		cmdp = (CMDENT *) hashfindLEN(pt1, strlen((char *)pt1), &mudstate.command_htab);
+	    }
+	    if (cmdp || bHome)
+	    {
+		atrpt = atr_get("do_icmd.4223", target, A_CMDCHECK, &aowner, &aflags);
+		if (cmdp)
+		{
+		    aflags = (int)strlen((char *)cmdp->cmdname);
+		    bColon = (  aflags == 1
+			     && *(cmdp->cmdname) == ':');
+		}
+		else
+		{
+		    aflags = 4;
+		}
+		pt5 = atrpt;
+		while (pt1)
+		{
+		    if (cmdp)
+		    {
+			if (bColon)
+			{
+			    pt1 = (UTF8 *)strstr((char *)pt5, "::");
+			    if (pt1)
+			    {
+				pt1++;
+			    }
+			}
+			else
+			{
+			    pt1 = (UTF8 *)strstr((char *)pt5, (char *)cmdp->cmdname);
+			}
+		    }
+		    else
+		    {
+			pt1 = (UTF8 *)strstr((char *)pt5, "home");
+		    }
+		    if (  pt1
+		       && (pt1 > atrpt)
+		       && (*(pt1 - 1) == ':')
+		       && (  mux_isspace(*(pt1 + aflags))
+			  || !*(pt1 + aflags)))
+		    {
+			break;
+		    }
+		    else if (pt1)
+		    {
+			if (*pt1)
+			{
+			    pt5 = pt1 + 1;
+			}
+			else
+			{
+			    pt1 = NULL;
+			    break;
+			}
+		    }
+		}
+		if (set)
+		{
+		    if (!pt1)
+		    {
+			if (cmdp)
+			{
+			    pt3 = tprintf(T(" %d:%s"), key + 1, cmdp->cmdname);
+			}
+			else
+			{
+			    pt3 = tprintf(T(" %d:home"), key + 1);
+			}
 
-                        size_t natrpt = strlen((char *)atrpt);
-                        size_t npt3 = strlen((char *)pt3);
-                        if ((natrpt + npt3) < LBUF_SIZE - 1)
-                        {
-                            mux_strncpy(atrpt + natrpt, pt3, LBUF_SIZE-natrpt-1);
-                            atr_add_raw(target, A_CMDCHECK, atrpt);
-                            if ( loc_set == -1 )
-                            {
-                                s_Flags(target, FLAG_WORD3, Flags3(target) | CMDCHECK);
-                            }
-                            message = T("Set");
-                        }
-                    }
-                    else
-                    {
-                        message = T("Command already present");
-                    }
-                }
-                else
-                {
-                    if (pt1)
-                    {
-                        pt2 = pt1 - 1;
-                        while ((pt2 > atrpt) && !mux_isspace(*pt2))
-                        {
-                            pt2--;
-                        }
-                        y = pt2 - atrpt + 1;
-                        // Save the char that'll be nulled by mux_strncpy.
-                        // (Even though it may be unneeded by this point.)
-                        UTF8 cSave = buff1[y];
-                        mux_strncpy(buff1, atrpt, y);
-                        buff1[y] = cSave;
-                        if (y == 1)
-                        {
-                            *atrpt = '\0';
-                        }
-                        *(atrpt + y) = '\0';
-                        pt2 = pt1 + aflags;
-                        if (*pt2)
-                        {
-                            while (*pt2 && mux_isspace(*pt2))
-                            {
-                                pt2++;
-                            }
-                            if (*pt2)
-                            {
-                                size_t natrpt = strlen((char *)atrpt);
-                                mux_strncpy(atrpt + natrpt, pt2, LBUF_SIZE-natrpt-1);
-                            }
-                        }
-                        if ((y > 1) && !*pt2)
-                        {
-                            pt2 = atrpt + y;
-                            while ((pt2 > atrpt) && mux_isspace(*pt2))
-                            {
-                                pt2--;
-                            }
-                            *(pt2 + 1) = '\0';
-                        }
-                        if ((y == 1) && !*pt2)
-                        {
-                            atr_clr(target, A_CMDCHECK);
-                            if (loc_set == -1)
-                            {
-                                s_Flags(target, FLAG_WORD3, Flags3(target) & ~CMDCHECK);
-                            }
-                            message = T("Cleared");
-                        }
-                        else
-                        {
-                            atr_add_raw(target, A_CMDCHECK, atrpt);
-                            message = T("Cleared");
-                        }
-                    }
-                    else
-                    {
-                        message = T("Command not present");
-                    }
-                }
-                free_lbuf(atrpt);
-            }
-            else
-            {
-                message = T("Bad command");
-            }
-            notify(player, tprintf(T("@icmd:%s %s."), (loc_set == -1) ? T("") : T(" Location -"), message));
-        }
+			size_t natrpt = strlen((char *)atrpt);
+			size_t npt3 = strlen((char *)pt3);
+			if ((natrpt + npt3) < LBUF_SIZE - 1)
+			{
+			    mux_strncpy(atrpt + natrpt, pt3, LBUF_SIZE-natrpt-1);
+			    atr_add_raw(target, A_CMDCHECK, atrpt);
+			    if ( loc_set == -1 )
+			    {
+				s_Flags(target, FLAG_WORD3, Flags3(target) | CMDCHECK);
+			    }
+			    message = T("Set");
+			}
+		    }
+		    else
+		    {
+			message = T("Command already present");
+		    }
+		}
+		else
+		{
+		    if (pt1)
+		    {
+			pt2 = pt1 - 1;
+			while ((pt2 > atrpt) && !mux_isspace(*pt2))
+			{
+			    pt2--;
+			}
+			y = pt2 - atrpt + 1;
+			// Save the char that'll be nulled by mux_strncpy.
+			// (Even though it may be unneeded by this point.)
+			UTF8 cSave = buff1[y];
+			mux_strncpy(buff1, atrpt, y);
+			buff1[y] = cSave;
+			if (y == 1)
+			{
+			    *atrpt = '\0';
+			}
+			*(atrpt + y) = '\0';
+			pt2 = pt1 + aflags;
+			if (*pt2)
+			{
+			    while (*pt2 && mux_isspace(*pt2))
+			    {
+				pt2++;
+			    }
+			    if (*pt2)
+			    {
+				size_t natrpt = strlen((char *)atrpt);
+				mux_strncpy(atrpt + natrpt, pt2, LBUF_SIZE-natrpt-1);
+			    }
+			}
+			if ((y > 1) && !*pt2)
+			{
+			    pt2 = atrpt + y;
+			    while ((pt2 > atrpt) && mux_isspace(*pt2))
+			    {
+				pt2--;
+			    }
+			    *(pt2 + 1) = '\0';
+			}
+			if ((y == 1) && !*pt2)
+			{
+			    atr_clr(target, A_CMDCHECK);
+			    if (loc_set == -1)
+			    {
+				s_Flags(target, FLAG_WORD3, Flags3(target) & ~CMDCHECK);
+			    }
+			    message = T("Cleared");
+			}
+			else
+			{
+			    atr_add_raw(target, A_CMDCHECK, atrpt);
+			    message = T("Cleared");
+			}
+		    }
+		    else
+		    {
+			message = T("Command not present");
+		    }
+		}
+		free_lbuf(atrpt);
+	    }
+	    else
+	    {
+		message = T("Bad command");
+	    }
+	    notify(player, tprintf(T("@icmd:%s %s."), (loc_set == -1) ? T("") : T(" Location -"), message));
+	}
     }
     free_lbuf(buff1);
     notify(player, T("@icmd: Done."));
@@ -4510,33 +4510,33 @@ void do_train(dbref executor, dbref caller, dbref enactor, int eval, int key, UT
 
     if (0 < mudstate.train_nest_lev)
     {
-        notify(executor, T("Train cannot be used to teach command, train."));
-        return;
+	notify(executor, T("Train cannot be used to teach command, train."));
+	return;
     }
     mudstate.train_nest_lev++;
     dbref loc = Location(executor);
     if (!Good_obj(loc))
     {
-        notify(executor, T("Bad location."));
-        mudstate.train_nest_lev--;
-        return;
+	notify(executor, T("Bad location."));
+	mudstate.train_nest_lev--;
+	return;
     }
     if (  !string
        || !*string)
     {
-        notify(executor, T("Train requires an argument."));
-        mudstate.train_nest_lev--;
-        return;
+	notify(executor, T("Train requires an argument."));
+	mudstate.train_nest_lev--;
+	return;
     }
 
     notify_all_from_inside(loc, executor, tprintf(T("%s types -=> %s"),
-        Moniker(executor), string));
+	Moniker(executor), string));
     process_command(executor, caller, enactor, eval, true, string, NULL, 0);
     mudstate.train_nest_lev--;
 }
 
 void do_moniker(dbref executor, dbref caller, dbref enactor, int eval, int key,
-                 int nargs, UTF8 *name, UTF8 *instr, const UTF8 *cargs[], int ncargs)
+		 int nargs, UTF8 *name, UTF8 *instr, const UTF8 *cargs[], int ncargs)
 {
     UNUSED_PARAMETER(caller);
     UNUSED_PARAMETER(enactor);
@@ -4549,29 +4549,29 @@ void do_moniker(dbref executor, dbref caller, dbref enactor, int eval, int key,
     dbref thing = match_thing(executor, name);
     if (!Good_obj(thing))
     {
-        return;
+	return;
     }
 
     if (!Controls(executor, thing))
     {
-        notify(executor, NOPERM_MESSAGE);
-        return;
+	notify(executor, NOPERM_MESSAGE);
+	return;
     }
 
     if (  instr == NULL
        || instr[0] == '\0')
     {
-        notify_quiet(executor, T("Moniker cleared."));
-        s_Moniker(thing, NULL);
+	notify_quiet(executor, T("Moniker cleared."));
+	s_Moniker(thing, NULL);
     }
     else
     {
-        s_Moniker(thing, instr);
-        if (  !Quiet(executor)
-           && !Quiet(thing))
-        {
-            notify_quiet(executor, T("Moniker set."));
-        }
+	s_Moniker(thing, instr);
+	if (  !Quiet(executor)
+	   && !Quiet(thing))
+	{
+	    notify_quiet(executor, T("Moniker set."));
+	}
     }
     set_modified(thing);
 }
@@ -4584,19 +4584,19 @@ void do_moniker(dbref executor, dbref caller, dbref enactor, int eval, int key,
 static void show_hook(UTF8 *bf, UTF8 *bfptr, int key)
 {
     if (key & CEF_HOOK_BEFORE)
-        safe_str(T("before "), bf, &bfptr);
+	safe_str(T("before "), bf, &bfptr);
     if (key & CEF_HOOK_AFTER)
-        safe_str(T("after "), bf, &bfptr);
+	safe_str(T("after "), bf, &bfptr);
     if (key & CEF_HOOK_PERMIT)
-        safe_str(T("permit "), bf, &bfptr);
+	safe_str(T("permit "), bf, &bfptr);
     if (key & CEF_HOOK_IGNORE)
-        safe_str(T("ignore "), bf, &bfptr);
+	safe_str(T("ignore "), bf, &bfptr);
     if (key & CEF_HOOK_IGSWITCH)
-        safe_str(T("igswitch "), bf, &bfptr);
+	safe_str(T("igswitch "), bf, &bfptr);
     if (key & CEF_HOOK_AFAIL)
-        safe_str(T("afail "), bf, &bfptr);
+	safe_str(T("afail "), bf, &bfptr);
     if (key & CEF_HOOK_ARGS)
-        safe_str(T("args "), bf, &bfptr);
+	safe_str(T("args "), bf, &bfptr);
     *bfptr = '\0';
 }
 
@@ -4608,41 +4608,41 @@ static void hook_loop(dbref executor, CMDENT *cmdp, UTF8 *s_ptr, UTF8 *s_ptrbuff
     if (  pCmd[0] != '\0'
        && pCmd[1] == '\0')
     {
-        switch (pCmd[0])
-        {
-        case '"':
-            pFmt = T("S %-30.30s | %s");
-            pCmd = T("(\xE2\x80\x98\"\xE2\x80\x99 hook on \xE2\x80\x98say\xE2\x80\x99)");
-            break;
-        case ':':
-            pFmt = T("P %-30.30s | %s");
-            pCmd = T("(\xE2\x80\x98:\xE2\x80\x99 hook on \xE2\x80\x98pose\xE2\x80\x99)");
-            break;
-        case ';':
-            pFmt = T("P %-30.30s | %s");
-            pCmd = T("(\xE2\x80\x98;\xE2\x80\x99 hook on \xE2\x80\x98pose\xE2\x80\x99)");
-            break;
-        case '\\':
-            pFmt = T("E %-30.30s | %s");
-            pCmd = T("(\xE2\x80\x98\\\\\xE2\x80\x99 hook on \xE2\x80\x98@emit\xE2\x80\x99)");
-            break;
-        case '#':
-            pFmt = T("F %-30.30s | %s");
-            pCmd = T("(\xE2\x80\x98#\xE2\x80\x99 hook on \xE2\x80\x98@force\xE2\x80\x99)");
-            break;
-        case '&':
-            pFmt = T("V %-30.30s | %s");
-            pCmd = T("(\xE2\x80\x98&\xE2\x80\x99 hook on \xE2\x80\x98@set\xE2\x80\x99)");
-            break;
-        case '-':
-            pFmt = T("M %-30.30s | %s");
-            pCmd = T("(\xE2\x80\x98-\xE2\x80\x99 hook on \xE2\x80\x98@mail\xE2\x80\x99)");
-            break;
-        case '~':
-            pFmt = T("M %-30.30s | %s");
-            pCmd = T("(\xE2\x80\x98~\xE2\x80\x99 hook on \xE2\x80\x98@mail\xE2\x80\x99)");
-            break;
-        }
+	switch (pCmd[0])
+	{
+	case '"':
+	    pFmt = T("S %-30.30s | %s");
+	    pCmd = T("(\xE2\x80\x98\"\xE2\x80\x99 hook on \xE2\x80\x98say\xE2\x80\x99)");
+	    break;
+	case ':':
+	    pFmt = T("P %-30.30s | %s");
+	    pCmd = T("(\xE2\x80\x98:\xE2\x80\x99 hook on \xE2\x80\x98pose\xE2\x80\x99)");
+	    break;
+	case ';':
+	    pFmt = T("P %-30.30s | %s");
+	    pCmd = T("(\xE2\x80\x98;\xE2\x80\x99 hook on \xE2\x80\x98pose\xE2\x80\x99)");
+	    break;
+	case '\\':
+	    pFmt = T("E %-30.30s | %s");
+	    pCmd = T("(\xE2\x80\x98\\\\\xE2\x80\x99 hook on \xE2\x80\x98@emit\xE2\x80\x99)");
+	    break;
+	case '#':
+	    pFmt = T("F %-30.30s | %s");
+	    pCmd = T("(\xE2\x80\x98#\xE2\x80\x99 hook on \xE2\x80\x98@force\xE2\x80\x99)");
+	    break;
+	case '&':
+	    pFmt = T("V %-30.30s | %s");
+	    pCmd = T("(\xE2\x80\x98&\xE2\x80\x99 hook on \xE2\x80\x98@set\xE2\x80\x99)");
+	    break;
+	case '-':
+	    pFmt = T("M %-30.30s | %s");
+	    pCmd = T("(\xE2\x80\x98-\xE2\x80\x99 hook on \xE2\x80\x98@mail\xE2\x80\x99)");
+	    break;
+	case '~':
+	    pFmt = T("M %-30.30s | %s");
+	    pCmd = T("(\xE2\x80\x98~\xE2\x80\x99 hook on \xE2\x80\x98@mail\xE2\x80\x99)");
+	    break;
+	}
     }
     notify(executor, tprintf(pFmt, pCmd, s_ptrbuff));
 }
@@ -4661,195 +4661,195 @@ void do_hook(dbref executor, dbref caller, dbref enactor, int eval, int key, UTF
     CMDENT *cmdp = (CMDENT *)NULL;
 
     if (  (  key
-          && !(key & CEF_HOOK_LIST))
+	  && !(key & CEF_HOOK_LIST))
        || (  (  !key
-             || (key & CEF_HOOK_LIST))
-          && *name))
+	     || (key & CEF_HOOK_LIST))
+	  && *name))
     {
-        cmdp = (CMDENT *)hashfindLEN(name, strlen((char *)name), &mudstate.command_htab);
-        if (!cmdp)
-        {
-            notify(executor, T("@hook: Non-existent command name given."));
-            return;
-        }
+	cmdp = (CMDENT *)hashfindLEN(name, strlen((char *)name), &mudstate.command_htab);
+	if (!cmdp)
+	{
+	    notify(executor, T("@hook: Non-existent command name given."));
+	    return;
+	}
     }
     if (  (key & CEF_HOOK_CLEAR)
        && (key & CEF_HOOK_LIST))
     {
-        notify(executor, T("@hook: Incompatible switches."));
-        return;
+	notify(executor, T("@hook: Incompatible switches."));
+	return;
     }
 
     if (key & CEF_HOOK_CLEAR)
     {
-        negate = true;
-        key = key & ~CEF_HOOK_CLEAR;
-        key = key & ~SW_MULTIPLE;
+	negate = true;
+	key = key & ~CEF_HOOK_CLEAR;
+	key = key & ~SW_MULTIPLE;
     }
     else
     {
-        negate = false;
+	negate = false;
     }
 
     if (key & (CEF_HOOK_BEFORE|CEF_HOOK_AFTER|CEF_HOOK_PERMIT|CEF_HOOK_IGNORE|CEF_HOOK_IGSWITCH|CEF_HOOK_AFAIL|CEF_HOOK_ARGS))
     {
-        if (negate)
-        {
-            cmdp->flags = cmdp->flags & ~key;
-        }
-        else
-        {
-            cmdp->flags = cmdp->flags | key;
-        }
+	if (negate)
+	{
+	    cmdp->flags = cmdp->flags & ~key;
+	}
+	else
+	{
+	    cmdp->flags = cmdp->flags | key;
+	}
 
-        if (cmdp->flags)
-        {
-            s_ptr = s_ptrbuff = alloc_lbuf("@hook");
-            show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
-            notify(executor, tprintf(T("@hook: New mask for \xE2\x80\x98%s\xE2\x80\x99 -> %s"), cmdp->cmdname, s_ptrbuff));
-            free_lbuf(s_ptrbuff);
-        }
-        else
-        {
-            notify(executor, tprintf(T("@hook: New mask for \xE2\x80\x98%s\xE2\x80\x99 is empty."), cmdp->cmdname));
-        }
+	if (cmdp->flags)
+	{
+	    s_ptr = s_ptrbuff = alloc_lbuf("@hook");
+	    show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
+	    notify(executor, tprintf(T("@hook: New mask for \xE2\x80\x98%s\xE2\x80\x99 -> %s"), cmdp->cmdname, s_ptrbuff));
+	    free_lbuf(s_ptrbuff);
+	}
+	else
+	{
+	    notify(executor, tprintf(T("@hook: New mask for \xE2\x80\x98%s\xE2\x80\x99 is empty."), cmdp->cmdname));
+	}
     }
 
     if (  (key & CEF_HOOK_LIST)
        || !key)
     {
-        if (cmdp)
-        {
-            if (cmdp->flags)
-            {
-                s_ptr = s_ptrbuff = alloc_lbuf("@hook");
-                show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
-                notify(executor, tprintf(T("@hook: Mask for hashed command \xE2\x80\x98%s\xE2\x80\x99 -> %s"), cmdp->cmdname, s_ptrbuff));
-                free_lbuf(s_ptrbuff);
-            }
-            else
-            {
-                notify(executor, tprintf(T("@hook: Mask for hashed command \xE2\x80\x98%s\xE2\x80\x99 is empty."), cmdp->cmdname));
-            }
-        }
-        else
-        {
-            notify(executor, tprintf(T("%.32s-+-%s"),
-                "--------------------------------",
-                "--------------------------------------------"));
-            notify(executor, tprintf(T("%-32s | %s"), "Built-in Command", "Hook Mask Values"));
-            notify(executor, tprintf(T("%.32s-+-%s"),
-                "--------------------------------",
-                "--------------------------------------------"));
-            found = false;
-            s_ptr = s_ptrbuff = alloc_lbuf("@hook");
-            {
-                CMDENT_NO_ARG *cmdp2;
-                for (cmdp2 = command_table_no_arg; cmdp2->cmdname; cmdp2++)
-                {
-                    s_ptrbuff[0] = '\0';
-                    s_ptr = s_ptrbuff;
-                    if (0 != HOOKMASK(cmdp2->flags))
-                    {
-                        found = true;
-                        hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
-                    }
-                }
-            }
-            {
-                CMDENT_ONE_ARG *cmdp2;
-                for (cmdp2 = command_table_one_arg; cmdp2->cmdname; cmdp2++)
-                {
-                    s_ptrbuff[0] = '\0';
-                    s_ptr = s_ptrbuff;
-                    if (0 != HOOKMASK(cmdp2->flags))
-                    {
-                        found = true;
-                        hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
-                    }
-                }
-            }
-            {
-                CMDENT_TWO_ARG *cmdp2;
-                for (cmdp2 = command_table_two_arg; cmdp2->cmdname; cmdp2++)
-                {
-                    s_ptrbuff[0] = '\0';
-                    s_ptr = s_ptrbuff;
-                    if (0 != HOOKMASK(cmdp2->flags))
-                    {
-                        found = true;
-                        hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
-                    }
-                }
-            }
-            {
-                CMDENT_TWO_ARG_ARGV *cmdp2;
-                for (cmdp2 = command_table_two_arg_argv; cmdp2->cmdname; cmdp2++)
-                {
-                    s_ptrbuff[0] = '\0';
-                    s_ptr = s_ptrbuff;
-                    if (0 != HOOKMASK(cmdp2->flags))
-                    {
-                        found = true;
-                        hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
-                    }
-                }
-            }
-            if (!found)
-            {
-                notify(executor, tprintf(T("%26s -- No @hooks defined --"), " "));
-            }
-            found = false;
-            /* We need to search the attribute table as well */
-            notify(executor, tprintf(T("%.32s-+-%s"),
-                "--------------------------------",
-                "--------------------------------------------"));
-            notify(executor, tprintf(T("%-32s | %s"), "Built-in Attribute", "Hook Mask Values"));
-            notify(executor, tprintf(T("%.32s-+-%s"),
-                "--------------------------------",
-                "--------------------------------------------"));
-            cbuff = alloc_sbuf("cbuff_hook");
-            for (ATTR *ap = AttrTable; ap->name; ap++)
-            {
-                if (ap->flags & AF_NOCMD)
-                {
-                    continue;
-                }
-                s_ptrbuff[0] = '\0';
-                s_ptr = s_ptrbuff;
+	if (cmdp)
+	{
+	    if (cmdp->flags)
+	    {
+		s_ptr = s_ptrbuff = alloc_lbuf("@hook");
+		show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
+		notify(executor, tprintf(T("@hook: Mask for hashed command \xE2\x80\x98%s\xE2\x80\x99 -> %s"), cmdp->cmdname, s_ptrbuff));
+		free_lbuf(s_ptrbuff);
+	    }
+	    else
+	    {
+		notify(executor, tprintf(T("@hook: Mask for hashed command \xE2\x80\x98%s\xE2\x80\x99 is empty."), cmdp->cmdname));
+	    }
+	}
+	else
+	{
+	    notify(executor, tprintf(T("%.32s-+-%s"),
+		"--------------------------------",
+		"--------------------------------------------"));
+	    notify(executor, tprintf(T("%-32s | %s"), "Built-in Command", "Hook Mask Values"));
+	    notify(executor, tprintf(T("%.32s-+-%s"),
+		"--------------------------------",
+		"--------------------------------------------"));
+	    found = false;
+	    s_ptr = s_ptrbuff = alloc_lbuf("@hook");
+	    {
+		CMDENT_NO_ARG *cmdp2;
+		for (cmdp2 = command_table_no_arg; cmdp2->cmdname; cmdp2++)
+		{
+		    s_ptrbuff[0] = '\0';
+		    s_ptr = s_ptrbuff;
+		    if (0 != HOOKMASK(cmdp2->flags))
+		    {
+			found = true;
+			hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
+		    }
+		}
+	    }
+	    {
+		CMDENT_ONE_ARG *cmdp2;
+		for (cmdp2 = command_table_one_arg; cmdp2->cmdname; cmdp2++)
+		{
+		    s_ptrbuff[0] = '\0';
+		    s_ptr = s_ptrbuff;
+		    if (0 != HOOKMASK(cmdp2->flags))
+		    {
+			found = true;
+			hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
+		    }
+		}
+	    }
+	    {
+		CMDENT_TWO_ARG *cmdp2;
+		for (cmdp2 = command_table_two_arg; cmdp2->cmdname; cmdp2++)
+		{
+		    s_ptrbuff[0] = '\0';
+		    s_ptr = s_ptrbuff;
+		    if (0 != HOOKMASK(cmdp2->flags))
+		    {
+			found = true;
+			hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
+		    }
+		}
+	    }
+	    {
+		CMDENT_TWO_ARG_ARGV *cmdp2;
+		for (cmdp2 = command_table_two_arg_argv; cmdp2->cmdname; cmdp2++)
+		{
+		    s_ptrbuff[0] = '\0';
+		    s_ptr = s_ptrbuff;
+		    if (0 != HOOKMASK(cmdp2->flags))
+		    {
+			found = true;
+			hook_loop(executor, (CMDENT *)cmdp2, s_ptr, s_ptrbuff);
+		    }
+		}
+	    }
+	    if (!found)
+	    {
+		notify(executor, tprintf(T("%26s -- No @hooks defined --"), " "));
+	    }
+	    found = false;
+	    /* We need to search the attribute table as well */
+	    notify(executor, tprintf(T("%.32s-+-%s"),
+		"--------------------------------",
+		"--------------------------------------------"));
+	    notify(executor, tprintf(T("%-32s | %s"), "Built-in Attribute", "Hook Mask Values"));
+	    notify(executor, tprintf(T("%.32s-+-%s"),
+		"--------------------------------",
+		"--------------------------------------------"));
+	    cbuff = alloc_sbuf("cbuff_hook");
+	    for (ATTR *ap = AttrTable; ap->name; ap++)
+	    {
+		if (ap->flags & AF_NOCMD)
+		{
+		    continue;
+		}
+		s_ptrbuff[0] = '\0';
+		s_ptr = s_ptrbuff;
 
-                p = cbuff;
-                safe_sb_chr('@', cbuff, &p);
-                for (q = ap->name; *q; q++)
-                {
-                    safe_sb_chr(mux_tolower_ascii(*q), cbuff, &p);
-                }
-                *p = '\0';
-                size_t ncbuff = p - cbuff;
-                cmdp = (CMDENT *)hashfindLEN(cbuff, ncbuff, &mudstate.command_htab);
-                if (  cmdp
-                   && 0 != HOOKMASK(cmdp->flags))
-                {
-                    found = true;
-                    show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
-                    notify(executor, tprintf(T("%-32.32s | %s"), cmdp->cmdname, s_ptrbuff));
-                }
-            }
-            free_sbuf(cbuff);
-            if (!found)
-            {
-                notify(executor, tprintf(T("%26s -- No @hooks defined --"), " "));
-            }
-            free_lbuf(s_ptrbuff);
-            notify(executor, tprintf(T("%.32s-+-%s"),
-                "--------------------------------",
-                "--------------------------------------------"));
-            notify(executor, tprintf(T("The hook object is currently: #%d (%s)"),
-                mudconf.hook_obj,
-                (  (  Good_obj(mudconf.hook_obj)
-                   && !Going(mudconf.hook_obj))
-                ? "VALID" : "INVALID")));
-        }
+		p = cbuff;
+		safe_sb_chr('@', cbuff, &p);
+		for (q = ap->name; *q; q++)
+		{
+		    safe_sb_chr(mux_tolower_ascii(*q), cbuff, &p);
+		}
+		*p = '\0';
+		size_t ncbuff = p - cbuff;
+		cmdp = (CMDENT *)hashfindLEN(cbuff, ncbuff, &mudstate.command_htab);
+		if (  cmdp
+		   && 0 != HOOKMASK(cmdp->flags))
+		{
+		    found = true;
+		    show_hook(s_ptrbuff, s_ptr, HOOKMASK(cmdp->flags));
+		    notify(executor, tprintf(T("%-32.32s | %s"), cmdp->cmdname, s_ptrbuff));
+		}
+	    }
+	    free_sbuf(cbuff);
+	    if (!found)
+	    {
+		notify(executor, tprintf(T("%26s -- No @hooks defined --"), " "));
+	    }
+	    free_lbuf(s_ptrbuff);
+	    notify(executor, tprintf(T("%.32s-+-%s"),
+		"--------------------------------",
+		"--------------------------------------------"));
+	    notify(executor, tprintf(T("The hook object is currently: #%d (%s)"),
+		mudconf.hook_obj,
+		(  (  Good_obj(mudconf.hook_obj)
+		   && !Going(mudconf.hook_obj))
+		? "VALID" : "INVALID")));
+	}
     }
 }
 

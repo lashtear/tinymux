@@ -39,49 +39,49 @@ bool quick_wild(const UTF8 *tstr, const UTF8 *dstr)
 {
     if (mudstate.wild_invk_ctr >= mudconf.wild_invk_lim)
     {
-        return false;
+	return false;
     }
     mudstate.wild_invk_ctr++;
 
     while (*tstr != '*')
     {
-        switch (*tstr)
-        {
-        case '?':
+	switch (*tstr)
+	{
+	case '?':
 
-            // Single character match.  Return false if at end of data.
-            //
-            if (!*dstr)
-            {
-                return false;
-            }
-            break;
+	    // Single character match.  Return false if at end of data.
+	    //
+	    if (!*dstr)
+	    {
+		return false;
+	    }
+	    break;
 
-        case '\\':
+	case '\\':
 
-            // Escape character.  Move up, and force literal match of next
-            // character.
-            //
-            tstr++;
+	    // Escape character.  Move up, and force literal match of next
+	    // character.
+	    //
+	    tstr++;
 
-            // FALL THROUGH
+	    // FALL THROUGH
 
-        default:
+	default:
 
-            // Literal character.  Check for a match. If matching end of data,
-            // return true.
-            //
-            if (NOTEQUAL(*dstr, *tstr))
-            {
-                return false;
-            }
-            if (!*dstr)
-            {
-                return true;
-            }
-        }
-        tstr++;
-        dstr++;
+	    // Literal character.  Check for a match. If matching end of data,
+	    // return true.
+	    //
+	    if (NOTEQUAL(*dstr, *tstr))
+	    {
+		return false;
+	    }
+	    if (!*dstr)
+	    {
+		return true;
+	    }
+	}
+	tstr++;
+	dstr++;
     }
 
     // Skip over '*'.
@@ -92,49 +92,49 @@ bool quick_wild(const UTF8 *tstr, const UTF8 *dstr)
     //
     if (!*tstr)
     {
-        return true;
+	return true;
     }
 
     // Skip over wildcards.
     //
     while (  *tstr == '?'
-          || *tstr == '*')
+	  || *tstr == '*')
     {
-        if (*tstr == '?')
-        {
-            if (!*dstr)
-            {
-                return false;
-            }
-            dstr++;
-        }
-        tstr++;
+	if (*tstr == '?')
+	{
+	    if (!*dstr)
+	    {
+		return false;
+	    }
+	    dstr++;
+	}
+	tstr++;
     }
 
     // Skip over a backslash in the pattern string if it is there.
     //
     if (*tstr == '\\')
     {
-        tstr++;
+	tstr++;
     }
 
     // Return true on trailing '*'.
     //
     if (!*tstr)
     {
-        return true;
+	return true;
     }
 
     // Scan for possible matches.
     //
     while (*dstr)
     {
-        if (  EQUAL(*dstr, *tstr)
-           && quick_wild(tstr + 1, dstr + 1))
-        {
-            return true;
-        }
-        dstr++;
+	if (  EQUAL(*dstr, *tstr)
+	   && quick_wild(tstr + 1, dstr + 1))
+	{
+	    return true;
+	}
+	dstr++;
     }
     return false;
 }
@@ -151,7 +151,7 @@ static bool wild1(UTF8 *tstr, UTF8 *dstr, int arg)
 {
     if (mudstate.wild_invk_ctr >= mudconf.wild_invk_lim)
     {
-        return false;
+	return false;
     }
     mudstate.wild_invk_ctr++;
 
@@ -160,76 +160,76 @@ static bool wild1(UTF8 *tstr, UTF8 *dstr, int arg)
 
     while (*tstr != '*')
     {
-        switch (*tstr)
-        {
-        case '?':
+	switch (*tstr)
+	{
+	case '?':
 
-            // Single character match.  Return false if at end of data.
-            //
-            size_t t;
-            if (  '\0' == dstr[0]
-               || UTF8_CONTINUE <= (t = utf8_FirstByte[*dstr]))
-            {
-                return false;
-            }
+	    // Single character match.  Return false if at end of data.
+	    //
+	    size_t t;
+	    if (  '\0' == dstr[0]
+	       || UTF8_CONTINUE <= (t = utf8_FirstByte[*dstr]))
+	    {
+		return false;
+	    }
 
-            size_t j;
-            for (j = 1; j < t; j++)
-            {
-                if (  '\0' == dstr[j]
-                   || UTF8_CONTINUE != utf8_FirstByte[dstr[j]])
-                {
-                    return false;
-                }
-            }
+	    size_t j;
+	    for (j = 1; j < t; j++)
+	    {
+		if (  '\0' == dstr[j]
+		   || UTF8_CONTINUE != utf8_FirstByte[dstr[j]])
+		{
+		    return false;
+		}
+	    }
 
-            memcpy(arglist[arg], dstr, t);
-            arglist[arg][t] = '\0';
-            arg++;
+	    memcpy(arglist[arg], dstr, t);
+	    arglist[arg][t] = '\0';
+	    arg++;
 
-            // Jump to the fast routine if we can.
-            //
-            if (arg >= numargs)
-            {
-                return quick_wild(tstr + 1, dstr + t);
-            }
-            dstr += t;
-            break;
+	    // Jump to the fast routine if we can.
+	    //
+	    if (arg >= numargs)
+	    {
+		return quick_wild(tstr + 1, dstr + t);
+	    }
+	    dstr += t;
+	    break;
 
-        case '\\':
+	case '\\':
 
-            // Escape character.  Move up, and force literal match of next
-            // character.
-            //
-            tstr++;
+	    // Escape character.  Move up, and force literal match of next
+	    // character.
+	    //
+	    tstr++;
 
-            // FALL THROUGH
+	    // FALL THROUGH
 
-        default:
+	default:
 
-            // Literal character.  Check for a match. If matching end of data,
-            // return true.
-            //
-            if (NOTEQUAL(*dstr, *tstr))
-            {
-                return false;
-            }
-            if (!*dstr)
-            {
-                return true;
-            }
-            dstr++;
-            break;
-        }
-        tstr++;
+	    // Literal character.  Check for a match. If matching end of data,
+	    // return true.
+	    //
+	    if (NOTEQUAL(*dstr, *tstr))
+	    {
+		return false;
+	    }
+	    if (!*dstr)
+	    {
+		return true;
+	    }
+	    dstr++;
+	    break;
+	}
+	tstr++;
     }
 
     // If at end of pattern, slurp the rest, and leave.
     //
     if (!tstr[1])
     {
-        mux_strncpy(arglist[arg], dstr, LBUF_SIZE-1);
-        return true;
+	mux_strncpy(arglist[arg], dstr, LBUF_SIZE-1);
+	return true;
     }
 
     // Remember current position for filling in the '*' return.
@@ -241,65 +241,65 @@ static bool wild1(UTF8 *tstr, UTF8 *dstr, int arg)
     //
     do
     {
-        if (argpos < arg)
-        {
-            // Fill in arguments if someone put another '*' before a fixed
-            // string.
-            //
-            arglist[argpos][0] = '\0';
-            argpos++;
+	if (argpos < arg)
+	{
+	    // Fill in arguments if someone put another '*' before a fixed
+	    // string.
+	    //
+	    arglist[argpos][0] = '\0';
+	    argpos++;
 
-            // Jump to the fast routine if we can.
-            //
-            if (argpos >= numargs)
-            {
-                return quick_wild(tstr, dstr);
-            }
+	    // Jump to the fast routine if we can.
+	    //
+	    if (argpos >= numargs)
+	    {
+		return quick_wild(tstr, dstr);
+	    }
 
-            // Fill in any intervening '?'s
-            //
-            while (argpos < arg)
-            {
-                arglist[argpos][0] = *datapos;
-                arglist[argpos][1] = '\0';
-                datapos++;
-                argpos++;
+	    // Fill in any intervening '?'s
+	    //
+	    while (argpos < arg)
+	    {
+		arglist[argpos][0] = *datapos;
+		arglist[argpos][1] = '\0';
+		datapos++;
+		argpos++;
 
-                // Jump to the fast routine if we can.
-                //
-                if (argpos >= numargs)
-                {
-                    return quick_wild(tstr, dstr);
-                }
-            }
-        }
+		// Jump to the fast routine if we can.
+		//
+		if (argpos >= numargs)
+		{
+		    return quick_wild(tstr, dstr);
+		}
+	    }
+	}
 
-        // Skip over the '*' for now...
-        //
-        tstr++;
-        arg++;
+	// Skip over the '*' for now...
+	//
+	tstr++;
+	arg++;
 
-        // Skip over '?'s for now...
-        //
-        numextra = 0;
-        while (*tstr == '?')
-        {
-            if (!*dstr)
-            {
-                return false;
-            }
-            tstr++;
-            dstr++;
-            arg++;
-            numextra++;
-        }
+	// Skip over '?'s for now...
+	//
+	numextra = 0;
+	while (*tstr == '?')
+	{
+	    if (!*dstr)
+	    {
+		return false;
+	    }
+	    tstr++;
+	    dstr++;
+	    arg++;
+	    numextra++;
+	}
     } while (*tstr == '*');
 
     // Skip over a backslash in the pattern string if it is there.
     //
     if (*tstr == '\\')
     {
-        tstr++;
+	tstr++;
     }
 
     // Check for possible matches.  This loop terminates either at end of data
@@ -307,64 +307,64 @@ static bool wild1(UTF8 *tstr, UTF8 *dstr, int arg)
     //
     for (;;)
     {
-        // Scan forward until first character matches.
-        //
-        if (*tstr)
-        {
-            while (NOTEQUAL(*dstr, *tstr))
-            {
-                if (!*dstr)
-                {
-                    return false;
-                }
-                dstr++;
-            }
-        }
-        else
-        {
-            while (*dstr)
-            {
-                dstr++;
-            }
-        }
+	// Scan forward until first character matches.
+	//
+	if (*tstr)
+	{
+	    while (NOTEQUAL(*dstr, *tstr))
+	    {
+		if (!*dstr)
+		{
+		    return false;
+		}
+		dstr++;
+	    }
+	}
+	else
+	{
+	    while (*dstr)
+	    {
+		dstr++;
+	    }
+	}
 
-        // The first character matches, now.  Check if the rest does, using
-        // the fastest method, as usual.
-        //
-        if (  !*dstr
-           || ((arg < numargs) ? wild1(tstr + 1, dstr + 1, arg)
-                               : quick_wild(tstr + 1, dstr + 1)))
-        {
-            // Found a match!  Fill in all remaining arguments. First do the
-            // '*'...
-            //
-            mux_strncpy(arglist[argpos], datapos, (dstr - datapos) - numextra);
-            datapos = dstr - numextra;
-            argpos++;
+	// The first character matches, now.  Check if the rest does, using
+	// the fastest method, as usual.
+	//
+	if (  !*dstr
+	   || ((arg < numargs) ? wild1(tstr + 1, dstr + 1, arg)
+			       : quick_wild(tstr + 1, dstr + 1)))
+	{
+	    // Found a match!  Fill in all remaining arguments. First do the
+	    // '*'...
+	    //
+	    mux_strncpy(arglist[argpos], datapos, (dstr - datapos) - numextra);
+	    datapos = dstr - numextra;
+	    argpos++;
 
-            // Fill in any trailing '?'s that are left.
-            //
-            while (numextra)
-            {
-                if (argpos >= numargs)
-                {
-                    return true;
-                }
-                arglist[argpos][0] = *datapos;
-                arglist[argpos][1] = '\0';
-                datapos++;
-                argpos++;
-                numextra--;
-            }
+	    // Fill in any trailing '?'s that are left.
+	    //
+	    while (numextra)
+	    {
+		if (argpos >= numargs)
+		{
+		    return true;
+		}
+		arglist[argpos][0] = *datapos;
+		arglist[argpos][1] = '\0';
+		datapos++;
+		argpos++;
+		numextra--;
+	    }
 
-            // It's done!
-            //
-            return true;
-        }
-        else
-        {
-            dstr++;
-        }
+	    // It's done!
+	    //
+	    return true;
+	}
+	else
+	{
+	    dstr++;
+	}
     }
 }
 
@@ -387,28 +387,28 @@ bool wild(UTF8 *tstr, UTF8 *dstr, UTF8 *args[], int nargs)
     //
     for (i = 0; i < nargs; i++)
     {
-        args[i] = NULL;
+	args[i] = NULL;
     }
 
     // Do fast match.
     //
     while (  *tstr != '*'
-          && *tstr != '?')
+	  && *tstr != '?')
     {
-        if (*tstr == '\\')
-        {
-            tstr++;
-        }
-        if (NOTEQUAL(*dstr, *tstr))
-        {
-            return false;
-        }
-        if (!*dstr)
-        {
-            return true;
-        }
-        tstr++;
-        dstr++;
+	if (*tstr == '\\')
+	{
+	    tstr++;
+	}
+	if (NOTEQUAL(*dstr, *tstr))
+	{
+	    return false;
+	}
+	if (!*dstr)
+	{
+	    return true;
+	}
+	tstr++;
+	dstr++;
     }
 
     // Allocate space for the return args.
@@ -416,22 +416,22 @@ bool wild(UTF8 *tstr, UTF8 *dstr, UTF8 *args[], int nargs)
     i = 0;
     scan = tstr;
     while (  *scan
-          && i < nargs)
+	  && i < nargs)
     {
-        switch (*scan)
-        {
-        case '?':
+	switch (*scan)
+	{
+	case '?':
 
-            args[i] = alloc_lbuf("wild.?");
-            i++;
-            break;
+	    args[i] = alloc_lbuf("wild.?");
+	    i++;
+	    break;
 
-        case '*':
+	case '*':
 
-            args[i] = alloc_lbuf("wild.*");
-            i++;
-        }
-        scan++;
+	    args[i] = alloc_lbuf("wild.*");
+	    i++;
+	}
+	scan++;
     }
 
     // Put stuff in globals for quick recursion.
@@ -447,13 +447,13 @@ bool wild(UTF8 *tstr, UTF8 *dstr, UTF8 *args[], int nargs)
     //
     for (i = 0; i < nargs; i++)
     {
-        if (  args[i] != NULL
-           && (  !*args[i]
-              || !value))
-        {
-            free_lbuf(args[i]);
-            args[i] = NULL;
-        }
+	if (  args[i] != NULL
+	   && (  !*args[i]
+	      || !value))
+	{
+	    free_lbuf(args[i]);
+	    args[i] = NULL;
+	}
     }
     return value;
 }
@@ -471,29 +471,29 @@ bool wild_match(UTF8 *tstr, const UTF8 *dstr)
     if (  '>' == ch
        || '<' == ch)
     {
-        tstr++;
-        if (  ParseFloat(&pfr, dstr, true)
-           && ParseFloat(&pfr, tstr, true))
-        {
-            double dd = mux_atof(dstr);
-            double dt = mux_atof(tstr);
-            if ('<' == ch)
-            {
-                return (dd < dt);
-            }
-            else
-            {
-                return (dd > dt);
-            }
-        }
-        else if ('<' == ch)
-        {
-            return (strcmp((char *)dstr, (char *)tstr) < 0);
-        }
-        else // if ('>' == ch)
-        {
-            return (strcmp((char *)dstr, (char *)tstr) > 0);
-        }
+	tstr++;
+	if (  ParseFloat(&pfr, dstr, true)
+	   && ParseFloat(&pfr, tstr, true))
+	{
+	    double dd = mux_atof(dstr);
+	    double dt = mux_atof(tstr);
+	    if ('<' == ch)
+	    {
+		return (dd < dt);
+	    }
+	    else
+	    {
+		return (dd > dt);
+	    }
+	}
+	else if ('<' == ch)
+	{
+	    return (strcmp((char *)dstr, (char *)tstr) < 0);
+	}
+	else // if ('>' == ch)
+	{
+	    return (strcmp((char *)dstr, (char *)tstr) > 0);
+	}
     }
     mudstate.wild_invk_ctr = 0;
     return quick_wild(tstr, dstr);

@@ -64,7 +64,7 @@ void CLinearTimeDelta::ReturnTimeSpecStruct(struct timespec *ts)
 void CLinearTimeDelta::SetTimeValueStruct(struct timeval *tv)
 {
     m_tDelta = FACTOR_100NS_PER_SECOND * tv->tv_sec
-             + FACTOR_100NS_PER_MICROSECOND * tv->tv_usec;
+	     + FACTOR_100NS_PER_MICROSECOND * tv->tv_usec;
 }
 
 void CLinearTimeDelta::SetMilliseconds(unsigned long arg_dwMilliseconds)

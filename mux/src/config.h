@@ -323,7 +323,7 @@ typedef char  boolexp_type;
 #define PLAYER_NAME_LIMIT   22  /* Max length for player names */
 #define NUM_ENV_VARS        10  /* Number of env vars (%0 et al) */
 #define MAX_ARG             100 /* max # args from command processor */
-                                /* values beyond 1000 will cause %= substitutions to fail */
+				/* values beyond 1000 will cause %= substitutions to fail */
 #define MAX_GLOBAL_REGS     36  /* r() registers */
 
 #define OUTPUT_BLOCK_SIZE   16384
@@ -727,12 +727,12 @@ private:
     void Clear();
     union
     {
-        struct sockaddr      sa;
+	struct sockaddr      sa;
 #if defined(HAVE_SOCKADDR_IN)
-        struct sockaddr_in   sai;
+	struct sockaddr_in   sai;
 #endif
 #if defined(HAVE_SOCKADDR_IN6)
-        struct sockaddr_in6  sai6;
+	struct sockaddr_in6  sai6;
 #endif
     } u;
 };
@@ -759,11 +759,11 @@ class mux_subnet
 public:
     enum Comparison
     {
-        kLessThan,
-        kEqual,
-        kContains,
-        kContainedBy,
-        kGreaterThan
+	kLessThan,
+	kEqual,
+	kContains,
+	kContainedBy,
+	kGreaterThan
     };
 
     mux_subnet() : m_iaBase(NULL), m_iaMask(NULL), m_iaEnd(NULL) { }

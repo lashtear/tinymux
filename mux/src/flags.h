@@ -100,7 +100,7 @@
 #define FAE          0x00000080      // Fae, FAEDESC
 #define CHIMERA      0x00000100      // Fae, FAEDESC
 #define PEERING      0x00000200      // Means the a looker is seeing a
-                                     // different realm than they are in.
+				     // different realm than they are in.
 #endif // WOD_REALMS
 
 #define SITEMON      0x00000400      // Sitemonitor Flag
@@ -128,7 +128,7 @@ typedef struct flag_bit_entry
     int          flagflag;          // Ctrl flags for this flag.
     int           listperm;          // Who sees this flag when set.
     bool (*handler)(dbref target, dbref player, FLAG flag, int fflags,
-        bool reset);         // Handler for setting/clearing this flag.
+	bool reset);         // Handler for setting/clearing this flag.
 } FLAGBITENT;
 
 typedef struct flag_name_entry
@@ -255,10 +255,10 @@ UTF8 *MakeCanonicalFlagName
 
 #define Staff(x)            (Wizard(x) || Royalty(x) || ((Flags2(x) & STAFF) != 0))
 #define Royalty(x)          (  (Flags(x) & ROYALTY) \
-                            || (  (Flags(Owner(x)) & ROYALTY) \
-                               && Inherits(x) \
-                               ) \
-                            )
+			    || (  (Flags(Owner(x)) & ROYALTY) \
+			       && Inherits(x) \
+			       ) \
+			    )
 #define RealRoyalty(x)      (Royalty(x))
 #define WizRoy(x)           (Royalty(x) || Wizard(x))
 #define RealWizRoy(x)       (RealRoyalty(x) || RealWizard(x))
@@ -276,13 +276,13 @@ UTF8 *MakeCanonicalFlagName
 #define Link_ok(x)          (((Flags(x) & LINK_OK) != 0) && Has_contents(x))
 #define Open_ok(x)          (((Flags2(x) & OPEN_OK) != 0) && Has_exits(x))
 #define Wizard(x)           (  (Flags(x) & WIZARD) \
-                            || (  (Flags(Owner(x)) & WIZARD) \
-                               && Inherits(x) \
-                               ) \
-                            )
+			    || (  (Flags(Owner(x)) & WIZARD) \
+			       && Inherits(x) \
+			       ) \
+			    )
 #define RealWizard(x)       (Wizard(x))
 #define Dark(x)             (((Flags(x) & DARK) != 0) && (Wizard(x) || \
-                            !(isPlayer(x) || (Puppet(x) && Has_contents(x)))))
+			    !(isPlayer(x) || (Puppet(x) && Has_contents(x)))))
 #define Jump_ok(x)          (((Flags(x) & JUMP_OK) != 0) && Has_contents(x))
 #define Sticky(x)           ((Flags(x) & STICKY) != 0)
 #define Destroy_ok(x)       ((Flags(x) & DESTROY_OK) != 0)
@@ -297,17 +297,17 @@ UTF8 *MakeCanonicalFlagName
 #define Puppet(x)           ((Flags(x) & PUPPET) != 0)
 #define Chown_ok(x)         ((Flags(x) & CHOWN_OK) != 0)
 #define Enter_ok(x)         (((Flags(x) & ENTER_OK) != 0) && \
-                            Has_location(x) && Has_contents(x))
+			    Has_location(x) && Has_contents(x))
 #define Immortal(x)         ((Flags(x) & IMMORTAL) || \
-                            ((Flags(Owner(x)) & IMMORTAL) && Inherits(x)))
+			    ((Flags(Owner(x)) & IMMORTAL) && Inherits(x)))
 #define Opaque(x)           ((Flags(x) & MUX_OPAQUE) != 0)
 #define Verbose(x)          ((Flags(x) & VERBOSE) != 0)
 #define Inherits(x)         (((Flags(x) & INHERIT) != 0) || \
-                            ((Flags(Owner(x)) & INHERIT) != 0) || \
-                            ((x) == Owner(x)))
+			    ((Flags(Owner(x)) & INHERIT) != 0) || \
+			    ((x) == Owner(x)))
 #define Nospoof(x)          ((Flags(x) & NOSPOOF) != 0)
 #define Safe(x,p)           (OwnsOthers(x) || (Flags(x) & SAFE) || \
-                            (mudconf.safe_unowned && (Owner(x) != Owner(p))))
+			    (mudconf.safe_unowned && (Owner(x) != Owner(p))))
 #define Audible(x)          ((Flags(x) & HEARTHRU) != 0)
 #define Terse(x)            ((Flags(x) & TERSE) != 0)
 
@@ -323,7 +323,7 @@ UTF8 *MakeCanonicalFlagName
 #define Light(x)            ((Flags2(x) & LIGHT) != 0)
 #define Suspect(x)          ((Flags2(Owner(x)) & SUSPECT) != 0)
 #define Connected(x)        (((Flags2(x) & CONNECTED) != 0) && \
-                            (Typeof(x) == TYPE_PLAYER))
+			    (Typeof(x) == TYPE_PLAYER))
 #define Slave(x)            ((Flags2(Owner(x)) & SLAVE) != 0)
 #define Hidden(x)           ((Flags(x) & DARK) != 0)
 #define Blind(x)            ((Flags2(x) & BLIND) != 0)
@@ -354,43 +354,43 @@ UTF8 *MakeCanonicalFlagName
 
 
 #define Parentable(p,x)     (Controls(p,x) || \
-                            (Parent_ok(x) && could_doit(p,x,A_LPARENT)))
+			    (Parent_ok(x) && could_doit(p,x,A_LPARENT)))
 
 #define Examinable(p,x)     (((Flags(x) & VISUAL) != 0) || \
-                            (See_All(p)) || \
-                            (Owner(p) == Owner(x)) || \
-                            (check_zone(p,x)))
+			    (See_All(p)) || \
+			    (Owner(p) == Owner(x)) || \
+			    (check_zone(p,x)))
 
 #define MyopicExam(p,x)     (((Flags(x) & VISUAL) != 0) || \
-                            (!Myopic(p) && (See_All(p) || \
-                            (Owner(p) == Owner(x)) || \
-                            (check_zone(p,x)))))
+			    (!Myopic(p) && (See_All(p) || \
+			    (Owner(p) == Owner(x)) || \
+			    (check_zone(p,x)))))
 
 #define Controls(p,x)       (Good_obj(x) && \
-                            (!(God(x) && !God(p))) && \
-                            (Control_All(p) || \
-                            ((Owner(p) == Owner(x)) && \
-                            (Inherits(p) || !Inherits(x))) || \
-                            (check_zone(p,x))))
+			    (!(God(x) && !God(p))) && \
+			    (Control_All(p) || \
+			    ((Owner(p) == Owner(x)) && \
+			    (Inherits(p) || !Inherits(x))) || \
+			    (check_zone(p,x))))
 
 #define Mark(x)             (mudstate.markbits->chunk[(x)>>3] |= \
-                            mudconf.markdata[(x)&7])
+			    mudconf.markdata[(x)&7])
 #define Unmark(x)           (mudstate.markbits->chunk[(x)>>3] &= \
-                            ~mudconf.markdata[(x)&7])
+			    ~mudconf.markdata[(x)&7])
 #define Marked(x)           ((mudstate.markbits->chunk[(x)>>3] & \
-                            mudconf.markdata[(x)&7]) ? true : false)
+			    mudconf.markdata[(x)&7]) ? true : false)
 #define Mark_all(i)         {for ((i)=0; (i)<((mudstate.db_top+7)>>3); (i)++) \
-                            mudstate.markbits->chunk[i]=0xFFU;}
+			    mudstate.markbits->chunk[i]=0xFFU;}
 #define Unmark_all(i)       {for ((i)=0; (i)<((mudstate.db_top+7)>>3); (i)++) \
-                            mudstate.markbits->chunk[i]=0x0;}
+			    mudstate.markbits->chunk[i]=0x0;}
 #define Link_exit(p,x)      ((Typeof(x) == TYPE_EXIT) && \
-                            ((Location(x) == NOTHING) || Controls(p,x)))
+			    ((Location(x) == NOTHING) || Controls(p,x)))
 #define Linkable(p,x)       (Good_obj(x) && Has_contents(x) && \
-                            (((Flags(x) & LINK_OK) != 0) || Controls(p,x)))
+			    (((Flags(x) & LINK_OK) != 0) || Controls(p,x)))
 #define See_attr(p,x,a)     (!((a)->flags & AF_IS_LOCK) && bCanReadAttr(p,x,a,false))
 #define See_attr_explicit(p,x,a,o,f) (!((a)->flags & (AF_INTERNAL|AF_IS_LOCK)) && \
-                            (((f) & AF_VISUAL) || (Owner(p) == (o)) && \
-                            !((a)->flags & (AF_DARK|AF_MDARK))))
+			    (((f) & AF_VISUAL) || (Owner(p) == (o)) && \
+			    !((a)->flags & (AF_DARK|AF_MDARK))))
 
 #define Has_power(p,x)      (check_access((p),powers_nametab[x].flag))
 #define Html(x)             ((Flags2(x) & HTML) != 0)

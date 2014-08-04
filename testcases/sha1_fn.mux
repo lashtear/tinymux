@@ -19,12 +19,12 @@
 #
 &tr.tc001 test_sha1_fn=
   @if strmatch(
-        setr(0,sha1(
-            sha1(abc)
-            [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq)]
-          )
-        ),
-        9F469F9ACBAAE1FED8A8CA59EDD81646E9164B93
+	setr(0,sha1(
+	    sha1(abc)
+	    [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq)]
+	  )
+	),
+	9F469F9ACBAAE1FED8A8CA59EDD81646E9164B93
       )=
   {
     @log smoke=TC001: Examples. Succeeded.
@@ -38,15 +38,15 @@
 #
 &tr.tc002 test_sha1_fn=
   @if strmatch(
-        setr(0,sha1(
-            sha1(abc)
-            [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnop)]
-            [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnop)]
-            [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq1234567)]
-            [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq12345678)]
-          )
-        ),
-        FBED900C606159E86C5970A5F88915B52716C445
+	setr(0,sha1(
+	    sha1(abc)
+	    [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnop)]
+	    [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnop)]
+	    [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq1234567)]
+	    [sha1(abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq12345678)]
+	  )
+	),
+	FBED900C606159E86C5970A5F88915B52716C445
       )=
   {
     @log smoke=TC002: Standard test vectors. Succeeded.
@@ -60,12 +60,12 @@
 #
 &tr.tc003 test_sha1_fn=
   @if strmatch(
-        setr(0,sha1(
-            sha1()
-            [sha1(abc,def)]
-          )
-        ),
-        4551A9972114A4E299759843141C00FEF391C9B9
+	setr(0,sha1(
+	    sha1()
+	    [sha1(abc,def)]
+	  )
+	),
+	4551A9972114A4E299759843141C00FEF391C9B9
       )=
   {
     @log smoke=TC003: Parser-related tests. Succeeded.;

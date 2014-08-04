@@ -14,7 +14,7 @@ typedef struct tagFun
 {
     const UTF8 *name;     // function name
     void (*fun)(__in struct tagFun *fp, __in UTF8 *buff, __deref_inout UTF8 **bufc, dbref executor, dbref caller, dbref enactor,
-        int eval, __in UTF8 *fargs[], int nfargs, __in const UTF8 *cargs[], int ncargs);  // handler
+	int eval, __in UTF8 *fargs[], int nfargs, __in const UTF8 *cargs[], int ncargs);  // handler
     int maxArgsParsed;// Maximum number of arguments parsed.
     int minArgs;      // Minimum number of args needed or expected
     int maxArgs;      // Maximum number of arguments permitted
@@ -37,9 +37,9 @@ typedef struct ufun {
 #define FN_PRES     8   // Preseve r-regs before user-def functions.
 
 #define FN_LIST     1   // Corresponds to /list switch. -not- used in
-                        // UFUN structure.
+			// UFUN structure.
 #define FN_DELETE   16  // Corresponds to /delete switch. Not used in
-                        // UFUN structure.
+			// UFUN structure.
 
 #define MAX_UFUN_NAME_LEN (SBUF_SIZE-1)
 
@@ -93,13 +93,13 @@ bool check_command(dbref player, const UTF8 *name, UTF8 *buff, UTF8 **bufc);
 //
 #define FUNCTION(x) \
     void x(__in FUN *fp, __in UTF8 *buff, __deref_inout UTF8 **bufc, dbref executor, dbref caller,  dbref enactor, int eval, \
-         __in UTF8 *fargs[], int nfargs,  __in const UTF8 *cargs[], int ncargs)
+	 __in UTF8 *fargs[], int nfargs,  __in const UTF8 *cargs[], int ncargs)
 
 // This is for functions that take an optional delimiter character.
 //
 #define OPTIONAL_DELIM(iSep, Sep, dflags)                        \
     delim_check(buff, bufc, executor, caller, enactor, eval,     \
-        fargs, nfargs, cargs, ncargs, (iSep), &(Sep), (dflags))
+	fargs, nfargs, cargs, ncargs, (iSep), &(Sep), (dflags))
 
 #define XFUNCTION(x) void x(__in FUN *fp, __in UTF8 *buff, __deref_inout UTF8 **bufc, dbref executor, dbref caller, dbref enactor, \
     int eval, __in UTF8 *fargs[], int nfargs, __in const UTF8 *cargs[], int ncargs)

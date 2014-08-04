@@ -102,10 +102,10 @@ bool CLinearTimeAbsolute::SetString(const UTF8 *arg_tBuffer)
     FIELDEDTIME ft;
     if (do_convtime(arg_tBuffer, &ft))
     {
-        if (FieldedTimeToLinearTime(&ft, &m_tAbsolute))
-        {
-            return true;
-        }
+	if (FieldedTimeToLinearTime(&ft, &m_tAbsolute))
+	{
+	    return true;
+	}
     }
     m_tAbsolute = 0;
     return false;
@@ -144,12 +144,12 @@ void CLinearTimeAbsolute::ReturnUniqueString(UTF8 *buffer, size_t nBuffer)
     FIELDEDTIME ft;
     if (LinearTimeToFieldedTime(m_tAbsolute, &ft))
     {
-        mux_sprintf(buffer, nBuffer, T("%04d%02d%02d-%02d%02d%02d"), ft.iYear, ft.iMonth,
-                ft.iDayOfMonth, ft.iHour, ft.iMinute, ft.iSecond);
+	mux_sprintf(buffer, nBuffer, T("%04d%02d%02d-%02d%02d%02d"), ft.iYear, ft.iMonth,
+		ft.iDayOfMonth, ft.iHour, ft.iMinute, ft.iSecond);
     }
     else
     {
-        mux_sprintf(buffer, nBuffer, T("%03d"), m_nCount++);
+	mux_sprintf(buffer, nBuffer, T("%03d"), m_nCount++);
     }
 }
 
@@ -158,48 +158,48 @@ UTF8 *CLinearTimeAbsolute::ReturnDateString(int nFracDigits)
     FIELDEDTIME ft;
     if (LinearTimeToFieldedTime(m_tAbsolute, &ft))
     {
-        // Sanitize Precision Request.
-        //
-        const int maxFracDigits = 7;
-        const int minFracDigits = 0;
-        if (nFracDigits < minFracDigits)
-        {
-            nFracDigits = minFracDigits;
-        }
-        else if (maxFracDigits < nFracDigits)
-        {
-            nFracDigits = maxFracDigits;
-        }
+	// Sanitize Precision Request.
+	//
+	const int maxFracDigits = 7;
+	const int minFracDigits = 0;
+	if (nFracDigits < minFracDigits)
+	{
+	    nFracDigits = minFracDigits;
+	}
+	else if (maxFracDigits < nFracDigits)
+	{
+	    nFracDigits = maxFracDigits;
+	}
 
-        UTF8 buffer[11];
-        buffer[0] = '\0';
-        if (  0 < nFracDigits
-           && (  ft.iMillisecond != 0
-              || ft.iMicrosecond != 0
-              || ft.iNanosecond != 0))
-        {
-            mux_sprintf(buffer, sizeof(buffer), T(".%03d%03d%03d"),
-                ft.iMillisecond, ft.iMicrosecond, ft.iNanosecond);
+	UTF8 buffer[11];
+	buffer[0] = '\0';
+	if (  0 < nFracDigits
+	   && (  ft.iMillisecond != 0
+	      || ft.iMicrosecond != 0
+	      || ft.iNanosecond != 0))
+	{
+	    mux_sprintf(buffer, sizeof(buffer), T(".%03d%03d%03d"),
+		ft.iMillisecond, ft.iMicrosecond, ft.iNanosecond);
 
-            // Remove trailing zeros.
-            //
-            UTF8 *p = (buffer + 1) + (nFracDigits - 1);
-            while (*p == '0')
-            {
-                p--;
-            }
-            p++;
-            *p = '\0';
-        }
-        mux_sprintf(m_Buffer, sizeof(m_Buffer),
-            T("%s %s %02d %02d:%02d:%02d%s %04d"),
-            DayOfWeekString[ft.iDayOfWeek], monthtab[ft.iMonth-1],
-            ft.iDayOfMonth, ft.iHour, ft.iMinute, ft.iSecond, buffer,
-            ft.iYear);
+	    // Remove trailing zeros.
+	    //
+	    UTF8 *p = (buffer + 1) + (nFracDigits - 1);
+	    while (*p == '0')
+	    {
+		p--;
+	    }
+	    p++;
+	    *p = '\0';
+	}
+	mux_sprintf(m_Buffer, sizeof(m_Buffer),
+	    T("%s %s %02d %02d:%02d:%02d%s %04d"),
+	    DayOfWeekString[ft.iDayOfWeek], monthtab[ft.iMonth-1],
+	    ft.iDayOfMonth, ft.iHour, ft.iMinute, ft.iSecond, buffer,
+	    ft.iYear);
     }
     else
     {
-        m_Buffer[0] = '\0';
+	m_Buffer[0] = '\0';
     }
     return m_Buffer;
 }
@@ -225,8 +225,8 @@ bool CLinearTimeAbsolute::SetSecondsString(UTF8 *arg_szSeconds)
     if (  tEarliest <= t
        && t <= tLatest)
     {
-        m_tAbsolute = t;
-        return true;
+	m_tAbsolute = t;
+	return true;
     }
     return false;
 }
@@ -248,14 +248,14 @@ void CLinearTimeAbsolute::Local2UTC(void)
     CLinearTimeAbsolute ltaLocalGuess = ltaUTC2 + ltdOffset2;
     if (ltaLocalGuess == *this)
     {
-        // We found an offset, UTC, local time combination that
-        // works.
-        //
-        m_tAbsolute = ltaUTC2.m_tAbsolute;
+	// We found an offset, UTC, local time combination that
+	// works.
+	//
+	m_tAbsolute = ltaUTC2.m_tAbsolute;
     }
     else
     {
-        CLinearTimeAbsolute ltaUTC1 = *this - ltdOffset2;
-        m_tAbsolute = ltaUTC1.m_tAbsolute;
+	CLinearTimeAbsolute ltaUTC1 = *this - ltdOffset2;
+	m_tAbsolute = ltaUTC1.m_tAbsolute;
     }
 }

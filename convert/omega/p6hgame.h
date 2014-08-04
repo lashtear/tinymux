@@ -23,22 +23,22 @@ class P6H_LOCKEXP
 public:
     typedef enum
     {
-        le_is,
-        le_carry,
-        le_indirect,
-        le_indirect2,
-        le_owner,
-        le_and,
-        le_or,
-        le_not,
-        le_attr,
-        le_eval,
-        le_ref,
-        le_text,
-        le_class,
-        le_true,
-        le_false,
-        le_none,
+	le_is,
+	le_carry,
+	le_indirect,
+	le_indirect2,
+	le_owner,
+	le_and,
+	le_or,
+	le_not,
+	le_attr,
+	le_eval,
+	le_ref,
+	le_text,
+	le_class,
+	le_true,
+	le_false,
+	le_none,
     } P6H_OP;
 
     P6H_OP m_op;
@@ -49,82 +49,82 @@ public:
 
     void SetIs(P6H_LOCKEXP *p)
     {
-        m_op = le_is;
-        m_le[0] = p;
+	m_op = le_is;
+	m_le[0] = p;
     }
     void SetCarry(P6H_LOCKEXP *p)
     {
-        m_op = le_carry;
-        m_le[0] = p;
+	m_op = le_carry;
+	m_le[0] = p;
     }
     void SetIndir(P6H_LOCKEXP *p)
     {
-        m_op = le_indirect;
-        m_le[0] = p;
+	m_op = le_indirect;
+	m_le[0] = p;
     }
     void SetIndir(P6H_LOCKEXP *p, P6H_LOCKEXP *q)
     {
-        m_op = le_indirect2;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_indirect2;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetOwner(P6H_LOCKEXP *p)
     {
-        m_op = le_owner;
-        m_le[0] = p;
+	m_op = le_owner;
+	m_le[0] = p;
     }
     void SetAnd(P6H_LOCKEXP *p, P6H_LOCKEXP *q)
     {
-        m_op = le_and;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_and;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetOr(P6H_LOCKEXP *p, P6H_LOCKEXP *q)
     {
-        m_op = le_or;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_or;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetNot(P6H_LOCKEXP *p)
     {
-        m_op = le_not;
-        m_le[0] = p;
+	m_op = le_not;
+	m_le[0] = p;
     }
     void SetRef(int dbRef)
     {
-        m_op = le_ref;
-        m_dbRef = dbRef;
+	m_op = le_ref;
+	m_dbRef = dbRef;
     }
     void SetTrue()
     {
-        m_op = le_true;
+	m_op = le_true;
     }
     void SetFalse()
     {
-        m_op = le_false;
+	m_op = le_false;
     }
     void SetText(char *p)
     {
-        m_op = le_text;
-        m_p[0] = p;
+	m_op = le_text;
+	m_p[0] = p;
     }
     void SetAttr(P6H_LOCKEXP *p, P6H_LOCKEXP *q)
     {
-        m_op = le_attr;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_attr;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetEval(P6H_LOCKEXP *p, P6H_LOCKEXP *q)
     {
-        m_op = le_eval;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_eval;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetClass(char *p, P6H_LOCKEXP *q)
     {
-        m_op = le_class;
-        m_p[0] = p;
-        m_le[1] = q;
+	m_op = le_class;
+	m_p[0] = p;
+	m_le[1] = q;
     }
 
     char *Write(char *p);
@@ -133,19 +133,19 @@ public:
 
     P6H_LOCKEXP()
     {
-        m_op = le_none;
-        m_le[0] = m_le[1] = NULL;
-        m_p[0] = m_p[1] = NULL;
-        m_dbRef = 0;
+	m_op = le_none;
+	m_le[0] = m_le[1] = NULL;
+	m_p[0] = m_p[1] = NULL;
+	m_dbRef = 0;
     }
     ~P6H_LOCKEXP()
     {
-        delete m_le[0];
-        delete m_le[1];
-        free(m_p[0]);
-        free(m_p[1]);
-        m_le[0] = m_le[1] = NULL;
-        m_p[0] = m_p[1] = NULL;
+	delete m_le[0];
+	delete m_le[1];
+	free(m_p[0]);
+	free(m_p[1]);
+	m_le[0] = m_le[1] = NULL;
+	m_p[0] = m_p[1] = NULL;
     }
 };
 
@@ -175,25 +175,25 @@ public:
 
     P6H_FLAGINFO()
     {
-        m_pName = NULL;
-        m_pLetter = NULL;
-        m_pType = NULL;
-        m_pPerms = NULL;
-        m_pNegatePerms = NULL;
+	m_pName = NULL;
+	m_pLetter = NULL;
+	m_pType = NULL;
+	m_pPerms = NULL;
+	m_pNegatePerms = NULL;
     }
 
     ~P6H_FLAGINFO()
     {
-        free(m_pName);
-        free(m_pLetter);
-        free(m_pType);
-        free(m_pPerms);
-        free(m_pNegatePerms);
-        m_pName = NULL;
-        m_pLetter = NULL;
-        m_pType = NULL;
-        m_pPerms = NULL;
-        m_pNegatePerms = NULL;
+	free(m_pName);
+	free(m_pLetter);
+	free(m_pType);
+	free(m_pPerms);
+	free(m_pNegatePerms);
+	m_pName = NULL;
+	m_pLetter = NULL;
+	m_pType = NULL;
+	m_pPerms = NULL;
+	m_pNegatePerms = NULL;
     }
 };
 
@@ -212,16 +212,16 @@ public:
 
     P6H_FLAGALIASINFO()
     {
-        m_pName = NULL;
-        m_pAlias = NULL;
+	m_pName = NULL;
+	m_pAlias = NULL;
     }
 
     ~P6H_FLAGALIASINFO()
     {
-        free(m_pName);
-        free(m_pAlias);
-        m_pName = NULL;
-        m_pAlias = NULL;
+	free(m_pName);
+	free(m_pAlias);
+	m_pName = NULL;
+	m_pAlias = NULL;
     }
 };
 
@@ -261,24 +261,24 @@ public:
 
     P6H_LOCKINFO()
     {
-        m_pType = NULL;
-        m_fCreator = false;
-        m_pFlags = NULL;
-        m_fDerefs = false;
-        m_pKey = NULL;
-        m_pKeyTree = NULL;
-        m_fFlags = false;
+	m_pType = NULL;
+	m_fCreator = false;
+	m_pFlags = NULL;
+	m_fDerefs = false;
+	m_pKey = NULL;
+	m_pKeyTree = NULL;
+	m_fFlags = false;
     }
     ~P6H_LOCKINFO()
     {
-        free(m_pType);
-        free(m_pFlags);
-        free(m_pKey);
-        delete m_pKeyTree;
-        m_pType = NULL;
-        m_pFlags = NULL;
-        m_pKey = NULL;
-        m_pKeyTree = NULL;
+	free(m_pType);
+	free(m_pFlags);
+	free(m_pKey);
+	delete m_pKeyTree;
+	m_pType = NULL;
+	m_pFlags = NULL;
+	m_pKey = NULL;
+	m_pKeyTree = NULL;
     }
 };
 
@@ -315,21 +315,21 @@ public:
 
     P6H_ATTRINFO()
     {
-        m_pName = NULL;
-        m_fOwner = false;
-        m_pFlags = NULL;
-        m_fDerefs = false;
-        m_pValue = NULL;
-        m_fFlags = false;
+	m_pName = NULL;
+	m_fOwner = false;
+	m_pFlags = NULL;
+	m_fDerefs = false;
+	m_pValue = NULL;
+	m_fFlags = false;
     }
     ~P6H_ATTRINFO()
     {
-        free(m_pName);
-        free(m_pFlags);
-        free(m_pValue);
-        m_pName = NULL;
-        m_pFlags = NULL;
-        m_pValue = NULL;
+	free(m_pName);
+	free(m_pFlags);
+	free(m_pValue);
+	m_pName = NULL;
+	m_pFlags = NULL;
+	m_pValue = NULL;
     }
 };
 
@@ -429,60 +429,60 @@ public:
 
     P6H_OBJECTINFO()
     {
-        m_fRef = false;
-        m_pName = NULL;
-        m_fLocation = false;
-        m_fContents = false;
-        m_fExits = false;
-        m_fNext = false;
-        m_fParent = false;
-        m_fOwner = false;
-        m_fZone = false;
-        m_fPennies = false;
-        m_fType = false;
-        m_fPennies = false;
-        m_fCreated = false;
-        m_fModified = false;
-        m_fType = false;
-        m_pFlags = NULL;
-        m_fFlags = false;
-        m_fToggles = false;
-        m_pPowers = NULL;
-        m_fPowers = false;
-        m_pWarnings = NULL;
-        m_fLockCount = false;
-        m_pvli = NULL;
-        m_fAttrCount = false;
-        m_pvai = NULL;
+	m_fRef = false;
+	m_pName = NULL;
+	m_fLocation = false;
+	m_fContents = false;
+	m_fExits = false;
+	m_fNext = false;
+	m_fParent = false;
+	m_fOwner = false;
+	m_fZone = false;
+	m_fPennies = false;
+	m_fType = false;
+	m_fPennies = false;
+	m_fCreated = false;
+	m_fModified = false;
+	m_fType = false;
+	m_pFlags = NULL;
+	m_fFlags = false;
+	m_fToggles = false;
+	m_pPowers = NULL;
+	m_fPowers = false;
+	m_pWarnings = NULL;
+	m_fLockCount = false;
+	m_pvli = NULL;
+	m_fAttrCount = false;
+	m_pvai = NULL;
     }
     ~P6H_OBJECTINFO()
     {
-        free(m_pName);
-        free(m_pFlags);
-        free(m_pPowers);
-        free(m_pWarnings);
-        m_pName = NULL;
-        m_pFlags = NULL;
-        m_pPowers = NULL;
-        m_pWarnings = NULL;
-        if (NULL != m_pvli)
-        {
-            for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
-            {
-                delete *it;
-            }
-            delete m_pvli;
-            m_pvli = NULL;
-        }
-        if (NULL != m_pvai)
-        {
-            for (vector<P6H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
-            {
-                delete *it;
-            }
-            delete m_pvai;
-            m_pvai = NULL;
-        }
+	free(m_pName);
+	free(m_pFlags);
+	free(m_pPowers);
+	free(m_pWarnings);
+	m_pName = NULL;
+	m_pFlags = NULL;
+	m_pPowers = NULL;
+	m_pWarnings = NULL;
+	if (NULL != m_pvli)
+	{
+	    for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
+	    {
+		delete *it;
+	    }
+	    delete m_pvli;
+	    m_pvli = NULL;
+	}
+	if (NULL != m_pvai)
+	{
+	    for (vector<P6H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
+	    {
+		delete *it;
+	    }
+	    delete m_pvai;
+	    m_pvai = NULL;
+	}
     }
 };
 
@@ -548,68 +548,68 @@ public:
 
     P6H_GAME()
     {
-        m_flags = 0;
-        m_pSavedTime = NULL;
-        m_fSizeHint = false;
-        m_nSizeHint = 0;
-        m_fFlags = false;
-        m_nFlags = 0;
-        m_pvFlags = NULL;
-        m_fFlagAliases = false;
-        m_nFlagAliases = 0;
-        m_pvFlagAliases = NULL;
-        m_fPowers = false;
-        m_nPowers = 0;
-        m_pvPowers = NULL;
-        m_fPowerAliases = false;
-        m_nPowerAliases = 0;
-        m_pvPowerAliases = NULL;
+	m_flags = 0;
+	m_pSavedTime = NULL;
+	m_fSizeHint = false;
+	m_nSizeHint = 0;
+	m_fFlags = false;
+	m_nFlags = 0;
+	m_pvFlags = NULL;
+	m_fFlagAliases = false;
+	m_nFlagAliases = 0;
+	m_pvFlagAliases = NULL;
+	m_fPowers = false;
+	m_nPowers = 0;
+	m_pvPowers = NULL;
+	m_fPowerAliases = false;
+	m_nPowerAliases = 0;
+	m_pvPowerAliases = NULL;
     }
     ~P6H_GAME()
     {
-        free(m_pSavedTime);
-        m_pSavedTime = NULL;
-        if (NULL != m_pvFlags)
-        {
-            for (vector<P6H_FLAGINFO *>::iterator it = m_pvFlags->begin(); it != m_pvFlags->end(); ++it)
-            {
-                delete *it;
-            }
-            delete m_pvFlags;
-            m_pvFlags = NULL;
-        }
-        if (NULL != m_pvFlagAliases)
-        {
-            for (vector<P6H_FLAGALIASINFO *>::iterator it = m_pvFlagAliases->begin(); it != m_pvFlagAliases->end(); ++it)
-            {
-                delete *it;
-            }
-            delete m_pvFlagAliases;
-            m_pvFlagAliases = NULL;
-        }
-        if (NULL != m_pvPowers)
-        {
-            for (vector<P6H_FLAGINFO *>::iterator it = m_pvPowers->begin(); it != m_pvPowers->end(); ++it)
-            {
-                delete *it;
-            }
-            delete m_pvPowers;
-            m_pvPowers = NULL;
-        }
-        if (NULL != m_pvPowerAliases)
-        {
-            for (vector<P6H_FLAGALIASINFO *>::iterator it = m_pvPowerAliases->begin(); it != m_pvPowerAliases->end(); ++it)
-            {
-                delete *it;
-            }
-            delete m_pvPowerAliases;
-            m_pvPowerAliases = NULL;
-        }
-        for (map<int, P6H_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
-        {
-            delete it->second;
-        }
-        m_mObjects.clear();
+	free(m_pSavedTime);
+	m_pSavedTime = NULL;
+	if (NULL != m_pvFlags)
+	{
+	    for (vector<P6H_FLAGINFO *>::iterator it = m_pvFlags->begin(); it != m_pvFlags->end(); ++it)
+	    {
+		delete *it;
+	    }
+	    delete m_pvFlags;
+	    m_pvFlags = NULL;
+	}
+	if (NULL != m_pvFlagAliases)
+	{
+	    for (vector<P6H_FLAGALIASINFO *>::iterator it = m_pvFlagAliases->begin(); it != m_pvFlagAliases->end(); ++it)
+	    {
+		delete *it;
+	    }
+	    delete m_pvFlagAliases;
+	    m_pvFlagAliases = NULL;
+	}
+	if (NULL != m_pvPowers)
+	{
+	    for (vector<P6H_FLAGINFO *>::iterator it = m_pvPowers->begin(); it != m_pvPowers->end(); ++it)
+	    {
+		delete *it;
+	    }
+	    delete m_pvPowers;
+	    m_pvPowers = NULL;
+	}
+	if (NULL != m_pvPowerAliases)
+	{
+	    for (vector<P6H_FLAGALIASINFO *>::iterator it = m_pvPowerAliases->begin(); it != m_pvPowerAliases->end(); ++it)
+	    {
+		delete *it;
+	    }
+	    delete m_pvPowerAliases;
+	    m_pvPowerAliases = NULL;
+	}
+	for (map<int, P6H_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
+	{
+	    delete it->second;
+	}
+	m_mObjects.clear();
     }
 };
 

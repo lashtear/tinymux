@@ -68,59 +68,59 @@ object
     INTEGER INTEGER INTEGER INTEGER
     INTEGER INTEGER INTEGER INTEGER
     attrlist '<' {
-                     T5X_OBJECTINFO *oi = new T5X_OBJECTINFO;
-                     oi->SetRef($1);
-                     oi->SetName($2);
-                     oi->SetLocation($3);
-                     oi->SetZone($4);
-                     oi->SetContents($5);
-                     oi->SetExits($6);
-                     oi->SetLink($7);
-                     oi->SetNext($8);
-                     oi->SetDefaultLock($9);
-                     oi->SetOwner($10);
-                     oi->SetParent($11);
-                     oi->SetPennies($12);
-                     oi->SetFlags1($13);
-                     oi->SetFlags2($14);
-                     oi->SetFlags3($15);
-                     oi->SetPowers1($16);
-                     oi->SetPowers2($17);
-                     if (NULL != $18)
-                     {
-                         oi->SetAttrs($18->size(), $18);
-                     }
-                     g_t5xgame.AddObject(oi);
-                 }
+		     T5X_OBJECTINFO *oi = new T5X_OBJECTINFO;
+		     oi->SetRef($1);
+		     oi->SetName($2);
+		     oi->SetLocation($3);
+		     oi->SetZone($4);
+		     oi->SetContents($5);
+		     oi->SetExits($6);
+		     oi->SetLink($7);
+		     oi->SetNext($8);
+		     oi->SetDefaultLock($9);
+		     oi->SetOwner($10);
+		     oi->SetParent($11);
+		     oi->SetPennies($12);
+		     oi->SetFlags1($13);
+		     oi->SetFlags2($14);
+		     oi->SetFlags3($15);
+		     oi->SetPowers1($16);
+		     oi->SetPowers2($17);
+		     if (NULL != $18)
+		     {
+			 oi->SetAttrs($18->size(), $18);
+		     }
+		     g_t5xgame.AddObject(oi);
+		 }
 |
     OBJECT_V34 STRING INTEGER INTEGER
     INTEGER INTEGER INTEGER INTEGER
     INTEGER INTEGER INTEGER INTEGER
     INTEGER INTEGER INTEGER INTEGER
     attrlist '<' {
-                     T5X_OBJECTINFO *oi = new T5X_OBJECTINFO;
-                     oi->SetRef($1);
-                     oi->SetName($2);
-                     oi->SetLocation($3);
-                     oi->SetZone($4);
-                     oi->SetContents($5);
-                     oi->SetExits($6);
-                     oi->SetLink($7);
-                     oi->SetNext($8);
-                     oi->SetOwner($9);
-                     oi->SetParent($10);
-                     oi->SetPennies($11);
-                     oi->SetFlags1($12);
-                     oi->SetFlags2($13);
-                     oi->SetFlags3($14);
-                     oi->SetPowers1($15);
-                     oi->SetPowers2($16);
-                     if (NULL != $17)
-                     {
-                         oi->SetAttrs($17->size(), $17);
-                     }
-                     g_t5xgame.AddObject(oi);
-                 }
+		     T5X_OBJECTINFO *oi = new T5X_OBJECTINFO;
+		     oi->SetRef($1);
+		     oi->SetName($2);
+		     oi->SetLocation($3);
+		     oi->SetZone($4);
+		     oi->SetContents($5);
+		     oi->SetExits($6);
+		     oi->SetLink($7);
+		     oi->SetNext($8);
+		     oi->SetOwner($9);
+		     oi->SetParent($10);
+		     oi->SetPennies($11);
+		     oi->SetFlags1($12);
+		     oi->SetFlags2($13);
+		     oi->SetFlags3($14);
+		     oi->SetPowers1($15);
+		     oi->SetPowers2($16);
+		     if (NULL != $17)
+		     {
+			 oi->SetAttrs($17->size(), $17);
+		     }
+		     g_t5xgame.AddObject(oi);
+		 }
 ;
 
 lockexpr:
@@ -128,7 +128,7 @@ lockexpr:
 |
     lockterm                         { $$ = $1; }
 |
-                                     { $$ = NULL; }
+				     { $$ = NULL; }
 ;
 
 lockterm:
@@ -175,7 +175,7 @@ attrlist
 :
     attrlist attr       { $$ = $1; if (NULL == $$) { $$ = new vector<T5X_ATTRINFO *>; } $$->push_back($2); }
 |
-                        { $$ = NULL; }
+			{ $$ = NULL; }
 ;
 
 

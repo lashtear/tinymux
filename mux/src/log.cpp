@@ -56,45 +56,45 @@ bool start_log(const UTF8 * primary, const UTF8 * secondary)
     if (  1 <= mudstate.logging
        && mudstate.logging <= 2)
     {
-        if (!mudstate.bStandAlone)
-        {
-            // Format the timestamp.
-            //
-            UTF8 buffer[256];
-            buffer[0] = '\0';
-            if (mudconf.log_info & LOGOPT_TIMESTAMP)
-            {
-                CLinearTimeAbsolute ltaNow;
-                ltaNow.GetLocal();
-                FIELDEDTIME ft;
-                ltaNow.ReturnFields(&ft);
-                mux_sprintf(buffer, sizeof(buffer),
-                    T("%d.%02d%02d:%02d%02d%02d "), ft.iYear, ft.iMonth,
-                    ft.iDayOfMonth, ft.iHour, ft.iMinute, ft.iSecond);
-            }
+	if (!mudstate.bStandAlone)
+	{
+	    // Format the timestamp.
+	    //
+	    UTF8 buffer[256];
+	    buffer[0] = '\0';
+	    if (mudconf.log_info & LOGOPT_TIMESTAMP)
+	    {
+		CLinearTimeAbsolute ltaNow;
+		ltaNow.GetLocal();
+		FIELDEDTIME ft;
+		ltaNow.ReturnFields(&ft);
+		mux_sprintf(buffer, sizeof(buffer),
+		    T("%d.%02d%02d:%02d%02d%02d "), ft.iYear, ft.iMonth,
+		    ft.iDayOfMonth, ft.iHour, ft.iMinute, ft.iSecond);
+	    }
 
-            // Write the header to the log.
-            //
-            if (  secondary
-               && *secondary)
-            {
-                Log.tinyprintf(T("%s%s %3s/%-5s: "), buffer, mudconf.mud_name,
-                    primary, secondary);
-            }
-            else
-            {
-                Log.tinyprintf(T("%s%s %-9s: "), buffer, mudconf.mud_name,
-                    primary);
-            }
-        }
+	    // Write the header to the log.
+	    //
+	    if (  secondary
+	       && *secondary)
+	    {
+		Log.tinyprintf(T("%s%s %3s/%-5s: "), buffer, mudconf.mud_name,
+		    primary, secondary);
+	    }
+	    else
+	    {
+		Log.tinyprintf(T("%s%s %-9s: "), buffer, mudconf.mud_name,
+		    primary);
+	    }
+	}
 
-        // If a recursive call, log it and return indicating no log.
-        //
-        if (mudstate.logging == 1)
-        {
-            return true;
-        }
-        Log.WriteString(T("Recursive logging request." ENDLINE));
+	// If a recursive call, log it and return indicating no log.
+	//
+	if (mudstate.logging == 1)
+	{
+	    return true;
+	}
+	Log.WriteString(T("Recursive logging request." ENDLINE));
     }
     mudstate.logging--;
     return false;
@@ -121,9 +121,9 @@ void log_perror(const UTF8 * primary, const UTF8 * secondary,
     start_log(primary, secondary);
     if (extra && *extra)
     {
-        log_text(T("("));
-        log_text(extra);
-        log_text(T(") "));
+	log_text(T("("));
+	log_text(extra);
+	log_text(T(") "));
     }
 
     // <Failing_object text>: <strerror() text>
@@ -172,36 +172,36 @@ void log_name(dbref target)
 {
     if (mudstate.bStandAlone)
     {
-        Log.tinyprintf(T("%s(#%d)"), PureName(target), target);
+	Log.tinyprintf(T("%s(#%d)"), PureName(target), target);
     }
     else
     {
-        UTF8 *tp;
+	UTF8 *tp;
 
-        if (mudconf.log_info & LOGOPT_FLAGS)
-        {
-            tp = unparse_object(GOD, target, false);
-        }
-        else
-        {
-            tp = unparse_object_numonly(target);
-        }
-        Log.WriteString(strip_color(tp));
-        free_lbuf(tp);
-        if (  (mudconf.log_info & LOGOPT_OWNER)
-           && target != Owner(target))
-        {
-            if (mudconf.log_info & LOGOPT_FLAGS)
-            {
-                tp = unparse_object(GOD, Owner(target), false);
-            }
-            else
-            {
-                tp = unparse_object_numonly(Owner(target));
-            }
-            Log.tinyprintf(T("[%s]"), strip_color(tp));
-            free_lbuf(tp);
-        }
+	if (mudconf.log_info & LOGOPT_FLAGS)
+	{
+	    tp = unparse_object(GOD, target, false);
+	}
+	else
+	{
+	    tp = unparse_object_numonly(target);
+	}
+	Log.WriteString(strip_color(tp));
+	free_lbuf(tp);
+	if (  (mudconf.log_info & LOGOPT_OWNER)
+	   && target != Owner(target))
+	{
+	    if (mudconf.log_info & LOGOPT_FLAGS)
+	    {
+		tp = unparse_object(GOD, Owner(target), false);
+	    }
+	    else
+	    {
+		tp = unparse_object_numonly(Owner(target));
+	    }
+	    Log.tinyprintf(T("[%s]"), strip_color(tp));
+	    free_lbuf(tp);
+	}
     }
 }
 
@@ -215,8 +215,8 @@ void log_name_and_loc(dbref player)
     if (  (mudconf.log_info & LOGOPT_LOC)
        && Has_location(player))
     {
-        log_text(T(" in "));
-        log_name(Location(player));
+	log_text(T(" in "));
+	log_name(Location(player));
     }
     return;
 }
@@ -225,29 +225,29 @@ static const UTF8 *OBJTYP(dbref thing)
 {
     if (!Good_dbref(thing))
     {
-        return T("??OUT-OF-RANGE??");
+	return T("??OUT-OF-RANGE??");
     }
     switch (Typeof(thing))
     {
     case TYPE_PLAYER:
-        return T("PLAYER");
+	return T("PLAYER");
     case TYPE_THING:
-        return T("THING");
+	return T("THING");
     case TYPE_ROOM:
-        return T("ROOM");
+	return T("ROOM");
     case TYPE_EXIT:
-        return T("EXIT");
+	return T("EXIT");
     case TYPE_GARBAGE:
-        return T("GARBAGE");
+	return T("GARBAGE");
     default:
-        return T("??ILLEGAL??");
+	return T("??ILLEGAL??");
     }
 }
 
 void log_type_and_name(dbref thing)
 {
     Log.tinyprintf(T("%s #%d(%s)"), OBJTYP(thing), thing,
-        Good_obj(thing) ? PureName(thing) : T(""));
+	Good_obj(thing) ? PureName(thing) : T(""));
     return;
 }
 
@@ -285,12 +285,12 @@ void do_log
     UTF8 *temp_ptr = (UTF8 *) strrchr((char *) pFilename, '/');
     if (temp_ptr)
     {
-        pFilename = ++temp_ptr;
+	pFilename = ++temp_ptr;
     }
     temp_ptr = (UTF8 *) strrchr((char *) pFilename, '\\');
     if (temp_ptr)
     {
-        pFilename = ++temp_ptr;
+	pFilename = ++temp_ptr;
     }
 
     // Check for and disallow leading periods, empty strings
@@ -300,63 +300,63 @@ void do_log
     if (  n == 0
        || 30 < n)
     {
-        bValid = false;
+	bValid = false;
     }
     else
     {
-        unsigned int i;
-        for (i = 0; i < n; i++)
-        {
-            if (!mux_isalnum(pFilename[i]))
-            {
-                bValid = false;
-                break;
-            }
-        }
+	unsigned int i;
+	for (i = 0; i < n; i++)
+	{
+	    if (!mux_isalnum(pFilename[i]))
+	    {
+		bValid = false;
+		break;
+	    }
+	}
     }
 
     UTF8 *pFullName = NULL;
     const UTF8 *pMessage = T("");
     if (bValid)
     {
-        pFullName = alloc_lbuf("do_log_filename");
-        mux_sprintf(pFullName, LBUF_SIZE, T("logs/M-%s.log"), pFilename);
+	pFullName = alloc_lbuf("do_log_filename");
+	mux_sprintf(pFullName, LBUF_SIZE, T("logs/M-%s.log"), pFilename);
 
-        // Strip the message of all ANSI.
-        //
-        pMessage = strip_color(logtext);
+	// Strip the message of all ANSI.
+	//
+	pMessage = strip_color(logtext);
 
-        // Check for and disallow empty messages.
-        //
-        if (pMessage[0] == '\0')
-        {
-            bValid = false;
-        }
+	// Check for and disallow empty messages.
+	//
+	if (pMessage[0] == '\0')
+	{
+	    bValid = false;
+	}
     }
 
     if (!bValid)
     {
-        if (pFullName)
-        {
-            free_lbuf(pFullName);
-        }
-        notify(executor, T("Syntax: @log file=message"));
-        return;
+	if (pFullName)
+	{
+	    free_lbuf(pFullName);
+	}
+	notify(executor, T("Syntax: @log file=message"));
+	return;
     }
 
     FILE *hFile;
     if (mux_fopen(&hFile, pFullName, T("r")))
     {
-        fclose(hFile);
-        if (mux_fopen(&hFile, pFullName, T("a")))
-        {
-            // Okay, at this point, the file exists.
-            //
-            free_lbuf(pFullName);
-            mux_fprintf(hFile, T("%s" ENDLINE), pMessage);
-            fclose(hFile);
-            return;
-        }
+	fclose(hFile);
+	if (mux_fopen(&hFile, pFullName, T("a")))
+	{
+	    // Okay, at this point, the file exists.
+	    //
+	    free_lbuf(pFullName);
+	    mux_fprintf(hFile, T("%s" ENDLINE), pMessage);
+	    fclose(hFile);
+	    return;
+	}
     }
     free_lbuf(pFullName);
 
@@ -376,7 +376,7 @@ void CLogFile::WriteBuffer(size_t nString, const UTF8 * pString)
 {
     if (!bEnabled)
     {
-        return;
+	return;
     }
 
 #if defined(WINDOWS_THREADS)
@@ -385,25 +385,25 @@ void CLogFile::WriteBuffer(size_t nString, const UTF8 * pString)
 
     while (nString > 0)
     {
-        size_t nAvailable = SIZEOF_LOG_BUFFER - m_nBuffer;
-        if (nAvailable == 0)
-        {
-            Flush();
-            continue;
-        }
+	size_t nAvailable = SIZEOF_LOG_BUFFER - m_nBuffer;
+	if (nAvailable == 0)
+	{
+	    Flush();
+	    continue;
+	}
 
-        size_t nToMove = nAvailable;
-        if (nString < nToMove)
-        {
-            nToMove = nString;
-        }
+	size_t nToMove = nAvailable;
+	if (nString < nToMove)
+	{
+	    nToMove = nString;
+	}
 
-        // Move nToMove bytes from pString to aBuffer+nBuffer
-        //
-        memcpy(m_aBuffer + m_nBuffer, pString, nToMove);
-        pString += nToMove;
-        nString -= nToMove;
-        m_nBuffer += nToMove;
+	// Move nToMove bytes from pString to aBuffer+nBuffer
+	//
+	memcpy(m_aBuffer + m_nBuffer, pString, nToMove);
+	pString += nToMove;
+	nString -= nToMove;
+	m_nBuffer += nToMove;
     }
     Flush();
 
@@ -442,12 +442,12 @@ static void MakeLogName
     if (  pBasename
        && pBasename[0] != '\0')
     {
-        mux_sprintf(szLogName, nLogName, T("%s/%s-%s.log"),
-            pBasename, szPrefix, szTimeStamp);
+	mux_sprintf(szLogName, nLogName, T("%s/%s-%s.log"),
+	    pBasename, szPrefix, szTimeStamp);
     }
     else
     {
-        mux_sprintf(szLogName, nLogName, T("%s-%s.log"), szPrefix, szTimeStamp);
+	mux_sprintf(szLogName, nLogName, T("%s-%s.log"), szPrefix, szTimeStamp);
     }
 }
 
@@ -463,16 +463,16 @@ bool CLogFile::CreateLogFile(void)
     UTF16 *pFilename = ConvertFromUTF8ToUTF16(m_szFilename, &nFilename);
     if (NULL == pFilename)
     {
-        return false;
+	return false;
     }
 
     m_hFile = CreateFile(pFilename, GENERIC_READ | GENERIC_WRITE,
-        FILE_SHARE_READ, 0, CREATE_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	FILE_SHARE_READ, 0, CREATE_ALWAYS,
+	FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
     bSuccess = (INVALID_HANDLE_VALUE != m_hFile);
 #elif defined(UNIX_FILES)
     bSuccess = mux_open(&m_fdFile, m_szFilename,
-        O_RDWR | O_BINARY | O_CREAT | O_TRUNC);
+	O_RDWR | O_BINARY | O_CREAT | O_TRUNC);
 #endif // UNIX_FILES
     return bSuccess;
 }
@@ -487,12 +487,12 @@ void CLogFile::AppendLogFile(void)
     UTF16 *pFilename = ConvertFromUTF8ToUTF16(m_szFilename, &nFilename);
     if (NULL == pFilename)
     {
-        return;
+	return;
     }
 
     m_hFile = CreateFile(pFilename, GENERIC_READ | GENERIC_WRITE,
-        FILE_SHARE_READ, 0, OPEN_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	FILE_SHARE_READ, 0, OPEN_ALWAYS,
+	FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
     bSuccess = (INVALID_HANDLE_VALUE != m_hFile);
 #elif defined(UNIX_FILES)
     bSuccess = mux_open(&m_fdFile, m_szFilename, O_RDWR | O_BINARY);
@@ -501,9 +501,9 @@ void CLogFile::AppendLogFile(void)
     if (bSuccess)
     {
 #if defined(WINDOWS_FILES)
-        SetFilePointer(m_hFile, 0, 0, FILE_END);
+	SetFilePointer(m_hFile, 0, 0, FILE_END);
 #elif defined(UNIX_FILES)
-        mux_lseek(m_fdFile, 0, SEEK_END);
+	mux_lseek(m_fdFile, 0, SEEK_END);
 #endif // UNIX_FILES
     }
 }
@@ -513,14 +513,14 @@ void CLogFile::CloseLogFile(void)
 #if defined(WINDOWS_FILES)
     if (INVALID_HANDLE_VALUE != m_hFile)
     {
-        CloseHandle(m_hFile);
-        m_hFile = INVALID_HANDLE_VALUE;
+	CloseHandle(m_hFile);
+	m_hFile = INVALID_HANDLE_VALUE;
     }
 #elif defined(UNIX_FILES)
     if (MUX_OPEN_INVALID_HANDLE_VALUE != m_fdFile)
     {
-        mux_close(m_fdFile);
-        m_fdFile = MUX_OPEN_INVALID_HANDLE_VALUE;
+	mux_close(m_fdFile);
+	m_fdFile = MUX_OPEN_INVALID_HANDLE_VALUE;
     }
 #endif // UNIX_FILES
 }
@@ -532,46 +532,46 @@ void CLogFile::Flush(void)
     if (  m_nBuffer <= 0
        || !bEnabled)
     {
-        return;
+	return;
     }
 
     if (bUseStderr)
     {
-        // There is no recourse if the following fails.
-        //
-        (void) fwrite(m_aBuffer, m_nBuffer, 1, stderr);
+	// There is no recourse if the following fails.
+	//
+	(void) fwrite(m_aBuffer, m_nBuffer, 1, stderr);
     }
     else
     {
-        m_nSize += m_nBuffer;
+	m_nSize += m_nBuffer;
 #if defined(WINDOWS_FILES)
-        unsigned long nWritten;
-        bool fSuccess = true;
-        if (!WriteFile(m_hFile, m_aBuffer, (DWORD) m_nBuffer, &nWritten, NULL))
-        {
-            fSuccess = false;
-        }
+	unsigned long nWritten;
+	bool fSuccess = true;
+	if (!WriteFile(m_hFile, m_aBuffer, (DWORD) m_nBuffer, &nWritten, NULL))
+	{
+	    fSuccess = false;
+	}
 #elif defined(UNIX_FILES)
-        ssize_t written = mux_write(m_fdFile, m_aBuffer, m_nBuffer);
-        bool fSuccess = (0 < written && m_nBuffer == (size_t) written);
+	ssize_t written = mux_write(m_fdFile, m_aBuffer, m_nBuffer);
+	bool fSuccess = (0 < written && m_nBuffer == (size_t) written);
 #endif // UNIX_FILES
 
-        if (!fSuccess)
-        {
-            raw_broadcast(WIZARD,
-                T("GAME: Unable to write to the log.  The disk may be full."));
-        }
+	if (!fSuccess)
+	{
+	    raw_broadcast(WIZARD,
+		T("GAME: Unable to write to the log.  The disk may be full."));
+	}
 
-        if (m_nSize > FILE_SIZE_TRIGGER)
-        {
-            CloseLogFile();
+	if (m_nSize > FILE_SIZE_TRIGGER)
+	{
+	    CloseLogFile();
 
-            m_ltaStarted.GetLocal();
-            MakeLogName(m_pBasename, m_szPrefix, m_ltaStarted, m_szFilename,
-                sizeof(m_szFilename));
+	    m_ltaStarted.GetLocal();
+	    MakeLogName(m_pBasename, m_szPrefix, m_ltaStarted, m_szFilename,
+		sizeof(m_szFilename));
 
-            CreateLogFile();
-        }
+	    CreateLogFile();
+	}
     }
     m_nBuffer = 0;
 }
@@ -581,25 +581,25 @@ void CLogFile::SetPrefix(const UTF8 * szPrefix)
     if (  !bUseStderr
        && strcmp((char *) szPrefix, (char *) m_szPrefix) != 0)
     {
-        if (bEnabled)
-        {
-            CloseLogFile();
-        }
+	if (bEnabled)
+	{
+	    CloseLogFile();
+	}
 
-        UTF8 szNewName[SIZEOF_PATHNAME];
-        MakeLogName(m_pBasename, szPrefix, m_ltaStarted, szNewName,
-            sizeof(szNewName));
-        if (bEnabled)
-        {
-            ReplaceFile(m_szFilename, szNewName);
-        }
-        mux_strncpy(m_szPrefix, szPrefix, sizeof(m_szPrefix)-1);
-        mux_strncpy(m_szFilename, szNewName, sizeof(m_szFilename)-1);
+	UTF8 szNewName[SIZEOF_PATHNAME];
+	MakeLogName(m_pBasename, szPrefix, m_ltaStarted, szNewName,
+	    sizeof(szNewName));
+	if (bEnabled)
+	{
+	    ReplaceFile(m_szFilename, szNewName);
+	}
+	mux_strncpy(m_szPrefix, szPrefix, sizeof(m_szPrefix)-1);
+	mux_strncpy(m_szFilename, szNewName, sizeof(m_szFilename)-1);
 
-        if (bEnabled)
-        {
-            AppendLogFile();
-        }
+	if (bEnabled)
+	{
+	    AppendLogFile();
+	}
     }
 }
 
@@ -607,26 +607,26 @@ void CLogFile::SetBasename(const UTF8 * pBasename)
 {
     if (m_pBasename)
     {
-        MEMFREE(m_pBasename);
-        m_pBasename = NULL;
+	MEMFREE(m_pBasename);
+	m_pBasename = NULL;
     }
 
     if (  pBasename
        && strcmp((char *) pBasename, "-") == 0)
     {
-        bUseStderr = true;
+	bUseStderr = true;
     }
     else
     {
-        bUseStderr = false;
-        if (pBasename)
-        {
-            m_pBasename = StringClone(pBasename);
-        }
-        else
-        {
-            m_pBasename = StringClone(T(""));
-        }
+	bUseStderr = false;
+	if (pBasename)
+	{
+	    m_pBasename = StringClone(pBasename);
+	}
+	else
+	{
+	    m_pBasename = StringClone(T(""));
+	}
     }
 }
 
@@ -655,10 +655,10 @@ void CLogFile::StartLogging()
 {
     if (!bUseStderr)
     {
-        m_ltaStarted.GetLocal();
-        MakeLogName(m_pBasename, m_szPrefix, m_ltaStarted, m_szFilename,
-            sizeof(m_szFilename));
-        CreateLogFile();
+	m_ltaStarted.GetLocal();
+	MakeLogName(m_pBasename, m_szPrefix, m_ltaStarted, m_szFilename,
+	    sizeof(m_szFilename));
+	CreateLogFile();
     }
     bEnabled = true;
 }
@@ -669,10 +669,10 @@ void CLogFile::StopLogging(void)
     bEnabled = false;
     if (!bUseStderr)
     {
-        CloseLogFile();
-        m_szPrefix[0] = '\0';
-        m_szFilename[0] = '\0';
-        SetBasename(NULL);
+	CloseLogFile();
+	m_szPrefix[0] = '\0';
+	m_szFilename[0] = '\0';
+	SetBasename(NULL);
     }
 }
 
@@ -727,16 +727,16 @@ MUX_RESULT CLog::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_ILog *>(this);
+	*ppv = static_cast<mux_ILog *>(this);
     }
     else if (IID_ILog == iid)
     {
-        *ppv = static_cast<mux_ILog *>(this);
+	*ppv = static_cast<mux_ILog *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -753,8 +753,8 @@ UINT32 CLog::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -764,11 +764,11 @@ MUX_RESULT CLog::start_log(bool *fStarted, int key, const UTF8 *primary, const U
     if (  ((key) & mudconf.log_options) != 0
        && ::start_log(primary, secondary))
     {
-        *fStarted = true;
+	*fStarted = true;
     }
     else
     {
-        *fStarted = false;
+	*fStarted = false;
     }
     return MUX_S_OK;
 }
@@ -829,16 +829,16 @@ MUX_RESULT CLogFactory::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else if (mux_IID_IClassFactory == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -855,8 +855,8 @@ UINT32 CLogFactory::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -867,22 +867,22 @@ MUX_RESULT CLogFactory::CreateInstance(mux_IUnknown *pUnknownOuter, MUX_IID iid,
     //
     if (NULL != pUnknownOuter)
     {
-        return MUX_E_NOAGGREGATION;
+	return MUX_E_NOAGGREGATION;
     }
 
     CLog *pLog = NULL;
     try
     {
-        pLog = new CLog;
+	pLog = new CLog;
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL == pLog)
     {
-        return MUX_E_OUTOFMEMORY;
+	return MUX_E_OUTOFMEMORY;
     }
 
     MUX_RESULT mr = pLog->QueryInterface(iid, ppv);

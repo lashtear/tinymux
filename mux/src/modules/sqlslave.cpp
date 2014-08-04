@@ -73,11 +73,11 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_CanUnloadNow(void)
     if (  0 == g_cComponents
        && 0 == g_cServerLocks)
     {
-        return MUX_S_OK;
+	return MUX_S_OK;
     }
     else
     {
-        return MUX_S_FALSE;
+	return MUX_S_FALSE;
     }
 }
 
@@ -87,43 +87,43 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_GetClassObject(MUX_CID cid, MUX_IID
 
     if (CID_QueryServer == cid)
     {
-        CQueryServerFactory *pQueryServerFactory = NULL;
-        try
-        {
-            pQueryServerFactory = new CQueryServerFactory;
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	CQueryServerFactory *pQueryServerFactory = NULL;
+	try
+	{
+	    pQueryServerFactory = new CQueryServerFactory;
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pQueryServerFactory)
-        {
-            return MUX_E_OUTOFMEMORY;
-        }
+	if (NULL == pQueryServerFactory)
+	{
+	    return MUX_E_OUTOFMEMORY;
+	}
 
-        mr = pQueryServerFactory->QueryInterface(iid, ppv);
-        pQueryServerFactory->Release();
+	mr = pQueryServerFactory->QueryInterface(iid, ppv);
+	pQueryServerFactory->Release();
     }
     else if (CID_QuerySinkProxy == cid)
     {
-        CQuerySinkProxyFactory *pQuerySinkProxyFactory = NULL;
-        try
-        {
-            pQuerySinkProxyFactory = new CQuerySinkProxyFactory;
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	CQuerySinkProxyFactory *pQuerySinkProxyFactory = NULL;
+	try
+	{
+	    pQuerySinkProxyFactory = new CQuerySinkProxyFactory;
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pQuerySinkProxyFactory)
-        {
-            return MUX_E_OUTOFMEMORY;
-        }
+	if (NULL == pQuerySinkProxyFactory)
+	{
+	    return MUX_E_OUTOFMEMORY;
+	}
 
-        mr = pQuerySinkProxyFactory->QueryInterface(iid, ppv);
-        pQuerySinkProxyFactory->Release();
+	mr = pQuerySinkProxyFactory->QueryInterface(iid, ppv);
+	pQuerySinkProxyFactory->Release();
     }
     return mr;
 }
@@ -136,10 +136,10 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_Register(void)
 #if defined(HAVE_MYSQL_H)
     if (MUX_SUCCEEDED(mr))
     {
-        if (mysql_library_init(0, NULL, NULL))
-        {
-            mr = MUX_E_FAIL;
-        }
+	if (mysql_library_init(0, NULL, NULL))
+	{
+	    mr = MUX_E_FAIL;
+	}
     }
 #endif // HAVE_MYSQL_H
     return mr;
@@ -178,15 +178,15 @@ CQueryServer::~CQueryServer()
 {
     if (NULL != m_pIQuerySink)
     {
-        m_pIQuerySink->Release();
-        m_pIQuerySink = NULL;
+	m_pIQuerySink->Release();
+	m_pIQuerySink = NULL;
     }
 
 #if defined(HAVE_MYSQL_H)
     if (NULL != m_database)
     {
-        mysql_close(m_database);
-        m_database = NULL;
+	mysql_close(m_database);
+	m_database = NULL;
     }
     delete [] m_pServer;
     m_pServer = NULL;
@@ -205,20 +205,20 @@ MUX_RESULT CQueryServer::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IQueryControl *>(this);
+	*ppv = static_cast<mux_IQueryControl *>(this);
     }
     else if (IID_IQueryControl == iid)
     {
-        *ppv = static_cast<mux_IQueryControl *>(this);
+	*ppv = static_cast<mux_IQueryControl *>(this);
     }
     else if (mux_IID_IMarshal == iid)
     {
-        *ppv = static_cast<mux_IMarshal *>(this);
+	*ppv = static_cast<mux_IMarshal *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -235,8 +235,8 @@ UINT32 CQueryServer::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -247,15 +247,15 @@ MUX_RESULT CQueryServer::GetUnmarshalClass(MUX_IID riid, marshal_context ctx, MU
 
     if (NULL == pcid)
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
     else if (  IID_IQueryControl == riid
-            && CrossProcess == ctx)
+	    && CrossProcess == ctx)
     {
-        // We only support cross-process at the moment.
-        //
-        *pcid = CID_QueryControlProxy;
-        return MUX_S_OK;
+	// We only support cross-process at the moment.
+	//
+	*pcid = CID_QueryControlProxy;
+	return MUX_S_OK;
     }
     return MUX_E_NOTIMPLEMENTED;
 }
@@ -276,12 +276,12 @@ MUX_RESULT CQueryControl_Disconnect(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
 
     if (NULL != pIUnknown)
     {
-        pIUnknown->Release();
-        return MUX_S_OK;
+	pIUnknown->Release();
+	return MUX_S_OK;
     }
     else
     {
-        return MUX_E_NOINTERFACE;
+	return MUX_E_NOINTERFACE;
     }
 }
 
@@ -290,7 +290,7 @@ MUX_RESULT CQueryControl_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     mux_IQueryControl *pIQueryControl = static_cast<mux_IQueryControl *>(pci->pInterface);
     if (NULL == pIQueryControl)
     {
-        return MUX_E_NOINTERFACE;
+	return MUX_E_NOINTERFACE;
     }
 
     UINT32 iMethod;
@@ -298,7 +298,7 @@ MUX_RESULT CQueryControl_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     if (  !Pipe_GetBytes(pqi, &nWanted, &iMethod)
        || nWanted != sizeof(iMethod))
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     // The IUnknown methods (0, 1, and 2) do not make it across, so we don't
@@ -309,200 +309,200 @@ MUX_RESULT CQueryControl_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     switch (iMethod)
     {
     case 3:  // MUX_RESULT Connect(UTF8 *pServer, UTF8 *pDatabase, UTF8 *pUser, UTF8 *pPassword);
-        {
-            struct FRAME
-            {
-                size_t nServer;
-                size_t nDatabase;
-                size_t nUser;
-                size_t nPassword;
-            } CallFrame;
+	{
+	    struct FRAME
+	    {
+		size_t nServer;
+		size_t nDatabase;
+		size_t nUser;
+		size_t nPassword;
+	    } CallFrame;
 
-            struct RETURN
-            {
-                MUX_RESULT mr;
-            } ReturnFrame = { MUX_S_OK };
+	    struct RETURN
+	    {
+		MUX_RESULT mr;
+	    } ReturnFrame = { MUX_S_OK };
 
-            nWanted = sizeof(CallFrame);
-            if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
-               || nWanted != sizeof(CallFrame))
-            {
-                ReturnFrame.mr = MUX_E_INVALIDARG;
-            }
+	    nWanted = sizeof(CallFrame);
+	    if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
+	       || nWanted != sizeof(CallFrame))
+	    {
+		ReturnFrame.mr = MUX_E_INVALIDARG;
+	    }
 
-            if (MUX_SUCCEEDED(ReturnFrame.mr))
-            {
-                UTF8 *pServer = NULL;
-                UTF8 *pDatabase = NULL;
-                UTF8 *pUser = NULL;
-                UTF8 *pPassword = NULL;
-                try
-                {
-                    pServer   = new UTF8[CallFrame.nServer];
-                    pDatabase = new UTF8[CallFrame.nDatabase];
-                    pUser     = new UTF8[CallFrame.nUser];
-                    pPassword = new UTF8[CallFrame.nPassword];
-                }
-                catch (...)
-                {
-                    ; // Nothing.
-                }
+	    if (MUX_SUCCEEDED(ReturnFrame.mr))
+	    {
+		UTF8 *pServer = NULL;
+		UTF8 *pDatabase = NULL;
+		UTF8 *pUser = NULL;
+		UTF8 *pPassword = NULL;
+		try
+		{
+		    pServer   = new UTF8[CallFrame.nServer];
+		    pDatabase = new UTF8[CallFrame.nDatabase];
+		    pUser     = new UTF8[CallFrame.nUser];
+		    pPassword = new UTF8[CallFrame.nPassword];
+		}
+		catch (...)
+		{
+		    ; // Nothing.
+		}
 
-                if (  NULL != pServer
-                   && NULL != pDatabase
-                   && NULL != pUser
-                   && NULL != pPassword)
-                {
-                    nWanted = CallFrame.nServer;
-                    if (  Pipe_GetBytes(pqi, &nWanted, pServer)
-                       && nWanted == CallFrame.nServer)
-                    {
-                        nWanted = CallFrame.nDatabase;
-                        if (  Pipe_GetBytes(pqi, &nWanted, pDatabase)
-                           && nWanted == CallFrame.nDatabase)
-                        {
-                            nWanted = CallFrame.nUser;
-                            if (  Pipe_GetBytes(pqi, &nWanted, pUser)
-                               && nWanted == CallFrame.nUser)
-                            {
-                                nWanted = CallFrame.nPassword;
-                                if (  Pipe_GetBytes(pqi, &nWanted, pPassword)
-                                   && nWanted == CallFrame.nPassword)
-                                {
-                                    ReturnFrame.mr = pIQueryControl->Connect(pServer, pDatabase, pUser, pPassword);
-                                }
-                                else
-                                {
-                                    ReturnFrame.mr = MUX_E_INVALIDARG;
-                                }
-                            }
-                            else
-                            {
-                                ReturnFrame.mr = MUX_E_INVALIDARG;
-                            }
-                        }
-                        else
-                        {
-                            ReturnFrame.mr = MUX_E_INVALIDARG;
-                        }
-                    }
-                    else
-                    {
-                        ReturnFrame.mr = MUX_E_INVALIDARG;
-                    }
-                }
-                else
-                {
-                    ReturnFrame.mr = MUX_E_OUTOFMEMORY;
-                }
-            }
-            Pipe_EmptyQueue(pqi);
-            Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
-            return MUX_S_OK;
-        }
-        break;
+		if (  NULL != pServer
+		   && NULL != pDatabase
+		   && NULL != pUser
+		   && NULL != pPassword)
+		{
+		    nWanted = CallFrame.nServer;
+		    if (  Pipe_GetBytes(pqi, &nWanted, pServer)
+		       && nWanted == CallFrame.nServer)
+		    {
+			nWanted = CallFrame.nDatabase;
+			if (  Pipe_GetBytes(pqi, &nWanted, pDatabase)
+			   && nWanted == CallFrame.nDatabase)
+			{
+			    nWanted = CallFrame.nUser;
+			    if (  Pipe_GetBytes(pqi, &nWanted, pUser)
+			       && nWanted == CallFrame.nUser)
+			    {
+				nWanted = CallFrame.nPassword;
+				if (  Pipe_GetBytes(pqi, &nWanted, pPassword)
+				   && nWanted == CallFrame.nPassword)
+				{
+				    ReturnFrame.mr = pIQueryControl->Connect(pServer, pDatabase, pUser, pPassword);
+				}
+				else
+				{
+				    ReturnFrame.mr = MUX_E_INVALIDARG;
+				}
+			    }
+			    else
+			    {
+				ReturnFrame.mr = MUX_E_INVALIDARG;
+			    }
+			}
+			else
+			{
+			    ReturnFrame.mr = MUX_E_INVALIDARG;
+			}
+		    }
+		    else
+		    {
+			ReturnFrame.mr = MUX_E_INVALIDARG;
+		    }
+		}
+		else
+		{
+		    ReturnFrame.mr = MUX_E_OUTOFMEMORY;
+		}
+	    }
+	    Pipe_EmptyQueue(pqi);
+	    Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
+	    return MUX_S_OK;
+	}
+	break;
 
     case 4:  // MUX_RESULT Advise(mux_IQuerySink *pIQuerySink);
-        {
-            struct RETURN
-            {
-                MUX_RESULT mr;
-            } ReturnFrame = { MUX_S_OK };
+	{
+	    struct RETURN
+	    {
+		MUX_RESULT mr;
+	    } ReturnFrame = { MUX_S_OK };
 
-            mux_IQuerySink *pIQuerySink = NULL;
-            ReturnFrame.mr = mux_UnmarshalInterface(pqi, IID_IQuerySink, (void **)&pIQuerySink);
+	    mux_IQuerySink *pIQuerySink = NULL;
+	    ReturnFrame.mr = mux_UnmarshalInterface(pqi, IID_IQuerySink, (void **)&pIQuerySink);
 
-            if (MUX_SUCCEEDED(ReturnFrame.mr))
-            {
-                ReturnFrame.mr = pIQueryControl->Advise(pIQuerySink);
-            }
+	    if (MUX_SUCCEEDED(ReturnFrame.mr))
+	    {
+		ReturnFrame.mr = pIQueryControl->Advise(pIQuerySink);
+	    }
 
-            Pipe_EmptyQueue(pqi);
-            Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
-            return MUX_S_OK;
-        }
-        break;
+	    Pipe_EmptyQueue(pqi);
+	    Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
+	    return MUX_S_OK;
+	}
+	break;
 
     case 5:  // MUX_RESULT Query(UINT32 iQueryHandle, UTF8 *pDatabaseName, UTF8 *pQuery);
-        {
-            struct FRAME
-            {
-                UINT32 iQueryHandle;
-                size_t nDatabaseName;
-                size_t nQuery;
-            } CallFrame;
+	{
+	    struct FRAME
+	    {
+		UINT32 iQueryHandle;
+		size_t nDatabaseName;
+		size_t nQuery;
+	    } CallFrame;
 
-            struct RETURN
-            {
-                MUX_RESULT mr;
-            } ReturnFrame = { MUX_S_OK };
+	    struct RETURN
+	    {
+		MUX_RESULT mr;
+	    } ReturnFrame = { MUX_S_OK };
 
-            nWanted = sizeof(CallFrame);
-            if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
-               || nWanted != sizeof(CallFrame))
-            {
-                ReturnFrame.mr = MUX_E_INVALIDARG;
-            }
+	    nWanted = sizeof(CallFrame);
+	    if (  !Pipe_GetBytes(pqi, &nWanted, &CallFrame)
+	       || nWanted != sizeof(CallFrame))
+	    {
+		ReturnFrame.mr = MUX_E_INVALIDARG;
+	    }
 
-            if (MUX_SUCCEEDED(ReturnFrame.mr))
-            {
-                UTF8 *pDatabaseName = NULL;
-                UTF8 *pQuery = NULL;
-                try
-                {
-                    pDatabaseName = new UTF8[CallFrame.nDatabaseName];
-                    pQuery        = new UTF8[CallFrame.nQuery];
-                }
-                catch (...)
-                {
-                    ; // Nothing.
-                }
+	    if (MUX_SUCCEEDED(ReturnFrame.mr))
+	    {
+		UTF8 *pDatabaseName = NULL;
+		UTF8 *pQuery = NULL;
+		try
+		{
+		    pDatabaseName = new UTF8[CallFrame.nDatabaseName];
+		    pQuery        = new UTF8[CallFrame.nQuery];
+		}
+		catch (...)
+		{
+		    ; // Nothing.
+		}
 
-                if (  NULL != pDatabaseName
-                   && NULL != pQuery)
-                {
-                    nWanted = CallFrame.nDatabaseName;
-                    if (  Pipe_GetBytes(pqi, &nWanted, pDatabaseName)
-                       && nWanted == CallFrame.nDatabaseName)
-                    {
-                        nWanted = CallFrame.nQuery;
-                        if (  Pipe_GetBytes(pqi, &nWanted, pQuery)
-                           && nWanted == CallFrame.nQuery)
-                        {
-                            ReturnFrame.mr = pIQueryControl->Query(CallFrame.iQueryHandle, pDatabaseName, pQuery);
-                        }
-                        else
-                        {
-                            ReturnFrame.mr = MUX_E_INVALIDARG;
-                        }
-                    }
-                    else
-                    {
-                        ReturnFrame.mr = MUX_E_INVALIDARG;
-                    }
-                }
-                else
-                {
-                    ReturnFrame.mr = MUX_E_OUTOFMEMORY;
-                }
+		if (  NULL != pDatabaseName
+		   && NULL != pQuery)
+		{
+		    nWanted = CallFrame.nDatabaseName;
+		    if (  Pipe_GetBytes(pqi, &nWanted, pDatabaseName)
+		       && nWanted == CallFrame.nDatabaseName)
+		    {
+			nWanted = CallFrame.nQuery;
+			if (  Pipe_GetBytes(pqi, &nWanted, pQuery)
+			   && nWanted == CallFrame.nQuery)
+			{
+			    ReturnFrame.mr = pIQueryControl->Query(CallFrame.iQueryHandle, pDatabaseName, pQuery);
+			}
+			else
+			{
+			    ReturnFrame.mr = MUX_E_INVALIDARG;
+			}
+		    }
+		    else
+		    {
+			ReturnFrame.mr = MUX_E_INVALIDARG;
+		    }
+		}
+		else
+		{
+		    ReturnFrame.mr = MUX_E_OUTOFMEMORY;
+		}
 
-                if (NULL != pDatabaseName)
-                {
-                    delete [] pDatabaseName;
-                    pDatabaseName = NULL;
-                }
+		if (NULL != pDatabaseName)
+		{
+		    delete [] pDatabaseName;
+		    pDatabaseName = NULL;
+		}
 
-                if (NULL != pQuery)
-                {
-                    delete [] pQuery;
-                    pQuery = NULL;
-                }
-            }
-            Pipe_EmptyQueue(pqi);
-            Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
-            return MUX_S_OK;
-        }
-        break;
+		if (NULL != pQuery)
+		{
+		    delete [] pQuery;
+		    pQuery = NULL;
+		}
+	    }
+	    Pipe_EmptyQueue(pqi);
+	    Pipe_AppendBytes(pqi, sizeof(ReturnFrame), &ReturnFrame);
+	    return MUX_S_OK;
+	}
+	break;
     }
     return MUX_E_NOTIMPLEMENTED;
 }
@@ -522,46 +522,46 @@ MUX_RESULT CQueryServer::MarshalInterface(QUEUE_INFO *pqi, MUX_IID riid, void *p
     MUX_RESULT mr = MUX_S_OK;
     if (NULL == pqi)
     {
-        mr = MUX_E_INVALIDARG;
+	mr = MUX_E_INVALIDARG;
     }
     else if (IID_IQueryControl != riid)
     {
-        mr = MUX_E_FAIL;
+	mr = MUX_E_FAIL;
     }
     else if (CrossProcess != ctx)
     {
-        mr = MUX_E_NOTIMPLEMENTED;
+	mr = MUX_E_NOTIMPLEMENTED;
     }
     else
     {
-        mux_IQueryControl *pIQueryControl = NULL;
-        if (NULL == pv)
-        {
-            mr = QueryInterface(IID_IQueryControl, (void **)&pIQueryControl);
-        }
-        else
-        {
-            mux_IUnknown *pIUnknown = static_cast<mux_IUnknown *>(pv);
-            mr = pIUnknown->QueryInterface(IID_IQueryControl, (void **)&pIQueryControl);
-        }
-        if (MUX_SUCCEEDED(mr))
-        {
-            // Construct a packet sufficient to allow the proxy to communicate with us.
-            //
-            CHANNEL_INFO *pChannel = Pipe_AllocateChannel(CQueryControl_Call, CQueryControl_Msg, CQueryControl_Disconnect);
-            if (NULL != pChannel)
-            {
-                pChannel->pInterface = pIQueryControl;
-                Pipe_AppendBytes(pqi, sizeof(pChannel->nChannel), (UTF8*)(&pChannel->nChannel));
-                mr =  MUX_S_OK;
-            }
-            else
-            {
-                pIQueryControl->Release();
-                pIQueryControl = NULL;
-                mr = MUX_E_OUTOFMEMORY;
-            }
-        }
+	mux_IQueryControl *pIQueryControl = NULL;
+	if (NULL == pv)
+	{
+	    mr = QueryInterface(IID_IQueryControl, (void **)&pIQueryControl);
+	}
+	else
+	{
+	    mux_IUnknown *pIUnknown = static_cast<mux_IUnknown *>(pv);
+	    mr = pIUnknown->QueryInterface(IID_IQueryControl, (void **)&pIQueryControl);
+	}
+	if (MUX_SUCCEEDED(mr))
+	{
+	    // Construct a packet sufficient to allow the proxy to communicate with us.
+	    //
+	    CHANNEL_INFO *pChannel = Pipe_AllocateChannel(CQueryControl_Call, CQueryControl_Msg, CQueryControl_Disconnect);
+	    if (NULL != pChannel)
+	    {
+		pChannel->pInterface = pIQueryControl;
+		Pipe_AppendBytes(pqi, sizeof(pChannel->nChannel), (UTF8*)(&pChannel->nChannel));
+		mr =  MUX_S_OK;
+	    }
+	    else
+	    {
+		pIQueryControl->Release();
+		pIQueryControl = NULL;
+		mr = MUX_E_OUTOFMEMORY;
+	    }
+	}
     }
     return mr;
 }
@@ -587,11 +587,11 @@ MUX_RESULT CQueryServer::ReleaseMarshalData(QUEUE_INFO *pqi)
     if (  Pipe_GetBytes(pqi, &nWanted, &nChannel)
        && sizeof(nChannel) == nWanted)
     {
-        CHANNEL_INFO *pChannel = Pipe_FindChannel(nChannel);
-        if (NULL != pChannel)
-        {
-            CQueryControl_Disconnect(pChannel, pqi);
-        }
+	CHANNEL_INFO *pChannel = Pipe_FindChannel(nChannel);
+	if (NULL != pChannel)
+	{
+	    CQueryControl_Disconnect(pChannel, pqi);
+	}
     }
     return MUX_S_OK;
 }
@@ -635,15 +635,15 @@ MUX_RESULT CQueryServer::Connect(const UTF8 *pServer, const UTF8 *pDatabase, con
     //
     if (NULL != m_database)
     {
-        mysql_close(m_database);
-        m_database = NULL;
+	mysql_close(m_database);
+	m_database = NULL;
     }
 
     m_database = mysql_init(NULL);
 
     if (NULL != m_database)
     {
-        ConnectionHelper();
+	ConnectionHelper();
     }
 #endif // HAVE_MYSQL_H
     return MUX_S_OK;
@@ -655,23 +655,23 @@ void CQueryServer::ConnectionHelper()
     if ('\0' != m_pServer[0])
     {
 #ifdef MYSQL_OPT_RECONNECT
-        // As of MySQL 5.0.3, the default is no longer to reconnect.
-        //
-        my_bool reconnect = 1;
-        mysql_options(m_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
+	// As of MySQL 5.0.3, the default is no longer to reconnect.
+	//
+	my_bool reconnect = 1;
+	mysql_options(m_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
 #endif // MYSQL_OPT_RECONNECT
-        mysql_options(m_database, MYSQL_SET_CHARSET_NAME, "utf8");
+	mysql_options(m_database, MYSQL_SET_CHARSET_NAME, "utf8");
 
-        if (mysql_real_connect(m_database, (char *)m_pServer, (char *)m_pUser,
-             (char *)m_pPassword, (char *)m_pDatabase, 0, NULL, 0) != 0)
-        {
+	if (mysql_real_connect(m_database, (char *)m_pServer, (char *)m_pUser,
+	     (char *)m_pPassword, (char *)m_pDatabase, 0, NULL, 0) != 0)
+	{
 #ifdef MYSQL_OPT_RECONNECT
-            // Before MySQL 5.0.19, mysql_real_connect sets the option
-            // back to default, so we set it again.
-            //
-            mysql_options(m_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
+	    // Before MySQL 5.0.19, mysql_real_connect sets the option
+	    // back to default, so we set it again.
+	    //
+	    mysql_options(m_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
 #endif // MYSQL_OPT_RECONNECT
-        }
+	}
     }
 #endif // HAVE_MYSQL_H
 }
@@ -680,13 +680,13 @@ MUX_RESULT CQueryServer::Advise(mux_IQuerySink *pIQuerySink)
 {
     if (NULL != m_pIQuerySink)
     {
-        m_pIQuerySink->Release();
-        m_pIQuerySink = NULL;
+	m_pIQuerySink->Release();
+	m_pIQuerySink = NULL;
     }
 
     if (NULL == pIQuerySink)
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     m_pIQuerySink = pIQuerySink;
@@ -699,7 +699,7 @@ MUX_RESULT CQueryServer::Query(UINT32 iQueryHandle, const UTF8 *pDatabaseName, c
 
     if (NULL == m_pIQuerySink)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     UINT32 iError = QS_SUCCESS;
@@ -710,36 +710,36 @@ MUX_RESULT CQueryServer::Query(UINT32 iQueryHandle, const UTF8 *pDatabaseName, c
 #if defined(HAVE_MYSQL_H)
     if (NULL == m_database)
     {
-        iError = QS_NO_SESSION;
+	iError = QS_NO_SESSION;
     }
     else
     {
-        unsigned long lThreadId_before = mysql_thread_id(m_database);
-        if (mysql_ping(m_database) != 0)
-        {
-            // Attempt our own reconnection.
-            //
-            ConnectionHelper();
-            if (mysql_ping(m_database) != 0)
-            {
-                iError = QS_SQL_UNAVAILABLE;
-            }
-        }
-        else
-        {
-            unsigned long lThreadId_after = mysql_thread_id(m_database);
-            if (lThreadId_before != lThreadId_after)
-            {
-                // Respond to detected reconnection.
-                //
-            }
-        }
+	unsigned long lThreadId_before = mysql_thread_id(m_database);
+	if (mysql_ping(m_database) != 0)
+	{
+	    // Attempt our own reconnection.
+	    //
+	    ConnectionHelper();
+	    if (mysql_ping(m_database) != 0)
+	    {
+		iError = QS_SQL_UNAVAILABLE;
+	    }
+	}
+	else
+	{
+	    unsigned long lThreadId_after = mysql_thread_id(m_database);
+	    if (lThreadId_before != lThreadId_after)
+	    {
+		// Respond to detected reconnection.
+		//
+	    }
+	}
     }
 
     if (  QS_SUCCESS == iError
        && mysql_real_query(m_database, (char *)pQuery, strlen((char *)pQuery)) != 0)
     {
-        iError = QS_QUERY_ERROR;
+	iError = QS_QUERY_ERROR;
     }
 
     MYSQL_RES *result = NULL;
@@ -748,44 +748,44 @@ MUX_RESULT CQueryServer::Query(UINT32 iQueryHandle, const UTF8 *pDatabaseName, c
     int nFields = 0;
     if (iError == QS_SUCCESS)
     {
-        size_t nRows = 0;
-        result = mysql_store_result(m_database);
-        if (NULL == result)
-        {
-            Pipe_AppendBytes(&qiResultsSet, sizeof(nFields), &nFields);
-            Pipe_AppendBytes(&qiResultsSet, sizeof(nRows), &nRows);
-        }
-        else
-        {
-            nFields = mysql_num_fields(result);
-            Pipe_AppendBytes(&qiResultsSet, sizeof(nFields), &nFields);
+	size_t nRows = 0;
+	result = mysql_store_result(m_database);
+	if (NULL == result)
+	{
+	    Pipe_AppendBytes(&qiResultsSet, sizeof(nFields), &nFields);
+	    Pipe_AppendBytes(&qiResultsSet, sizeof(nRows), &nRows);
+	}
+	else
+	{
+	    nFields = mysql_num_fields(result);
+	    Pipe_AppendBytes(&qiResultsSet, sizeof(nFields), &nFields);
 
-            row = mysql_fetch_row(result);
-            while (row)
-            {
-                nRows++;
+	    row = mysql_fetch_row(result);
+	    while (row)
+	    {
+		nRows++;
 
-                int loop;
-                for (loop = 0; loop < nFields; loop++)
-                {
-                    const char *p;
-                    if (NULL != row[loop])
-                    {
-                        p = row[loop];
-                    }
-                    else
-                    {
-                        p = "";
-                    }
-                    size_t n = strlen(p)+1;
-                    Pipe_AppendBytes(&qiResultsSet, sizeof(n), &n);
-                    Pipe_AppendBytes(&qiResultsSet, n, p);
-                }
-                row = mysql_fetch_row(result);
-            }
-            mysql_free_result(result);
-            Pipe_AppendBytes(&qiResultsSet, sizeof(nRows), &nRows);
-        }
+		int loop;
+		for (loop = 0; loop < nFields; loop++)
+		{
+		    const char *p;
+		    if (NULL != row[loop])
+		    {
+			p = row[loop];
+		    }
+		    else
+		    {
+			p = "";
+		    }
+		    size_t n = strlen(p)+1;
+		    Pipe_AppendBytes(&qiResultsSet, sizeof(n), &n);
+		    Pipe_AppendBytes(&qiResultsSet, n, p);
+		}
+		row = mysql_fetch_row(result);
+	    }
+	    mysql_free_result(result);
+	    Pipe_AppendBytes(&qiResultsSet, sizeof(nRows), &nRows);
+	}
     }
 #else // HAVE_MYSQL_H
     iError = QS_NO_SESSION;
@@ -810,16 +810,16 @@ MUX_RESULT CQueryServerFactory::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else if (mux_IID_IClassFactory == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -836,8 +836,8 @@ UINT32 CQueryServerFactory::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -848,32 +848,32 @@ MUX_RESULT CQueryServerFactory::CreateInstance(mux_IUnknown *pUnknownOuter, MUX_
     //
     if (NULL != pUnknownOuter)
     {
-        return MUX_E_NOAGGREGATION;
+	return MUX_E_NOAGGREGATION;
     }
 
     CQueryServer *pQueryServer = NULL;
     try
     {
-        pQueryServer = new CQueryServer;
+	pQueryServer = new CQueryServer;
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     MUX_RESULT mr;
     if (NULL == pQueryServer)
     {
-        return MUX_E_OUTOFMEMORY;
+	return MUX_E_OUTOFMEMORY;
     }
     else
     {
-        mr = pQueryServer->FinalConstruct();
-        if (MUX_FAILED(mr))
-        {
-            pQueryServer->Release();
-            return mr;
-        }
+	mr = pQueryServer->FinalConstruct();
+	if (MUX_FAILED(mr))
+	{
+	    pQueryServer->Release();
+	    return mr;
+	}
     }
 
     mr = pQueryServer->QueryInterface(iid, ppv);
@@ -885,11 +885,11 @@ MUX_RESULT CQueryServerFactory::LockServer(bool bLock)
 {
     if (bLock)
     {
-        g_cServerLocks++;
+	g_cServerLocks++;
     }
     else
     {
-        g_cServerLocks--;
+	g_cServerLocks--;
     }
     return MUX_S_OK;
 }
@@ -915,20 +915,20 @@ MUX_RESULT CQuerySinkProxy::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IQuerySink *>(this);
+	*ppv = static_cast<mux_IQuerySink *>(this);
     }
     else if (IID_IQuerySink == iid)
     {
-        *ppv = static_cast<mux_IQuerySink *>(this);
+	*ppv = static_cast<mux_IQuerySink *>(this);
     }
     else if (mux_IID_IMarshal == iid)
     {
-        *ppv = static_cast<mux_IMarshal *>(this);
+	*ppv = static_cast<mux_IMarshal *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -945,17 +945,17 @@ UINT32 CQuerySinkProxy::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        // The last reference to the proxy was released, we need to clean up
-        // the connection as well.
-        //
-        QUEUE_INFO qiFrame;
-        Pipe_InitializeQueueInfo(&qiFrame);
-        (void)Pipe_SendDiscPacket(m_nChannel, &qiFrame);
-        m_nChannel = CHANNEL_INVALID;
-        Pipe_EmptyQueue(&qiFrame);
+	// The last reference to the proxy was released, we need to clean up
+	// the connection as well.
+	//
+	QUEUE_INFO qiFrame;
+	Pipe_InitializeQueueInfo(&qiFrame);
+	(void)Pipe_SendDiscPacket(m_nChannel, &qiFrame);
+	m_nChannel = CHANNEL_INVALID;
+	Pipe_EmptyQueue(&qiFrame);
 
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -991,7 +991,7 @@ MUX_RESULT CQuerySinkProxy::UnmarshalInterface(QUEUE_INFO *pqi, MUX_IID riid, vo
     if (  Pipe_GetBytes(pqi, &nWanted, &m_nChannel)
        && nWanted == sizeof(m_nChannel))
     {
-        return QueryInterface(riid, ppv);
+	return QueryInterface(riid, ppv);
     }
     return MUX_E_NOINTERFACE;
 }
@@ -1028,8 +1028,8 @@ MUX_RESULT CQuerySinkProxy::Result(UINT32 iQueryHandle, UINT32 iError, QUEUE_INF
 
     struct FRAME
     {
-        UINT32 iQueryHandle;
-        UINT32 iError;
+	UINT32 iQueryHandle;
+	UINT32 iError;
     } CallFrame;
 
     CallFrame.iQueryHandle = iQueryHandle;
@@ -1042,21 +1042,21 @@ MUX_RESULT CQuerySinkProxy::Result(UINT32 iQueryHandle, UINT32 iError, QUEUE_INF
 
     if (MUX_SUCCEEDED(mr))
     {
-        struct RETURN
-        {
-            MUX_RESULT mr;
-        } ReturnFrame;
+	struct RETURN
+	{
+	    MUX_RESULT mr;
+	} ReturnFrame;
 
-        size_t nWanted = sizeof(ReturnFrame);
-        if (  Pipe_GetBytes(&qiFrame, &nWanted, &ReturnFrame)
-           && nWanted == sizeof(ReturnFrame))
-        {
-            mr = ReturnFrame.mr;
-        }
-        else
-        {
-            mr = MUX_E_FAIL;
-        }
+	size_t nWanted = sizeof(ReturnFrame);
+	if (  Pipe_GetBytes(&qiFrame, &nWanted, &ReturnFrame)
+	   && nWanted == sizeof(ReturnFrame))
+	{
+	    mr = ReturnFrame.mr;
+	}
+	else
+	{
+	    mr = MUX_E_FAIL;
+	}
     }
     Pipe_EmptyQueue(&qiFrame);
     return mr;
@@ -1076,16 +1076,16 @@ MUX_RESULT CQuerySinkProxyFactory::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else if (mux_IID_IClassFactory == iid)
     {
-        *ppv = static_cast<mux_IClassFactory *>(this);
+	*ppv = static_cast<mux_IClassFactory *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -1102,8 +1102,8 @@ UINT32 CQuerySinkProxyFactory::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -1114,32 +1114,32 @@ MUX_RESULT CQuerySinkProxyFactory::CreateInstance(mux_IUnknown *pUnknownOuter, M
     //
     if (NULL != pUnknownOuter)
     {
-        return MUX_E_NOAGGREGATION;
+	return MUX_E_NOAGGREGATION;
     }
 
     CQuerySinkProxy *pQuerySinkProxy = NULL;
     try
     {
-        pQuerySinkProxy = new CQuerySinkProxy;
+	pQuerySinkProxy = new CQuerySinkProxy;
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     MUX_RESULT mr;
     if (NULL == pQuerySinkProxy)
     {
-        return MUX_E_OUTOFMEMORY;
+	return MUX_E_OUTOFMEMORY;
     }
     else
     {
-        mr = pQuerySinkProxy->FinalConstruct();
-        if (MUX_FAILED(mr))
-        {
-            pQuerySinkProxy->Release();
-            return mr;
-        }
+	mr = pQuerySinkProxy->FinalConstruct();
+	if (MUX_FAILED(mr))
+	{
+	    pQuerySinkProxy->Release();
+	    return mr;
+	}
     }
 
     mr = pQuerySinkProxy->QueryInterface(iid, ppv);
@@ -1151,11 +1151,11 @@ MUX_RESULT CQuerySinkProxyFactory::LockServer(bool bLock)
 {
     if (bLock)
     {
-        g_cServerLocks++;
+	g_cServerLocks++;
     }
     else
     {
-        g_cServerLocks--;
+	g_cServerLocks--;
     }
     return MUX_S_OK;
 }

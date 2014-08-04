@@ -28,19 +28,19 @@ static bool fh_any(dbref target, dbref player, FLAG flag, int fflags, bool reset
        && flag == WIZARD
        && fflags == FLAG_WORD1)
     {
-        notify(player, T("You cannot make God mortal."));
-        return false;
+	notify(player, T("You cannot make God mortal."));
+	return false;
     }
 
     // Otherwise we can go do it.
     //
     if (reset)
     {
-        db[target].fs.word[fflags] &= ~flag;
+	db[target].fs.word[fflags] &= ~flag;
     }
     else
     {
-        db[target].fs.word[fflags] |= flag;
+	db[target].fs.word[fflags] |= flag;
     }
     return true;
 }
@@ -53,7 +53,7 @@ static bool fh_god(dbref target, dbref player, FLAG flag, int fflags, bool reset
 {
     if (!God(player))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -67,7 +67,7 @@ static bool fh_wiz(dbref target, dbref player, FLAG flag, int fflags, bool reset
 {
     if (!Wizard(player))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -81,7 +81,7 @@ static bool fh_wizroy(dbref target, dbref player, FLAG flag, int fflags, bool re
 {
     if (!WizRoy(player))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -104,7 +104,7 @@ static bool fh_restrict_player
     if (  isPlayer(target)
        && !Wizard(player))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -125,13 +125,13 @@ static bool fh_privileged
 {
     if (!God(player))
     {
-        if (  isPlayer(target)
-           || !isPlayer(player)
-           || player != Owner(player)
-           || (db[player].fs.word[fflags] & flag) == 0)
-        {
-            return false;
-        }
+	if (  isPlayer(target)
+	   || !isPlayer(player)
+	   || player != Owner(player)
+	   || (db[player].fs.word[fflags] & flag) == 0)
+	{
+	    return false;
+	}
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -145,7 +145,7 @@ static bool fh_inherit(dbref target, dbref player, FLAG flag, int fflags, bool r
 {
     if (!Inherits(player))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -160,10 +160,10 @@ static bool fh_dark_bit(dbref target, dbref player, FLAG flag, int fflags, bool 
     if (  !reset
        && isPlayer(target)
        && !(  (target == player)
-           && Can_Hide(player))
+	   && Can_Hide(player))
        && !Wizard(player))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -179,25 +179,25 @@ static bool fh_going_bit(dbref target, dbref player, FLAG flag, int fflags, bool
        && reset
        && (Typeof(target) != TYPE_GARBAGE))
     {
-        notify(player, T("Your object has been spared from destruction."));
-        return (fh_any(target, player, flag, fflags, reset));
+	notify(player, T("Your object has been spared from destruction."));
+	return (fh_any(target, player, flag, fflags, reset));
     }
     if (!God(player))
     {
-        return false;
+	return false;
     }
 
     // Even God should not be allowed set protected dbrefs GOING.
     //
     if (  !reset
        && (  target == 0
-          || God(target)
-          || target == mudconf.start_home
-          || target == mudconf.start_room
-          || target == mudconf.default_home
-          || target == mudconf.master_room))
+	  || God(target)
+	  || target == mudconf.start_home
+	  || target == mudconf.start_room
+	  || target == mudconf.default_home
+	  || target == mudconf.master_room))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -211,14 +211,14 @@ static bool fh_hear_bit(dbref target, dbref player, FLAG flag, int fflags, bool 
 {
     if (isPlayer(target) && (flag & MONITOR))
     {
-        if (Can_Monitor(player))
-        {
-            return (fh_any(target, player, flag, fflags, reset));
-        }
-        else
-        {
-            return false;
-        }
+	if (Can_Monitor(player))
+	{
+	    return (fh_any(target, player, flag, fflags, reset));
+	}
+	else
+	{
+	    return false;
+	}
     }
 
     bool could_hear = Hearer(target);
@@ -242,7 +242,7 @@ static bool fh_player_bit
 {
     if (isPlayer(target))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -262,7 +262,7 @@ static bool fh_staff
 {
     if (!Staff(player) && !God(player))
     {
-        return false;
+	return false;
     }
     return (fh_any(target, player, flag, fflags, reset));
 }
@@ -280,32 +280,32 @@ static bool fh_unicode(dbref target, dbref player, FLAG flag, int fflags, bool r
 {
     if (!isPlayer(target))
     {
-        return false;
+	return false;
     }
 
     if (fh_any(target, player, flag, fflags, reset))
     {
-        DESC *dtemp;
+	DESC *dtemp;
 
-        DESC_ITER_PLAYER(target, dtemp)
-        {
-            if (!reset)
-            {
-                if (CHARSET_UTF8 != dtemp->encoding)
-                {
-                    // Since we are changing to the UTF-8 character set, the
-                    // printable state machine needs to be initialized.
-                    //
-                    dtemp->encoding = CHARSET_UTF8;
-                    dtemp->raw_codepoint_state = CL_PRINT_START_STATE;
-                }
-            }
-            else
-            {
-                dtemp->encoding = dtemp->negotiated_encoding;
-            }
-        }
-        return true;
+	DESC_ITER_PLAYER(target, dtemp)
+	{
+	    if (!reset)
+	    {
+		if (CHARSET_UTF8 != dtemp->encoding)
+		{
+		    // Since we are changing to the UTF-8 character set, the
+		    // printable state machine needs to be initialized.
+		    //
+		    dtemp->encoding = CHARSET_UTF8;
+		    dtemp->raw_codepoint_state = CL_PRINT_START_STATE;
+		}
+	    }
+	    else
+	    {
+		dtemp->encoding = dtemp->negotiated_encoding;
+	    }
+	}
+	return true;
     }
     return false;
 }
@@ -321,21 +321,21 @@ static bool fh_ascii(dbref target, dbref player, FLAG flag, int fflags, bool res
 
     if (!isPlayer(target))
     {
-        return false;
+	return false;
     }
     result = fh_any(target, player, flag, fflags, reset);
 
     if (result)
     {
-        DESC *dtemp;
+	DESC *dtemp;
 
-        DESC_ITER_PLAYER(target, dtemp)
-        {
-            if (!reset)
-                dtemp->encoding = CHARSET_ASCII;
-            else
-                dtemp->encoding = dtemp->negotiated_encoding;
-        }
+	DESC_ITER_PLAYER(target, dtemp)
+	{
+	    if (!reset)
+		dtemp->encoding = CHARSET_ASCII;
+	    else
+		dtemp->encoding = dtemp->negotiated_encoding;
+	}
     }
 
     return result;
@@ -550,11 +550,11 @@ void init_flagtab(void)
 {
     for (FLAGNAMEENT *fp = gen_flag_names; fp->pOrigName; fp++)
     {
-        fp->flagname = (UTF8 *)fp->pOrigName;
-        if (!hashfindLEN(fp->flagname, strlen((char *)fp->flagname), &mudstate.flags_htab))
-        {
-            hashaddLEN(fp->flagname, strlen((char *)fp->flagname), fp, &mudstate.flags_htab);
-        }
+	fp->flagname = (UTF8 *)fp->pOrigName;
+	if (!hashfindLEN(fp->flagname, strlen((char *)fp->flagname), &mudstate.flags_htab))
+	{
+	    hashaddLEN(fp->flagname, strlen((char *)fp->flagname), fp, &mudstate.flags_htab);
+	}
     }
 }
 
@@ -571,26 +571,26 @@ void display_flagtab(dbref player)
     safe_str(T("Flags:"), buf, &bp);
     for (fp = gen_flag_names; fp->flagname; fp++)
     {
-        FLAGBITENT *fbe = fp->fbe;
-        if (  (  (fbe->listperm & CA_WIZARD)
-              && !Wizard(player))
-           || (  (fbe->listperm & CA_GOD)
-              && !God(player)))
-        {
-            continue;
-        }
-        safe_chr(' ', buf, &bp);
-        safe_str(fp->flagname, buf, &bp);
-        if (fbe->flaglett != ' ')
-        {
-            safe_chr('(', buf, &bp);
-            if (!fp->bPositive)
-            {
-                safe_chr('!', buf, &bp);
-            }
-            safe_chr(fbe->flaglett, buf, &bp);
-            safe_chr(')', buf, &bp);
-        }
+	FLAGBITENT *fbe = fp->fbe;
+	if (  (  (fbe->listperm & CA_WIZARD)
+	      && !Wizard(player))
+	   || (  (fbe->listperm & CA_GOD)
+	      && !God(player)))
+	{
+	    continue;
+	}
+	safe_chr(' ', buf, &bp);
+	safe_str(fp->flagname, buf, &bp);
+	if (fbe->flaglett != ' ')
+	{
+	    safe_chr('(', buf, &bp);
+	    if (!fp->bPositive)
+	    {
+		safe_chr('!', buf, &bp);
+	    }
+	    safe_chr(fbe->flaglett, buf, &bp);
+	    safe_chr(')', buf, &bp);
+	}
     }
     *bp = '\0';
     notify(player, buf);
@@ -610,24 +610,24 @@ UTF8 *MakeCanonicalFlagName
 
     while (*pName && nName < SBUF_SIZE)
     {
-        *p = mux_toupper_ascii(*pName);
-        p++;
-        pName++;
-        nName++;
+	*p = mux_toupper_ascii(*pName);
+	p++;
+	pName++;
+	nName++;
     }
     *p = '\0';
     if (  0 < nName
        && nName < SBUF_SIZE)
     {
-        *pnName = nName;
-        *pbValid = true;
-        return buff;
+	*pnName = nName;
+	*pbValid = true;
+	return buff;
     }
     else
     {
-        *pnName = 0;
-        *pbValid = false;
-        return NULL;
+	*pnName = 0;
+	*pbValid = false;
+	return NULL;
     }
 }
 
@@ -641,7 +641,7 @@ static FLAGNAMEENT *find_flag(const UTF8 *flagname)
     FLAGNAMEENT *fe = NULL;
     if (bValid)
     {
-        fe = (FLAGNAMEENT *)hashfindLEN(pName, nName, &mudstate.flags_htab);
+	fe = (FLAGNAMEENT *)hashfindLEN(pName, nName, &mudstate.flags_htab);
     }
     return fe;
 }
@@ -655,84 +655,84 @@ void flag_set(dbref target, dbref player, UTF8 *flag, int key)
 
     do
     {
-        // Trim spaces, and handle the negation character.
-        //
-        while (mux_isspace(*flag))
-        {
-            flag++;
-        }
+	// Trim spaces, and handle the negation character.
+	//
+	while (mux_isspace(*flag))
+	{
+	    flag++;
+	}
 
-        bool bNegate = false;
-        if (*flag == '!')
-        {
-            bNegate = true;
-            do
-            {
-                flag++;
-            } while (mux_isspace(*flag));
-        }
+	bool bNegate = false;
+	if (*flag == '!')
+	{
+	    bNegate = true;
+	    do
+	    {
+		flag++;
+	    } while (mux_isspace(*flag));
+	}
 
-        // Beginning of flag name is now 'flag'.
-        //
-        UTF8 *nflag = flag;
-        while (  *nflag != '\0'
-              && !mux_isspace(*nflag))
-        {
-            nflag++;
-        }
+	// Beginning of flag name is now 'flag'.
+	//
+	UTF8 *nflag = flag;
+	while (  *nflag != '\0'
+	      && !mux_isspace(*nflag))
+	{
+	    nflag++;
+	}
 
-        if (*nflag == '\0')
-        {
-            bDone = true;
-        }
-        else
-        {
-            *nflag = '\0';
-        }
+	if (*nflag == '\0')
+	{
+	    bDone = true;
+	}
+	else
+	{
+	    *nflag = '\0';
+	}
 
-        // Make sure a flag name was specified.
-        //
-        if (*flag == '\0')
-        {
-            if (bNegate)
-            {
-                notify(player, T("You must specify a flag to clear."));
-            }
-            else
-            {
-                notify(player, T("You must specify a flag to set."));
-            }
-        }
-        else
-        {
-            FLAGNAMEENT *fp = find_flag(flag);
-            if (!fp)
-            {
-                notify(player, T("I do not understand that flag."));
-            }
-            else
-            {
-                FLAGBITENT *fbe = fp->fbe;
+	// Make sure a flag name was specified.
+	//
+	if (*flag == '\0')
+	{
+	    if (bNegate)
+	    {
+		notify(player, T("You must specify a flag to clear."));
+	    }
+	    else
+	    {
+		notify(player, T("You must specify a flag to set."));
+	    }
+	}
+	else
+	{
+	    FLAGNAMEENT *fp = find_flag(flag);
+	    if (!fp)
+	    {
+		notify(player, T("I do not understand that flag."));
+	    }
+	    else
+	    {
+		FLAGBITENT *fbe = fp->fbe;
 
-                bool bClearSet = bNegate;
-                if (!fp->bPositive)
-                {
-                    bNegate = !bNegate;
-                }
+		bool bClearSet = bNegate;
+		if (!fp->bPositive)
+		{
+		    bNegate = !bNegate;
+		}
 
-                // Invoke the flag handler, and print feedback.
-                //
-                if (!fbe->handler(target, player, fbe->flagvalue, fbe->flagflag, bNegate))
-                {
-                    notify(player, NOPERM_MESSAGE);
-                }
-                else if (!(key & SET_QUIET) && !Quiet(player))
-                {
-                    notify(player, (bClearSet ? T("Cleared.") : T("Set.")));
-                }
-            }
-        }
-        flag = nflag + 1;
+		// Invoke the flag handler, and print feedback.
+		//
+		if (!fbe->handler(target, player, fbe->flagvalue, fbe->flagflag, bNegate))
+		{
+		    notify(player, NOPERM_MESSAGE);
+		}
+		else if (!(key & SET_QUIET) && !Quiet(player))
+		{
+		    notify(player, (bClearSet ? T("Cleared.") : T("Set.")));
+		}
+	    }
+	}
+	flag = nflag + 1;
 
     } while (!bDone);
 }
@@ -750,64 +750,64 @@ UTF8 *decode_flags(dbref player, FLAGSET *fs)
 
     if (!Good_obj(player))
     {
-        mux_strncpy(buf, T("#-2 ERROR"), SBUF_SIZE-1);
-        return buf;
+	mux_strncpy(buf, T("#-2 ERROR"), SBUF_SIZE-1);
+	return buf;
     }
     int flagtype = fs->word[FLAG_WORD1] & TYPE_MASK;
     bool bNeedColon = true;
     if (object_types[flagtype].lett != ' ')
     {
-        safe_sb_chr(object_types[flagtype].lett, buf, &bp);
-        bNeedColon = false;
+	safe_sb_chr(object_types[flagtype].lett, buf, &bp);
+	bNeedColon = false;
     }
 
     FLAGNAMEENT *fp;
     for (fp = gen_flag_names; fp->flagname; fp++)
     {
-        FLAGBITENT *fbe = fp->fbe;
-        if (  !fp->bPositive
-           || fbe->flaglett == ' ')
-        {
-            // Only look at positive-sense entries that have non-space flag
-            // letters.
-            //
-            continue;
-        }
-        if (fs->word[fbe->flagflag] & fbe->flagvalue)
-        {
-            if (  (  (fbe->listperm & CA_STAFF)
-                  && !Staff(player))
-               || (  (fbe->listperm & CA_ADMIN)
-                  && !WizRoy(player))
-               || (  (fbe->listperm & CA_WIZARD)
-                  && !Wizard(player))
-               || (  (fbe->listperm & CA_GOD)
-                  && !God(player)))
-            {
-                continue;
-            }
+	FLAGBITENT *fbe = fp->fbe;
+	if (  !fp->bPositive
+	   || fbe->flaglett == ' ')
+	{
+	    // Only look at positive-sense entries that have non-space flag
+	    // letters.
+	    //
+	    continue;
+	}
+	if (fs->word[fbe->flagflag] & fbe->flagvalue)
+	{
+	    if (  (  (fbe->listperm & CA_STAFF)
+		  && !Staff(player))
+	       || (  (fbe->listperm & CA_ADMIN)
+		  && !WizRoy(player))
+	       || (  (fbe->listperm & CA_WIZARD)
+		  && !Wizard(player))
+	       || (  (fbe->listperm & CA_GOD)
+		  && !God(player)))
+	    {
+		continue;
+	    }
 
-            // Don't show CONNECT on dark wizards to mortals
-            //
-            if (  flagtype == TYPE_PLAYER
-               && fbe->flagflag == FLAG_WORD2
-               && fbe->flagvalue == CONNECTED
-               && (fs->word[FLAG_WORD1] & (WIZARD | DARK)) == (WIZARD | DARK)
-               && !See_Hidden(player))
-            {
-                continue;
-            }
+	    // Don't show CONNECT on dark wizards to mortals
+	    //
+	    if (  flagtype == TYPE_PLAYER
+	       && fbe->flagflag == FLAG_WORD2
+	       && fbe->flagvalue == CONNECTED
+	       && (fs->word[FLAG_WORD1] & (WIZARD | DARK)) == (WIZARD | DARK)
+	       && !See_Hidden(player))
+	    {
+		continue;
+	    }
 
-            if (  bNeedColon
-               && mux_isdigit(fbe->flaglett))
-            {
-                // We can't allow numerical digits at the beginning.
-                //
-                safe_sb_chr(':', buf, &bp);
-            }
-            safe_sb_chr(fbe->flaglett, buf, &bp);
-            bNeedColon = false;
-        }
+	    if (  bNeedColon
+	       && mux_isdigit(fbe->flaglett))
+	    {
+		// We can't allow numerical digits at the beginning.
+		//
+		safe_sb_chr(':', buf, &bp);
+	    }
+	    safe_sb_chr(fbe->flaglett, buf, &bp);
+	    bNeedColon = false;
+	}
     }
     *bp = '\0';
     return buf;
@@ -823,38 +823,38 @@ bool has_flag(dbref player, dbref it, const UTF8 *flagname)
     FLAGNAMEENT *fp = find_flag(flagname);
     if (!fp)
     {
-        return false;
+	return false;
     }
     FLAGBITENT *fbe = fp->fbe;
 
     if (  (  fp->bPositive
-          && (db[it].fs.word[fbe->flagflag] & fbe->flagvalue))
+	  && (db[it].fs.word[fbe->flagflag] & fbe->flagvalue))
        || (  !fp->bPositive
-          && (db[it].fs.word[fbe->flagflag] & fbe->flagvalue) == 0))
+	  && (db[it].fs.word[fbe->flagflag] & fbe->flagvalue) == 0))
     {
-        if (  (  (fbe->listperm & CA_STAFF)
-              && !Staff(player))
-           || (  (fbe->listperm & CA_ADMIN)
-              && !WizRoy(player))
-           || (  (fbe->listperm & CA_WIZARD)
-              && !Wizard(player))
-           || (  (fbe->listperm & CA_GOD)
-              && !God(player)))
-        {
-            return false;
-        }
+	if (  (  (fbe->listperm & CA_STAFF)
+	      && !Staff(player))
+	   || (  (fbe->listperm & CA_ADMIN)
+	      && !WizRoy(player))
+	   || (  (fbe->listperm & CA_WIZARD)
+	      && !Wizard(player))
+	   || (  (fbe->listperm & CA_GOD)
+	      && !God(player)))
+	{
+	    return false;
+	}
 
-        // Don't show CONNECT on dark wizards to mortals
-        //
-        if (  isPlayer(it)
-           && (fbe->flagvalue == CONNECTED)
-           && (fbe->flagflag == FLAG_WORD2)
-           && Hidden(it)
-           && !See_Hidden(player))
-        {
-            return false;
-        }
-        return true;
+	// Don't show CONNECT on dark wizards to mortals
+	//
+	if (  isPlayer(it)
+	   && (fbe->flagvalue == CONNECTED)
+	   && (fbe->flagflag == FLAG_WORD2)
+	   && Hidden(it)
+	   && !See_Hidden(player))
+	{
+	    return false;
+	}
+	return true;
     }
     return false;
 }
@@ -879,8 +879,8 @@ UTF8 *flag_description(dbref player, dbref target)
     safe_mb_str(T(" Flags:"), buff, &bp);
     if (object_types[otype].perm != CA_PUBLIC)
     {
-        *bp = '\0';
-        return buff;
+	*bp = '\0';
+	return buff;
     }
 
     // Store the type-invariant flags.
@@ -888,38 +888,38 @@ UTF8 *flag_description(dbref player, dbref target)
     FLAGNAMEENT *fp;
     for (fp = gen_flag_names; fp->flagname; fp++)
     {
-        if (!fp->bPositive)
-        {
-            continue;
-        }
-        FLAGBITENT *fbe = fp->fbe;
-        if (db[target].fs.word[fbe->flagflag] & fbe->flagvalue)
-        {
-            if (  (  (fbe->listperm & CA_STAFF)
-                  && !Staff(player))
-               || (  (fbe->listperm & CA_ADMIN)
-                  && !WizRoy(player))
-               || (  (fbe->listperm & CA_WIZARD)
-                  && !Wizard(player))
-               || (  (fbe->listperm & CA_GOD)
-                  && !God(player)))
-            {
-                continue;
-            }
+	if (!fp->bPositive)
+	{
+	    continue;
+	}
+	FLAGBITENT *fbe = fp->fbe;
+	if (db[target].fs.word[fbe->flagflag] & fbe->flagvalue)
+	{
+	    if (  (  (fbe->listperm & CA_STAFF)
+		  && !Staff(player))
+	       || (  (fbe->listperm & CA_ADMIN)
+		  && !WizRoy(player))
+	       || (  (fbe->listperm & CA_WIZARD)
+		  && !Wizard(player))
+	       || (  (fbe->listperm & CA_GOD)
+		  && !God(player)))
+	    {
+		continue;
+	    }
 
-            // Don't show CONNECT on dark wizards to mortals.
-            //
-            if (  isPlayer(target)
-               && (fbe->flagvalue == CONNECTED)
-               && (fbe->flagflag == FLAG_WORD2)
-               && Hidden(target)
-               && !See_Hidden(player))
-            {
-                continue;
-            }
-            safe_mb_chr(' ', buff, &bp);
-            safe_mb_str(fp->flagname, buff, &bp);
-        }
+	    // Don't show CONNECT on dark wizards to mortals.
+	    //
+	    if (  isPlayer(target)
+	       && (fbe->flagvalue == CONNECTED)
+	       && (fbe->flagflag == FLAG_WORD2)
+	       && Hidden(target)
+	       && !See_Hidden(player))
+	    {
+		continue;
+	    }
+	    safe_mb_chr(' ', buff, &bp);
+	    safe_mb_str(fp->flagname, buff, &bp);
+	}
     }
 
     // Terminate the string, and return the buffer to the caller.
@@ -938,15 +938,15 @@ UTF8 *unparse_object_numonly(dbref target)
     UTF8 *buf = alloc_lbuf("unparse_object_numonly");
     if (target < 0)
     {
-        mux_strncpy(buf, aszSpecialDBRefNames[-target], LBUF_SIZE-1);
+	mux_strncpy(buf, aszSpecialDBRefNames[-target], LBUF_SIZE-1);
     }
     else if (!Good_obj(target))
     {
-        mux_sprintf(buf, LBUF_SIZE, T("*ILLEGAL*(#%d)"), target);
+	mux_sprintf(buf, LBUF_SIZE, T("*ILLEGAL*(#%d)"), target);
     }
     else
     {
-        mux_sprintf(buf, LBUF_SIZE, T("%s(#%d)"), PureName(target), target);
+	mux_sprintf(buf, LBUF_SIZE, T("%s(#%d)"), PureName(target), target);
     }
     return buf;
 }
@@ -962,47 +962,47 @@ UTF8 *unparse_object(dbref player, dbref target, bool obey_myopic, bool bAddColo
     UTF8 *buf = alloc_lbuf("unparse_object");
     if (NOPERM <= target && target < 0)
     {
-        mux_strncpy(buf, aszSpecialDBRefNames[-target], LBUF_SIZE-1);
+	mux_strncpy(buf, aszSpecialDBRefNames[-target], LBUF_SIZE-1);
     }
     else if (!Good_obj(target))
     {
-        mux_sprintf(buf, LBUF_SIZE, T("*ILLEGAL*(#%d)"), target);
+	mux_sprintf(buf, LBUF_SIZE, T("*ILLEGAL*(#%d)"), target);
     }
     else
     {
-        bool exam;
-        if (obey_myopic)
-        {
-            exam = MyopicExam(player, target);
-        }
-        else
-        {
-            exam = Examinable(player, target);
-        }
+	bool exam;
+	if (obey_myopic)
+	{
+	    exam = MyopicExam(player, target);
+	}
+	else
+	{
+	    exam = Examinable(player, target);
+	}
 
-        // Leave and extra 100 bytes for the dbref and flags at the end and
-        // color at the beginning if necessary..
-        //
-        mux_field fldName = StripTabsAndTruncate( Moniker(target), buf,
-                                                  LBUF_SIZE-100, LBUF_SIZE-100);
-        UTF8 *bp = buf + fldName.m_byte;
+	// Leave and extra 100 bytes for the dbref and flags at the end and
+	// color at the beginning if necessary..
+	//
+	mux_field fldName = StripTabsAndTruncate( Moniker(target), buf,
+						  LBUF_SIZE-100, LBUF_SIZE-100);
+	UTF8 *bp = buf + fldName.m_byte;
 
-        if (  exam
-           || (Flags(target) & (CHOWN_OK | JUMP_OK | LINK_OK | DESTROY_OK))
-           || (Flags2(target) & ABODE))
-        {
-            // Show everything.
-            //
-            UTF8 *fp = decode_flags(player, &(db[target].fs));
+	if (  exam
+	   || (Flags(target) & (CHOWN_OK | JUMP_OK | LINK_OK | DESTROY_OK))
+	   || (Flags2(target) & ABODE))
+	{
+	    // Show everything.
+	    //
+	    UTF8 *fp = decode_flags(player, &(db[target].fs));
 
-            safe_str(T("(#"), buf, &bp);
-            safe_ltoa(target, buf, &bp);
-            safe_str(fp, buf, &bp);
-            safe_chr(')', buf, &bp);
+	    safe_str(T("(#"), buf, &bp);
+	    safe_ltoa(target, buf, &bp);
+	    safe_str(fp, buf, &bp);
+	    safe_chr(')', buf, &bp);
 
-            free_sbuf(fp);
-        }
-        *bp = '\0';
+	    free_sbuf(fp);
+	}
+	*bp = '\0';
     }
     return buf;
 }
@@ -1029,14 +1029,14 @@ CF_HAND(cf_flag_access)
        || NULL == permstr
        || '\0' == permstr[0])
     {
-        return -1;
+	return -1;
     }
 
     FLAGNAMEENT *fp;
     if ((fp = find_flag(fstr)) == NULL)
     {
-        cf_log_notfound(player, cmd, T("No such flag"), fstr);
-        return -1;
+	cf_log_notfound(player, cmd, T("No such flag"), fstr);
+	return -1;
     }
     FLAGBITENT *fbe = fp->fbe;
 
@@ -1049,78 +1049,78 @@ CF_HAND(cf_flag_access)
        && (fbe->handler != fh_restrict_player)
        && (fbe->handler != fh_privileged))
     {
-        STARTLOG(LOG_CONFIGMODS, "CFG", "PERM");
-        log_text(T("Cannot change access for flag: "));
-        log_text(fp->flagname);
-        ENDLOG;
+	STARTLOG(LOG_CONFIGMODS, "CFG", "PERM");
+	log_text(T("Cannot change access for flag: "));
+	log_text(fp->flagname);
+	ENDLOG;
 
-        notify(player, T("Special flags cannot be modified with flag_access."));
+	notify(player, T("Special flags cannot be modified with flag_access."));
 
-        return -1;
+	return -1;
     }
 
     bool negate = false;
 
     if ('!' == *permstr)
     {
-        negate = true;
-        permstr++;
+	negate = true;
+	permstr++;
     }
 
     if (!strcmp((char *)permstr, "any"))
     {
-        fbe->handler = fh_any;
+	fbe->handler = fh_any;
     }
     else if (!strcmp((char *)permstr, "dark"))
     {
-        if (negate)
-        {
-            fbe->listperm &= ~CA_GOD;
-        }
-        else
-        {
-            fbe->listperm |= CA_GOD;
-        }
+	if (negate)
+	{
+	    fbe->listperm &= ~CA_GOD;
+	}
+	else
+	{
+	    fbe->listperm |= CA_GOD;
+	}
     }
     else if (!strcmp((char *)permstr, "hidden"))
     {
-        if (negate)
-        {
-            fbe->listperm &= ~CA_WIZARD;
-        }
-        else
-        {
-            fbe->listperm |= CA_WIZARD;
-        }
+	if (negate)
+	{
+	    fbe->listperm &= ~CA_WIZARD;
+	}
+	else
+	{
+	    fbe->listperm |= CA_WIZARD;
+	}
     }
     else if (!strcmp((char *)permstr, "royalty"))
     {
-        fbe->handler = fh_wizroy;
+	fbe->handler = fh_wizroy;
     }
     else if (!strcmp((char *)permstr, "wizard"))
     {
-        fbe->handler = fh_wiz;
+	fbe->handler = fh_wiz;
     }
     else if (!strcmp((char *)permstr, "god"))
     {
-        fbe->handler = fh_god;
+	fbe->handler = fh_god;
     }
     else if (!strcmp((char *)permstr, "restrict_player"))
     {
-        fbe->handler = fh_restrict_player;
+	fbe->handler = fh_restrict_player;
     }
     else if (!strcmp((char *)permstr, "privileged"))
     {
-        fbe->handler = fh_privileged;
+	fbe->handler = fh_privileged;
     }
     else if (!strcmp((char *)permstr, "staff"))
     {
-        fbe->handler = fh_staff;
+	fbe->handler = fh_staff;
     }
     else
     {
-        cf_log_notfound(player, cmd, T("Flag access"), permstr);
-        return -1;
+	cf_log_notfound(player, cmd, T("Flag access"), permstr);
+	return -1;
     }
     return 0;
 }
@@ -1142,72 +1142,72 @@ bool convert_flags(dbref player, UTF8 *flaglist, FLAGSET *fset, FLAG *p_type)
     bool handled;
     for (s = flaglist; *s; s++)
     {
-        handled = false;
+	handled = false;
 
-        // Check for object type.
-        //
-        for (i = 0; i <= 7 && !handled; i++)
-        {
-            if (  object_types[i].lett == *s
-               && !(  (  (object_types[i].perm & CA_STAFF)
-                      && !Staff(player))
-                   || (  (object_types[i].perm & CA_ADMIN)
-                      && !WizRoy(player))
-                   || (  (object_types[i].perm & CA_WIZARD)
-                      && !Wizard(player))
-                   || (  (object_types[i].perm & CA_GOD)
-                      && !God(player))))
-            {
-                if (  type != NOTYPE
-                   && type != i)
-                {
-                    UTF8 *p = tprintf(T("%c: Conflicting type specifications."),
-                        *s);
-                    notify(player, p);
-                    return false;
-                }
-                type = i;
-                handled = true;
-            }
-        }
+	// Check for object type.
+	//
+	for (i = 0; i <= 7 && !handled; i++)
+	{
+	    if (  object_types[i].lett == *s
+	       && !(  (  (object_types[i].perm & CA_STAFF)
+		      && !Staff(player))
+		   || (  (object_types[i].perm & CA_ADMIN)
+		      && !WizRoy(player))
+		   || (  (object_types[i].perm & CA_WIZARD)
+		      && !Wizard(player))
+		   || (  (object_types[i].perm & CA_GOD)
+		      && !God(player))))
+	    {
+		if (  type != NOTYPE
+		   && type != i)
+		{
+		    UTF8 *p = tprintf(T("%c: Conflicting type specifications."),
+			*s);
+		    notify(player, p);
+		    return false;
+		}
+		type = i;
+		handled = true;
+	    }
+	}
 
-        // Check generic flags.
-        //
-        if (handled)
-        {
-            continue;
-        }
-        FLAGNAMEENT *fp;
-        for (fp = gen_flag_names; fp->flagname && !handled; fp++)
-        {
-            FLAGBITENT *fbe = fp->fbe;
-            if (  !fp->bPositive
-               || fbe->flaglett == ' ')
-            {
-                continue;
-            }
-            if (  fbe->flaglett == *s
-               && !(  (  (fbe->listperm & CA_STAFF)
-                      && !Staff(player))
-                   || (  (fbe->listperm & CA_ADMIN)
-                      && !WizRoy(player))
-                   || (  (fbe->listperm & CA_WIZARD)
-                      && !Wizard(player))
-                   || (  (fbe->listperm & CA_GOD)
-                      && !God(player))))
-            {
-                flagmask.word[fbe->flagflag] |= fbe->flagvalue;
-                handled = true;
-            }
-        }
+	// Check generic flags.
+	//
+	if (handled)
+	{
+	    continue;
+	}
+	FLAGNAMEENT *fp;
+	for (fp = gen_flag_names; fp->flagname && !handled; fp++)
+	{
+	    FLAGBITENT *fbe = fp->fbe;
+	    if (  !fp->bPositive
+	       || fbe->flaglett == ' ')
+	    {
+		continue;
+	    }
+	    if (  fbe->flaglett == *s
+	       && !(  (  (fbe->listperm & CA_STAFF)
+		      && !Staff(player))
+		   || (  (fbe->listperm & CA_ADMIN)
+		      && !WizRoy(player))
+		   || (  (fbe->listperm & CA_WIZARD)
+		      && !Wizard(player))
+		   || (  (fbe->listperm & CA_GOD)
+		      && !God(player))))
+	    {
+		flagmask.word[fbe->flagflag] |= fbe->flagvalue;
+		handled = true;
+	    }
+	}
 
-        if (!handled)
-        {
-            notify(player,
-                   tprintf(T("%c: Flag unknown or not valid for specified object type"),
-                       *s));
-            return false;
-        }
+	if (!handled)
+	{
+	    notify(player,
+		   tprintf(T("%c: Flag unknown or not valid for specified object type"),
+		       *s));
+	    return false;
+	}
     }
 
     // Return flags to search for and type.
@@ -1229,24 +1229,24 @@ void decompile_flags(dbref player, dbref thing, UTF8 *thingname)
     FLAGNAMEENT *fp;
     for (fp = gen_flag_names; fp->flagname; fp++)
     {
-        FLAGBITENT *fbe = fp->fbe;
+	FLAGBITENT *fbe = fp->fbe;
 
-        // Only handle positive-sense entries.
-        // Skip if we shouldn't decompile this flag.
-        // Skip if this flag isn't set.
-        // Skip if we can't see this flag.
-        //
-        if (  !fp->bPositive
-           || (fbe->listperm & CA_NO_DECOMP)
-           || (db[thing].fs.word[fbe->flagflag] & fbe->flagvalue) == 0
-           || !check_access(player, fbe->listperm))
-        {
-            continue;
-        }
+	// Only handle positive-sense entries.
+	// Skip if we shouldn't decompile this flag.
+	// Skip if this flag isn't set.
+	// Skip if we can't see this flag.
+	//
+	if (  !fp->bPositive
+	   || (fbe->listperm & CA_NO_DECOMP)
+	   || (db[thing].fs.word[fbe->flagflag] & fbe->flagvalue) == 0
+	   || !check_access(player, fbe->listperm))
+	{
+	    continue;
+	}
 
-        // Report this flag.
-        //
-        notify(player, tprintf(T("@set %s=%s"), thingname, fp->flagname));
+	// Report this flag.
+	//
+	notify(player, tprintf(T("@set %s=%s"), thingname, fp->flagname));
     }
 }
 
@@ -1260,7 +1260,7 @@ static bool flag_rename(UTF8 *alias, UTF8 *newname)
     UTF8 *pCheckedAlias = MakeCanonicalFlagName(alias, &nAlias, &bValidAlias);
     if (!bValidAlias)
     {
-        return false;
+	return false;
     }
     UTF8 *pAlias = alloc_sbuf("flag_rename.old");
     memcpy(pAlias, pCheckedAlias, nAlias+1);
@@ -1270,8 +1270,8 @@ static bool flag_rename(UTF8 *alias, UTF8 *newname)
     UTF8 *pCheckedNewName = MakeCanonicalFlagName(newname, &nNewName, &bValidNewName);
     if (!bValidNewName)
     {
-        free_sbuf(pAlias);
-        return false;
+	free_sbuf(pAlias);
+	return false;
     }
     UTF8 *pNewName = alloc_sbuf("flag_rename.new");
     memcpy(pNewName, pCheckedNewName, nNewName+1);
@@ -1280,22 +1280,22 @@ static bool flag_rename(UTF8 *alias, UTF8 *newname)
     flag1 = (FLAGNAMEENT *)hashfindLEN(pAlias, nAlias, &mudstate.flags_htab);
     if (flag1 != NULL)
     {
-        FLAGNAMEENT *flag2;
-        flag2 = (FLAGNAMEENT *)hashfindLEN(pNewName, nNewName, &mudstate.flags_htab);
-        if (flag2 == NULL)
-        {
-            hashaddLEN(pNewName, nNewName, flag1, &mudstate.flags_htab);
+	FLAGNAMEENT *flag2;
+	flag2 = (FLAGNAMEENT *)hashfindLEN(pNewName, nNewName, &mudstate.flags_htab);
+	if (flag2 == NULL)
+	{
+	    hashaddLEN(pNewName, nNewName, flag1, &mudstate.flags_htab);
 
-            if (flag1->flagname != flag1->pOrigName)
-            {
-                MEMFREE(flag1->flagname);
-            }
-            flag1->flagname = StringCloneLen(pNewName, nNewName);
+	    if (flag1->flagname != flag1->pOrigName)
+	    {
+		MEMFREE(flag1->flagname);
+	    }
+	    flag1->flagname = StringCloneLen(pNewName, nNewName);
 
-            free_sbuf(pAlias);
-            free_sbuf(pNewName);
-            return true;
-        }
+	    free_sbuf(pAlias);
+	    free_sbuf(pNewName);
+	    return true;
+	}
     }
     free_sbuf(pAlias);
     free_sbuf(pNewName);
@@ -1303,7 +1303,7 @@ static bool flag_rename(UTF8 *alias, UTF8 *newname)
 }
 
 void do_flag(dbref executor, dbref caller, dbref enactor, int eval, int key, int nargs,
-             UTF8 *flag1, UTF8 *flag2, const UTF8 *cargs[], int ncargs)
+	     UTF8 *flag1, UTF8 *flag2, const UTF8 *cargs[], int ncargs)
 {
     UNUSED_PARAMETER(caller);
     UNUSED_PARAMETER(enactor);
@@ -1313,49 +1313,49 @@ void do_flag(dbref executor, dbref caller, dbref enactor, int eval, int key, int
 
     if (key & FLAG_REMOVE)
     {
-        if (nargs == 2)
-        {
-            notify(executor, T("Extra argument ignored."));
-        }
-        int nAlias;
-        bool bValidAlias;
-        UTF8 *pCheckedAlias = MakeCanonicalFlagName(flag1, &nAlias, &bValidAlias);
-        if (bValidAlias)
-        {
-            FLAGNAMEENT *lookup;
-            lookup = (FLAGNAMEENT *)hashfindLEN(pCheckedAlias, nAlias, &mudstate.flags_htab);
-            if (lookup)
-            {
-                if (  lookup->flagname != lookup->pOrigName
-                   && mux_stricmp(lookup->flagname, pCheckedAlias) == 0)
-                {
-                    MEMFREE(lookup->flagname);
-                    lookup->flagname = (UTF8 *)lookup->pOrigName;
-                    hashdeleteLEN(pCheckedAlias, nAlias, &mudstate.flags_htab);
-                    notify(executor, tprintf(T("Flag name \xE2\x80\x98%s\xE2\x80\x99 removed from the hash table."), pCheckedAlias));
-                }
-                else
-                {
-                    notify(executor, T("Error: You can\xE2\x80\x99t remove the present flag name from the hash table."));
-                }
-            }
-        }
+	if (nargs == 2)
+	{
+	    notify(executor, T("Extra argument ignored."));
+	}
+	int nAlias;
+	bool bValidAlias;
+	UTF8 *pCheckedAlias = MakeCanonicalFlagName(flag1, &nAlias, &bValidAlias);
+	if (bValidAlias)
+	{
+	    FLAGNAMEENT *lookup;
+	    lookup = (FLAGNAMEENT *)hashfindLEN(pCheckedAlias, nAlias, &mudstate.flags_htab);
+	    if (lookup)
+	    {
+		if (  lookup->flagname != lookup->pOrigName
+		   && mux_stricmp(lookup->flagname, pCheckedAlias) == 0)
+		{
+		    MEMFREE(lookup->flagname);
+		    lookup->flagname = (UTF8 *)lookup->pOrigName;
+		    hashdeleteLEN(pCheckedAlias, nAlias, &mudstate.flags_htab);
+		    notify(executor, tprintf(T("Flag name \xE2\x80\x98%s\xE2\x80\x99 removed from the hash table."), pCheckedAlias));
+		}
+		else
+		{
+		    notify(executor, T("Error: You can\xE2\x80\x99t remove the present flag name from the hash table."));
+		}
+	    }
+	}
     }
     else
     {
-        if (nargs < 2)
-        {
-            notify(executor, T("You must specify a flag and a name."));
-            return;
-        }
-        if (flag_rename(flag1, flag2))
-        {
-            notify(executor, T("Flag name changed."));
-        }
-        else
-        {
-            notify(executor, T("Error: Bad flagname given or flag not found."));
-        }
+	if (nargs < 2)
+	{
+	    notify(executor, T("You must specify a flag and a name."));
+	    return;
+	}
+	if (flag_rename(flag1, flag2))
+	{
+	    notify(executor, T("Flag name changed."));
+	}
+	else
+	{
+	    notify(executor, T("Error: Bad flagname given or flag not found."));
+	}
     }
 }
 
@@ -1382,15 +1382,15 @@ CF_HAND(cf_flag_name)
        || !namestr
        || !*namestr)
     {
-        return -1;
+	return -1;
     }
 
     if (flag_rename(flagstr, namestr))
     {
-        return 0;
+	return 0;
     }
     else
     {
-        return -1;
+	return -1;
     }
 }

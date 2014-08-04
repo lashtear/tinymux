@@ -49,9 +49,9 @@ To use a binary distribution:
     following lines (depending on which archiving program you have chosen to
     use).
 
-        jar32 x mux-2.12.0.1.win32.bin.j
-        tar xzf mux-2.12.0.1.win32.bin.tar.gz
-        pkzip -extract -directories mux-2.12.0.1.win32.bin.zip
+	jar32 x mux-2.12.0.1.win32.bin.j
+	tar xzf mux-2.12.0.1.win32.bin.tar.gz
+	pkzip -extract -directories mux-2.12.0.1.win32.bin.zip
 
     -or-
 
@@ -83,9 +83,9 @@ To use a source distribution:
     following lines (depending on which archiving program you have chosen to
     use).
 
-        jar32 x mux-2.12.0.1.win32.src.j
-        tar xzf mux-2.12.0.1.win32.src.tar.gz
-        pkzip -extract -directories mux-2.12.0.1.win32.src.zip
+	jar32 x mux-2.12.0.1.win32.src.j
+	tar xzf mux-2.12.0.1.win32.src.tar.gz
+	pkzip -extract -directories mux-2.12.0.1.win32.src.zip
 
     -or-
 

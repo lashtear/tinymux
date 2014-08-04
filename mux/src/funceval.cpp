@@ -53,34 +53,34 @@ bool parse_and_get_attrib
     //
     if (!parse_attrib(executor, fargs[0], thing, &ap))
     {
-        *thing = executor;
-        ap = atr_str(fargs[0]);
+	*thing = executor;
+	ap = atr_str(fargs[0]);
     }
 
     // Make sure we got a good attribute.
     //
     if (!ap)
     {
-        return false;
+	return false;
     }
 
     // Use it if we can access it, otherwise return an error.
     //
     if (!See_attr(executor, *thing, ap))
     {
-        safe_noperm(buff, bufc);
-        return false;
+	safe_noperm(buff, bufc);
+	return false;
     }
 
     *atext = atr_pget(*thing, ap->number, paowner, paflags);
     if (!*atext)
     {
-        return false;
+	return false;
     }
     else if (!**atext)
     {
-        free_lbuf(*atext);
-        return false;
+	free_lbuf(*atext);
+	return false;
     }
     return true;
 }
@@ -100,32 +100,32 @@ FUNCTION(fun_cwho)
     struct channel *ch = select_channel(fargs[0]);
     if (!ch)
     {
-        safe_str(T("#-1 CHANNEL NOT FOUND"), buff, bufc);
-        return;
+	safe_str(T("#-1 CHANNEL NOT FOUND"), buff, bufc);
+	return;
     }
     if (  !mudconf.have_comsys
        || (  !Comm_All(executor)
-          && !Controls(executor, ch->charge_who)))
+	  && !Controls(executor, ch->charge_who)))
     {
-        safe_noperm(buff, bufc);
-        return;
+	safe_noperm(buff, bufc);
+	return;
     }
 
     int match_type = CWHO_ON;
     if (nfargs == 2)
     {
-        if (mux_stricmp(fargs[1], T("all")) == 0)
-        {
-            match_type = CWHO_ALL;
-        }
-        else if (mux_stricmp(fargs[1], T("off")) == 0)
-        {
-            match_type = CWHO_OFF;
-        }
-        else if (mux_stricmp(fargs[1], T("on")) == 0)
-        {
-            match_type = CWHO_ON;
-        }
+	if (mux_stricmp(fargs[1], T("all")) == 0)
+	{
+	    match_type = CWHO_ALL;
+	}
+	else if (mux_stricmp(fargs[1], T("off")) == 0)
+	{
+	    match_type = CWHO_OFF;
+	}
+	else if (mux_stricmp(fargs[1], T("on")) == 0)
+	{
+	    match_type = CWHO_ON;
+	}
     }
 
     ITL pContext;
@@ -133,14 +133,14 @@ FUNCTION(fun_cwho)
     ItemToList_Init(&pContext, buff, bufc, '#');
     for (user = ch->on_users; user; user = user->on_next)
     {
-        if (  (  match_type == CWHO_ALL
-              || (  (Connected(user->who) || isThing(user->who))
-                 && (  (match_type == CWHO_ON && user->bUserIsOn)
-                    || (match_type == CWHO_OFF && !(user->bUserIsOn)))))
-           && !ItemToList_AddInteger(&pContext, user->who))
-        {
-            break;
-        }
+	if (  (  match_type == CWHO_ALL
+	      || (  (Connected(user->who) || isThing(user->who))
+		 && (  (match_type == CWHO_ON && user->bUserIsOn)
+		    || (match_type == CWHO_OFF && !(user->bUserIsOn)))))
+	   && !ItemToList_AddInteger(&pContext, user->who))
+	{
+	    break;
+	}
     }
     ItemToList_Final(&pContext);
 }
@@ -177,16 +177,16 @@ FUNCTION(fun_ansi)
     int iArg0;
     for (iArg0 = 0; iArg0 + 1 < nfargs; iArg0 += 2)
     {
-        UTF8 tmp[LBUF_SIZE];
-        UTF8 *bp = tmp;
+	UTF8 tmp[LBUF_SIZE];
+	UTF8 *bp = tmp;
 
-        safe_str(LettersToBinary(fargs[iArg0]), tmp, &bp);
-        safe_str(fargs[iArg0+1], tmp, &bp);
-        *bp = '\0';
+	safe_str(LettersToBinary(fargs[iArg0]), tmp, &bp);
+	safe_str(fargs[iArg0+1], tmp, &bp);
+	*bp = '\0';
 
-        size_t nBufferAvailable = LBUF_SIZE - (*bufc - buff) - 1;
-        size_t nLen = TruncateToBuffer(tmp, *bufc, nBufferAvailable);
-        *bufc += nLen;
+	size_t nBufferAvailable = LBUF_SIZE - (*bufc - buff) - 1;
+	size_t nLen = TruncateToBuffer(tmp, *bufc, nBufferAvailable);
+	*bufc += nLen;
     }
 }
 
@@ -201,21 +201,21 @@ FUNCTION(fun_zone)
 
     if (!mudconf.have_zones)
     {
-        safe_str(T("#-1 ZONES DISABLED"), buff, bufc);
-        return;
+	safe_str(T("#-1 ZONES DISABLED"), buff, bufc);
+	return;
     }
     dbref it = match_thing_quiet(executor, fargs[0]);
     if (!Good_obj(it))
     {
-        safe_match_result(it, buff, bufc);
+	safe_match_result(it, buff, bufc);
     }
     else if (Examinable(executor, it))
     {
-        safe_tprintf_str(buff, bufc, T("#%d"), Zone(it));
+	safe_tprintf_str(buff, bufc, T("#%d"), Zone(it));
     }
     else
     {
-        safe_nothing(buff, bufc);
+	safe_nothing(buff, bufc);
     }
 }
 
@@ -225,19 +225,19 @@ bool check_command(dbref player, const UTF8 *name, UTF8 *buff, UTF8 **bufc)
     CMDENT *cmdp = (CMDENT *)hashfindLEN(name, strlen((const char *)name), &mudstate.command_htab);
     if (cmdp)
     {
-        // Perform checks similiar to (but not exactly like) the
-        // ones in process_cmdent(): object type checks, permission
-        // checks, ands global flags.
-        //
-        if (  Invalid_Objtype(player)
-           || !check_access(player, cmdp->perms)
-           || (  !Builder(player)
-              && Protect(CA_GBL_BUILD)
-              && !(mudconf.control_flags & CF_BUILD)))
-        {
-            safe_noperm(buff, bufc);
-            return true;
-        }
+	// Perform checks similiar to (but not exactly like) the
+	// ones in process_cmdent(): object type checks, permission
+	// checks, ands global flags.
+	//
+	if (  Invalid_Objtype(player)
+	   || !check_access(player, cmdp->perms)
+	   || (  !Builder(player)
+	      && Protect(CA_GBL_BUILD)
+	      && !(mudconf.control_flags & CF_BUILD)))
+	{
+	    safe_noperm(buff, bufc);
+	    return true;
+	}
     }
     return false;
 }
@@ -250,7 +250,7 @@ FUNCTION(fun_link)
 
     if (check_command(executor, T("@link"), buff, bufc))
     {
-        return;
+	return;
     }
     do_link(executor, caller, enactor, eval, 0, 2, fargs[0], fargs[1], NULL, 0);
 }
@@ -263,7 +263,7 @@ FUNCTION(fun_trigger)
 
     if (check_command(executor, T("@trigger"), buff, bufc))
     {
-        return;
+	return;
     }
     do_trigger(executor, caller, enactor, eval, TRIG_QUIET, fargs[0], fargs+1, nfargs-1, NULL, 0);
 }
@@ -276,7 +276,7 @@ FUNCTION(fun_wipe)
 
     if (check_command(executor, T("@wipe"), buff, bufc))
     {
-        return;
+	return;
     }
     do_wipe(executor, caller, enactor, eval, 0, fargs[0], NULL, 0);
 }
@@ -288,28 +288,28 @@ FUNCTION(fun_tel)
 
     if (check_command(executor, T("@teleport"), buff, bufc))
     {
-        return;
+	return;
     }
 
     int key = 0;
     if (3 <= nfargs)
     {
-        const UTF8 *p = fargs[2];
-        for (int i = 0; '\0' != p[i] && key != (TELEPORT_QUIET|TELEPORT_LIST); i++)
-        {
-            switch (p[i])
-            {
-            case 'q':
-            case 'Q':
-                key |= TELEPORT_QUIET;
-                break;
+	const UTF8 *p = fargs[2];
+	for (int i = 0; '\0' != p[i] && key != (TELEPORT_QUIET|TELEPORT_LIST); i++)
+	{
+	    switch (p[i])
+	    {
+	    case 'q':
+	    case 'Q':
+		key |= TELEPORT_QUIET;
+		break;
 
-            case 'l':
-            case 'L':
-                key |= TELEPORT_LIST;
-                break;
-            }
-        }
+	    case 'l':
+	    case 'L':
+		key |= TELEPORT_LIST;
+		break;
+	    }
+	}
     }
 
     do_teleport(executor, caller, enactor, eval, key, 2, fargs[0], fargs[1], NULL, 0);
@@ -326,7 +326,7 @@ FUNCTION(fun_pemit)
 
     if (check_command(executor, T("@pemit"), buff, bufc))
     {
-        return;
+	return;
     }
     do_pemit_list(executor, PEMIT_PEMIT, false, 0, fargs[0], 0, fargs[1]);
 }
@@ -342,7 +342,7 @@ FUNCTION(fun_oemit)
 
     if (check_command(executor, T("@oemit"), buff, bufc))
     {
-        return;
+	return;
     }
     do_pemit_single(executor, PEMIT_OEMIT, false, 0, fargs[0], 0, fargs[1]);
 }
@@ -356,7 +356,7 @@ FUNCTION(fun_emit)
 
     if (check_command(executor, T("@emit"), buff, bufc))
     {
-        return;
+	return;
     }
     do_say(executor, caller, enactor, 0, SAY_EMIT, fargs[0], NULL, 0);
 }
@@ -372,7 +372,7 @@ FUNCTION(fun_remit)
 
     if (check_command(executor, T("@pemit"), buff, bufc))
     {
-        return;
+	return;
     }
     do_pemit_single(executor, PEMIT_PEMIT, true, 0, fargs[0], 0, fargs[1]);
 }
@@ -384,7 +384,7 @@ FUNCTION(fun_cemit)
 
     if (check_command(executor, T("@cemit"), buff, bufc))
     {
-        return;
+	return;
     }
     do_cemit(executor, caller, enactor, eval, 0, nfargs, fargs[0], fargs[1], NULL, 0);
 }
@@ -397,23 +397,23 @@ FUNCTION(fun_create)
     SEP sep;
     if (!OPTIONAL_DELIM(3, sep, DELIM_DFLT))
     {
-        return;
+	return;
     }
 
     UTF8 *name = fargs[0];
 
     if (!name || !*name)
     {
-        safe_str(T("#-1 ILLEGAL NAME"), buff, bufc);
-        return;
+	safe_str(T("#-1 ILLEGAL NAME"), buff, bufc);
+	return;
     }
     if (nfargs >= 3 && *fargs[2])
     {
-        sep.str[0] = *fargs[2];
+	sep.str[0] = *fargs[2];
     }
     else
     {
-        sep.str[0] = 't';
+	sep.str[0] = 't';
     }
 
     dbref thing;
@@ -423,85 +423,85 @@ FUNCTION(fun_create)
     {
     case 'r':
 
-        if (check_command(executor, T("@dig"), buff, bufc))
-        {
-            return;
-        }
-        thing = create_obj(executor, TYPE_ROOM, name, 0);
-        if (thing != NOTHING)
-        {
-            local_data_create(thing);
+	if (check_command(executor, T("@dig"), buff, bufc))
+	{
+	    return;
+	}
+	thing = create_obj(executor, TYPE_ROOM, name, 0);
+	if (thing != NOTHING)
+	{
+	    local_data_create(thing);
 #if defined(TINYMUX_MODULES)
-            ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
-            while (NULL != p)
-            {
-                p->pSink->data_create(thing);
-                p = p->pNext;
-            }
+	    ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
+	    while (NULL != p)
+	    {
+		p->pSink->data_create(thing);
+		p = p->pNext;
+	    }
 #endif // TINYMUX_MODULES
-        }
-        break;
+	}
+	break;
 
     case 'e':
 
-        if (check_command(executor, T("@open"), buff, bufc))
-        {
-            return;
-        }
-        thing = create_obj(executor, TYPE_EXIT, name, 0);
-        if (thing != NOTHING)
-        {
-            s_Exits(thing, executor);
-            s_Next(thing, Exits(executor));
-            s_Exits(executor, thing);
-            local_data_create(thing);
+	if (check_command(executor, T("@open"), buff, bufc))
+	{
+	    return;
+	}
+	thing = create_obj(executor, TYPE_EXIT, name, 0);
+	if (thing != NOTHING)
+	{
+	    s_Exits(thing, executor);
+	    s_Next(thing, Exits(executor));
+	    s_Exits(executor, thing);
+	    local_data_create(thing);
 #if defined(TINYMUX_MODULES)
-            ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
-            while (NULL != p)
-            {
-                p->pSink->data_create(thing);
-                p = p->pNext;
-            }
+	    ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
+	    while (NULL != p)
+	    {
+		p->pSink->data_create(thing);
+		p = p->pNext;
+	    }
 #endif // TINYMUX_MODULES
-        }
-        break;
+	}
+	break;
 
     default:
 
-        if (check_command(executor, T("@create"), buff, bufc))
-        {
-            return;
-        }
-        if (*fargs[1])
-        {
-            cost = mux_atol(fargs[1]);
-            if (  cost < mudconf.createmin
-               || mudconf.createmax < cost)
-            {
-                safe_range(buff, bufc);
-                return;
-            }
-        }
-        else
-        {
-            cost = mudconf.createmin;
-        }
-        thing = create_obj(executor, TYPE_THING, name, cost);
-        if (thing != NOTHING)
-        {
-            move_via_generic(thing, executor, NOTHING, 0);
-            s_Home(thing, new_home(executor));
-            local_data_create(thing);
+	if (check_command(executor, T("@create"), buff, bufc))
+	{
+	    return;
+	}
+	if (*fargs[1])
+	{
+	    cost = mux_atol(fargs[1]);
+	    if (  cost < mudconf.createmin
+	       || mudconf.createmax < cost)
+	    {
+		safe_range(buff, bufc);
+		return;
+	    }
+	}
+	else
+	{
+	    cost = mudconf.createmin;
+	}
+	thing = create_obj(executor, TYPE_THING, name, cost);
+	if (thing != NOTHING)
+	{
+	    move_via_generic(thing, executor, NOTHING, 0);
+	    s_Home(thing, new_home(executor));
+	    local_data_create(thing);
 #if defined(TINYMUX_MODULES)
-            ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
-            while (NULL != p)
-            {
-                p->pSink->data_create(thing);
-                p = p->pNext;
-            }
+	    ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
+	    while (NULL != p)
+	    {
+		p->pSink->data_create(thing);
+		p = p->pNext;
+	    }
 #endif // TINYMUX_MODULES
-        }
-        break;
+	}
+	break;
     }
     safe_tprintf_str(buff, bufc, T("#%d"), thing);
 }
@@ -515,7 +515,7 @@ FUNCTION(fun_destroy)
 
     if (check_command(executor, T("@destroy"), buff, bufc))
     {
-        return;
+	return;
     }
     do_destroy(executor, caller, enactor, 0, DEST_ONE, fargs[0], NULL, 0);
 }
@@ -533,18 +533,18 @@ FUNCTION(fun_textfile)
     UTF8  *pCased = mux_strlwr(fargs[0], nCased);
 
     CMDENT_ONE_ARG *cmdp = (CMDENT_ONE_ARG *)hashfindLEN(pCased, nCased,
-        &mudstate.command_htab);
+	&mudstate.command_htab);
 
     if (  !cmdp
        || cmdp->handler != do_help)
     {
-        safe_str(T("#-1 NOT FOUND"), buff, bufc);
-        return;
+	safe_str(T("#-1 NOT FOUND"), buff, bufc);
+	return;
     }
 
     if (check_command(executor, pCased, buff, bufc))
     {
-        return;
+	return;
     }
 
     help_helper(executor, cmdp->extra, fargs[1], buff, bufc);
@@ -558,9 +558,9 @@ static void set_attr_internal(dbref player, dbref thing, int attrnum, UTF8 *attr
 {
     if (!Good_obj(thing))
     {
-        safe_noperm(buff, bufc);
-        notify_quiet(player, T("You shouldn\xE2\x80\x99t be rummaging through the garbage."));
-        return;
+	safe_noperm(buff, bufc);
+	notify_quiet(player, T("You shouldn\xE2\x80\x99t be rummaging through the garbage."));
+	return;
     }
 
     dbref aowner;
@@ -570,19 +570,19 @@ static void set_attr_internal(dbref player, dbref thing, int attrnum, UTF8 *attr
     if (  pattr
        && bCanSetAttr(player, thing, pattr))
     {
-        bool could_hear = Hearer(thing);
-        atr_add(thing, attrnum, attrtext, Owner(player), aflags);
-        handle_ears(thing, could_hear, Hearer(thing));
-        if (  !(key & SET_QUIET)
-           && !Quiet(player)
-           && !Quiet(thing))
-        {
-            notify_quiet(player, T("Set."));
-        }
+	bool could_hear = Hearer(thing);
+	atr_add(thing, attrnum, attrtext, Owner(player), aflags);
+	handle_ears(thing, could_hear, Hearer(thing));
+	if (  !(key & SET_QUIET)
+	   && !Quiet(player)
+	   && !Quiet(thing))
+	{
+	    notify_quiet(player, T("Set."));
+	}
     }
     else
     {
-        safe_noperm(buff, bufc);
+	safe_noperm(buff, bufc);
     }
 }
 
@@ -597,7 +597,7 @@ FUNCTION(fun_set)
 
     if (check_command(executor, T("@set"), buff, bufc))
     {
-        return;
+	return;
     }
 
     dbref thing, aowner;
@@ -609,66 +609,66 @@ FUNCTION(fun_set)
     //
     if (parse_attrib(executor, fargs[0], &thing, &pattr))
     {
-        if (  pattr
-           && See_attr(executor, thing, pattr))
-        {
-            UTF8 *flagname = fargs[1];
+	if (  pattr
+	   && See_attr(executor, thing, pattr))
+	{
+	    UTF8 *flagname = fargs[1];
 
-            // You must specify a flag name.
-            //
-            if (flagname[0] == '\0')
-            {
-                safe_str(T("#-1 UNSPECIFIED PARAMETER"), buff, bufc);
-                return;
-            }
+	    // You must specify a flag name.
+	    //
+	    if (flagname[0] == '\0')
+	    {
+		safe_str(T("#-1 UNSPECIFIED PARAMETER"), buff, bufc);
+		return;
+	    }
 
-            // Check for clearing.
-            //
-            bool clear = false;
-            if (flagname[0] == NOT_TOKEN)
-            {
-                flagname++;
-                clear = true;
-            }
+	    // Check for clearing.
+	    //
+	    bool clear = false;
+	    if (flagname[0] == NOT_TOKEN)
+	    {
+		flagname++;
+		clear = true;
+	    }
 
-            // Make sure player specified a valid attribute flag.
-            //
-            unsigned int flagvalue;
-            if (!search_nametab(executor, indiv_attraccess_nametab, flagname, &flagvalue))
-            {
-                safe_str(T("#-1 CANNOT SET"), buff, bufc);
-                return;
-            }
+	    // Make sure player specified a valid attribute flag.
+	    //
+	    unsigned int flagvalue;
+	    if (!search_nametab(executor, indiv_attraccess_nametab, flagname, &flagvalue))
+	    {
+		safe_str(T("#-1 CANNOT SET"), buff, bufc);
+		return;
+	    }
 
-            // Make sure the object has the attribute present.
-            //
-            if (!atr_get_info(thing, pattr->number, &aowner, &aflags))
-            {
-                safe_str(T("#-1 ATTRIBUTE NOT PRESENT ON OBJECT"), buff, bufc);
-                return;
-            }
+	    // Make sure the object has the attribute present.
+	    //
+	    if (!atr_get_info(thing, pattr->number, &aowner, &aflags))
+	    {
+		safe_str(T("#-1 ATTRIBUTE NOT PRESENT ON OBJECT"), buff, bufc);
+		return;
+	    }
 
-            // Make sure we can write to the attribute.
-            //
-            if (!bCanSetAttr(executor, thing, pattr))
-            {
-                safe_noperm(buff, bufc);
-                return;
-            }
+	    // Make sure we can write to the attribute.
+	    //
+	    if (!bCanSetAttr(executor, thing, pattr))
+	    {
+		safe_noperm(buff, bufc);
+		return;
+	    }
 
-            // Go do it.
-            //
-            if (clear)
-            {
-                aflags &= ~flagvalue;
-            }
-            else
-            {
-                aflags |= flagvalue;
-            }
-            atr_set_flags(thing, pattr->number, aflags);
-            return;
-        }
+	    // Go do it.
+	    //
+	    if (clear)
+	    {
+		aflags &= ~flagvalue;
+	    }
+	    else
+	    {
+		aflags |= flagvalue;
+	    }
+	    atr_set_flags(thing, pattr->number, aflags);
+	    return;
+	}
     }
 
     // Find thing.
@@ -676,8 +676,8 @@ FUNCTION(fun_set)
     thing = match_controlled_quiet(executor, fargs[0]);
     if (!Good_obj(thing))
     {
-        safe_nothing(buff, bufc);
-        return;
+	safe_nothing(buff, bufc);
+	return;
     }
 
     // Check for attr set first.
@@ -685,63 +685,63 @@ FUNCTION(fun_set)
     UTF8 *p;
     for (p = fargs[1]; *p && *p != ':'; p++)
     {
-        ; // Nothing
+	; // Nothing
     }
 
     if (*p)
     {
-        *p++ = 0;
-        int atr = mkattr(executor, fargs[1]);
-        if (atr <= 0)
-        {
-            safe_str(T("#-1 UNABLE TO CREATE ATTRIBUTE"), buff, bufc);
-            return;
-        }
-        pattr = atr_num(atr);
-        if (!pattr)
-        {
-            safe_noperm(buff, bufc);
-            return;
-        }
-        if (!bCanSetAttr(executor, thing, pattr))
-        {
-            safe_noperm(buff, bufc);
-            return;
-        }
+	*p++ = 0;
+	int atr = mkattr(executor, fargs[1]);
+	if (atr <= 0)
+	{
+	    safe_str(T("#-1 UNABLE TO CREATE ATTRIBUTE"), buff, bufc);
+	    return;
+	}
+	pattr = atr_num(atr);
+	if (!pattr)
+	{
+	    safe_noperm(buff, bufc);
+	    return;
+	}
+	if (!bCanSetAttr(executor, thing, pattr))
+	{
+	    safe_noperm(buff, bufc);
+	    return;
+	}
 
-        // Check for _
-        //
-        if (*p == '_')
-        {
-            p++;
-            ATTR *pattr2;
-            dbref thing2;
+	// Check for _
+	//
+	if (*p == '_')
+	{
+	    p++;
+	    ATTR *pattr2;
+	    dbref thing2;
 
-            if (!( parse_attrib(executor, p, &thing2, &pattr2)
-                && pattr2))
-            {
-                safe_nomatch(buff, bufc);
-                return;
-            }
-            UTF8 *buff2 = alloc_lbuf("fun_set");
-            atr_pget_str(buff2, thing2, pattr2->number, &aowner, &aflags);
+	    if (!( parse_attrib(executor, p, &thing2, &pattr2)
+		&& pattr2))
+	    {
+		safe_nomatch(buff, bufc);
+		return;
+	    }
+	    UTF8 *buff2 = alloc_lbuf("fun_set");
+	    atr_pget_str(buff2, thing2, pattr2->number, &aowner, &aflags);
 
-            if (!See_attr(executor, thing2, pattr2))
-            {
-                safe_noperm(buff, bufc);
-            }
-            else
-            {
-                set_attr_internal(executor, thing, atr, buff2, 0, buff, bufc);
-            }
-            free_lbuf(buff2);
-            return;
-        }
+	    if (!See_attr(executor, thing2, pattr2))
+	    {
+		safe_noperm(buff, bufc);
+	    }
+	    else
+	    {
+		set_attr_internal(executor, thing, atr, buff2, 0, buff, bufc);
+	    }
+	    free_lbuf(buff2);
+	    return;
+	}
 
-        // Go set it.
-        //
-        set_attr_internal(executor, thing, atr, p, 0, buff, bufc);
-        return;
+	// Go set it.
+	//
+	set_attr_internal(executor, thing, atr, p, 0, buff, bufc);
+	return;
     }
 
     // Set/clear a flag.
@@ -762,14 +762,14 @@ static size_t GenCode(UTF8 *pCode, size_t nCode, const UTF8 *pCodeASCII)
     size_t i = 0;
     size_t j = 0;
     while (  pIn[i]
-          && j < nCode - 1)
+	  && j < nCode - 1)
     {
-        UTF8 ch = pIn[i++];
-        if (  ' ' <= ch
-           && ch <= '~')
-        {
-            pCode[j++] = static_cast<UTF8>(ch - ' ');
-        }
+	UTF8 ch = pIn[i++];
+	if (  ' ' <= ch
+	   && ch <= '~')
+	{
+	    pCode[j++] = static_cast<UTF8>(ch - ' ');
+	}
     }
     pCode[j] = '\0';
     return j;
@@ -780,19 +780,19 @@ static UTF8 *crypt_code(UTF8 *code, UTF8 *text, bool type)
     if (  !text
        || text[0] == '\0')
     {
-        return (UTF8 *)"";
+	return (UTF8 *)"";
     }
     if (  !code
        || code[0] == '\0')
     {
-        return text;
+	return text;
     }
 
     UTF8 codebuff[LBUF_SIZE];
     size_t nCode = GenCode(codebuff, sizeof(codebuff), code);
     if (0 == nCode)
     {
-        return text;
+	return text;
     }
 
     static UTF8 textbuff[LBUF_SIZE];
@@ -807,38 +807,38 @@ static UTF8 *crypt_code(UTF8 *code, UTF8 *text, bool type)
     // Encryption loop:
     //
     while (  p[ip]
-          && ir < sizeof(textbuff) - 1)
+	  && ir < sizeof(textbuff) - 1)
     {
-        UTF8 ch = p[ip++];
-        if (  ' ' <= ch
-           && ch <= '~')
-        {
-            int iCode = ch - ' ';
-            if (type)
-            {
-                iCode += codebuff[iq++];
-                if (iMod <= iCode)
-                {
-                    iCode -= iMod;
-                }
-            }
-            else
-            {
-                iCode -= codebuff[iq++];
-                if (iCode < 0)
-                {
-                    iCode += iMod;
-                }
-            }
-            textbuff[ir++] = static_cast<UTF8>(iCode + ' ');
+	UTF8 ch = p[ip++];
+	if (  ' ' <= ch
+	   && ch <= '~')
+	{
+	    int iCode = ch - ' ';
+	    if (type)
+	    {
+		iCode += codebuff[iq++];
+		if (iMod <= iCode)
+		{
+		    iCode -= iMod;
+		}
+	    }
+	    else
+	    {
+		iCode -= codebuff[iq++];
+		if (iCode < 0)
+		{
+		    iCode += iMod;
+		}
+	    }
+	    textbuff[ir++] = static_cast<UTF8>(iCode + ' ');
 
-            nq--;
-            if (0 == nq)
-            {
-                iq = 0;
-                nq = nCode;
-            }
-        }
+	    nq--;
+	    if (0 == nq)
+	    {
+		iq = 0;
+		nq = nCode;
+	    }
+	}
     }
     textbuff[ir] = '\0';
     return textbuff;
@@ -886,21 +886,21 @@ static void scan_zone
 {
     if (!mudconf.have_zones)
     {
-        safe_str(T("#-1 ZONES DISABLED"), buff, bufc);
-        return;
+	safe_str(T("#-1 ZONES DISABLED"), buff, bufc);
+	return;
     }
 
     dbref it = match_thing_quiet(executor, szZone);
     if (!Good_obj(it))
     {
-        safe_match_result(it, buff, bufc);
-        return;
+	safe_match_result(it, buff, bufc);
+	return;
     }
     else if (!(  WizRoy(executor)
-              || Controls(executor, it)))
+	      || Controls(executor, it)))
     {
-        safe_noperm(buff, bufc);
-        return;
+	safe_noperm(buff, bufc);
+	return;
     }
 
     dbref i;
@@ -908,12 +908,12 @@ static void scan_zone
     ItemToList_Init(&pContext, buff, bufc, '#');
     DO_WHOLE_DB(i)
     {
-        if (  Typeof(i) == ObjectType
-           && Zone(i) == it
-           && !ItemToList_AddInteger(&pContext, i))
-        {
-            break;
-        }
+	if (  Typeof(i) == ObjectType
+	   && Zone(i) == it
+	   && !ItemToList_AddInteger(&pContext, i))
+	{
+	    break;
+	}
     }
     ItemToList_Final(&pContext);
 }
@@ -956,14 +956,14 @@ FUNCTION(fun_children)
     dbref it = match_thing_quiet(executor, fargs[0]);
     if (!Good_obj(it))
     {
-        safe_match_result(it, buff, bufc);
-        return;
+	safe_match_result(it, buff, bufc);
+	return;
     }
     else if (!(  WizRoy(executor)
-              || Controls(executor, it)))
+	      || Controls(executor, it)))
     {
-        safe_noperm(buff, bufc);
-        return;
+	safe_noperm(buff, bufc);
+	return;
     }
 
     dbref i;
@@ -971,11 +971,11 @@ FUNCTION(fun_children)
     ItemToList_Init(&pContext, buff, bufc, '#');
     DO_WHOLE_DB(i)
     {
-        if (  Parent(i) == it
-           && !ItemToList_AddInteger(&pContext, i))
-        {
-            break;
-        }
+	if (  Parent(i) == it
+	   && !ItemToList_AddInteger(&pContext, i))
+	{
+	    break;
+	}
     }
     ItemToList_Final(&pContext);
 }
@@ -986,34 +986,34 @@ FUNCTION(fun_objeval)
 
     if (!*fargs[0])
     {
-        return;
+	return;
     }
     UTF8 *name = alloc_lbuf("fun_objeval");
     UTF8 *bp = name;
     mux_exec(fargs[0], LBUF_SIZE-1, name, &bp, executor, caller, enactor,
-             eval|EV_FCHECK|EV_STRIP_CURLY|EV_EVAL, cargs, ncargs);
+	     eval|EV_FCHECK|EV_STRIP_CURLY|EV_EVAL, cargs, ncargs);
     *bp = '\0';
 
     dbref obj = match_thing_quiet(executor, name);
     free_lbuf(name);
     if (!Good_obj(obj))
     {
-        safe_match_result(obj, buff, bufc);
-        return;
+	safe_match_result(obj, buff, bufc);
+	return;
     }
 
     if (!Controls(executor, obj))
     {
-        // The right circumstances were not met, so we are evaluating
-        // as the executor who gave the command instead of the
-        // requested object.
-        //
-        obj = executor;
+	// The right circumstances were not met, so we are evaluating
+	// as the executor who gave the command instead of the
+	// requested object.
+	//
+	obj = executor;
     }
 
     mudstate.nObjEvalNest++;
     mux_exec(fargs[1], LBUF_SIZE-1, buff, bufc, obj, executor, enactor,
-             eval|EV_FCHECK|EV_STRIP_CURLY|EV_EVAL, cargs, ncargs);
+	     eval|EV_FCHECK|EV_STRIP_CURLY|EV_EVAL, cargs, ncargs);
     mudstate.nObjEvalNest--;
 }
 
@@ -1026,7 +1026,7 @@ FUNCTION(fun_localize)
     save_global_regs(preserve);
 
     mux_exec(fargs[0], LBUF_SIZE-1, buff, bufc, executor, caller, enactor,
-        eval|EV_FCHECK|EV_STRIP_CURLY|EV_EVAL, cargs, ncargs);
+	eval|EV_FCHECK|EV_STRIP_CURLY|EV_EVAL, cargs, ncargs);
 
     restore_global_regs(preserve);
     PopRegisters(preserve, MAX_GLOBAL_REGS);
@@ -1058,13 +1058,13 @@ FUNCTION(fun_squish)
 
     if (nfargs == 0)
     {
-        return;
+	return;
     }
 
     SEP sep;
     if (!OPTIONAL_DELIM(2, sep, DELIM_DFLT|DELIM_STRING))
     {
-        return;
+	return;
     }
 
     mux_string *sStr = new mux_string(fargs[0]);
@@ -1100,15 +1100,15 @@ FUNCTION(fun_zfun)
 
     if (!mudconf.have_zones)
     {
-        safe_str(T("#-1 ZONES DISABLED"), buff, bufc);
-        return;
+	safe_str(T("#-1 ZONES DISABLED"), buff, bufc);
+	return;
     }
 
     dbref zone = Zone(executor);
     if (!Good_obj(zone))
     {
-        safe_str(T("#-1 INVALID ZONE"), buff, bufc);
-        return;
+	safe_str(T("#-1 INVALID ZONE"), buff, bufc);
+	return;
     }
 
     // Find the user function attribute.
@@ -1116,8 +1116,8 @@ FUNCTION(fun_zfun)
     int attrib = get_atr(fargs[0]);
     if (!attrib)
     {
-        safe_str(T("#-1 NO SUCH USER FUNCTION"), buff, bufc);
-        return;
+	safe_str(T("#-1 NO SUCH USER FUNCTION"), buff, bufc);
+	return;
     }
     dbref aowner;
     int aflags;
@@ -1126,13 +1126,13 @@ FUNCTION(fun_zfun)
     if (  !pattr
        || !See_attr(executor, zone, pattr))
     {
-        safe_noperm(buff, bufc);
-        free_lbuf(tbuf1);
-        return;
+	safe_noperm(buff, bufc);
+	free_lbuf(tbuf1);
+	return;
     }
     mux_exec(tbuf1, LBUF_SIZE-1, buff, bufc, zone, executor, enactor,
        AttrTrace(aflags, EV_EVAL|EV_STRIP_CURLY|EV_FCHECK),
-        (const UTF8 **)fargs + 1, nfargs - 1);
+	(const UTF8 **)fargs + 1, nfargs - 1);
     free_lbuf(tbuf1);
 }
 
@@ -1141,18 +1141,18 @@ FUNCTION(fun_columns)
     SEP sep;
     if (!OPTIONAL_DELIM(3, sep, DELIM_STRING))
     {
-        return;
+	return;
     }
 
     int nWidth = mux_atol(fargs[1]);
     int nIndent = 0;
     if (nfargs == 4)
     {
-        nIndent = mux_atol(fargs[3]);
-        if (nIndent < 0 || 77 < nIndent)
-        {
-            nIndent = 1;
-        }
+	nIndent = mux_atol(fargs[3]);
+	if (nIndent < 0 || 77 < nIndent)
+	{
+	    nIndent = 1;
+	}
     }
 
     int nRight = nIndent + nWidth;
@@ -1161,26 +1161,26 @@ FUNCTION(fun_columns)
        || nRight < 1
        || 78 < nRight)
     {
-        safe_range(buff, bufc);
-        return;
+	safe_range(buff, bufc);
+	return;
     }
 
     UTF8 *cp = trim_space_sep(fargs[0], sep);
     if (!*cp)
     {
-        return;
+	return;
     }
 
     mux_string *sStr = NULL;
     mux_words *words = NULL;
     try
     {
-        sStr = new mux_string(cp);
-        words = new mux_words(*sStr);
+	sStr = new mux_string(cp);
+	words = new mux_words(*sStr);
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     LBUF_OFFSET nWords;
@@ -1188,9 +1188,9 @@ FUNCTION(fun_columns)
        || NULL == words
        || 0 == (nWords = words->find_Words(sep.str)))
     {
-        delete sStr;
-        delete words;
-        return;
+	delete sStr;
+	delete words;
+	return;
     }
 
     int nColumns = (78-nIndent)/nWidth;
@@ -1202,43 +1202,43 @@ FUNCTION(fun_columns)
     bool bNeedCRLF = false;
     for (LBUF_OFFSET i = 0; i < nWords && 0 < nBufferAvailable; i++)
     {
-        if (iColumn == 0)
-        {
-            safe_fill(buff, bufc, ' ', nIndent);
-        }
+	if (iColumn == 0)
+	{
+	    safe_fill(buff, bufc, ' ', nIndent);
+	}
 
-        iWordStart = words->wordBegin(i);
-        iWordEnd = words->wordEnd(i);
+	iWordStart = words->wordBegin(i);
+	iWordEnd = words->wordEnd(i);
 
-        nLen = iWordEnd.m_point - iWordStart.m_point;
-        if (nWidth < nLen)
-        {
-            nLen = nWidth;
-        }
+	nLen = iWordEnd.m_point - iWordStart.m_point;
+	if (nWidth < nLen)
+	{
+	    nLen = nWidth;
+	}
 
-        iStart = iWordStart;
-        sStr->cursor_from_point(iEnd, (LBUF_OFFSET)(iWordStart.m_point + nLen));
-        nBufferAvailable = LBUF_SIZE - (*bufc-buff) - 1;
-        *bufc += sStr->export_TextColor(*bufc, iStart, iEnd, nBufferAvailable);
+	iStart = iWordStart;
+	sStr->cursor_from_point(iEnd, (LBUF_OFFSET)(iWordStart.m_point + nLen));
+	nBufferAvailable = LBUF_SIZE - (*bufc-buff) - 1;
+	*bufc += sStr->export_TextColor(*bufc, iStart, iEnd, nBufferAvailable);
 
-        if (nColumns-1 <= iColumn)
-        {
-            iColumn = 0;
-            safe_copy_buf(T("\r\n"), 2, buff, bufc);
-            bNeedCRLF = false;
-        }
-        else
-        {
-            iColumn++;
-            safe_fill(buff, bufc, ' ', nWidth - nLen);
-            bNeedCRLF = true;
-        }
-        nBufferAvailable = LBUF_SIZE - (*bufc-buff) - 1;
+	if (nColumns-1 <= iColumn)
+	{
+	    iColumn = 0;
+	    safe_copy_buf(T("\r\n"), 2, buff, bufc);
+	    bNeedCRLF = false;
+	}
+	else
+	{
+	    iColumn++;
+	    safe_fill(buff, bufc, ' ', nWidth - nLen);
+	    bNeedCRLF = true;
+	}
+	nBufferAvailable = LBUF_SIZE - (*bufc-buff) - 1;
     }
 
     if (bNeedCRLF)
     {
-        safe_copy_buf(T("\r\n"), 2, buff, bufc);
+	safe_copy_buf(T("\r\n"), 2, buff, bufc);
     }
     delete sStr;
     delete words;
@@ -1265,8 +1265,8 @@ FUNCTION(fun_table)
     UTF8 *pPaddingEnd = NULL;
     if (nfargs == 6 && *fargs[5])
     {
-        pPaddingStart = strip_color(fargs[5]);
-        pPaddingEnd = (UTF8 *)strchr((char *)pPaddingStart, '\0');
+	pPaddingStart = strip_color(fargs[5]);
+	pPaddingEnd = (UTF8 *)strchr((char *)pPaddingStart, '\0');
     }
 
     // Get single-character separator.
@@ -1274,15 +1274,15 @@ FUNCTION(fun_table)
     UTF8 cSeparator = ' ';
     if (nfargs >= 5 && fargs[4][0] != '\0')
     {
-        if (fargs[4][1] == '\0')
-        {
-            cSeparator = *fargs[4];
-        }
-        else
-        {
-            safe_str(T("#-1 SEPARATOR MUST BE ONE CHARACTER"), buff, bufc);
-            return;
-        }
+	if (fargs[4][1] == '\0')
+	{
+	    cSeparator = *fargs[4];
+	}
+	else
+	{
+	    safe_str(T("#-1 SEPARATOR MUST BE ONE CHARACTER"), buff, bufc);
+	    return;
+	}
     }
 
     // Get single-character delimiter.
@@ -1290,15 +1290,15 @@ FUNCTION(fun_table)
     UTF8 cDelimiter = ' ';
     if (nfargs >= 4 && fargs[3][0] != '\0')
     {
-        if (fargs[3][1] == '\0')
-        {
-            cDelimiter = *fargs[3];
-        }
-        else
-        {
-            safe_str(T("#-1 DELIMITER MUST BE ONE CHARACTER"), buff, bufc);
-            return;
-        }
+	if (fargs[3][1] == '\0')
+	{
+	    cDelimiter = *fargs[3];
+	}
+	else
+	{
+	    safe_str(T("#-1 DELIMITER MUST BE ONE CHARACTER"), buff, bufc);
+	    return;
+	}
     }
 
     // Get line length.
@@ -1306,7 +1306,7 @@ FUNCTION(fun_table)
     int nLineLength = 78;
     if (nfargs >= 3)
     {
-        nLineLength = mux_atol(fargs[2]);
+	nLineLength = mux_atol(fargs[2]);
     }
 
     // Get field width.
@@ -1314,11 +1314,11 @@ FUNCTION(fun_table)
     int nFieldWidth = 10;
     if (nfargs >= 2)
     {
-        nFieldWidth = mux_atol(fargs[1]);
+	nFieldWidth = mux_atol(fargs[1]);
     }
     else
     {
-        nFieldWidth = 10;
+	nFieldWidth = 10;
     }
 
     // Validate nFieldWidth and nLineLength.
@@ -1328,8 +1328,8 @@ FUNCTION(fun_table)
        || nFieldWidth < 1
        || nLineLength < nFieldWidth)
     {
-        safe_range(buff, bufc);
-        return;
+	safe_range(buff, bufc);
+	return;
     }
 
     int nNumCols = nLineLength / nFieldWidth;
@@ -1339,98 +1339,98 @@ FUNCTION(fun_table)
     UTF8 *pNext = trim_space_sep(fargs[0], sep);
     if (!*pNext)
     {
-        return;
+	return;
     }
 
     UTF8 *pCurrent = split_token(&pNext, sep);
     if (!pCurrent)
     {
-        return;
+	return;
     }
 
     size_t nBufferAvailable = LBUF_SIZE - (*bufc - buff) - 1;
     size_t nCurrentCol = nNumCols - 1;
     for (;;)
     {
-        mux_field fldLength = StripTabsAndTruncate( pCurrent, *bufc, nBufferAvailable,
-                                                    static_cast<LBUF_OFFSET>(nFieldWidth));
-        size_t nVisibleLength = fldLength.m_column;
-        size_t nStringLength = fldLength.m_byte;
+	mux_field fldLength = StripTabsAndTruncate( pCurrent, *bufc, nBufferAvailable,
+						    static_cast<LBUF_OFFSET>(nFieldWidth));
+	size_t nVisibleLength = fldLength.m_column;
+	size_t nStringLength = fldLength.m_byte;
 
-        *bufc += nStringLength;
-        nBufferAvailable -= nStringLength;
+	*bufc += nStringLength;
+	nBufferAvailable -= nStringLength;
 
-        size_t nPaddingLength = nFieldWidth - nVisibleLength;
-        if (nPaddingLength > nBufferAvailable)
-        {
-            nPaddingLength = nBufferAvailable;
-        }
-        if (nPaddingLength)
-        {
-            nBufferAvailable -= nPaddingLength;
-            if (pPaddingStart)
-            {
-                for (  UTF8 *pPaddingCurrent = pPaddingStart;
-                       nPaddingLength > 0;
-                       nPaddingLength--)
-                {
-                    **bufc = *pPaddingCurrent;
-                    (*bufc)++;
-                    pPaddingCurrent++;
+	size_t nPaddingLength = nFieldWidth - nVisibleLength;
+	if (nPaddingLength > nBufferAvailable)
+	{
+	    nPaddingLength = nBufferAvailable;
+	}
+	if (nPaddingLength)
+	{
+	    nBufferAvailable -= nPaddingLength;
+	    if (pPaddingStart)
+	    {
+		for (  UTF8 *pPaddingCurrent = pPaddingStart;
+		       nPaddingLength > 0;
+		       nPaddingLength--)
+		{
+		    **bufc = *pPaddingCurrent;
+		    (*bufc)++;
+		    pPaddingCurrent++;
 
-                    if (pPaddingCurrent == pPaddingEnd)
-                    {
-                        pPaddingCurrent = pPaddingStart;
-                    }
-                }
-            }
-            else
-            {
-                memset(*bufc, ' ', nPaddingLength);
-                *bufc += nPaddingLength;
-            }
-        }
+		    if (pPaddingCurrent == pPaddingEnd)
+		    {
+			pPaddingCurrent = pPaddingStart;
+		    }
+		}
+	    }
+	    else
+	    {
+		memset(*bufc, ' ', nPaddingLength);
+		*bufc += nPaddingLength;
+	    }
+	}
 
-        pCurrent = split_token(&pNext, sep);
-        if (!pCurrent)
-        {
-            break;
-        }
+	pCurrent = split_token(&pNext, sep);
+	if (!pCurrent)
+	{
+	    break;
+	}
 
-        if (!nCurrentCol)
-        {
-            nCurrentCol = nNumCols - 1;
-            if (nBufferAvailable >= 2)
-            {
-                UTF8 *p = *bufc;
-                p[0] = '\r';
-                p[1] = '\n';
+	if (!nCurrentCol)
+	{
+	    nCurrentCol = nNumCols - 1;
+	    if (nBufferAvailable >= 2)
+	    {
+		UTF8 *p = *bufc;
+		p[0] = '\r';
+		p[1] = '\n';
 
-                nBufferAvailable -= 2;
-                *bufc += 2;
-            }
-            else
-            {
-                // nBufferAvailable has less than 2 characters left, if there's
-                // no room left just break out.
-                //
-                if (!nBufferAvailable)
-                {
-                    break;
-                }
-            }
-        }
-        else
-        {
-            nCurrentCol--;
-            if (!nBufferAvailable)
-            {
-                break;
-            }
-            **bufc = cSeparator;
-            (*bufc)++;
-            nBufferAvailable--;
-        }
+		nBufferAvailable -= 2;
+		*bufc += 2;
+	    }
+	    else
+	    {
+		// nBufferAvailable has less than 2 characters left, if there's
+		// no room left just break out.
+		//
+		if (!nBufferAvailable)
+		{
+		    break;
+		}
+	    }
+	}
+	else
+	{
+	    nCurrentCol--;
+	    if (!nBufferAvailable)
+	    {
+		break;
+	    }
+	    **bufc = cSeparator;
+	    (*bufc)++;
+	    nBufferAvailable--;
+	}
     }
 }
 
@@ -1443,19 +1443,19 @@ static size_t mem_usage(dbref thing)
     unsigned char *as;
     for (int ca = atr_head(thing, &as); ca; ca = atr_next(&as))
     {
-        size_t nLen;
-        const UTF8 *str = atr_get_raw_LEN(thing, ca, &nLen);
-        k += nLen+1;
-        ATTR *pattr = atr_num(ca);
-        if (pattr)
-        {
-            str = pattr->name;
-            if (  str
-               && *str)
-            {
-                k += strlen((char *)str)+1;
-            }
-        }
+	size_t nLen;
+	const UTF8 *str = atr_get_raw_LEN(thing, ca, &nLen);
+	k += nLen+1;
+	ATTR *pattr = atr_num(ca);
+	if (pattr)
+	{
+	    str = pattr->name;
+	    if (  str
+	       && *str)
+	    {
+		k += strlen((char *)str)+1;
+	    }
+	}
     }
     return k;
 }
@@ -1472,15 +1472,15 @@ FUNCTION(fun_objmem)
     dbref thing = match_thing_quiet(executor, fargs[0]);
     if (!Good_obj(thing))
     {
-        safe_match_result(thing, buff, bufc);
+	safe_match_result(thing, buff, bufc);
     }
     else if (Examinable(executor, thing))
     {
-        safe_ltoa(static_cast<long>(mem_usage(thing)), buff, bufc);
+	safe_ltoa(static_cast<long>(mem_usage(thing)), buff, bufc);
     }
     else
     {
-        safe_noperm(buff, bufc);
+	safe_noperm(buff, bufc);
     }
 }
 
@@ -1495,30 +1495,30 @@ FUNCTION(fun_playmem)
     dbref thing;
     if (nfargs == 1)
     {
-        thing = match_thing_quiet(executor, fargs[0]);
-        if (!Good_obj(thing))
-        {
-            safe_match_result(thing, buff, bufc);
-            return;
-        }
-        else if (!Examinable(executor, thing))
-        {
-            safe_noperm(buff, bufc);
-            return;
-        }
+	thing = match_thing_quiet(executor, fargs[0]);
+	if (!Good_obj(thing))
+	{
+	    safe_match_result(thing, buff, bufc);
+	    return;
+	}
+	else if (!Examinable(executor, thing))
+	{
+	    safe_noperm(buff, bufc);
+	    return;
+	}
     }
     else
     {
-        thing = executor;
+	thing = executor;
     }
     size_t tot = 0;
     dbref j;
     DO_WHOLE_DB(j)
     {
-        if (Owner(j) == thing)
-        {
-            tot += mem_usage(j);
-        }
+	if (Owner(j) == thing)
+	{
+	    tot += mem_usage(j);
+	}
     }
     safe_ltoa(static_cast<long>(tot), buff, bufc);
 }
@@ -1531,7 +1531,7 @@ static bool handle_flaglists(dbref player, UTF8 *name, UTF8 *fstr, bool type)
     dbref it = match_thing_quiet(player, name);
     if (!Good_obj(it))
     {
-        return false;
+	return false;
     }
 
     UTF8 *s;
@@ -1544,91 +1544,91 @@ static bool handle_flaglists(dbref player, UTF8 *name, UTF8 *fstr, bool type)
 
     for (s = fstr; *s; s++)
     {
-        // Check for a negation sign. If we find it, we note it and
-        // increment the pointer to the next character.
-        //
-        if (*s == '!')
-        {
-            negate = true;
-            s++;
-        }
-        else
-        {
-            negate = false;
-        }
+	// Check for a negation sign. If we find it, we note it and
+	// increment the pointer to the next character.
+	//
+	if (*s == '!')
+	{
+	    negate = true;
+	    s++;
+	}
+	else
+	{
+	    negate = false;
+	}
 
-        if (!*s)
-        {
-            return false;
-        }
-        flagletter[0] = *s;
-        flagletter[1] = '\0';
+	if (!*s)
+	{
+	    return false;
+	}
+	flagletter[0] = *s;
+	flagletter[1] = '\0';
 
-        if (!convert_flags(player, flagletter, &fset, &p_type))
-        {
-            // Either we got a '!' that wasn't followed by a letter, or we
-            // couldn't find that flag. For AND, since we've failed a check,
-            // we can return false. Otherwise we just go on.
-            //
-            if (type)
-            {
-                return false;
-            }
-            else
-            {
-                continue;
-            }
-        }
-        else
-        {
-            // Does the object have this flag?
-            //
-            if (  (Flags(it) & fset.word[FLAG_WORD1])
-               || (Flags2(it) & fset.word[FLAG_WORD2])
-               || (Flags3(it) & fset.word[FLAG_WORD3])
-               || Typeof(it) == p_type)
-            {
-                if (  isPlayer(it)
-                   && fset.word[FLAG_WORD2] == CONNECTED
-                   && Hidden(it)
-                   && !See_Hidden(player))
-                {
-                    temp = false;
-                }
-                else
-                {
-                    temp = true;
-                }
-            }
-            else
-            {
-                temp = false;
-            }
+	if (!convert_flags(player, flagletter, &fset, &p_type))
+	{
+	    // Either we got a '!' that wasn't followed by a letter, or we
+	    // couldn't find that flag. For AND, since we've failed a check,
+	    // we can return false. Otherwise we just go on.
+	    //
+	    if (type)
+	    {
+		return false;
+	    }
+	    else
+	    {
+		continue;
+	    }
+	}
+	else
+	{
+	    // Does the object have this flag?
+	    //
+	    if (  (Flags(it) & fset.word[FLAG_WORD1])
+	       || (Flags2(it) & fset.word[FLAG_WORD2])
+	       || (Flags3(it) & fset.word[FLAG_WORD3])
+	       || Typeof(it) == p_type)
+	    {
+		if (  isPlayer(it)
+		   && fset.word[FLAG_WORD2] == CONNECTED
+		   && Hidden(it)
+		   && !See_Hidden(player))
+		{
+		    temp = false;
+		}
+		else
+		{
+		    temp = true;
+		}
+	    }
+	    else
+	    {
+		temp = false;
+	    }
 
-            if (  type
-               && (  (negate && temp)
-                  || (!negate && !temp)))
-            {
-                // Too bad there's no NXOR function. At this point we've
-                // either got a flag and we don't want it, or we don't have a
-                // flag and we want it. Since it's AND, we return false.
-                //
-                return false;
+	    if (  type
+	       && (  (negate && temp)
+		  || (!negate && !temp)))
+	    {
+		// Too bad there's no NXOR function. At this point we've
+		// either got a flag and we don't want it, or we don't have a
+		// flag and we want it. Since it's AND, we return false.
+		//
+		return false;
 
-            }
-            else if (  !type
-                    && (  (!negate && temp)
-                       || (negate && !temp)))
-            {
-                // We've found something we want, in an OR. We OR a true with
-                // the current value.
-                //
-                ret |= true;
-            }
+	    }
+	    else if (  !type
+		    && (  (!negate && temp)
+		       || (negate && !temp)))
+	    {
+		// We've found something we want, in an OR. We OR a true with
+		// the current value.
+		//
+		ret |= true;
+	    }
 
-            // Otherwise, we don't need to do anything.
-            //
-        }
+	    // Otherwise, we don't need to do anything.
+	    //
+	}
     }
     return ret;
 }
@@ -1670,41 +1670,41 @@ FUNCTION(fun_strtrunc)
     int nLeft = mux_atol(fargs[1]);
     if (nLeft < 0)
     {
-        safe_range(buff, bufc);
-        return;
+	safe_range(buff, bufc);
+	return;
     }
     else if (0 == nLeft)
     {
-        return;
+	return;
     }
 
     mux_string *sStr = NULL;
     try
     {
-        sStr = new mux_string(fargs[0]);
+	sStr = new mux_string(fargs[0]);
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL == sStr)
     {
-        return;
+	return;
     }
 
     mux_cursor nLen = sStr->length_cursor();
 
     if (nLeft < nLen.m_point)
     {
-        mux_cursor iEnd;
-        sStr->cursor_from_point(iEnd, (LBUF_OFFSET)nLeft);
-        size_t nMax = buff + (LBUF_SIZE-1) - *bufc;
-        *bufc += sStr->export_TextColor(*bufc, CursorMin, iEnd, nMax);
+	mux_cursor iEnd;
+	sStr->cursor_from_point(iEnd, (LBUF_OFFSET)nLeft);
+	size_t nMax = buff + (LBUF_SIZE-1) - *bufc;
+	*bufc += sStr->export_TextColor(*bufc, CursorMin, iEnd, nMax);
     }
     else if (0 < nLen.m_point)
     {
-        safe_str(fargs[0], buff, bufc);
+	safe_str(fargs[0], buff, bufc);
     }
 
     delete sStr;
@@ -1717,21 +1717,21 @@ FUNCTION(fun_ifelse)
     UTF8 *lbuff = alloc_lbuf("fun_ifelse");
     UTF8 *bp = lbuff;
     mux_exec(fargs[0], LBUF_SIZE-1, lbuff, &bp, executor, caller, enactor,
-        eval|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL, cargs, ncargs);
+	eval|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL, cargs, ncargs);
     *bp = '\0';
 
     if (!xlate(lbuff))
     {
-        if (nfargs == 3)
-        {
-            mux_exec(fargs[2], LBUF_SIZE-1, buff, bufc, executor, caller, enactor,
-                eval|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL, cargs, ncargs);
-        }
+	if (nfargs == 3)
+	{
+	    mux_exec(fargs[2], LBUF_SIZE-1, buff, bufc, executor, caller, enactor,
+		eval|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL, cargs, ncargs);
+	}
     }
     else
     {
-        mux_exec(fargs[1], LBUF_SIZE-1, buff, bufc, executor, caller, enactor,
-            eval|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL, cargs, ncargs);
+	mux_exec(fargs[1], LBUF_SIZE-1, buff, bufc, executor, caller, enactor,
+	    eval|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL, cargs, ncargs);
     }
     free_lbuf(lbuff);
 }
@@ -1755,8 +1755,8 @@ FUNCTION(fun_mail)
 
     if (!mudconf.have_mailer)
     {
-        safe_str(T("#-1 MAILER DISABLED."), buff, bufc);
-        return;
+	safe_str(T("#-1 MAILER DISABLED."), buff, bufc);
+	return;
     }
 
     dbref playerask;
@@ -1766,81 +1766,81 @@ FUNCTION(fun_mail)
     //
     if (nfargs == 0 || !fargs[0] || !fargs[0][0])
     {
-        count_mail(executor, 0, &rc, &uc, &cc);
-        safe_ltoa(rc + uc, buff, bufc);
-        return;
+	count_mail(executor, 0, &rc, &uc, &cc);
+	safe_ltoa(rc + uc, buff, bufc);
+	return;
     }
     else if (nfargs == 1)
     {
-        if (!is_integer(fargs[0], NULL))
-        {
-            // Handle the case of wanting to count the number of
-            // messages.
-            //
-            playerask = lookup_player(executor, fargs[0], true);
-            if (NOTHING == playerask)
-            {
-                playerask = match_thing_quiet(executor, fargs[0]);
-                if (!isPlayer(playerask))
-                {
-                    safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
-                    return;
-                }
-            }
+	if (!is_integer(fargs[0], NULL))
+	{
+	    // Handle the case of wanting to count the number of
+	    // messages.
+	    //
+	    playerask = lookup_player(executor, fargs[0], true);
+	    if (NOTHING == playerask)
+	    {
+		playerask = match_thing_quiet(executor, fargs[0]);
+		if (!isPlayer(playerask))
+		{
+		    safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
+		    return;
+		}
+	    }
 
-            if (  playerask == executor
-               || Wizard(executor))
-            {
-                count_mail(playerask, 0, &rc, &uc, &cc);
-                safe_tprintf_str(buff, bufc, T("%d %d %d"), rc, uc, cc);
-            }
-            else
-            {
-                safe_noperm(buff, bufc);
-            }
-            return;
-        }
-        else
-        {
-            playerask = executor;
-            num = mux_atol(fargs[0]);
-        }
+	    if (  playerask == executor
+	       || Wizard(executor))
+	    {
+		count_mail(playerask, 0, &rc, &uc, &cc);
+		safe_tprintf_str(buff, bufc, T("%d %d %d"), rc, uc, cc);
+	    }
+	    else
+	    {
+		safe_noperm(buff, bufc);
+	    }
+	    return;
+	}
+	else
+	{
+	    playerask = executor;
+	    num = mux_atol(fargs[0]);
+	}
     }
     else // if (nfargs == 2)
     {
-        playerask = lookup_player(executor, fargs[0], true);
-        if (playerask == NOTHING)
-        {
-            safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
-            return;
-        }
-        else if (  (playerask == executor && !mudstate.nObjEvalNest)
-                || God(executor))
-        {
-            num = mux_atol(fargs[1]);
-        }
-        else
-        {
-            safe_noperm(buff, bufc);
-            return;
-        }
+	playerask = lookup_player(executor, fargs[0], true);
+	if (playerask == NOTHING)
+	{
+	    safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
+	    return;
+	}
+	else if (  (playerask == executor && !mudstate.nObjEvalNest)
+		|| God(executor))
+	{
+	    num = mux_atol(fargs[1]);
+	}
+	else
+	{
+	    safe_noperm(buff, bufc);
+	    return;
+	}
     }
 
     if (  num < 1
        || !isPlayer(playerask))
     {
-        safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
-        return;
+	safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
+	return;
     }
 
     const UTF8 *p = mail_fetch_message(playerask, num);
     if (p)
     {
-        safe_str(p, buff, bufc);
+	safe_str(p, buff, bufc);
     }
     else
     {
-        safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
+	safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
     }
 }
 
@@ -1855,30 +1855,30 @@ FUNCTION(fun_mailsize)
 
     if (!mudconf.have_mailer)
     {
-        safe_str(T("#-1 MAILER DISABLED."), buff, bufc);
-        return;
+	safe_str(T("#-1 MAILER DISABLED."), buff, bufc);
+	return;
     }
 
     dbref playerask = lookup_player(executor, fargs[0], 1);
     if (!Good_obj(playerask))
     {
-        safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
+	safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
     }
     else if (  executor == playerask
-            || Wizard(executor))
+	    || Wizard(executor))
     {
-        size_t totalsize = 0;
-        MailList ml(playerask);
-        struct mail *mp;
-        for (mp = ml.FirstItem(); !ml.IsEnd(); mp = ml.NextItem())
-        {
-            totalsize += MessageFetchSize(mp->number) + 1;
-        }
-        safe_ltoa(static_cast<long>(totalsize), buff, bufc);
+	size_t totalsize = 0;
+	MailList ml(playerask);
+	struct mail *mp;
+	for (mp = ml.FirstItem(); !ml.IsEnd(); mp = ml.NextItem())
+	{
+	    totalsize += MessageFetchSize(mp->number) + 1;
+	}
+	safe_ltoa(static_cast<long>(totalsize), buff, bufc);
     }
     else
     {
-        safe_noperm(buff, bufc);
+	safe_noperm(buff, bufc);
     }
 }
 
@@ -1892,8 +1892,8 @@ FUNCTION(fun_mailsubj)
 
     if (!mudconf.have_mailer)
     {
-        safe_str(T("#-1 MAILER DISABLED."), buff, bufc);
-        return;
+	safe_str(T("#-1 MAILER DISABLED."), buff, bufc);
+	return;
     }
 
     dbref playerask;
@@ -1901,45 +1901,45 @@ FUNCTION(fun_mailsubj)
 
     if (1 == nfargs)
     {
-        playerask = executor;
-        num = mux_atol(fargs[0]);
+	playerask = executor;
+	num = mux_atol(fargs[0]);
     }
     else
     {
-        playerask = lookup_player(executor, fargs[0], 1);
-        if (NOTHING == playerask)
-        {
-            safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
-            return;
-        }
-        else if (  executor == playerask
-                || Wizard(executor))
-        {
-            num = mux_atol(fargs[1]);
-        }
-        else
-        {
-            safe_noperm(buff, bufc);
-            return;
-        }
+	playerask = lookup_player(executor, fargs[0], 1);
+	if (NOTHING == playerask)
+	{
+	    safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
+	    return;
+	}
+	else if (  executor == playerask
+		|| Wizard(executor))
+	{
+	    num = mux_atol(fargs[1]);
+	}
+	else
+	{
+	    safe_noperm(buff, bufc);
+	    return;
+	}
     }
 
     if (  num < 1
        || !isPlayer(playerask))
     {
-        safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
+	safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
     }
     else
     {
-        struct mail *mp = mail_fetch(playerask, num);
-        if (mp)
-        {
-            safe_str(mp->subject, buff, bufc);
-        }
-        else
-        {
-            safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
-        }
+	struct mail *mp = mail_fetch(playerask, num);
+	if (mp)
+	{
+	    safe_str(mp->subject, buff, bufc);
+	}
+	else
+	{
+	    safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
+	}
     }
 }
 
@@ -1960,8 +1960,8 @@ FUNCTION(fun_mailfrom)
 
     if (!mudconf.have_mailer)
     {
-        safe_str(T("#-1 MAILER DISABLED."), buff, bufc);
-        return;
+	safe_str(T("#-1 MAILER DISABLED."), buff, bufc);
+	return;
     }
 
     // Make sure we have the right number of arguments.
@@ -1970,41 +1970,41 @@ FUNCTION(fun_mailfrom)
     dbref playerask;
     if (nfargs == 1)
     {
-        playerask = executor;
-        num = mux_atol(fargs[0]);
+	playerask = executor;
+	num = mux_atol(fargs[0]);
     }
     else // if (nfargs == 2)
     {
-        playerask = lookup_player(executor, fargs[0], true);
-        if (playerask == NOTHING)
-        {
-            safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
-            return;
-        }
-        if (  playerask == executor
-           || Wizard(executor))
-        {
-            num = mux_atol(fargs[1]);
-        }
-        else
-        {
-            safe_noperm(buff, bufc);
-            return;
-        }
+	playerask = lookup_player(executor, fargs[0], true);
+	if (playerask == NOTHING)
+	{
+	    safe_str(T("#-1 NO SUCH PLAYER"), buff, bufc);
+	    return;
+	}
+	if (  playerask == executor
+	   || Wizard(executor))
+	{
+	    num = mux_atol(fargs[1]);
+	}
+	else
+	{
+	    safe_noperm(buff, bufc);
+	    return;
+	}
     }
 
     if (  num < 1
        || !isPlayer(playerask))
     {
-        safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
-        return;
+	safe_str(T("#-1 NO SUCH MESSAGE"), buff, bufc);
+	return;
     }
 
     int from = mail_fetch_from(playerask, num);
     if (NOTHING != from)
     {
-        safe_tprintf_str(buff, bufc, T("#%d"), from);
-        return;
+	safe_tprintf_str(buff, bufc, T("#%d"), from);
+	return;
     }
 
     // Ran off the end of the list without finding anything.
@@ -2018,40 +2018,40 @@ FUNCTION(fun_mailfrom)
 // TinyMUSH 2.2.
 
 static void hasattr_handler(UTF8 *buff, UTF8 **bufc, dbref executor, UTF8 *fargs[],
-                   bool bCheckParent)
+		   bool bCheckParent)
 {
     dbref thing = match_thing_quiet(executor, fargs[0]);
     if (!Good_obj(thing))
     {
-        safe_match_result(thing, buff, bufc);
-        return;
+	safe_match_result(thing, buff, bufc);
+	return;
     }
 
     ATTR *pattr = atr_str(fargs[1]);
     bool result = false;
     if (pattr)
     {
-        if (!bCanReadAttr(executor, thing, pattr, bCheckParent))
-        {
-            safe_noperm(buff, bufc);
-            return;
-        }
-        else
-        {
-            if (bCheckParent)
-            {
-                dbref aowner;
-                int aflags;
-                UTF8 *tbuf = atr_pget(thing, pattr->number, &aowner, &aflags);
-                result = (tbuf[0] != '\0');
-                free_lbuf(tbuf);
-            }
-            else
-            {
-                const UTF8 *tbuf = atr_get_raw(thing, pattr->number);
-                result = (tbuf != NULL);
-            }
-        }
+	if (!bCanReadAttr(executor, thing, pattr, bCheckParent))
+	{
+	    safe_noperm(buff, bufc);
+	    return;
+	}
+	else
+	{
+	    if (bCheckParent)
+	    {
+		dbref aowner;
+		int aflags;
+		UTF8 *tbuf = atr_pget(thing, pattr->number, &aowner, &aflags);
+		result = (tbuf[0] != '\0');
+		free_lbuf(tbuf);
+	    }
+	    else
+	    {
+		const UTF8 *tbuf = atr_get_raw(thing, pattr->number);
+		result = (tbuf != NULL);
+	    }
+	}
     }
     safe_bool(result, buff, bufc);
 }
@@ -2096,16 +2096,16 @@ FUNCTION(fun_hasattrp)
 #define DEFAULT_UDEFAULT 4
 
 static void default_handler(UTF8 *buff, UTF8 **bufc, dbref executor,
-                            dbref caller, dbref enactor, int eval,
-                            UTF8 *fargs[], int nfargs, const UTF8 *cargs[],
-                            int ncargs, int key)
+			    dbref caller, dbref enactor, int eval,
+			    UTF8 *fargs[], int nfargs, const UTF8 *cargs[],
+			    int ncargs, int key)
 {
     // Evaluating the first argument.
     //
     UTF8 *objattr = alloc_lbuf("default_handler");
     UTF8 *bp = objattr;
     mux_exec(fargs[0], LBUF_SIZE-1, objattr, &bp, executor, caller, enactor,
-             eval|EV_EVAL|EV_STRIP_CURLY|EV_FCHECK, cargs, ncargs);
+	     eval|EV_EVAL|EV_STRIP_CURLY|EV_FCHECK, cargs, ncargs);
     *bp = '\0';
 
     // Parse the first argument as either <dbref>/<attrname> or <attrname>.
@@ -2115,90 +2115,90 @@ static void default_handler(UTF8 *buff, UTF8 **bufc, dbref executor,
 
     if (!parse_attrib(executor, objattr, &thing, &pattr))
     {
-        thing = executor;
-        pattr = atr_str(objattr);
+	thing = executor;
+	pattr = atr_str(objattr);
     }
     free_lbuf(objattr);
 
     if (  pattr
        && See_attr(executor, thing, pattr))
     {
-        dbref aowner;
-        int   aflags;
-        UTF8 *atr_gotten = atr_pget(thing, pattr->number, &aowner, &aflags);
-        if (atr_gotten[0] != '\0')
-        {
-            switch (key)
-            {
-            case DEFAULT_DEFAULT:
-                safe_str(atr_gotten, buff, bufc);
-                break;
+	dbref aowner;
+	int   aflags;
+	UTF8 *atr_gotten = atr_pget(thing, pattr->number, &aowner, &aflags);
+	if (atr_gotten[0] != '\0')
+	{
+	    switch (key)
+	    {
+	    case DEFAULT_DEFAULT:
+		safe_str(atr_gotten, buff, bufc);
+		break;
 
-            case DEFAULT_EDEFAULT:
-                mux_exec(atr_gotten, LBUF_SIZE-1, buff, bufc, thing, executor, executor,
-                     AttrTrace(aflags, EV_FIGNORE|EV_EVAL),
-                     NULL, 0);
-                break;
+	    case DEFAULT_EDEFAULT:
+		mux_exec(atr_gotten, LBUF_SIZE-1, buff, bufc, thing, executor, executor,
+		     AttrTrace(aflags, EV_FIGNORE|EV_EVAL),
+		     NULL, 0);
+		break;
 
-            case DEFAULT_UDEFAULT:
-                {
-                    UTF8 *xargs[MAX_ARG];
-                    int  nxargs = nfargs-2;
-                    int  i;
-                    for (i = 0; i < nxargs; i++)
-                    {
-                        xargs[i] = alloc_lbuf("fun_udefault_args");
-                        UTF8 *bp2 = xargs[i];
+	    case DEFAULT_UDEFAULT:
+		{
+		    UTF8 *xargs[MAX_ARG];
+		    int  nxargs = nfargs-2;
+		    int  i;
+		    for (i = 0; i < nxargs; i++)
+		    {
+			xargs[i] = alloc_lbuf("fun_udefault_args");
+			UTF8 *bp2 = xargs[i];
 
-                        mux_exec(fargs[i+2], LBUF_SIZE-1, xargs[i], &bp2,
-                            thing, caller, enactor,
-                            eval|EV_TOP|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL,
-                            cargs, ncargs);
-                        *bp2 = '\0';
-                    }
+			mux_exec(fargs[i+2], LBUF_SIZE-1, xargs[i], &bp2,
+			    thing, caller, enactor,
+			    eval|EV_TOP|EV_STRIP_CURLY|EV_FCHECK|EV_EVAL,
+			    cargs, ncargs);
+			*bp2 = '\0';
+		    }
 
-                    mux_exec(atr_gotten, LBUF_SIZE-1, buff, bufc, thing, caller, enactor,
-                        AttrTrace(aflags, EV_FCHECK|EV_EVAL), (const UTF8 **)xargs,
-                        nxargs);
+		    mux_exec(atr_gotten, LBUF_SIZE-1, buff, bufc, thing, caller, enactor,
+			AttrTrace(aflags, EV_FCHECK|EV_EVAL), (const UTF8 **)xargs,
+			nxargs);
 
-                    for (i = 0; i < nxargs; i++)
-                    {
-                        free_lbuf(xargs[i]);
-                    }
-                }
-                break;
+		    for (i = 0; i < nxargs; i++)
+		    {
+			free_lbuf(xargs[i]);
+		    }
+		}
+		break;
 
-            }
-            free_lbuf(atr_gotten);
-            return;
-        }
-        free_lbuf(atr_gotten);
+	    }
+	    free_lbuf(atr_gotten);
+	    return;
+	}
+	free_lbuf(atr_gotten);
     }
 
     // If we've hit this point, we've not gotten anything useful, so
     // we go and evaluate the default.
     //
     mux_exec(fargs[1], LBUF_SIZE-1, buff, bufc, executor, caller, enactor,
-             eval|EV_EVAL|EV_STRIP_CURLY|EV_FCHECK, cargs, ncargs);
+	     eval|EV_EVAL|EV_STRIP_CURLY|EV_FCHECK, cargs, ncargs);
 }
 
 
 FUNCTION(fun_default)
 {
     default_handler(buff, bufc, executor, caller, enactor, eval, fargs, nfargs,
-        cargs, ncargs, DEFAULT_DEFAULT);
+	cargs, ncargs, DEFAULT_DEFAULT);
 }
 
 FUNCTION(fun_edefault)
 {
     default_handler(buff, bufc, executor, caller, enactor, eval, fargs, nfargs,
-        cargs, ncargs, DEFAULT_EDEFAULT);
+	cargs, ncargs, DEFAULT_EDEFAULT);
 }
 
 FUNCTION(fun_udefault)
 {
     default_handler(buff, bufc, executor, caller, enactor, eval, fargs, nfargs,
-        cargs, ncargs, DEFAULT_UDEFAULT);
+	cargs, ncargs, DEFAULT_UDEFAULT);
 }
 
 /* ---------------------------------------------------------------------------
@@ -2217,16 +2217,16 @@ FUNCTION(fun_findable)
     dbref obj = match_thing_quiet(executor, fargs[0]);
     if (!Good_obj(obj))
     {
-        safe_match_result(obj, buff, bufc);
-        safe_str(T(" (ARG1)"), buff, bufc);
-        return;
+	safe_match_result(obj, buff, bufc);
+	safe_str(T(" (ARG1)"), buff, bufc);
+	return;
     }
     dbref victim = match_thing_quiet(executor, fargs[1]);
     if (!Good_obj(victim))
     {
-        safe_match_result(victim, buff, bufc);
-        safe_str(T(" (ARG2)"), buff, bufc);
-        return;
+	safe_match_result(victim, buff, bufc);
+	safe_str(T(" (ARG2)"), buff, bufc);
+	return;
     }
 #ifndef HAVE_WOD_REALMS
 #ifndef HAVE_REALITY_LVLS
@@ -2234,7 +2234,7 @@ FUNCTION(fun_findable)
 #else
     if (IsReal(obj, victim))
     {
-        safe_bool(locatable(obj, victim, obj), buff, bufc);
+	safe_bool(locatable(obj, victim, obj), buff, bufc);
     }
     else safe_chr('0', buff, bufc);
 #endif
@@ -2242,21 +2242,21 @@ FUNCTION(fun_findable)
 #ifndef HAVE_REALITY_LVLS
     if (REALM_DO_HIDDEN_FROM_YOU != DoThingToThingVisibility(obj, victim, ACTION_IS_STATIONARY))
     {
-        safe_bool(locatable(obj, victim, obj), buff, bufc);
+	safe_bool(locatable(obj, victim, obj), buff, bufc);
     }
     else
     {
-        safe_chr('0', buff, bufc);
+	safe_chr('0', buff, bufc);
     }
 
 #else
     if (REALM_DO_HIDDEN_FROM_YOU != DoThingToThingVisibility(obj, victim, ACTION_IS_STATIONARY))
     {
-        safe_bool(locatable(obj, victim, obj), buff, bufc);
+	safe_bool(locatable(obj, victim, obj), buff, bufc);
     }
     else if (IsReal(obj, victim))
     {
-        safe_bool(locatable(obj, victim, obj), buff, bufc);
+	safe_bool(locatable(obj, victim, obj), buff, bufc);
     }
     else safe_chr('0', buff, bufc);
 #endif
@@ -2281,19 +2281,19 @@ FUNCTION(fun_isword)
     UTF8 *p = fargs[0];
     if ('\0' == p[0])
     {
-        result = false;
+	result = false;
     }
     else
     {
-        result = true;
-        for (int i = 0; '\0' != p[i]; i++)
-        {
-            if (!mux_isalpha(p[i]))
-            {
-                result = false;
-                break;
-            }
-        }
+	result = true;
+	for (int i = 0; '\0' != p[i]; i++)
+	{
+	    if (!mux_isalpha(p[i]))
+	    {
+		result = false;
+		break;
+	    }
+	}
     }
     safe_bool(result, buff, bufc);
 }
@@ -2313,14 +2313,14 @@ FUNCTION(fun_visible)
     dbref it = match_thing_quiet(executor, fargs[0]);
     if (!Good_obj(it))
     {
-        safe_match_result(it, buff, bufc);
-        safe_str(T(" (ARG1)"), buff, bufc);
-        return;
+	safe_match_result(it, buff, bufc);
+	safe_str(T(" (ARG1)"), buff, bufc);
+	return;
     }
     else if (!Controls(executor, it))
     {
-        safe_noperm(buff, bufc);
-        return;
+	safe_noperm(buff, bufc);
+	return;
     }
 
     bool  result = false;
@@ -2328,24 +2328,24 @@ FUNCTION(fun_visible)
     ATTR  *pattr;
     if (!parse_attrib(executor, fargs[1], &thing, &pattr))
     {
-        thing = match_thing_quiet(executor, fargs[1]);
-        if (!Good_obj(thing))
-        {
-            safe_match_result(thing, buff, bufc);
-            safe_str(T(" (ARG2)"), buff, bufc);
-            return;
-        }
+	thing = match_thing_quiet(executor, fargs[1]);
+	if (!Good_obj(thing))
+	{
+	    safe_match_result(thing, buff, bufc);
+	    safe_str(T(" (ARG2)"), buff, bufc);
+	    return;
+	}
     }
     if (Good_obj(thing))
     {
-        if (pattr)
-        {
-            result = (See_attr(it, thing, pattr));
-        }
-        else
-        {
-            result = (Examinable(it, thing));
-        }
+	if (pattr)
+	{
+	    result = (See_attr(it, thing, pattr));
+	}
+	else
+	{
+	    result = (Examinable(it, thing));
+	}
     }
     safe_bool(result, buff, bufc);
 }
@@ -2362,13 +2362,13 @@ FUNCTION(fun_elements)
     SEP sep;
     if (!OPTIONAL_DELIM(3, sep, DELIM_DFLT|DELIM_STRING))
     {
-        return;
+	return;
     }
 
     SEP osep = sep;
     if (!OPTIONAL_DELIM(4, osep, DELIM_NULL|DELIM_CRLF|DELIM_STRING|DELIM_INIT))
     {
-        return;
+	return;
     }
 
     // Turn the first list into an array.
@@ -2377,20 +2377,20 @@ FUNCTION(fun_elements)
     mux_words *words = NULL;
     try
     {
-        sStr  = new mux_string(fargs[0]);
-        words = new mux_words(*sStr);
+	sStr  = new mux_string(fargs[0]);
+	words = new mux_words(*sStr);
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (  NULL == sStr
        || NULL == words)
     {
-        delete sStr;
-        delete words;
-        return;
+	delete sStr;
+	delete words;
+	return;
     }
 
     LBUF_OFFSET nWords = words->find_Words(sep.str);
@@ -2403,21 +2403,21 @@ FUNCTION(fun_elements)
     //
     do
     {
-        UTF8 *r = split_token(&s, sepSpace);
-        int cur = mux_atol(r) - 1;
-        if (  0 <= cur
-           && cur < static_cast<int>(nWords))
-        {
-            if (!bFirst)
-            {
-                print_sep(osep, buff, bufc);
-            }
-            else
-            {
-                bFirst = false;
-            }
-            words->export_WordColor(static_cast<LBUF_OFFSET>(cur), buff, bufc);
-        }
+	UTF8 *r = split_token(&s, sepSpace);
+	int cur = mux_atol(r) - 1;
+	if (  0 <= cur
+	   && cur < static_cast<int>(nWords))
+	{
+	    if (!bFirst)
+	    {
+		print_sep(osep, buff, bufc);
+	    }
+	    else
+	    {
+		bFirst = false;
+	    }
+	    words->export_WordColor(static_cast<LBUF_OFFSET>(cur), buff, bufc);
+	}
     } while (s);
 
     delete sStr;

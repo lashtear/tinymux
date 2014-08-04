@@ -33,13 +33,13 @@
 #define AF_NODECOMP 0x00800000UL // Do not include in @decomp.
 #define AF_ATCP     0x01000000UL // Only evaluated by ATCP input when checking for $-cmds.
 #define AF_ISUSED   0x10000000UL // Used to make efficient sweeps of stale
-                                 // attributes.
+				 // attributes.
 
 // Allow AF_TRACE in x to control the EV_TRACE bit in y.
 //
 #define AttrTrace(x, y) ( ((x) & AF_TRACE)   \
-                        ? ((y) | EV_TRACE)   \
-                        : ((y) & ~EV_TRACE))
+			? ((y) | EV_TRACE)   \
+			: ((y) & ~EV_TRACE))
 
 #define A_OSUCC     1   /* Others success message */
 #define A_OFAIL     2   /* Others fail message */
@@ -210,8 +210,8 @@
 #define A_REGINFO   223 // Registration Information
 #endif // GAME_DOOFERMUX
 #define A_CONNINFO  224 // Connection info: (total connected time,
-                        // longest connection last connection, total
-                        // connections, time of logout.
+			// longest connection last connection, total
+			// connections, time of logout.
 #define A_LMAIL     225 // Lock who may @mail you
 #define A_LOPEN     226 // Lock for controlling OPEN_OK locations
 #define A_LASTWHISPER 227 // Last set of people whispered to

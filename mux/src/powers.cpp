@@ -23,25 +23,25 @@ static bool ph_any(dbref target, dbref player, POWER power, int fpowers, bool re
 
     if (fpowers & POWER_EXT)
     {
-        if (reset)
-        {
-            s_Powers2(target, Powers2(target) & ~power);
-        }
-        else
-        {
-            s_Powers2(target, Powers2(target) | power);
-        }
+	if (reset)
+	{
+	    s_Powers2(target, Powers2(target) & ~power);
+	}
+	else
+	{
+	    s_Powers2(target, Powers2(target) | power);
+	}
     }
     else
     {
-        if (reset)
-        {
-            s_Powers(target, Powers(target) & ~power);
-        }
-        else
-        {
-            s_Powers(target, Powers(target) | power);
-        }
+	if (reset)
+	{
+	    s_Powers(target, Powers(target) & ~power);
+	}
+	else
+	{
+	    s_Powers(target, Powers(target) | power);
+	}
     }
     return true;
 }
@@ -54,7 +54,7 @@ static bool ph_god(dbref target, dbref player, POWER power, int fpowers, bool re
 {
     if (!God(player))
     {
-        return false;
+	return false;
     }
     return (ph_any(target, player, power, fpowers, reset));
 }
@@ -67,7 +67,7 @@ static bool ph_wiz(dbref target, dbref player, POWER power, int fpowers, bool re
 {
     if (!Wizard(player))
     {
-        return false;
+	return false;
     }
     return (ph_any(target, player, power, fpowers, reset));
 }
@@ -82,7 +82,7 @@ bool ph_wizroy(dbref target, dbref player, POWER power, int fpowers, bool reset)
 {
     if (!WizRoy(player))
     {
-        return false;
+	return false;
     }
     return (ph_any(target, player, power, fpowers, reset));
 }
@@ -95,7 +95,7 @@ bool ph_inherit(dbref target, dbref player, POWER power, int fpowers, bool reset
 {
     if (!Inherits(player))
     {
-        return false;
+	return false;
     }
     return (ph_any(target, player, power, fpowers, reset));
 }
@@ -146,13 +146,13 @@ void init_powertab(void)
     POWERENT *fp;
     for (fp = gen_powers; fp->powername; fp++)
     {
-        size_t nCased;
-        UTF8 *pCased = mux_strupr(fp->powername, nCased);
+	size_t nCased;
+	UTF8 *pCased = mux_strupr(fp->powername, nCased);
 
-        if (!hashfindLEN(pCased, nCased, &mudstate.powers_htab))
-        {
-            hashaddLEN(pCased, nCased, fp, &mudstate.powers_htab);
-        }
+	if (!hashfindLEN(pCased, nCased, &mudstate.powers_htab))
+	{
+	    hashaddLEN(pCased, nCased, fp, &mudstate.powers_htab);
+	}
     }
 }
 
@@ -169,16 +169,16 @@ void display_powertab(dbref player)
     safe_str(T("Powers:"), buf, &bp);
     for (fp = gen_powers; fp->powername; fp++)
     {
-        if ((fp->listperm & CA_WIZARD) && !Wizard(player))
-        {
-            continue;
-        }
-        if ((fp->listperm & CA_GOD) && !God(player))
-        {
-            continue;
-        }
-        safe_chr(' ', buf, &bp);
-        safe_str(fp->powername, buf, &bp);
+	if ((fp->listperm & CA_WIZARD) && !Wizard(player))
+	{
+	    continue;
+	}
+	if ((fp->listperm & CA_GOD) && !God(player))
+	{
+	    continue;
+	}
+	safe_chr(' ', buf, &bp);
+	safe_str(fp->powername, buf, &bp);
     }
     *bp = '\0';
     notify(player, buf);
@@ -205,16 +205,16 @@ bool decode_power(dbref player, UTF8 *powername, POWERSET *pset)
     POWERENT *pent = (POWERENT *)hashfindLEN(powername, strlen((char *)powername), &mudstate.powers_htab);
     if (!pent)
     {
-        notify(player, tprintf(T("%s: Power not found."), powername));
-        return false;
+	notify(player, tprintf(T("%s: Power not found."), powername));
+	return false;
     }
     if (pent->powerpower & POWER_EXT)
     {
-        pset->word2 = pent->powervalue;
+	pset->word2 = pent->powervalue;
     }
     else
     {
-        pset->word1 = pent->powervalue;
+	pset->word1 = pent->powervalue;
     }
     return true;
 }
@@ -229,76 +229,76 @@ void power_set(dbref target, dbref player, UTF8 *power, int key)
 
     do
     {
-        // Trim spaces, and handle the negation character.
-        //
-        while (mux_isspace(*power))
-        {
-            power++;
-        }
+	// Trim spaces, and handle the negation character.
+	//
+	while (mux_isspace(*power))
+	{
+	    power++;
+	}
 
-        bool bNegate = false;
-        if (*power == '!')
-        {
-            bNegate = true;
-            do
-            {
-                power++;
-            } while (mux_isspace(*power));
-        }
+	bool bNegate = false;
+	if (*power == '!')
+	{
+	    bNegate = true;
+	    do
+	    {
+		power++;
+	    } while (mux_isspace(*power));
+	}
 
-        // Beginning of power name is now 'power'.
-        //
-        UTF8 *npower = power;
-        while (  *npower != '\0'
-              && !mux_isspace(*npower))
-        {
-            npower++;
-        }
+	// Beginning of power name is now 'power'.
+	//
+	UTF8 *npower = power;
+	while (  *npower != '\0'
+	      && !mux_isspace(*npower))
+	{
+	    npower++;
+	}
 
-        if (*npower == '\0')
-        {
-            bDone = true;
-        }
-        else
-        {
-            *npower = '\0';
-        }
+	if (*npower == '\0')
+	{
+	    bDone = true;
+	}
+	else
+	{
+	    *npower = '\0';
+	}
 
-        // Make sure a power name was specified.
-        //
-        if (*power == '\0')
-        {
-            if (bNegate)
-            {
-                notify(player, T("You must specify a power to clear."));
-            }
-            else
-            {
-                notify(player, T("You must specify a power to set."));
-            }
-        }
-        else
-        {
-            POWERENT *fp = find_power(target, power);
-            if (fp == NULL)
-            {
-                notify(player, T("I don\xE2\x80\x99t understand that power."));
-            }
-            else
-            {
-                // Invoke the power handler, and print feedback.
-                //
-                if (!fp->handler(target, player, fp->powervalue, fp->powerpower, bNegate))
-                {
-                    notify(player, NOPERM_MESSAGE);
-                }
-                else if (!(key & SET_QUIET) && !Quiet(player))
-                {
-                    notify(player, (bNegate ? T("Cleared.") : T("Set.")));
-                }
-            }
-        }
-        power = npower + 1;
+	// Make sure a power name was specified.
+	//
+	if (*power == '\0')
+	{
+	    if (bNegate)
+	    {
+		notify(player, T("You must specify a power to clear."));
+	    }
+	    else
+	    {
+		notify(player, T("You must specify a power to set."));
+	    }
+	}
+	else
+	{
+	    POWERENT *fp = find_power(target, power);
+	    if (fp == NULL)
+	    {
+		notify(player, T("I don\xE2\x80\x99t understand that power."));
+	    }
+	    else
+	    {
+		// Invoke the power handler, and print feedback.
+		//
+		if (!fp->handler(target, player, fp->powervalue, fp->powerpower, bNegate))
+		{
+		    notify(player, NOPERM_MESSAGE);
+		}
+		else if (!(key & SET_QUIET) && !Quiet(player))
+		{
+		    notify(player, (bNegate ? T("Cleared.") : T("Set.")));
+		}
+	    }
+	}
+	power = npower + 1;
 
     } while (!bDone);
 }
@@ -312,30 +312,30 @@ bool has_power(dbref player, dbref it, UTF8 *powername)
     POWERENT *fp = find_power(it, powername);
     if (!fp)
     {
-        return false;
+	return false;
     }
 
     POWER fv;
     if (fp->powerpower & POWER_EXT)
     {
-        fv = Powers2(it);
+	fv = Powers2(it);
     }
     else
     {
-        fv = Powers(it);
+	fv = Powers(it);
     }
 
     if (fv & fp->powervalue)
     {
-        if ((fp->listperm & CA_WIZARD) && !Wizard(player))
-        {
-            return false;
-        }
-        if ((fp->listperm & CA_GOD) && !God(player))
-        {
-            return false;
-        }
-        return true;
+	if ((fp->listperm & CA_WIZARD) && !Wizard(player))
+	{
+	    return false;
+	}
+	if ((fp->listperm & CA_GOD) && !God(player))
+	{
+	    return false;
+	}
+	return true;
     }
     return false;
 }
@@ -355,38 +355,38 @@ UTF8 *powers_list(dbref player, dbref target)
     POWERENT *fp;
     for (fp = gen_powers; fp->powername; fp++)
     {
-        POWER fv;
-        if (fp->powerpower & POWER_EXT)
-        {
-            fv = Powers2(target);
-        }
-        else
-        {
-            fv = Powers(target);
-        }
+	POWER fv;
+	if (fp->powerpower & POWER_EXT)
+	{
+	    fv = Powers2(target);
+	}
+	else
+	{
+	    fv = Powers(target);
+	}
 
-        if (fv & fp->powervalue)
-        {
-            if (  (fp->listperm & CA_WIZARD)
-               && !Wizard(player))
-            {
-                continue;
-            }
-            if (  (fp->listperm & CA_GOD)
-               && !God(player))
-            {
-                continue;
-            }
-            if (bFirst)
-            {
-                bFirst = false;
-            }
-            else
-            {
-                safe_chr(' ', buff, &bp);
-            }
-            safe_str(fp->powername, buff, &bp);
-        }
+	if (fv & fp->powervalue)
+	{
+	    if (  (fp->listperm & CA_WIZARD)
+	       && !Wizard(player))
+	    {
+		continue;
+	    }
+	    if (  (fp->listperm & CA_GOD)
+	       && !God(player))
+	    {
+		continue;
+	    }
+	    if (bFirst)
+	    {
+		bFirst = false;
+	    }
+	    else
+	    {
+		safe_chr(' ', buff, &bp);
+	    }
+	    safe_str(fp->powername, buff, &bp);
+	}
     }
 
     // Terminate the string, and return the buffer to the caller.
@@ -411,39 +411,39 @@ void decompile_powers(dbref player, dbref thing, UTF8 *thingname)
 
     for (fp = gen_powers; fp->powername; fp++)
     {
-        // Skip if we shouldn't decompile this power
-        //
-        if (fp->listperm & CA_NO_DECOMP)
-        {
-            continue;
-        }
+	// Skip if we shouldn't decompile this power
+	//
+	if (fp->listperm & CA_NO_DECOMP)
+	{
+	    continue;
+	}
 
-        // Skip if this power is not set.
-        //
-        if (fp->powerpower & POWER_EXT)
-        {
-            if (!(f2 & fp->powervalue))
-            {
-                continue;
-            }
-        }
-        else
-        {
-            if (!(f1 & fp->powervalue))
-            {
-                continue;
-            }
-        }
+	// Skip if this power is not set.
+	//
+	if (fp->powerpower & POWER_EXT)
+	{
+	    if (!(f2 & fp->powervalue))
+	    {
+		continue;
+	    }
+	}
+	else
+	{
+	    if (!(f1 & fp->powervalue))
+	    {
+		continue;
+	    }
+	}
 
-        // Skip if we can't see this power.
-        //
-        if (!check_access(player, fp->listperm))
-        {
-            continue;
-        }
+	// Skip if we can't see this power.
+	//
+	if (!check_access(player, fp->listperm))
+	{
+	    continue;
+	}
 
-        // We made it this far, report this power.
-        //
-        notify(player, tprintf(T("@power %s=%s"), thingname, fp->powername));
+	// We made it this far, report this power.
+	//
+	notify(player, tprintf(T("@power %s=%s"), thingname, fp->powername));
     }
 }

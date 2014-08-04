@@ -360,18 +360,18 @@ class T5X_LOCKEXP
 public:
     typedef enum
     {
-        le_is,
-        le_carry,
-        le_indirect,
-        le_owner,
-        le_and,
-        le_or,
-        le_not,
-        le_attr,
-        le_eval,
-        le_ref,
-        le_text,
-        le_none,
+	le_is,
+	le_carry,
+	le_indirect,
+	le_owner,
+	le_and,
+	le_or,
+	le_not,
+	le_attr,
+	le_eval,
+	le_ref,
+	le_text,
+	le_none,
     } T5X_OP;
 
     T5X_OP m_op;
@@ -382,62 +382,62 @@ public:
 
     void SetIs(T5X_LOCKEXP *p)
     {
-        m_op = le_is;
-        m_le[0] = p;
+	m_op = le_is;
+	m_le[0] = p;
     }
     void SetCarry(T5X_LOCKEXP *p)
     {
-        m_op = le_carry;
-        m_le[0] = p;
+	m_op = le_carry;
+	m_le[0] = p;
     }
     void SetIndir(T5X_LOCKEXP *p)
     {
-        m_op = le_indirect;
-        m_le[0] = p;
+	m_op = le_indirect;
+	m_le[0] = p;
     }
     void SetOwner(T5X_LOCKEXP *p)
     {
-        m_op = le_owner;
-        m_le[0] = p;
+	m_op = le_owner;
+	m_le[0] = p;
     }
     void SetAnd(T5X_LOCKEXP *p, T5X_LOCKEXP *q)
     {
-        m_op = le_and;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_and;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetOr(T5X_LOCKEXP *p, T5X_LOCKEXP *q)
     {
-        m_op = le_or;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_or;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetNot(T5X_LOCKEXP *p)
     {
-        m_op = le_not;
-        m_le[0] = p;
+	m_op = le_not;
+	m_le[0] = p;
     }
     void SetAttr(T5X_LOCKEXP *p, T5X_LOCKEXP *q)
     {
-        m_op = le_attr;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_attr;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetEval(T5X_LOCKEXP *p, T5X_LOCKEXP *q)
     {
-        m_op = le_eval;
-        m_le[0] = p;
-        m_le[1] = q;
+	m_op = le_eval;
+	m_le[0] = p;
+	m_le[1] = q;
     }
     void SetRef(int dbRef)
     {
-        m_op = le_ref;
-        m_dbRef = dbRef;
+	m_op = le_ref;
+	m_dbRef = dbRef;
     }
     void SetText(char *p)
     {
-        m_op = le_text;
-        m_p[0] = p;
+	m_op = le_text;
+	m_p[0] = p;
     }
 
     void Write(FILE *fp);
@@ -449,19 +449,19 @@ public:
 
     T5X_LOCKEXP()
     {
-        m_op = le_none;
-        m_le[0] = m_le[1] = NULL;
-        m_p[0] = m_p[1] = NULL;
-        m_dbRef = 0;
+	m_op = le_none;
+	m_le[0] = m_le[1] = NULL;
+	m_p[0] = m_p[1] = NULL;
+	m_dbRef = 0;
     }
     ~T5X_LOCKEXP()
     {
-        delete m_le[0];
-        delete m_le[1];
-        free(m_p[0]);
-        free(m_p[1]);
-        m_le[0] = m_le[1] = NULL;
-        m_p[0] = m_p[1] = NULL;
+	delete m_le[0];
+	delete m_le[1];
+	free(m_p[0]);
+	free(m_p[1]);
+	m_le[0] = m_le[1] = NULL;
+	m_p[0] = m_p[1] = NULL;
     }
 };
 
@@ -486,16 +486,16 @@ public:
 
     T5X_ATTRNAMEINFO()
     {
-        m_fNumAndName = false;
-        m_pNameEncoded = NULL;
-        m_pNameUnencoded = NULL;
-        m_iFlags = 0;
+	m_fNumAndName = false;
+	m_pNameEncoded = NULL;
+	m_pNameUnencoded = NULL;
+	m_iFlags = 0;
     }
     ~T5X_ATTRNAMEINFO()
     {
-        free(m_pNameEncoded);
-        m_pNameEncoded = NULL;
-        m_pNameUnencoded = NULL;
+	free(m_pNameEncoded);
+	m_pNameEncoded = NULL;
+	m_pNameUnencoded = NULL;
     }
 };
 
@@ -519,9 +519,9 @@ public:
 
     enum
     {
-        kNone,
-        kEncode,
-        kDecode,
+	kNone,
+	kEncode,
+	kDecode,
     } m_kState;
     void EncodeDecode(int dbObj);
 
@@ -536,24 +536,24 @@ public:
 
     T5X_ATTRINFO()
     {
-        m_fNumAndValue = false;
-        m_pAllocated = NULL;
-        m_pValueEncoded = NULL;
-        m_pValueUnencoded = NULL;
-        m_fIsLock = false;
-        m_pKeyTree = NULL;
-        m_iFlags = 0;
-        m_dbOwner = T5X_NOTHING;
-        m_kState = kNone;
+	m_fNumAndValue = false;
+	m_pAllocated = NULL;
+	m_pValueEncoded = NULL;
+	m_pValueUnencoded = NULL;
+	m_fIsLock = false;
+	m_pKeyTree = NULL;
+	m_iFlags = 0;
+	m_dbOwner = T5X_NOTHING;
+	m_kState = kNone;
     }
     ~T5X_ATTRINFO()
     {
-        free(m_pAllocated);
-        delete m_pKeyTree;
-        m_pAllocated = NULL;
-        m_pValueEncoded = NULL;
-        m_pValueUnencoded = NULL;
-        m_pKeyTree = NULL;
+	free(m_pAllocated);
+	delete m_pKeyTree;
+	m_pAllocated = NULL;
+	m_pValueEncoded = NULL;
+	m_pValueUnencoded = NULL;
+	m_pKeyTree = NULL;
     }
 };
 
@@ -644,36 +644,36 @@ public:
 
     T5X_OBJECTINFO()
     {
-        m_fRef = false;
-        m_pName = NULL;
-        m_fLocation = false;
-        m_fContents = false;
-        m_fExits = false;
-        m_fNext = false;
-        m_fParent = false;
-        m_fOwner = false;
-        m_fZone = false;
-        m_fPennies = false;
-        m_fPennies = false;
-        m_fAttrCount = false;
-        m_pvai = NULL;
-        m_ple = NULL;
+	m_fRef = false;
+	m_pName = NULL;
+	m_fLocation = false;
+	m_fContents = false;
+	m_fExits = false;
+	m_fNext = false;
+	m_fParent = false;
+	m_fOwner = false;
+	m_fZone = false;
+	m_fPennies = false;
+	m_fPennies = false;
+	m_fAttrCount = false;
+	m_pvai = NULL;
+	m_ple = NULL;
     }
     ~T5X_OBJECTINFO()
     {
-        free(m_pName);
-        delete m_ple;
-        m_pName = NULL;
-        m_ple = NULL;
-        if (NULL != m_pvai)
-        {
-            for (vector<T5X_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
-            {
-               delete *it;
-            }
-            delete m_pvai;
-            m_pvai = NULL;
-        }
+	free(m_pName);
+	delete m_ple;
+	m_pName = NULL;
+	m_ple = NULL;
+	if (NULL != m_pvai)
+	{
+	    for (vector<T5X_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
+	    {
+	       delete *it;
+	    }
+	    delete m_pvai;
+	    m_pvai = NULL;
+	}
     }
 };
 
@@ -729,29 +729,29 @@ public:
 
     T5X_GAME()
     {
-        m_flags = 0;
-        m_fSizeHint = false;
-        m_fNextAttr = false;
-        m_fRecordPlayers = false;
+	m_flags = 0;
+	m_fSizeHint = false;
+	m_fNextAttr = false;
+	m_fRecordPlayers = false;
     }
     ~T5X_GAME()
     {
-        for (map<char *, T5X_ATTRNAMEINFO *, ltstr>::iterator it = m_mAttrNums.begin(); it != m_mAttrNums.end(); ++it)
-        {
-            m_mAttrNames.erase(it->second->m_iNum);
-            delete it->second;
-        }
-        m_mAttrNums.clear();
-        for (map<int, T5X_ATTRNAMEINFO *, lti>::iterator it = m_mAttrNames.begin(); it != m_mAttrNames.end(); ++it)
-        {
-            delete it->second;
-        }
-        m_mAttrNames.clear();
-        for (map<int, T5X_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
-        {
-            delete it->second;
-        }
-        m_mObjects.clear();
+	for (map<char *, T5X_ATTRNAMEINFO *, ltstr>::iterator it = m_mAttrNums.begin(); it != m_mAttrNums.end(); ++it)
+	{
+	    m_mAttrNames.erase(it->second->m_iNum);
+	    delete it->second;
+	}
+	m_mAttrNums.clear();
+	for (map<int, T5X_ATTRNAMEINFO *, lti>::iterator it = m_mAttrNames.begin(); it != m_mAttrNames.end(); ++it)
+	{
+	    delete it->second;
+	}
+	m_mAttrNames.clear();
+	for (map<int, T5X_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
+	{
+	    delete it->second;
+	}
+	m_mObjects.clear();
     }
 };
 

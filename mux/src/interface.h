@@ -325,19 +325,19 @@ extern dbref connect_player(UTF8 *, UTF8 *, UTF8 *, UTF8 *, UTF8 *);
     for (d=(DESC *)hashfindLEN(&(p), sizeof(p), &mudstate.desc_htab); d; d = d->hashnext)
 #define DESC_ITER_CONN(d) \
     for (d=descriptor_list;(d);d=(d)->next) \
-        if ((d)->flags & DS_CONNECTED)
+	if ((d)->flags & DS_CONNECTED)
 #define DESC_ITER_ALL(d) \
     for (d=descriptor_list;(d);d=(d)->next)
 
 #define DESC_SAFEITER_PLAYER(p,d,n) \
     for (d=(DESC *)hashfindLEN(&(p), sizeof(p), &mudstate.desc_htab), \
-            n=((d!=NULL) ? d->hashnext : NULL); \
-         d; \
-         d=n,n=((n!=NULL) ? n->hashnext : NULL))
+	    n=((d!=NULL) ? d->hashnext : NULL); \
+	 d; \
+	 d=n,n=((n!=NULL) ? n->hashnext : NULL))
 #define DESC_SAFEITER_ALL(d,n) \
     for (d=descriptor_list,n=((d!=NULL) ? d->next : NULL); \
-         d; \
-         d=n,n=((n!=NULL) ? n->next : NULL))
+	 d; \
+	 d=n,n=((n!=NULL) ? n->next : NULL))
 
 // From bsd.cpp.
 //

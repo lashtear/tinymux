@@ -138,16 +138,16 @@ extern bool break_called;
 void tcache_init(void);
 UTF8 *parse_to(UTF8 **, UTF8, int);
 void parse_arglist(dbref executor, dbref caller, dbref enactor, UTF8 *,
-                    int, UTF8 *[], int, const UTF8 *[], int, int *);
+		    int, UTF8 *[], int, const UTF8 *[], int, int *);
 int get_gender(dbref);
 void mux_exec(const UTF8 *pdstr, size_t nStr, UTF8 *buff, UTF8 **bufc, dbref executor,
-              dbref caller, dbref enactor, int eval, const UTF8 *cargs[], int ncargs);
+	      dbref caller, dbref enactor, int eval, const UTF8 *cargs[], int ncargs);
 
 inline void BufAddRef(lbuf_ref *lbufref)
 {
     if (NULL != lbufref)
     {
-        lbufref->refcount++;
+	lbufref->refcount++;
     }
 }
 
@@ -155,13 +155,13 @@ inline void BufRelease(lbuf_ref *lbufref)
 {
     if (NULL != lbufref)
     {
-        lbufref->refcount--;
-        if (0 == lbufref->refcount)
-        {
-            free_lbuf(lbufref->lbuf_ptr);
-            lbufref->lbuf_ptr = NULL;
-            free_lbufref(lbufref);
-        }
+	lbufref->refcount--;
+	if (0 == lbufref->refcount)
+	{
+	    free_lbuf(lbufref->lbuf_ptr);
+	    lbufref->lbuf_ptr = NULL;
+	    free_lbufref(lbufref);
+	}
     }
 }
 
@@ -169,7 +169,7 @@ inline void RegAddRef(reg_ref *regref)
 {
     if (NULL != regref)
     {
-        regref->refcount++;
+	regref->refcount++;
     }
 }
 
@@ -177,15 +177,15 @@ inline void RegRelease(reg_ref *regref)
 {
     if (NULL != regref)
     {
-        regref->refcount--;
-        if (0 == regref->refcount)
-        {
-            BufRelease(regref->lbuf);
-            regref->lbuf    = NULL;
-            regref->reg_ptr = NULL;
-            regref->reg_len = 0;
-            free_regref(regref);
-        }
+	regref->refcount--;
+	if (0 == regref->refcount)
+	{
+	    BufRelease(regref->lbuf);
+	    regref->lbuf    = NULL;
+	    regref->reg_ptr = NULL;
+	    regref->reg_len = 0;
+	    free_regref(regref);
+	}
     }
 }
 void RegAssign(reg_ref **regref, size_t nLength, const UTF8 *ptr);
@@ -208,13 +208,13 @@ bool parse_rgb(size_t n, const UTF8 *p, RGB &rgb);
 static const mux_cursor curNewline(2, 2);
 
 LBUF_OFFSET linewrap_general(const UTF8 *pStr, LBUF_OFFSET nWidth,
-                             UTF8 *pBuffer, size_t nBuffer,
-                             const UTF8 *pLeft = T(""), LBUF_OFFSET nLeft = 0,
-                             const UTF8 *pRight = T(""), LBUF_OFFSET nRight = 0,
-                             int iJustKey = CJC_LJUST, LBUF_OFFSET nHanging = 0,
-                             const UTF8 *pOSep = T("\r\n"),
-                             mux_cursor curOSep = curNewline,
-                             LBUF_OFFSET nWidth0 = 0);
+			     UTF8 *pBuffer, size_t nBuffer,
+			     const UTF8 *pLeft = T(""), LBUF_OFFSET nLeft = 0,
+			     const UTF8 *pRight = T(""), LBUF_OFFSET nRight = 0,
+			     int iJustKey = CJC_LJUST, LBUF_OFFSET nHanging = 0,
+			     const UTF8 *pOSep = T("\r\n"),
+			     mux_cursor curOSep = curNewline,
+			     LBUF_OFFSET nWidth0 = 0);
 
 /* From game.cpp */
 #define notify(p,m)                         notify_check(p,p,m, MSG_PUP_ALWAYS|MSG_ME_ALL|MSG_F_DOWN)
@@ -291,7 +291,7 @@ int  cf_ntab_access(int *, UTF8 *, void *, UINT32, dbref, UTF8 *);
 bool start_log(const UTF8 *primary, const UTF8 *secondary);
 void end_log(void);
 void log_perror(const UTF8 *, const UTF8 *,const UTF8 *,
-            const UTF8 *);
+	    const UTF8 *);
 void log_text(const UTF8 *);
 void log_number(int);
 void DCL_CDECL log_printf(__in_z const UTF8 *fmt, ...);
@@ -415,8 +415,8 @@ bool nearby(dbref, dbref);
 bool exit_visible(dbref, dbref, int);
 bool exit_displayable(dbref, dbref, int);
 void did_it(dbref player, dbref thing, int what, const UTF8 *def, int owhat,
-            const UTF8 *odef, int awhat, int ctrl_flags,
-            const UTF8 *args[], int nargs);
+	    const UTF8 *odef, int awhat, int ctrl_flags,
+	    const UTF8 *args[], int nargs);
 bool bCanReadAttr(dbref executor, dbref target, ATTR *tattr, bool bParentCheck);
 bool bCanSetAttr(dbref executor, dbref target, ATTR *tattr);
 bool bCanLockAttr(dbref executor, dbref target, ATTR *tattr);
@@ -432,7 +432,7 @@ struct reference_entry
 bool parse_attrib(dbref, const UTF8 *, dbref *, ATTR **);
 bool parse_attrib_wild(dbref, const UTF8 *, dbref *, bool, bool, bool);
 void find_wild_attrs(dbref player, dbref thing, const UTF8 *str,
-                     bool check_exclude, bool hash_insert, bool get_locks);
+		     bool check_exclude, bool hash_insert, bool get_locks);
 dbref match_controlled_handler(dbref player, const UTF8 *name, bool bQuiet);
 #define match_controlled(player,name)       match_controlled_handler(player, name, false)
 #define match_controlled_quiet(player,name) match_controlled_handler(player, name, true)
@@ -663,8 +663,8 @@ extern int anum_alc_top;
 #define CEF_HOOK_LIST      0x00000080UL  /* LIST hooks */
 #define CEF_HOOK_ARGS      0x00000100UL  /* ARGS hooks */
 #define CEF_HOOK_MASK      (  CEF_HOOK_BEFORE|CEF_HOOK_AFTER|CEF_HOOK_PERMIT|CEF_HOOK_IGNORE \
-                           |  CEF_HOOK_IGSWITCH|CEF_HOOK_AFAIL|CEF_HOOK_CLEAR|CEF_HOOK_LIST  \
-                           |  CEF_HOOK_ARGS)
+			   |  CEF_HOOK_IGSWITCH|CEF_HOOK_AFAIL|CEF_HOOK_CLEAR|CEF_HOOK_LIST  \
+			   |  CEF_HOOK_ARGS)
 #define HOOKMASK(x)        ((x) & CEF_HOOK_MASK)
 
 #define CEF_ALLOC          0x00000200UL  // CMDENT was allocated.
@@ -954,7 +954,7 @@ extern NAMETAB method_nametab[];
     end_log(); }
 #define LOG_SIMPLE(key,p,s,m) \
     STARTLOG(key,p,s) \
-        log_text(m); \
+	log_text(m); \
     ENDLOG
 
 extern const UTF8 *NOMATCH_MESSAGE;
@@ -1001,7 +1001,7 @@ void do_pemit_single
     UTF8 *message
 );
 void do_say(dbref executor, dbref caller, dbref enactor, int eval, int key,
-                   UTF8 *message, const UTF8 *cargs[], int ncargs);
+		   UTF8 *message, const UTF8 *cargs[], int ncargs);
 
 int  boot_off(dbref player, const UTF8 *message);
 void do_mail_clear(dbref player, UTF8 *msglist);
@@ -1015,7 +1015,7 @@ int  mail_fetch_from(dbref player, int num);
 void raw_notify_html(dbref player, const mux_string &sMsg);
 void raw_notify_atcp(dbref player, const mux_string &sMsg);
 void do_lock(dbref executor, dbref caller, dbref enactor, int eval, int key,
-                    int nargs, UTF8 *name, UTF8 *keytext, const UTF8 *cargs[], int ncargs);
+		    int nargs, UTF8 *name, UTF8 *keytext, const UTF8 *cargs[], int ncargs);
 void check_events(void);
 void list_system_resources(dbref player);
 
@@ -1191,7 +1191,7 @@ void mux_FPRestore();
 double ulp(double);
 double mux_strtod(const UTF8 *s00, UTF8 **se);
 UTF8 *mux_dtoa(double d, int mode, int ndigits, int *decpt, int *sign,
-             UTF8 **rve);
+	     UTF8 **rve);
 
 // From wiz.cpp
 //

@@ -1233,9 +1233,9 @@ Configuration:
 
 Installation directories:
   --prefix=PREFIX         install architecture-independent files in PREFIX
-                          [$ac_default_prefix]
+			  [$ac_default_prefix]
   --exec-prefix=EPREFIX   install architecture-dependent files in EPREFIX
-                          [PREFIX]
+			  [PREFIX]
 
 By default, \`make install' will install all the files in
 \`$ac_default_prefix/bin', \`$ac_default_prefix/lib' etc.  You can specify
@@ -1260,7 +1260,7 @@ Fine tuning of the installation directories:
   --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
   --mandir=DIR            man documentation [DATAROOTDIR/man]
   --docdir=DIR            documentation root
-                          [DATAROOTDIR/doc/tinymux-utf-2-10]
+			  [DATAROOTDIR/doc/tinymux-utf-2-10]
   --htmldir=DIR           html documentation [DOCDIR]
   --dvidir=DIR            dvi documentation [DOCDIR]
   --pdfdir=DIR            pdf documentation [DOCDIR]
@@ -1281,10 +1281,10 @@ Some influential environment variables:
   CXX         C++ compiler command
   CXXFLAGS    C++ compiler flags
   LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
-              nonstandard directory <lib dir>
+	      nonstandard directory <lib dir>
   LIBS        libraries to pass to the linker, e.g. -l<library>
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
-              you have headers in a nonstandard directory <include dir>
+	      you have headers in a nonstandard directory <include dir>
   CC          C compiler command
   CFLAGS      C compiler flags
   CPP         C preprocessor
@@ -2293,7 +2293,7 @@ $as_echo "$ac_try_echo"; } >&5
   if test -s conftest.err; then
     sed '10a\
 ... rest of stderr output deleted ...
-         10q' conftest.err >conftest.er1
+	 10q' conftest.err >conftest.er1
     cat conftest.er1 >&5
   fi
   rm -f conftest.er1 conftest.err
@@ -2770,7 +2770,7 @@ else
 fi
 
 if test -z "$CC"; then
-          if test -n "$ac_tool_prefix"; then
+	  if test -n "$ac_tool_prefix"; then
     # Extract the first word of "${ac_tool_prefix}cc", so it can be a program name with args.
 set dummy ${ac_tool_prefix}cc; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -2992,7 +2992,7 @@ $as_echo "$ac_try_echo"; } >&5
   if test -s conftest.err; then
     sed '10a\
 ... rest of stderr output deleted ...
-         10q' conftest.err >conftest.er1
+	 10q' conftest.err >conftest.er1
     cat conftest.er1 >&5
   fi
   rm -f conftest.er1 conftest.err
@@ -3897,11 +3897,11 @@ $as_echo "$as_me: updating cache $cache_file" >&6;}
       if test ! -f "$cache_file" || test -h "$cache_file"; then
 	cat confcache >"$cache_file"
       else
-        case $cache_file in #(
-        */* | ?:*)
+	case $cache_file in #(
+	*/* | ?:*)
 	  mv -f confcache "$cache_file"$$ &&
 	  mv -f "$cache_file"$$ "$cache_file" ;; #(
-        *)
+	*)
 	  mv -f confcache "$cache_file" ;;
 	esac
       fi
@@ -4387,13 +4387,13 @@ Usage: $0 [OPTION]... [TAG]...
   -V, --version    print version number and configuration settings, then exit
       --config     print configuration, then exit
   -q, --quiet, --silent
-                   do not print progress messages
+		   do not print progress messages
   -d, --debug      don't remove temporary files
       --recheck    update $as_me by reconfiguring in the same conditions
       --file=FILE[:TEMPLATE]
-                   instantiate the configuration file FILE
+		   instantiate the configuration file FILE
       --header=FILE[:TEMPLATE]
-                   instantiate the configuration header FILE
+		   instantiate the configuration header FILE
 
 Configuration files:
 $config_files

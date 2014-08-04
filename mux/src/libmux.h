@@ -247,7 +247,7 @@ public:                                                                         
     virtual MUX_RESULT LockServer(bool bLock);                                                 \
     x(void);                                                                                   \
     virtual ~x();                                                                              \
-                                                                                               \
+											       \
 private:                                                                                       \
     UINT32 m_cRef;                                                                             \
 };

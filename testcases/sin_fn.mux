@@ -17,14 +17,14 @@
 #
 &tr.tc001 test_sin_fn=
   @if strmatch(
-        setr(0,sha1(
-            [round(sin(270,d),6)]
-            [round(sin(fdiv(pi(),2)),6)]
-            [round(sin(fdiv(pi(),4)),6)]
-            [round(sin(fdiv(pi(),6)),6)]
-          )
-        ),
-        FDF382C82E22F03A4D0E5F927B2BEC715CC842C9
+	setr(0,sha1(
+	    [round(sin(270,d),6)]
+	    [round(sin(fdiv(pi(),2)),6)]
+	    [round(sin(fdiv(pi(),4)),6)]
+	    [round(sin(fdiv(pi(),6)),6)]
+	  )
+	),
+	FDF382C82E22F03A4D0E5F927B2BEC715CC842C9
       )=
   {
     @log smoke=TC001: sin examples. Succeeded.;

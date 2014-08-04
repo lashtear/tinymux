@@ -24,7 +24,7 @@ typedef struct confparm
 {
     const UTF8 *pname;            // parm name
     int (*interpreter)(int *vp, UTF8 *str, void *pExtra, UINT32 nExtra,
-                       dbref player, UTF8 *cmd); // routine to interp parameter
+		       dbref player, UTF8 *cmd); // routine to interp parameter
     int flags;              // control flags
     int rperms;             // read permission flags.
     int *loc;               // where to store value
@@ -66,11 +66,11 @@ void cf_init(void)
     mudconf.ports.pi = new int[1];
     if (NULL != mudconf.ports.pi)
     {
-        mudconf.ports.pi[0] = 2860;
+	mudconf.ports.pi[0] = 2860;
     }
     else
     {
-        ISOUTOFMEMORY(mudconf.ports.pi);
+	ISOUTOFMEMORY(mudconf.ports.pi);
     }
 
 #ifdef UNIX_SSL
@@ -242,17 +242,17 @@ void cf_init(void)
 
     for (i = FLAG_WORD1; i <= FLAG_WORD3; i++)
     {
-        mudconf.player_flags.word[i] = 0;
-        mudconf.room_flags.word[i] = 0;
-        mudconf.exit_flags.word[i] = 0;
-        mudconf.thing_flags.word[i] = 0;
-        mudconf.robot_flags.word[i] = 0;
-        mudconf.stripped_flags.word[i] = 0;
+	mudconf.player_flags.word[i] = 0;
+	mudconf.room_flags.word[i] = 0;
+	mudconf.exit_flags.word[i] = 0;
+	mudconf.thing_flags.word[i] = 0;
+	mudconf.robot_flags.word[i] = 0;
+	mudconf.stripped_flags.word[i] = 0;
     }
     mudconf.robot_flags.word[FLAG_WORD1] |= ROBOT;
     mudconf.stripped_flags.word[FLAG_WORD1] = IMMORTAL | INHERIT | ROYALTY | WIZARD;
     mudconf.stripped_flags.word[FLAG_WORD2] = BLIND | CONNECTED | GAGGED
-         | HEAD_FLAG | SLAVE | STAFF | SUSPECT | UNINSPECTED;
+	 | HEAD_FLAG | SLAVE | STAFF | SUSPECT | UNINSPECTED;
 
     mudconf.vattr_flags = AF_ODARK;
     mux_strncpy(mudconf.mud_name, T("MUX"), sizeof(mudconf.mud_name)-1);
@@ -266,9 +266,9 @@ void cf_init(void)
     mudconf.cache_tick_period.SetSeconds(30);
     mudconf.control_flags = 0xffffffff; // Everything for now...
     mudconf.log_options = LOG_ALWAYS | LOG_BUGS | LOG_SECURITY |
-        LOG_NET | LOG_LOGIN | LOG_DBSAVES | LOG_CONFIGMODS |
-        LOG_SHOUTS | LOG_STARTUP | LOG_WIZARD | LOG_SUSPECTCMDS |
-        LOG_PROBLEMS | LOG_PCREATES | LOG_TIMEUSE;
+	LOG_NET | LOG_LOGIN | LOG_DBSAVES | LOG_CONFIGMODS |
+	LOG_SHOUTS | LOG_STARTUP | LOG_WIZARD | LOG_SUSPECTCMDS |
+	LOG_PROBLEMS | LOG_PCREATES | LOG_TIMEUSE;
     mudconf.log_info = LOGOPT_TIMESTAMP | LOGOPT_LOC;
     mudconf.markdata[0] = 0x01;
     mudconf.markdata[1] = 0x02;
@@ -365,7 +365,7 @@ void cf_init(void)
     mudstate.poutobj = NOTHING;
     for (i = 0; i < MAX_GLOBAL_REGS; i++)
     {
-        mudstate.global_regs[i] = NULL;
+	mudstate.global_regs[i] = NULL;
     }
 #if defined(HAVE_STUB_SLAVE)
     mudstate.pResultsSet = NULL;
@@ -394,13 +394,13 @@ void cf_log_notfound(dbref player, const UTF8 *cmd, const UTF8 *thingname, const
 {
     if (mudstate.bReadingConfiguration)
     {
-        STARTLOG(LOG_STARTUP, "CNF", "NFND");
-        Log.tinyprintf(T("%s: %s %s not found"), cmd, thingname, thing);
-        ENDLOG;
+	STARTLOG(LOG_STARTUP, "CNF", "NFND");
+	Log.tinyprintf(T("%s: %s %s not found"), cmd, thingname, thing);
+	ENDLOG;
     }
     else
     {
-        notify(player, tprintf(T("%s %s not found"), thingname, thing));
+	notify(player, tprintf(T("%s %s not found"), thingname, thing));
     }
 }
 
@@ -416,15 +416,15 @@ void DCL_CDECL cf_log_syntax(dbref player, __in_z UTF8 *cmd, __in_z const UTF8 *
     mux_vsnprintf(buf, LBUF_SIZE, fmt, ap);
     if (mudstate.bReadingConfiguration)
     {
-        STARTLOG(LOG_STARTUP, "CNF", "SYNTX")
-        log_text(cmd);
-        log_text(T(": "));
-        log_text(buf);
-        ENDLOG;
+	STARTLOG(LOG_STARTUP, "CNF", "SYNTX")
+	log_text(cmd);
+	log_text(T(": "));
+	log_text(buf);
+	ENDLOG;
     }
     else
     {
-        notify(player, buf);
+	notify(player, buf);
     }
     free_lbuf(buf);
     va_end(ap);
@@ -441,26 +441,26 @@ static int cf_status_from_succfail(dbref player, UTF8 *cmd, int success, int fai
     // PARTIAL_SUCCESS(1) if any failures.
     //
     if (success > 0)
-        return ((failure == 0) ? 0 : 1);
+	return ((failure == 0) ? 0 : 1);
 
     // No successes.  If no failures indicate nothing done. Always return
     // FAILURE(-1)
     //
     if (failure == 0)
     {
-        if (mudstate.bReadingConfiguration)
-        {
-            STARTLOG(LOG_STARTUP, "CNF", "NDATA")
-            buff = alloc_lbuf("cf_status_from_succfail.LOG");
-            mux_sprintf(buff, LBUF_SIZE, T("%s: Nothing to set"), cmd);
-            log_text(buff);
-            free_lbuf(buff);
-            ENDLOG
-        }
-        else
-        {
-            notify(player, T("Nothing to set"));
-        }
+	if (mudstate.bReadingConfiguration)
+	{
+	    STARTLOG(LOG_STARTUP, "CNF", "NDATA")
+	    buff = alloc_lbuf("cf_status_from_succfail.LOG");
+	    mux_sprintf(buff, LBUF_SIZE, T("%s: Nothing to set"), cmd);
+	    log_text(buff);
+	    free_lbuf(buff);
+	    ENDLOG
+	}
+	else
+	{
+	    notify(player, T("Nothing to set"));
+	}
     }
     return -1;
 }
@@ -478,37 +478,37 @@ CF_HAND(cf_rlevel)
 
     if (mc->no_levels >= 32)
     {
-        return 1;
+	return 1;
     }
     for (i=0; *str && !mux_isspace[*str]; ++str)
     {
-        if (i < 8)
-        {
-            mc->reality_level[mc->no_levels].name[i++] = *str;
-        }
+	if (i < 8)
+	{
+	    mc->reality_level[mc->no_levels].name[i++] = *str;
+	}
     }
     mc->reality_level[mc->no_levels].name[i] = '\0';
     mc->reality_level[mc->no_levels].value = 1;
     strcpy((char *)mc->reality_level[mc->no_levels].attr, "DESC");
     for (; *str && mux_isspace[*str]; ++str)
     {
-        ; // Nothing.
+	; // Nothing.
     }
     for (i=0; *str && mux_isdigit[*str]; ++str)
     {
-        i = i * 10 + (*str - '0');
+	i = i * 10 + (*str - '0');
     }
     if (i)
     {
-        mc->reality_level[mc->no_levels].value = (RLEVEL) i;
+	mc->reality_level[mc->no_levels].value = (RLEVEL) i;
     }
     for (; *str && mux_isspace[*str]; ++str)
     {
-        ; // Nothing.
+	; // Nothing.
     }
     if (*str)
     {
-        strncpy((char *)mc->reality_level[mc->no_levels].attr, (char *)str, 32);
+	strncpy((char *)mc->reality_level[mc->no_levels].attr, (char *)str, 32);
     }
     mc->no_levels++;
     return 0;
@@ -527,17 +527,17 @@ static CF_HAND(cf_int_array)
     int *aPorts = NULL;
     try
     {
-        aPorts = new int[nExtra];
+	aPorts = new int[nExtra];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL == aPorts)
     {
-        cf_log_syntax(player, cmd, T("Out of memory."));
-        return -1;
+	cf_log_syntax(player, cmd, T("Out of memory."));
+	return -1;
     }
 
     unsigned int nPorts = 0;
@@ -546,46 +546,46 @@ static CF_HAND(cf_int_array)
     mux_strtok_src(&tts, str);
     mux_strtok_ctl(&tts, T(" \t\n\r"));
     while (  (p = mux_strtok_parse(&tts)) != NULL
-          && nPorts < nExtra)
+	  && nPorts < nExtra)
     {
-        int unused;
-        if (is_integer(p, &unused))
-        {
-            aPorts[nPorts++] = mux_atol(p);
-        }
+	int unused;
+	if (is_integer(p, &unused))
+	{
+	    aPorts[nPorts++] = mux_atol(p);
+	}
     }
 
     IntArray *pia = (IntArray *)vp;
     if (nPorts)
     {
-        int *q = NULL;
-        try
-        {
-            q = new int[nPorts];
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	int *q = NULL;
+	try
+	{
+	    q = new int[nPorts];
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == q)
-        {
-            cf_log_syntax(player, cmd, T("Out of memory."));
-            return -1;
-        }
+	if (NULL == q)
+	{
+	    cf_log_syntax(player, cmd, T("Out of memory."));
+	    return -1;
+	}
 
-        if (pia->pi)
-        {
-            delete [] pia->pi;
-            pia->pi = NULL;
-        }
+	if (pia->pi)
+	{
+	    delete [] pia->pi;
+	    pia->pi = NULL;
+	}
 
-        pia->pi = q;
-        pia->n = nPorts;
-        for (unsigned int i = 0; i < nPorts; i++)
-        {
-            pia->pi[i] = aPorts[i];
-        }
+	pia->pi = q;
+	pia->n = nPorts;
+	for (unsigned int i = 0; i < nPorts; i++)
+	{
+	    pia->pi[i] = aPorts[i];
+	}
     }
     delete [] aPorts;
     return 0;
@@ -620,11 +620,11 @@ static CF_HAND(cf_dbref)
     UTF8 *p = str;
     while (mux_isspace(*p))
     {
-        p++;
+	p++;
     }
     if (*p == '#')
     {
-        p++;
+	p++;
     }
 
     // Copy the numeric value to the parameter.
@@ -670,8 +670,8 @@ static CF_HAND(cf_bool)
     unsigned int i;
     if (!search_nametab(GOD, bool_names, str, &i))
     {
-        cf_log_notfound(player, cmd, T("Value"), str);
-        return -1;
+	cf_log_notfound(player, cmd, T("Value"), str);
+	return -1;
     }
     bool *pb = (bool *)vp;
     *pb = isTRUE(i);
@@ -688,8 +688,8 @@ static CF_HAND(cf_option)
     unsigned int i;
     if (!search_nametab(GOD, (NAMETAB *)pExtra, str, &i))
     {
-        cf_log_notfound(player, cmd, T("Value"), str);
-        return -1;
+	cf_log_notfound(player, cmd, T("Value"), str);
+	return -1;
     }
     *vp = i;
     return 0;
@@ -709,7 +709,7 @@ static CF_HAND(cf_string)
     //
     if (nExtra <= 0)
     {
-        return 1;
+	return 1;
     }
 
     // Copy the string to the buffer if it is not too big.
@@ -718,44 +718,44 @@ static CF_HAND(cf_string)
     size_t nStr = strlen((char *)str);
     if (nStr >= nExtra)
     {
-        nStr = nExtra - 1;
-        if (mudstate.bReadingConfiguration)
-        {
-            STARTLOG(LOG_STARTUP, "CNF", "NFND");
-            Log.tinyprintf(T("%s: String truncated"), cmd);
-            ENDLOG;
-        }
-        else
-        {
-            notify(player, T("String truncated"));
-        }
-        retval = 1;
+	nStr = nExtra - 1;
+	if (mudstate.bReadingConfiguration)
+	{
+	    STARTLOG(LOG_STARTUP, "CNF", "NFND");
+	    Log.tinyprintf(T("%s: String truncated"), cmd);
+	    ENDLOG;
+	}
+	else
+	{
+	    notify(player, T("String truncated"));
+	}
+	retval = 1;
     }
     memcpy(pc, str, nStr+1);
     pc[nStr] = '\0';
 
     if (pc == mudconf.mud_name)
     {
-        // We are changing the name of the MUD. Form a prefix from the
-        // mudname and let the logger know.
-        //
-        UTF8 *buff = alloc_sbuf("cf_string.prefix");
-        UTF8 *p = buff;
-        UTF8 *q = strip_color(mudconf.mud_name);
-        size_t nLen = 0;
-        while (  *q
-              && nLen < SBUF_SIZE)
-        {
-            if (mux_isalnum(*q))
-            {
-                *p++ = *q;
-                nLen++;
-            }
-            q++;
-        }
-        *p = '\0';
-        Log.SetPrefix(buff);
-        free_sbuf(buff);
+	// We are changing the name of the MUD. Form a prefix from the
+	// mudname and let the logger know.
+	//
+	UTF8 *buff = alloc_sbuf("cf_string.prefix");
+	UTF8 *p = buff;
+	UTF8 *q = strip_color(mudconf.mud_name);
+	size_t nLen = 0;
+	while (  *q
+	      && nLen < SBUF_SIZE)
+	{
+	    if (mux_isalnum(*q))
+	    {
+		*p++ = *q;
+		nLen++;
+	    }
+	    q++;
+	}
+	*p = '\0';
+	Log.SetPrefix(buff);
+	free_sbuf(buff);
     }
     return retval;
 }
@@ -776,18 +776,18 @@ static CF_HAND(cf_string_dyn)
     size_t nStr = strlen((char *)str);
     if (nExtra && nStr >= nExtra)
     {
-        nStr = nExtra - 1;
-        if (mudstate.bReadingConfiguration)
-        {
-            STARTLOG(LOG_STARTUP, "CNF", "NFND");
-            Log.tinyprintf(T("%s: String truncated"), cmd);
-            ENDLOG;
-        }
-        else
-        {
-            notify(player, T("String truncated"));
-        }
-        retval = 1;
+	nStr = nExtra - 1;
+	if (mudstate.bReadingConfiguration)
+	{
+	    STARTLOG(LOG_STARTUP, "CNF", "NFND");
+	    Log.tinyprintf(T("%s: String truncated"), cmd);
+	    ENDLOG;
+	}
+	else
+	{
+	    notify(player, T("String truncated"));
+	}
+	retval = 1;
     }
     UTF8 *confbuff = StringCloneLen(str, nStr);
 
@@ -795,7 +795,7 @@ static CF_HAND(cf_string_dyn)
     //
     if (*ppc != NULL)
     {
-        MEMFREE(*ppc);
+	MEMFREE(*ppc);
     }
     *ppc = confbuff;
 
@@ -818,21 +818,21 @@ static CF_HAND(cf_alias)
 
     if (orig)
     {
-        size_t nCased;
-        UTF8 *pCased = mux_strupr(orig, nCased);
-        void *cp = hashfindLEN(pCased, nCased, (CHashTable *) vp);
-        if (NULL == cp)
-        {
-            cf_log_notfound(player, cmd, T("Entry"), orig);
-            return -1;
-        }
+	size_t nCased;
+	UTF8 *pCased = mux_strupr(orig, nCased);
+	void *cp = hashfindLEN(pCased, nCased, (CHashTable *) vp);
+	if (NULL == cp)
+	{
+	    cf_log_notfound(player, cmd, T("Entry"), orig);
+	    return -1;
+	}
 
-        pCased = mux_strupr(alias, nCased);
-        if (!hashfindLEN(pCased, nCased, (CHashTable *) vp))
-        {
-            hashaddLEN(pCased, nCased, cp, (CHashTable *) vp);
-        }
-        return 0;
+	pCased = mux_strupr(alias, nCased);
+	if (!hashfindLEN(pCased, nCased, (CHashTable *) vp))
+	{
+	    hashaddLEN(pCased, nCased, cp, (CHashTable *) vp);
+	}
+	return 0;
     }
     return -1;
 }
@@ -856,25 +856,25 @@ static CF_HAND(cf_name)
        && NULL != newname
        && '\0' != newname[0])
     {
-        size_t nCased;
-        UTF8 *pCased = mux_strupr(oldname, nCased);
-        void *cp = hashfindLEN(pCased, nCased, (CHashTable *) vp);
-        if (NULL == cp)
-        {
-            cf_log_notfound(player, cmd, T("Entry"), oldname);
-            return -1;
-        }
+	size_t nCased;
+	UTF8 *pCased = mux_strupr(oldname, nCased);
+	void *cp = hashfindLEN(pCased, nCased, (CHashTable *) vp);
+	if (NULL == cp)
+	{
+	    cf_log_notfound(player, cmd, T("Entry"), oldname);
+	    return -1;
+	}
 
-        size_t bCased = nCased;
-        UTF8 Buffer[LBUF_SIZE];
-        mux_strncpy(Buffer, pCased, sizeof(Buffer)-1);
-        pCased = mux_strupr(newname, nCased);
-        if (!hashfindLEN(pCased, nCased, (CHashTable *) vp))
-        {
-            hashaddLEN(pCased, nCased, cp, (CHashTable *) vp);
-            hashdeleteLEN(Buffer, bCased, (CHashTable *) vp);
-            return 0;
-        }
+	size_t bCased = nCased;
+	UTF8 Buffer[LBUF_SIZE];
+	mux_strncpy(Buffer, pCased, sizeof(Buffer)-1);
+	pCased = mux_strupr(newname, nCased);
+	if (!hashfindLEN(pCased, nCased, (CHashTable *) vp))
+	{
+	    hashaddLEN(pCased, nCased, cp, (CHashTable *) vp);
+	    hashdeleteLEN(Buffer, bCased, (CHashTable *) vp);
+	    return 0;
+	}
     }
     return -1;
 }
@@ -900,7 +900,7 @@ static CF_HAND(cf_flagalias)
        || NULL == orig
        || '\0' == orig[0])
     {
-        return -1;
+	return -1;
     }
 
     bool success = false;
@@ -910,23 +910,23 @@ static CF_HAND(cf_flagalias)
     UTF8 *pName = MakeCanonicalFlagName(orig, &nName, &bValid);
     if (bValid)
     {
-        cp = hashfindLEN(pName, nName, &mudstate.flags_htab);
-        if (cp)
-        {
-            pName = MakeCanonicalFlagName(alias, &nName, &bValid);
-            if (bValid)
-            {
-                if (!hashfindLEN(pName, nName, &mudstate.flags_htab))
-                {
-                    hashaddLEN(pName, nName, cp, &mudstate.flags_htab);
-                    success = true;
-               }
-            }
-        }
+	cp = hashfindLEN(pName, nName, &mudstate.flags_htab);
+	if (cp)
+	{
+	    pName = MakeCanonicalFlagName(alias, &nName, &bValid);
+	    if (bValid)
+	    {
+		if (!hashfindLEN(pName, nName, &mudstate.flags_htab))
+		{
+		    hashaddLEN(pName, nName, cp, &mudstate.flags_htab);
+		    success = true;
+	       }
+	    }
+	}
     }
     if (!success)
     {
-        cf_log_notfound(player, cmd, T("Flag"), orig);
+	cf_log_notfound(player, cmd, T("Flag"), orig);
     }
     return (success ? 0 : -1);
 }
@@ -951,7 +951,7 @@ static CF_HAND(cf_poweralias)
        || NULL == orig
        || '\0' == orig[0])
     {
-        return -1;
+	return -1;
     }
 
     bool success = false;
@@ -961,20 +961,20 @@ static CF_HAND(cf_poweralias)
     UTF8 *pName = MakeCanonicalFlagName(orig, &nName, &bValid);
     if (bValid)
     {
-        cp = hashfindLEN(pName, nName, &mudstate.powers_htab);
-        if (cp)
-        {
-            pName = MakeCanonicalFlagName(alias, &nName, &bValid);
-            if (bValid)
-            {
-                hashaddLEN(pName, nName, cp, &mudstate.powers_htab);
-                success = true;
-            }
-        }
+	cp = hashfindLEN(pName, nName, &mudstate.powers_htab);
+	if (cp)
+	{
+	    pName = MakeCanonicalFlagName(alias, &nName, &bValid);
+	    if (bValid)
+	    {
+		hashaddLEN(pName, nName, cp, &mudstate.powers_htab);
+		success = true;
+	    }
+	}
     }
     if (!success)
     {
-        cf_log_notfound(player, cmd, T("Power"), orig);
+	cf_log_notfound(player, cmd, T("Power"), orig);
     }
     return (success ? 0 : -1);
 }
@@ -999,22 +999,22 @@ static CF_HAND(cf_or_in_bits)
     UTF8 *sp = mux_strtok_parse(&tts);
     while (sp != NULL)
     {
-        // Set the appropriate bit.
-        //
-        if (search_nametab(GOD, (NAMETAB *)pExtra, sp, &f))
-        {
-            *vp |= f;
-            success++;
-        }
-        else
-        {
-            cf_log_notfound(player, cmd, "Entry", sp);
-            failure++;
-        }
+	// Set the appropriate bit.
+	//
+	if (search_nametab(GOD, (NAMETAB *)pExtra, sp, &f))
+	{
+	    *vp |= f;
+	    success++;
+	}
+	else
+	{
+	    cf_log_notfound(player, cmd, "Entry", sp);
+	    failure++;
+	}
 
-        // Get the next token.
-        //
-        sp = mux_strtok_parse(&tts);
+	// Get the next token.
+	//
+	sp = mux_strtok_parse(&tts);
     }
     return cf_status_from_succfail(player, cmd, success, failure);
 }
@@ -1040,34 +1040,34 @@ CF_HAND(cf_modify_bits)
     UTF8 *sp = mux_strtok_parse(&tts);
     while (sp != NULL)
     {
-        // Check for negation.
-        //
-        negate = false;
-        if (*sp == '!')
-        {
-            negate = true;
-            sp++;
-        }
+	// Check for negation.
+	//
+	negate = false;
+	if (*sp == '!')
+	{
+	    negate = true;
+	    sp++;
+	}
 
-        // Set or clear the appropriate bit.
-        //
-        if (search_nametab(GOD, (NAMETAB *)pExtra, sp, &f))
-        {
-            if (negate)
-                *vp &= ~f;
-            else
-                *vp |= f;
-            success++;
-        }
-        else
-        {
-            cf_log_notfound(player, cmd, T("Entry"), sp);
-            failure++;
-        }
+	// Set or clear the appropriate bit.
+	//
+	if (search_nametab(GOD, (NAMETAB *)pExtra, sp, &f))
+	{
+	    if (negate)
+		*vp &= ~f;
+	    else
+		*vp |= f;
+	    success++;
+	}
+	else
+	{
+	    cf_log_notfound(player, cmd, T("Entry"), sp);
+	    failure++;
+	}
 
-        // Get the next token.
-        //
-        sp = mux_strtok_parse(&tts);
+	// Get the next token.
+	//
+	sp = mux_strtok_parse(&tts);
     }
     return cf_status_from_succfail(player, cmd, success, failure);
 }
@@ -1093,22 +1093,22 @@ static CF_HAND(cf_set_bits)
     UTF8 *sp = mux_strtok_parse(&tts);
     while (sp != NULL)
     {
-        // Set the appropriate bit.
-        //
-        if (search_nametab(GOD, (NAMETAB *)pExtra, sp, &f))
-        {
-            *vp |= f;
-            success++;
-        }
-        else
-        {
-            cf_log_notfound(player, cmd, "Entry", sp);
-            failure++;
-        }
+	// Set the appropriate bit.
+	//
+	if (search_nametab(GOD, (NAMETAB *)pExtra, sp, &f))
+	{
+	    *vp |= f;
+	    success++;
+	}
+	else
+	{
+	    cf_log_notfound(player, cmd, "Entry", sp);
+	    failure++;
+	}
 
-        // Get the next token.
-        //
-        sp = mux_strtok_parse(&tts);
+	// Get the next token.
+	//
+	sp = mux_strtok_parse(&tts);
     }
     return cf_status_from_succfail(player, cmd, success, failure);
 }
@@ -1135,59 +1135,59 @@ static CF_HAND(cf_set_flags)
 
     while (sp != NULL)
     {
-        // Canonical Flag Name.
-        //
-        int  nName;
-        bool bValid;
-        UTF8 *pName = MakeCanonicalFlagName(sp, &nName, &bValid);
-        FLAGNAMEENT *fp = NULL;
-        if (bValid)
-        {
-            fp = (FLAGNAMEENT *)hashfindLEN(pName, nName, &mudstate.flags_htab);
-        }
-        if (fp != NULL)
-        {
-            // Set the appropriate bit.
-            //
-            if (success == 0)
-            {
-                for (int i = FLAG_WORD1; i <= FLAG_WORD3; i++)
-                {
-                    (*fset).word[i] = 0;
-                }
-            }
-            FLAGBITENT *fbe = fp->fbe;
-            if (fp->bPositive)
-            {
-                (*fset).word[fbe->flagflag] |= fbe->flagvalue;
-            }
-            else
-            {
-                (*fset).word[fbe->flagflag] &= ~(fbe->flagvalue);
-            }
-            success++;
-        }
-        else
-        {
-            cf_log_notfound(player, cmd, T("Entry"), sp);
-            failure++;
-        }
+	// Canonical Flag Name.
+	//
+	int  nName;
+	bool bValid;
+	UTF8 *pName = MakeCanonicalFlagName(sp, &nName, &bValid);
+	FLAGNAMEENT *fp = NULL;
+	if (bValid)
+	{
+	    fp = (FLAGNAMEENT *)hashfindLEN(pName, nName, &mudstate.flags_htab);
+	}
+	if (fp != NULL)
+	{
+	    // Set the appropriate bit.
+	    //
+	    if (success == 0)
+	    {
+		for (int i = FLAG_WORD1; i <= FLAG_WORD3; i++)
+		{
+		    (*fset).word[i] = 0;
+		}
+	    }
+	    FLAGBITENT *fbe = fp->fbe;
+	    if (fp->bPositive)
+	    {
+		(*fset).word[fbe->flagflag] |= fbe->flagvalue;
+	    }
+	    else
+	    {
+		(*fset).word[fbe->flagflag] &= ~(fbe->flagvalue);
+	    }
+	    success++;
+	}
+	else
+	{
+	    cf_log_notfound(player, cmd, T("Entry"), sp);
+	    failure++;
+	}
 
-        // Get the next token
-        //
-        sp = mux_strtok_parse(&tts);
+	// Get the next token
+	//
+	sp = mux_strtok_parse(&tts);
     }
     if ((success == 0) && (failure == 0))
     {
-        for (int i = FLAG_WORD1; i <= FLAG_WORD3; i++)
-        {
-            (*fset).word[i] = 0;
-        }
-        return 0;
+	for (int i = FLAG_WORD1; i <= FLAG_WORD3; i++)
+	{
+	    (*fset).word[i] = 0;
+	}
+	return 0;
     }
     if (success > 0)
     {
-        return ((failure == 0) ? 0 : 1);
+	return ((failure == 0) ? 0 : 1);
     }
     return -1;
 }
@@ -1204,11 +1204,11 @@ static CF_HAND(cf_badname)
 
     if (nExtra)
     {
-        badname_remove(str);
+	badname_remove(str);
     }
     else
     {
-        badname_add(str);
+	badname_add(str);
     }
     return 0;
 }
@@ -1223,86 +1223,86 @@ static CF_HAND(cf_site)
     mux_subnet *pSubnet = ParseSubnet(str, player, cmd);
     if (NULL == pSubnet)
     {
-        return -1;
+	return -1;
     }
 
     mux_subnets *subnets = (mux_subnets *)vp;
     switch (nExtra)
     {
     case HC_PERMIT:
-        if (!subnets->permit(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->permit(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_REGISTER:
-        if (!subnets->registered(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->registered(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_FORBID:
-        if (!subnets->forbid(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->forbid(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_NOSITEMON:
-        if (!subnets->nositemon(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->nositemon(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_SITEMON:
-        if (!subnets->sitemon(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->sitemon(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_NOGUEST:
-        if (!subnets->noguest(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->noguest(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_GUEST:
-        if (!subnets->guest(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->guest(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_SUSPECT:
-        if (!subnets->suspect(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->suspect(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_TRUST:
-        if (!subnets->trust(pSubnet))
-        {
-            return -1;
-        }
-        break;
+	if (!subnets->trust(pSubnet))
+	{
+	    return -1;
+	}
+	break;
 
     case HC_RESET:
-        if (!subnets->reset(pSubnet))
-        {
-            delete pSubnet;
-            return -1;
-        }
-        break;
+	if (!subnets->reset(pSubnet))
+	{
+	    delete pSubnet;
+	    return -1;
+	}
+	break;
 
     default:
-        delete pSubnet;
-        return -1;
+	delete pSubnet;
+	return -1;
     }
 
     return 0;
@@ -1324,68 +1324,68 @@ static int add_helpfile(dbref player, UTF8 *cmd, UTF8 *str, bool bEval)
     UTF8 *pBase = mux_strtok_parse(&tts);
     if (pBase == NULL)
     {
-        cf_log_syntax(player, cmd, T("Missing path for helpfile %s"), pCmdName);
-        return -1;
+	cf_log_syntax(player, cmd, T("Missing path for helpfile %s"), pCmdName);
+	return -1;
     }
     if (  pCmdName[0] == '_'
        && pCmdName[1] == '_')
     {
-        cf_log_syntax(player, cmd,
-            T("Helpfile %s would conflict with the use of @addcommand."),
-            pCmdName);
-        return -1;
+	cf_log_syntax(player, cmd,
+	    T("Helpfile %s would conflict with the use of @addcommand."),
+	    pCmdName);
+	return -1;
     }
     if (SBUF_SIZE <= strlen((char *)pBase))
     {
-        cf_log_syntax(player, cmd, T("Helpfile \xE2\x80\x98%s\xE2\x80\x99 filename too long"), pBase);
-        return -1;
+	cf_log_syntax(player, cmd, T("Helpfile \xE2\x80\x98%s\xE2\x80\x99 filename too long"), pBase);
+	return -1;
     }
 
     // Allocate an empty place in the table of help file hashes.
     //
     if (mudstate.aHelpDesc == NULL)
     {
-        mudstate.mHelpDesc = 4;
-        mudstate.nHelpDesc = 0;
-        try
-        {
-            mudstate.aHelpDesc = new HELP_DESC[mudstate.mHelpDesc];
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	mudstate.mHelpDesc = 4;
+	mudstate.nHelpDesc = 0;
+	try
+	{
+	    mudstate.aHelpDesc = new HELP_DESC[mudstate.mHelpDesc];
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == mudstate.aHelpDesc)
-        {
-            cf_log_syntax(player, cmd, T("Out of memory."));
-            return -1;
-        }
+	if (NULL == mudstate.aHelpDesc)
+	{
+	    cf_log_syntax(player, cmd, T("Out of memory."));
+	    return -1;
+	}
     }
     else if (mudstate.mHelpDesc <= mudstate.nHelpDesc)
     {
-        int newsize = mudstate.mHelpDesc + 4;
-        HELP_DESC *q = NULL;
-        try
-        {
-            q = new HELP_DESC[newsize];
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	int newsize = mudstate.mHelpDesc + 4;
+	HELP_DESC *q = NULL;
+	try
+	{
+	    q = new HELP_DESC[newsize];
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == mudstate.aHelpDesc)
-        {
-            cf_log_syntax(player, cmd, T("Out of memory."));
-            return -1;
-        }
+	if (NULL == mudstate.aHelpDesc)
+	{
+	    cf_log_syntax(player, cmd, T("Out of memory."));
+	    return -1;
+	}
 
-        memset(q, 0, sizeof(HELP_DESC)*newsize);
-        memcpy(q, mudstate.aHelpDesc, sizeof(HELP_DESC)*mudstate.mHelpDesc);
-        delete [] mudstate.aHelpDesc;
-        mudstate.aHelpDesc = q;
-        mudstate.mHelpDesc = newsize;
+	memset(q, 0, sizeof(HELP_DESC)*newsize);
+	memcpy(q, mudstate.aHelpDesc, sizeof(HELP_DESC)*mudstate.mHelpDesc);
+	delete [] mudstate.aHelpDesc;
+	mudstate.aHelpDesc = q;
+	mudstate.mHelpDesc = newsize;
     }
 
     // Build HELP_DESC
@@ -1401,39 +1401,39 @@ static int add_helpfile(dbref player, UTF8 *cmd, UTF8 *str, bool bEval)
     CMDENT_ONE_ARG *cmdp = NULL;
     try
     {
-        cmdp = new CMDENT_ONE_ARG;
+	cmdp = new CMDENT_ONE_ARG;
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL != cmdp)
     {
-        cmdp->callseq = CS_ONE_ARG;
-        cmdp->cmdname = StringClone(pCmdName);
-        cmdp->extra = mudstate.nHelpDesc;
-        cmdp->handler = do_help;
-        cmdp->flags = CEF_ALLOC;
-        cmdp->perms = CA_PUBLIC;
-        cmdp->switches = NULL;
+	cmdp->callseq = CS_ONE_ARG;
+	cmdp->cmdname = StringClone(pCmdName);
+	cmdp->extra = mudstate.nHelpDesc;
+	cmdp->handler = do_help;
+	cmdp->flags = CEF_ALLOC;
+	cmdp->perms = CA_PUBLIC;
+	cmdp->switches = NULL;
 
-        // TODO: If a command is deleted with one or both of the two
-        // hashdeleteLEN() calls below, what guarantee do we have that parts
-        // of the command weren't dynamically allocated.  This might leak
-        // memory.
-        //
-        const UTF8 *p = cmdp->cmdname;
-        hashdeleteLEN(p, strlen((const char *)p), &mudstate.command_htab);
-        hashaddLEN(p, strlen((const char *)p), cmdp, &mudstate.command_htab);
+	// TODO: If a command is deleted with one or both of the two
+	// hashdeleteLEN() calls below, what guarantee do we have that parts
+	// of the command weren't dynamically allocated.  This might leak
+	// memory.
+	//
+	const UTF8 *p = cmdp->cmdname;
+	hashdeleteLEN(p, strlen((const char *)p), &mudstate.command_htab);
+	hashaddLEN(p, strlen((const char *)p), cmdp, &mudstate.command_htab);
 
-        p = tprintf(T("__%s"), cmdp->cmdname);
-        hashdeleteLEN(p, strlen((const char *)p), &mudstate.command_htab);
-        hashaddLEN(p, strlen((const char *)p), cmdp, &mudstate.command_htab);
+	p = tprintf(T("__%s"), cmdp->cmdname);
+	hashdeleteLEN(p, strlen((const char *)p), &mudstate.command_htab);
+	hashaddLEN(p, strlen((const char *)p), cmdp, &mudstate.command_htab);
     }
     else
     {
-        ISOUTOFMEMORY(cmdp);
+	ISOUTOFMEMORY(cmdp);
     }
 
     mudstate.nHelpDesc++;
@@ -1514,21 +1514,21 @@ static CF_HAND(cf_hook)
     while (hookptr != NULL)
     {
        if (  hookptr[0] == '!'
-          && hookptr[1] != '\0')
+	  && hookptr[1] != '\0')
        {
-          if (search_nametab(GOD, hook_names, hookptr+1, &hookflg))
-          {
-             retval = 0;
-             t = t & ~hookflg;
-          }
+	  if (search_nametab(GOD, hook_names, hookptr+1, &hookflg))
+	  {
+	     retval = 0;
+	     t = t & ~hookflg;
+	  }
        }
        else
        {
-          if (search_nametab(GOD, hook_names, hookptr, &hookflg))
-          {
-             retval = 0;
-             t = t | hookflg;
-          }
+	  if (search_nametab(GOD, hook_names, hookptr, &hookflg))
+	  {
+	     retval = 0;
+	     t = t | hookflg;
+	  }
        }
        hookptr = mux_strtok_parse(&tts);
     }
@@ -1552,96 +1552,96 @@ static CF_HAND(cf_module)
 
     enum MODTYPE
     {
-        eInProc = 0,
-        eLocal
+	eInProc = 0,
+	eLocal
     } eType = eInProc;
 
     if (NULL == modname)
     {
-        cf_log_syntax(player, cmd, T("Module name is missing."));
-        return -1;
+	cf_log_syntax(player, cmd, T("Module name is missing."));
+	return -1;
     }
 
     if (NULL == modtype)
     {
-        eType = eInProc;
+	eType = eInProc;
     }
     else if (strcmp((char *)modtype, "inproc") == 0)
     {
-        eType = eInProc;
+	eType = eInProc;
     }
     else if (  strcmp((char *)modtype, "local") == 0
-            || strcmp((char *)modtype, "slave") == 0)
+	    || strcmp((char *)modtype, "slave") == 0)
     {
-        eType = eLocal;
+	eType = eLocal;
     }
     else
     {
-        cf_log_syntax(player, cmd, T("load type is invalid."));
-        return -1;
+	cf_log_syntax(player, cmd, T("load type is invalid."));
+	return -1;
     }
 
 #if defined(HAVE_STUB_SLAVE)
     if (  NULL == mudstate.pISlaveControl
        && eLocal == eType)
     {
-        cf_log_syntax(player, cmd, T("No StubSlave management interface available."));
-        return -1;
+	cf_log_syntax(player, cmd, T("No StubSlave management interface available."));
+	return -1;
     }
 #else // HAVE_STUB_SLAVE
     if (eLocal == eType)
     {
-        cf_log_syntax(player, cmd, T("StubSlave is not enabled."));
-        return -1;
+	cf_log_syntax(player, cmd, T("StubSlave is not enabled."));
+	return -1;
     }
 #endif // HAVE_STUB_SLAVE
 
     MUX_RESULT mr = MUX_S_OK;
     if ('!' == str[0])
     {
-        if (eInProc == eType)
-        {
-            mr = mux_RemoveModule(str+1);
-        }
+	if (eInProc == eType)
+	{
+	    mr = mux_RemoveModule(str+1);
+	}
 #if defined(HAVE_STUB_SLAVE)
-        else
-        {
-            mr = mudstate.pISlaveControl->RemoveModule(str+1);
-        }
+	else
+	{
+	    mr = mudstate.pISlaveControl->RemoveModule(str+1);
+	}
 #endif // HAVE_STUB_SLAVE
     }
     else
     {
-        UTF8 *buffer = alloc_lbuf("cf_module");
+	UTF8 *buffer = alloc_lbuf("cf_module");
 #if defined(WINDOWS_FILES)
-        size_t n;
-        mux_sprintf(buffer, LBUF_SIZE, T(".\\bin\\%s.dll"), str);
-        UTF16 *filename = ConvertFromUTF8ToUTF16(buffer, &n);
+	size_t n;
+	mux_sprintf(buffer, LBUF_SIZE, T(".\\bin\\%s.dll"), str);
+	UTF16 *filename = ConvertFromUTF8ToUTF16(buffer, &n);
 #elif defined(UNIX_FILES)
-        mux_sprintf(buffer, LBUF_SIZE, T("./bin/%s.so"), str);
-        UTF8 *filename = buffer;
+	mux_sprintf(buffer, LBUF_SIZE, T("./bin/%s.so"), str);
+	UTF8 *filename = buffer;
 #endif
-        if (eInProc == eType)
-        {
-            mr = mux_AddModule(str, filename);
-        }
+	if (eInProc == eType)
+	{
+	    mr = mux_AddModule(str, filename);
+	}
 #if defined(HAVE_STUB_SLAVE)
-        else
-        {
-            mr = mudstate.pISlaveControl->AddModule(str, filename);
-        }
+	else
+	{
+	    mr = mudstate.pISlaveControl->AddModule(str, filename);
+	}
 #endif // HAVE_STUB_SLAVE
-        free_lbuf(buffer);
+	free_lbuf(buffer);
     }
 
     if (MUX_FAILED(mr))
     {
-        cf_log_notfound(player, cmd, T("Module"), str);
-        return -1;
+	cf_log_notfound(player, cmd, T("Module"), str);
+	return -1;
     }
     else
     {
-        return 0;
+	return 0;
     }
 }
 
@@ -1658,101 +1658,101 @@ static CF_HAND(cf_include)
 
     if (!mudstate.bReadingConfiguration)
     {
-        return -1;
+	return -1;
     }
 
     FILE *fp;
     if (!mux_fopen(&fp, str, T("rb")))
     {
-        cf_log_notfound(player, cmd, T("Config file"), str);
-        return -1;
+	cf_log_notfound(player, cmd, T("Config file"), str);
+	return -1;
     }
     DebugTotalFiles++;
 
     UTF8 *buf = alloc_lbuf("cf_include");
     if (NULL == fgets((char *)buf, LBUF_SIZE, fp))
     {
-        return 0;
+	return 0;
     }
     while (!feof(fp))
     {
-        UTF8 *zp = buf;
+	UTF8 *zp = buf;
 
-        // Remove comments.  Anything after the '#' is a comment except if it
-        // matches:  whitespace + '#' + digit.
-        //
-        while (*zp != '\0')
-        {
-            if (  *zp == '#'
-               && (  zp <= buf
-                  || !mux_isspace(zp[-1])
-                  || !mux_isdigit(zp[1])))
-            {
-                // Found a comment.
-                //
-                *zp = '\0';
-            }
-            else
-            {
-                zp++;
-            }
-        }
+	// Remove comments.  Anything after the '#' is a comment except if it
+	// matches:  whitespace + '#' + digit.
+	//
+	while (*zp != '\0')
+	{
+	    if (  *zp == '#'
+	       && (  zp <= buf
+		  || !mux_isspace(zp[-1])
+		  || !mux_isdigit(zp[1])))
+	    {
+		// Found a comment.
+		//
+		*zp = '\0';
+	    }
+	    else
+	    {
+		zp++;
+	    }
+	}
 
-        // Trim trailing spaces.
-        //
-        while (  buf < zp
-              && mux_isspace(zp[-1]))
-        {
-            *(--zp) = '\0';
-        }
+	// Trim trailing spaces.
+	//
+	while (  buf < zp
+	      && mux_isspace(zp[-1]))
+	{
+	    *(--zp) = '\0';
+	}
 
-        // Process line.
-        //
-        UTF8 *cp = buf;
+	// Process line.
+	//
+	UTF8 *cp = buf;
 
-        // Trim leading spaces.
-        //
-        while (mux_isspace(*cp))
-        {
-            cp++;
-        }
+	// Trim leading spaces.
+	//
+	while (mux_isspace(*cp))
+	{
+	    cp++;
+	}
 
-        // Skip over command.
-        //
-        UTF8 *ap;
-        for (ap = cp; *ap && !mux_isspace(*ap); ap++)
-        {
-            ; // Nothing.
-        }
+	// Skip over command.
+	//
+	UTF8 *ap;
+	for (ap = cp; *ap && !mux_isspace(*ap); ap++)
+	{
+	    ; // Nothing.
+	}
 
-        // Terminate command.
-        //
-        if (*ap)
-        {
-            *ap++ = '\0';
-        }
+	// Terminate command.
+	//
+	if (*ap)
+	{
+	    *ap++ = '\0';
+	}
 
-        // Skip spaces between command and argument.
-        //
-        while (mux_isspace(*ap))
-        {
-            ap++;
-        }
+	// Skip spaces between command and argument.
+	//
+	while (mux_isspace(*ap))
+	{
+	    ap++;
+	}
 
-        if (*cp)
-        {
-            cf_set(cp, ap, player);
-        }
+	if (*cp)
+	{
+	    cf_set(cp, ap, player);
+	}
 
-        if (NULL == fgets((char *)buf, LBUF_SIZE, fp))
-        {
-            break;
-        }
+	if (NULL == fgets((char *)buf, LBUF_SIZE, fp))
+	{
+	    break;
+	}
     }
     free_lbuf(buf);
     if (fclose(fp) == 0)
     {
-        DebugTotalFiles--;
+	DebugTotalFiles--;
     }
     return 0;
 }
@@ -2029,32 +2029,32 @@ CF_HAND(cf_cf_access)
 
     for (ap = str; *ap && !mux_isspace(*ap); ap++)
     {
-        ; // Nothing
+	; // Nothing
     }
     if (*ap)
     {
-        *ap++ = '\0';
+	*ap++ = '\0';
     }
 
     for (tp = conftable; tp->pname; tp++)
     {
-        if (!strcmp((char *)tp->pname, (char *)str))
-        {
-            // Cannot modify parameters set CA_STATIC.
-            //
-            if (  tp->flags & CA_STATIC
-               && !mudstate.bReadingConfiguration)
-            {
-                notify(player, NOPERM_MESSAGE);
-                STARTLOG(LOG_CONFIGMODS, "CFG", "PERM");
-                log_name(player);
-                log_text(T(" tried to change access to static param: "));
-                log_text(tp->pname);
-                ENDLOG;
-                return -1;
-            }
-            return cf_modify_bits(&tp->flags, ap, pExtra, nExtra, player, cmd);
-        }
+	if (!strcmp((char *)tp->pname, (char *)str))
+	{
+	    // Cannot modify parameters set CA_STATIC.
+	    //
+	    if (  tp->flags & CA_STATIC
+	       && !mudstate.bReadingConfiguration)
+	    {
+		notify(player, NOPERM_MESSAGE);
+		STARTLOG(LOG_CONFIGMODS, "CFG", "PERM");
+		log_name(player);
+		log_text(T(" tried to change access to static param: "));
+		log_text(tp->pname);
+		ENDLOG;
+		return -1;
+	    }
+	    return cf_modify_bits(&tp->flags, ap, pExtra, nExtra, player, cmd);
+	}
     }
     cf_log_notfound(player, cmd, T("Config directive"), str);
     return -1;
@@ -2073,57 +2073,57 @@ int cf_set(UTF8 *cp, UTF8 *ap, dbref player)
     //
     for (tp = conftable; tp->pname; tp++)
     {
-        if (!strcmp((char *)tp->pname, (char *)cp))
-        {
-            int i = -1;
-            if (  (tp->flags & CA_DISABLED) == 0
-               && (  mudstate.bReadingConfiguration
-                  || check_access(player, tp->flags)))
-            {
-                if (!mudstate.bReadingConfiguration)
-                {
-                    buff = alloc_lbuf("cf_set");
-                    mux_strncpy(buff, ap, LBUF_SIZE-1);
-                }
+	if (!strcmp((char *)tp->pname, (char *)cp))
+	{
+	    int i = -1;
+	    if (  (tp->flags & CA_DISABLED) == 0
+	       && (  mudstate.bReadingConfiguration
+		  || check_access(player, tp->flags)))
+	    {
+		if (!mudstate.bReadingConfiguration)
+		{
+		    buff = alloc_lbuf("cf_set");
+		    mux_strncpy(buff, ap, LBUF_SIZE-1);
+		}
 
-                i = tp->interpreter(tp->loc, ap, tp->pExtra, tp->nExtra, player, cp);
+		i = tp->interpreter(tp->loc, ap, tp->pExtra, tp->nExtra, player, cp);
 
-                if (!mudstate.bReadingConfiguration)
-                {
-                    STARTLOG(LOG_CONFIGMODS, "CFG", "UPDAT");
-                    log_name(player);
-                    log_text(T(" entered config directive: "));
-                    log_text(cp);
-                    log_text(T(" with args \xE2\x80\x98"));
-                    log_text(buff);
-                    log_text(T("\xE2\x80\x99.  Status: "));
-                    switch (i)
-                    {
-                    case 0:
-                        log_text(T("Success."));
-                        break;
+		if (!mudstate.bReadingConfiguration)
+		{
+		    STARTLOG(LOG_CONFIGMODS, "CFG", "UPDAT");
+		    log_name(player);
+		    log_text(T(" entered config directive: "));
+		    log_text(cp);
+		    log_text(T(" with args \xE2\x80\x98"));
+		    log_text(buff);
+		    log_text(T("\xE2\x80\x99.  Status: "));
+		    switch (i)
+		    {
+		    case 0:
+			log_text(T("Success."));
+			break;
 
-                    case 1:
-                        log_text(T("Partial success."));
-                        break;
+		    case 1:
+			log_text(T("Partial success."));
+			break;
 
-                    case -1:
-                        log_text(T("Failure."));
-                        break;
+		    case -1:
+			log_text(T("Failure."));
+			break;
 
-                    default:
-                        log_text(T("Strange."));
-                    }
-                    ENDLOG;
-                    free_lbuf(buff);
-                }
-            }
-            else  if (!mudstate.bReadingConfiguration)
-            {
-                notify(player, NOPERM_MESSAGE);
-            }
-            return i;
-        }
+		    default:
+			log_text(T("Strange."));
+		    }
+		    ENDLOG;
+		    free_lbuf(buff);
+		}
+	    }
+	    else  if (!mudstate.bReadingConfiguration)
+	    {
+		notify(player, NOPERM_MESSAGE);
+	    }
+	    return i;
+	}
     }
 
     // Config directive not found.  Complain about it.
@@ -2138,36 +2138,36 @@ void ValidateConfigurationDbrefs(void)
 {
     static struct
     {
-        dbref *ploc;
-        dbref dflt;
+	dbref *ploc;
+	dbref dflt;
     } Table[] =
     {
-        { &mudconf.default_home,     NOTHING },
-        { &mudconf.exit_parent,      NOTHING },
-        { &mudconf.global_error_obj, NOTHING },
-        { &mudconf.guest_char,       NOTHING },
-        { &mudconf.guest_nuker,      GOD     },
-        { &mudconf.help_executor,    NOTHING },
-        { &mudconf.hook_obj,         NOTHING },
-        { &mudconf.master_room,      NOTHING },
-        { &mudconf.player_parent,    NOTHING },
-        { &mudconf.start_home,       NOTHING },
-        { &mudconf.start_room,       0       },
-        { &mudconf.room_parent,      NOTHING },
-        { &mudconf.thing_parent,     NOTHING },
-        { &mudconf.toad_recipient,   GOD     },
-        { NULL,                      NOTHING }
+	{ &mudconf.default_home,     NOTHING },
+	{ &mudconf.exit_parent,      NOTHING },
+	{ &mudconf.global_error_obj, NOTHING },
+	{ &mudconf.guest_char,       NOTHING },
+	{ &mudconf.guest_nuker,      GOD     },
+	{ &mudconf.help_executor,    NOTHING },
+	{ &mudconf.hook_obj,         NOTHING },
+	{ &mudconf.master_room,      NOTHING },
+	{ &mudconf.player_parent,    NOTHING },
+	{ &mudconf.start_home,       NOTHING },
+	{ &mudconf.start_room,       0       },
+	{ &mudconf.room_parent,      NOTHING },
+	{ &mudconf.thing_parent,     NOTHING },
+	{ &mudconf.toad_recipient,   GOD     },
+	{ NULL,                      NOTHING }
     };
 
     for (int i = 0; NULL != Table[i].ploc; i++)
     {
-        if (*Table[i].ploc != Table[i].dflt)
-        {
-            if (!Good_obj(*Table[i].ploc))
-            {
-                *Table[i].ploc = Table[i].dflt;
-            }
-        }
+	if (*Table[i].ploc != Table[i].dflt)
+	{
+	    if (!Good_obj(*Table[i].ploc))
+	    {
+		*Table[i].ploc = Table[i].dflt;
+	    }
+	}
     }
 }
 
@@ -2199,7 +2199,7 @@ void do_admin
     int i = cf_set(kw, value, executor);
     if ((i >= 0) && !Quiet(executor))
     {
-        notify(executor, T("Set."));
+	notify(executor, T("Set."));
     }
     ValidateConfigurationDbrefs();
 }
@@ -2234,21 +2234,21 @@ int cf_read(void)
     size_t nInDB = strlen((char *)mudconf.indb);
     for (int i = 0; DefaultSuffixes[i].pFilename; i++)
     {
-        UTF8 **p = DefaultSuffixes[i].pFilename;
-        if (**p == '\0')
-        {
-            // The filename is an empty string so we should construct
-            // a default filename.
-            //
-            const UTF8 *pSuffix = DefaultSuffixes[i].pSuffix;
-            size_t nSuffix = strlen((const char *)pSuffix);
-            UTF8 *buff = (UTF8 *)MEMALLOC(nInDB + nSuffix + 1);
-            ISOUTOFMEMORY(buff);
-            memcpy(buff, mudconf.indb, nInDB);
-            memcpy(buff + nInDB, pSuffix, nSuffix+1);
-            MEMFREE(*p);
-            *p = buff;
-        }
+	UTF8 **p = DefaultSuffixes[i].pFilename;
+	if (**p == '\0')
+	{
+	    // The filename is an empty string so we should construct
+	    // a default filename.
+	    //
+	    const UTF8 *pSuffix = DefaultSuffixes[i].pSuffix;
+	    size_t nSuffix = strlen((const char *)pSuffix);
+	    UTF8 *buff = (UTF8 *)MEMALLOC(nInDB + nSuffix + 1);
+	    ISOUTOFMEMORY(buff);
+	    memcpy(buff, mudconf.indb, nInDB);
+	    memcpy(buff + nInDB, pSuffix, nSuffix+1);
+	    MEMFREE(*p);
+	    *p = buff;
+	}
     }
     return retval;
 }
@@ -2260,10 +2260,10 @@ void list_cf_access(dbref player)
 {
     for (CONFPARM *tp = conftable; tp->pname; tp++)
     {
-        if (God(player) || check_access(player, tp->flags))
-        {
-            listset_nametab(player, access_nametab, tp->flags, tp->pname, true);
-        }
+	if (God(player) || check_access(player, tp->flags))
+	{
+	    listset_nametab(player, access_nametab, tp->flags, tp->pname, true);
+	}
     }
 }
 
@@ -2277,62 +2277,62 @@ void cf_display(dbref player, UTF8 *param_name, UTF8 *buff, UTF8 **bufc)
 
     for (tp = conftable; tp->pname; tp++)
     {
-        if (!mux_stricmp(tp->pname, param_name))
-        {
-            if (check_access(player, tp->rperms))
-            {
-                if (tp->interpreter == cf_int)
-                {
-                    safe_ltoa(*(tp->loc), buff, bufc);
-                    return;
-                }
-                else if (tp->interpreter == cf_dbref)
-                {
-                    safe_chr('#', buff, bufc);
-                    safe_ltoa(*(tp->loc), buff, bufc);
-                    return;
-                }
-                else if (tp->interpreter == cf_bool)
-                {
-                    bool *pb = (bool *)tp->loc;
-                    safe_bool(*pb, buff, bufc);
-                    return;
-                }
-                else if (tp->interpreter == cf_string)
-                {
-                    safe_str((UTF8 *)tp->loc, buff, bufc);
-                    return;
-                }
-                else if (tp->interpreter == cf_string_dyn)
-                {
-                    safe_str(*(UTF8 **)tp->loc, buff, bufc);
-                    return;
-                }
-                else if (tp->interpreter == cf_int_array)
-                {
-                    IntArray *pia = (IntArray *)(tp->loc);
-                    ITL itl;
-                    ItemToList_Init(&itl, buff, bufc);
-                    for (int i = 0; i < pia->n; i++)
-                    {
-                        if (!ItemToList_AddInteger(&itl, pia->pi[i]))
-                        {
-                            break;
-                        }
-                    }
-                    ItemToList_Final(&itl);
-                    return;
-                }
-                else if (tp->interpreter == cf_seconds)
-                {
-                    CLinearTimeDelta *pltd = (CLinearTimeDelta *)(tp->loc);
-                    safe_str(pltd->ReturnSecondsString(7), buff, bufc);
-                    return;
-                }
-            }
-            safe_noperm(buff, bufc);
-            return;
-        }
+	if (!mux_stricmp(tp->pname, param_name))
+	{
+	    if (check_access(player, tp->rperms))
+	    {
+		if (tp->interpreter == cf_int)
+		{
+		    safe_ltoa(*(tp->loc), buff, bufc);
+		    return;
+		}
+		else if (tp->interpreter == cf_dbref)
+		{
+		    safe_chr('#', buff, bufc);
+		    safe_ltoa(*(tp->loc), buff, bufc);
+		    return;
+		}
+		else if (tp->interpreter == cf_bool)
+		{
+		    bool *pb = (bool *)tp->loc;
+		    safe_bool(*pb, buff, bufc);
+		    return;
+		}
+		else if (tp->interpreter == cf_string)
+		{
+		    safe_str((UTF8 *)tp->loc, buff, bufc);
+		    return;
+		}
+		else if (tp->interpreter == cf_string_dyn)
+		{
+		    safe_str(*(UTF8 **)tp->loc, buff, bufc);
+		    return;
+		}
+		else if (tp->interpreter == cf_int_array)
+		{
+		    IntArray *pia = (IntArray *)(tp->loc);
+		    ITL itl;
+		    ItemToList_Init(&itl, buff, bufc);
+		    for (int i = 0; i < pia->n; i++)
+		    {
+			if (!ItemToList_AddInteger(&itl, pia->pi[i]))
+			{
+			    break;
+			}
+		    }
+		    ItemToList_Final(&itl);
+		    return;
+		}
+		else if (tp->interpreter == cf_seconds)
+		{
+		    CLinearTimeDelta *pltd = (CLinearTimeDelta *)(tp->loc);
+		    safe_str(pltd->ReturnSecondsString(7), buff, bufc);
+		    return;
+		}
+	    }
+	    safe_noperm(buff, bufc);
+	    return;
+	}
     }
     safe_nomatch(buff, bufc);
 }
@@ -2348,13 +2348,13 @@ void cf_list(dbref player, UTF8 *buff, UTF8 **bufc)
 
     for (tp = conftable; tp->pname; tp++)
     {
-        if (check_access(player, tp->rperms))
-        {
-            if (!ItemToList_AddString(&itl, tp->pname))
-            {
-                break;
-            }
-        }
+	if (check_access(player, tp->rperms))
+	{
+	    if (!ItemToList_AddString(&itl, tp->pname))
+	    {
+		break;
+	    }
+	}
     }
     ItemToList_Final(&itl);
     return;

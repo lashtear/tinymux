@@ -105,7 +105,7 @@ UINT32 CRC32_ProcessBuffer
     ulCrc = ~ulCrc;
     while (nBuffer--)
     {
-        ulCrc  = CRC32_Table[((UINT8)*pBuffer++) ^ (UINT8)ulCrc] ^ (ulCrc >> 8);
+	ulCrc  = CRC32_Table[((UINT8)*pBuffer++) ^ (UINT8)ulCrc] ^ (ulCrc >> 8);
     }
     return ~ulCrc;
 }
@@ -182,52 +182,52 @@ UINT32 HASH_ProcessBuffer
 
     if (nBuffer <= 16)
     {
-        pBuffer -= 16 - nBuffer;
-        switch (nBuffer)
-        {
-        case 16: ulHash  = CRC32_Table[pBuffer[0] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 15: ulHash  = CRC32_Table[pBuffer[1] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 14: ulHash  = CRC32_Table[pBuffer[2] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 13: ulHash  = CRC32_Table[pBuffer[3] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 12: ulHash  = CRC32_Table[pBuffer[4] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 11: ulHash  = CRC32_Table[pBuffer[5] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 10: ulHash  = CRC32_Table[pBuffer[6] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 9:  ulHash  = CRC32_Table[pBuffer[7] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	pBuffer -= 16 - nBuffer;
+	switch (nBuffer)
+	{
+	case 16: ulHash  = CRC32_Table[pBuffer[0] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 15: ulHash  = CRC32_Table[pBuffer[1] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 14: ulHash  = CRC32_Table[pBuffer[2] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 13: ulHash  = CRC32_Table[pBuffer[3] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 12: ulHash  = CRC32_Table[pBuffer[4] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 11: ulHash  = CRC32_Table[pBuffer[5] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 10: ulHash  = CRC32_Table[pBuffer[6] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 9:  ulHash  = CRC32_Table[pBuffer[7] ^ (UINT8)ulHash] ^ (ulHash >> 8);
 #if defined(UNALIGNED32) && defined(WORDS_LITTLEENDIAN)
-        case 8:  ulHash ^= *(UINT32 *)(pBuffer + 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash ^= *(UINT32 *)(pBuffer + 12);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 return ~ulHash;
+	case 8:  ulHash ^= *(UINT32 *)(pBuffer + 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash ^= *(UINT32 *)(pBuffer + 12);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 return ~ulHash;
 #else
-        case 8:  ulHash  = CRC32_Table[pBuffer[8] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 8:  ulHash  = CRC32_Table[pBuffer[8] ^ (UINT8)ulHash] ^ (ulHash >> 8);
 #endif
 
-        case 7:  ulHash  = CRC32_Table[pBuffer[9] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 6:  ulHash  = CRC32_Table[pBuffer[10] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 5:  ulHash  = CRC32_Table[pBuffer[11] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 7:  ulHash  = CRC32_Table[pBuffer[9] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 6:  ulHash  = CRC32_Table[pBuffer[10] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 5:  ulHash  = CRC32_Table[pBuffer[11] ^ (UINT8)ulHash] ^ (ulHash >> 8);
 #if defined(UNALIGNED32) && defined(WORDS_LITTLEENDIAN)
-        case 4:  ulHash ^= *(UINT32 *)(pBuffer + 12);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-                 return ~ulHash;
+	case 4:  ulHash ^= *(UINT32 *)(pBuffer + 12);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+		 return ~ulHash;
 #else
-        case 4:  ulHash  = CRC32_Table[pBuffer[12] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 4:  ulHash  = CRC32_Table[pBuffer[12] ^ (UINT8)ulHash] ^ (ulHash >> 8);
 #endif
 
-        case 3:  ulHash  = CRC32_Table[pBuffer[13] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 2:  ulHash  = CRC32_Table[pBuffer[14] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 1:  ulHash  = CRC32_Table[pBuffer[15] ^ (UINT8)ulHash] ^ (ulHash >> 8);
-        case 0:  return ~ulHash;
-        }
+	case 3:  ulHash  = CRC32_Table[pBuffer[13] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 2:  ulHash  = CRC32_Table[pBuffer[14] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 1:  ulHash  = CRC32_Table[pBuffer[15] ^ (UINT8)ulHash] ^ (ulHash >> 8);
+	case 0:  return ~ulHash;
+	}
     }
 
     size_t nSmall  = nBuffer & 15;
@@ -239,32 +239,32 @@ UINT32 HASH_ProcessBuffer
 
     while (nLarge--)
     {
-        int k = 256;
-        while (k)
-        {
-            DO16(pBuffer);
-            pBuffer += 16;
-            k--;
-        }
-        ulHash  = ~s1;
-        ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-        ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-        ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-        ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-        ulHash ^= s2;
-        ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-        ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-        ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-        ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
-        ulHash = ~ulHash;
-        s1 = ulHash & 0xFFFF;
-        s2 = (ulHash >> 16) & 0xFFFF;
+	int k = 256;
+	while (k)
+	{
+	    DO16(pBuffer);
+	    pBuffer += 16;
+	    k--;
+	}
+	ulHash  = ~s1;
+	ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+	ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+	ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+	ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+	ulHash ^= s2;
+	ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+	ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+	ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+	ulHash  = CRC32_Table[(UINT8)ulHash] ^ (ulHash >> 8);
+	ulHash = ~ulHash;
+	s1 = ulHash & 0xFFFF;
+	s2 = (ulHash >> 16) & 0xFFFF;
     }
 
     while (nMedium--)
     {
-        DO16(pBuffer);
-        pBuffer += 16;
+	DO16(pBuffer);
+	pBuffer += 16;
     }
 
     pBuffer -= 15 - nSmall;
@@ -306,7 +306,7 @@ UINT32 munge_hash(const UTF8 *pBuffer)
     UINT32 h = 0;
     while (*pBuffer)
     {
-        h ^= (h << 5) + (h >> 2) + CRC32_Table[(unsigned char)*pBuffer++];
+	h ^= (h << 5) + (h >> 2) + CRC32_Table[(unsigned char)*pBuffer++];
     }
     return h;
 }
@@ -333,7 +333,7 @@ static void ChoosePrimes(int TableSize, HP_HEAPOFFSET HashPrimes[16])
     int LargestPrime = TableSize/2;
     if (LargestPrime > Primes[NUMBER_OF_PRIMES-2])
     {
-        LargestPrime = Primes[NUMBER_OF_PRIMES-2];
+	LargestPrime = Primes[NUMBER_OF_PRIMES-2];
     }
     int Spacing = LargestPrime/16;
 
@@ -344,42 +344,42 @@ static void ChoosePrimes(int TableSize, HP_HEAPOFFSET HashPrimes[16])
     int iZone, iPrime;
     for (iZone = 1, iPrime = 0; iPrime < 16; iZone += Spacing)
     {
-        // Search for a prime number that is less than the target zone
-        // number given by iZone.
-        //
-        int Lower = Primes[0];
-        for (int jPrime = 0; Primes[jPrime] != 0; jPrime++)
-        {
-            if (  jPrime != 0
-               && TableSize % Primes[jPrime] == 0)
-            {
-                continue;
-            }
-            int Upper = Primes[jPrime];
-            if (  Lower <= iZone
-               && iZone <= Upper)
-            {
-                // Choose the closest lower prime number.
-                //
-                if (iZone - Lower <= Upper - iZone)
-                {
-                    HashPrimes[iPrime++] = static_cast<HP_HEAPOFFSET>(Lower);
-                }
-                else
-                {
-                    HashPrimes[iPrime++] = static_cast<HP_HEAPOFFSET>(Upper);
-                }
-                break;
-            }
-            Lower = Upper;
-        }
+	// Search for a prime number that is less than the target zone
+	// number given by iZone.
+	//
+	int Lower = Primes[0];
+	for (int jPrime = 0; Primes[jPrime] != 0; jPrime++)
+	{
+	    if (  jPrime != 0
+	       && TableSize % Primes[jPrime] == 0)
+	    {
+		continue;
+	    }
+	    int Upper = Primes[jPrime];
+	    if (  Lower <= iZone
+	       && iZone <= Upper)
+	    {
+		// Choose the closest lower prime number.
+		//
+		if (iZone - Lower <= Upper - iZone)
+		{
+		    HashPrimes[iPrime++] = static_cast<HP_HEAPOFFSET>(Lower);
+		}
+		else
+		{
+		    HashPrimes[iPrime++] = static_cast<HP_HEAPOFFSET>(Upper);
+		}
+		break;
+	    }
+	    Lower = Upper;
+	}
     }
 
     // Alternate negative and positive numbers
     //
     for (iPrime = 0; iPrime < 16; iPrime += 2)
     {
-        HashPrimes[iPrime] = static_cast<HP_HEAPOFFSET>(TableSize-HashPrimes[iPrime]);
+	HashPrimes[iPrime] = static_cast<HP_HEAPOFFSET>(TableSize-HashPrimes[iPrime]);
     }
 
     // Shuffle the set of primes to reduce correlation with bits in
@@ -387,10 +387,10 @@ static void ChoosePrimes(int TableSize, HP_HEAPOFFSET HashPrimes[16])
     //
     for (iPrime = 0; iPrime < 16-1; iPrime++)
     {
-        int Pick = (int)RandomINT32(0, 15-iPrime);
-        HP_HEAPOFFSET Temp = HashPrimes[Pick];
-        HashPrimes[Pick] = HashPrimes[15-iPrime];
-        HashPrimes[15-iPrime] = Temp;
+	int Pick = (int)RandomINT32(0, 15-iPrime);
+	HP_HEAPOFFSET Temp = HashPrimes[Pick];
+	HashPrimes[Pick] = HashPrimes[15-iPrime];
+	HashPrimes[15-iPrime] = Temp;
     }
 }
 
@@ -415,7 +415,7 @@ bool CHashPage::Allocate(unsigned int nPageSize)
     m_pPage = new unsigned char[nPageSize];
     if (m_pPage)
     {
-        return true;
+	return true;
     }
     return false;
 }
@@ -430,8 +430,8 @@ CHashPage::~CHashPage(void)
 {
     if (m_pPage)
     {
-        delete [] m_pPage;
-        m_pPage = 0;
+	delete [] m_pPage;
+	m_pPage = 0;
     }
 }
 
@@ -459,19 +459,19 @@ void CHashPage::GetStats
     //
     for (UINT32 iDir = 0; iDir < m_pHeader->m_nDirSize; iDir++)
     {
-        if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
-        {
-            nCount++;
-            HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
-            HP_HEAPLENGTH nRequired = EXPAND_TO_BOUNDARY(
-                HP_SIZEOF_HEAPNODE + pNode->u.s.nRecordSize);
+	if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
+	{
+	    nCount++;
+	    HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
+	    HP_HEAPLENGTH nRequired = EXPAND_TO_BOUNDARY(
+		HP_SIZEOF_HEAPNODE + pNode->u.s.nRecordSize);
 
-            if (nRequired < HP_MIN_HEAP_ALLOC)
-            {
-                nRequired = HP_MIN_HEAP_ALLOC;
-            }
-            nSize += nRequired;
-        }
+	    if (nRequired < HP_MIN_HEAP_ALLOC)
+	    {
+		nRequired = HP_MIN_HEAP_ALLOC;
+	    }
+	    nSize += nRequired;
+	}
     }
     *pnRecords = nCount;
     *pnAllocatedSize = static_cast<HP_HEAPLENGTH>(nSize);
@@ -483,36 +483,36 @@ void CHashPage::GetStats
     if (  nExtra != 0
        || nCount != 0)
     {
-        size_t nSpaceTmp   = ((unsigned char *)m_pTrailer) - ((unsigned char *)m_pDirectory);
-        mux_assert(nSpaceTmp <= UINT32_MAX_VALUE);
-        UINT32 nSpace      = static_cast<UINT32>(nSpaceTmp);
-        UINT32 nMinDirSize = nCount;
-        UINT32 nMaxDirSize = (nSpace - nSize)/sizeof(HP_HEAPOFFSET);
+	size_t nSpaceTmp   = ((unsigned char *)m_pTrailer) - ((unsigned char *)m_pDirectory);
+	mux_assert(nSpaceTmp <= UINT32_MAX_VALUE);
+	UINT32 nSpace      = static_cast<UINT32>(nSpaceTmp);
+	UINT32 nMinDirSize = nCount;
+	UINT32 nMaxDirSize = (nSpace - nSize)/sizeof(HP_HEAPOFFSET);
 
-        if (nExtra)
-        {
-            nExtra += HP_SIZEOF_HEAPNODE;
-            if (nExtra < HP_MIN_HEAP_ALLOC)
-            {
-                nExtra = HP_MIN_HEAP_ALLOC;
-            }
-            nExtra = EXPAND_TO_BOUNDARY(nExtra);
-            nCount++;
-            nSize += nExtra;
-        }
+	if (nExtra)
+	{
+	    nExtra += HP_SIZEOF_HEAPNODE;
+	    if (nExtra < HP_MIN_HEAP_ALLOC)
+	    {
+		nExtra = HP_MIN_HEAP_ALLOC;
+	    }
+	    nExtra = EXPAND_TO_BOUNDARY(nExtra);
+	    nCount++;
+	    nSize += nExtra;
+	}
 
 #define FILL_FACTOR 1
-        UINT32 nAverageSize = (nSize + nCount/2)/nCount;
-        UINT32 nHeapGoal = (nSpace * nAverageSize)/(nAverageSize + sizeof(HP_HEAPOFFSET) + FILL_FACTOR);
-        nGoodDirSize = (nSpace - nHeapGoal + sizeof(HP_HEAPOFFSET)/2)/sizeof(HP_HEAPOFFSET);
-        if (nGoodDirSize < nMinDirSize)
-        {
-            nGoodDirSize = nMinDirSize;
-        }
-        else if (nGoodDirSize > nMaxDirSize)
-        {
-            nGoodDirSize = nMaxDirSize;
-        }
+	UINT32 nAverageSize = (nSize + nCount/2)/nCount;
+	UINT32 nHeapGoal = (nSpace * nAverageSize)/(nAverageSize + sizeof(HP_HEAPOFFSET) + FILL_FACTOR);
+	nGoodDirSize = (nSpace - nHeapGoal + sizeof(HP_HEAPOFFSET)/2)/sizeof(HP_HEAPOFFSET);
+	if (nGoodDirSize < nMinDirSize)
+	{
+	    nGoodDirSize = nMinDirSize;
+	}
+	else if (nGoodDirSize > nMaxDirSize)
+	{
+	    nGoodDirSize = nMaxDirSize;
+	}
     }
     *pnGoodDirSize = nGoodDirSize;
 }
@@ -538,11 +538,11 @@ void CHashPage::Empty(UINT32 arg_nDepth, UINT32 arg_nHashGroup, UINT32 arg_nDirS
     m_pHeader->m_nDirEmptyLeft = arg_nDirSize;  // Number of entries marked HP_DIR_EMPTY.
     if (arg_nDirSize > 0)
     {
-        ChoosePrimes(arg_nDirSize, m_pHeader->m_Primes);
-        for (UINT32 iDir = 0; iDir < arg_nDirSize; iDir++)
-        {
-            m_pDirectory[iDir] = HP_DIR_EMPTY;
-        }
+	ChoosePrimes(arg_nDirSize, m_pHeader->m_Primes);
+	for (UINT32 iDir = 0; iDir < arg_nDirSize; iDir++)
+	{
+	    m_pDirectory[iDir] = HP_DIR_EMPTY;
+	}
     }
     SetVariablePointers();
 
@@ -566,7 +566,7 @@ bool CHashPage::Validate(void)
     UINT32 ul = HASH_ProcessBuffer(0, m_pPage, m_nPageSize-sizeof(HP_TRAILER));
     if (ul != m_pTrailer->m_checksum)
     {
-        return false;
+	return false;
     }
     return true;
 }
@@ -580,11 +580,11 @@ bool CHashPage::ValidateAllocatedBlock(UINT32 iDir)
 {
     if (iDir >= m_pHeader->m_nDirSize)
     {
-        return false;
+	return false;
     }
     if (m_pDirectory[iDir] >= HP_DIR_DELETED)
     {
-        return false;
+	return false;
     }
 
     // Use directory entry to go find heap node. The record itself follows.
@@ -593,28 +593,28 @@ bool CHashPage::ValidateAllocatedBlock(UINT32 iDir)
     unsigned char *pBlockEnd = pBlockStart + HP_MIN_HEAP_ALLOC;
     if (pBlockStart < m_pHeapStart || m_pHeapEnd <= pBlockEnd)
     {
-        // Wow. We have a problem here. There is no good way of
-        // finding this record anymore, so just mark it as
-        // deleted. A sweep of the heap will reclaim any lost
-        // free space.
-        //
-        m_pDirectory[iDir] = HP_DIR_DELETED;
+	// Wow. We have a problem here. There is no good way of
+	// finding this record anymore, so just mark it as
+	// deleted. A sweep of the heap will reclaim any lost
+	// free space.
+	//
+	m_pDirectory[iDir] = HP_DIR_DELETED;
     }
     else
     {
-        HP_PHEAPNODE pNode = (HP_PHEAPNODE)pBlockStart;
-        pBlockEnd = pBlockStart + pNode->nBlockSize;
-        if (m_pHeapEnd < pBlockEnd || pNode->u.s.nRecordSize > pNode->nBlockSize)
-        {
-            // Wow. Record hangs off the end of the heap space, or the record
-            // is larger than the block that holds it.
-            //
-            m_pDirectory[iDir] = HP_DIR_DELETED;
-        }
-        else
-        {
-            return true;
-        }
+	HP_PHEAPNODE pNode = (HP_PHEAPNODE)pBlockStart;
+	pBlockEnd = pBlockStart + pNode->nBlockSize;
+	if (m_pHeapEnd < pBlockEnd || pNode->u.s.nRecordSize > pNode->nBlockSize)
+	{
+	    // Wow. Record hangs off the end of the heap space, or the record
+	    // is larger than the block that holds it.
+	    //
+	    m_pDirectory[iDir] = HP_DIR_DELETED;
+	}
+	else
+	{
+	    return true;
+	}
     }
     return false;
 }
@@ -625,7 +625,7 @@ bool CHashPage::ValidateFreeBlock(HP_HEAPOFFSET oBlock)
     //
     if (m_pHeader->m_oFreeList == HP_NIL_OFFSET)
     {
-        return false;
+	return false;
     }
 
     // Go find heap node. The record itself follows.
@@ -634,27 +634,27 @@ bool CHashPage::ValidateFreeBlock(HP_HEAPOFFSET oBlock)
     unsigned char *pBlockEnd = pBlockStart + HP_MIN_HEAP_ALLOC;
     if (pBlockStart < m_pHeapStart || m_pHeapEnd < pBlockEnd)
     {
-        // Wow. We have a problem here. There is no good way of
-        // finding this record anymore, so just empty the free list
-        // and hope to either rehash the page into a new page, or
-        // sweep the heap and re-establish the free list.
-        //
-        m_pHeader->m_oFreeList = HP_NIL_OFFSET;
+	// Wow. We have a problem here. There is no good way of
+	// finding this record anymore, so just empty the free list
+	// and hope to either rehash the page into a new page, or
+	// sweep the heap and re-establish the free list.
+	//
+	m_pHeader->m_oFreeList = HP_NIL_OFFSET;
     }
     else
     {
-        HP_PHEAPNODE pNode = (HP_PHEAPNODE)pBlockStart;
-        pBlockEnd = pBlockStart + pNode->nBlockSize;
-        if (m_pHeapEnd < pBlockEnd)
-        {
-            // Wow. Record hangs off the end of the heap space.
-            //
-            m_pHeader->m_oFreeList = HP_NIL_OFFSET;
-        }
-        else
-        {
-            return true;
-        }
+	HP_PHEAPNODE pNode = (HP_PHEAPNODE)pBlockStart;
+	pBlockEnd = pBlockStart + pNode->nBlockSize;
+	if (m_pHeapEnd < pBlockEnd)
+	{
+	    // Wow. Record hangs off the end of the heap space.
+	    //
+	    m_pHeader->m_oFreeList = HP_NIL_OFFSET;
+	}
+	else
+	{
+	    return true;
+	}
     }
     return false;
 }
@@ -666,23 +666,23 @@ bool CHashPage::ValidateFreeList(void)
     HP_HEAPOFFSET oCurrent = m_pHeader->m_oFreeList;
     while (oCurrent != HP_NIL_OFFSET)
     {
-        if (ValidateFreeBlock(oCurrent))
-        {
-            HP_PHEAPNODE pCurrent = (HP_PHEAPNODE)(m_pHeapStart + oCurrent);
-            if (oCurrent >= pCurrent->u.oNext)
-            {
-                Log.WriteString("CHashPage::ValidateFreeList - Free list is corrupt." ENDLINE);
-                m_pHeader->m_oFreeList = HP_NIL_OFFSET;
-                return false;
-            }
-            oCurrent = pCurrent->u.oNext;
-        }
-        else
-        {
-            Log.WriteString("CHashPage::ValidateFreeList - Free list is corrupt." ENDLINE);
-            m_pHeader->m_oFreeList = HP_NIL_OFFSET;
-            return false;
-        }
+	if (ValidateFreeBlock(oCurrent))
+	{
+	    HP_PHEAPNODE pCurrent = (HP_PHEAPNODE)(m_pHeapStart + oCurrent);
+	    if (oCurrent >= pCurrent->u.oNext)
+	    {
+		Log.WriteString("CHashPage::ValidateFreeList - Free list is corrupt." ENDLINE);
+		m_pHeader->m_oFreeList = HP_NIL_OFFSET;
+		return false;
+	    }
+	    oCurrent = pCurrent->u.oNext;
+	}
+	else
+	{
+	    Log.WriteString("CHashPage::ValidateFreeList - Free list is corrupt." ENDLINE);
+	    m_pHeader->m_oFreeList = HP_NIL_OFFSET;
+	    return false;
+	}
     }
     return true;
 }
@@ -697,50 +697,50 @@ int CHashPage::Insert(HP_HEAPLENGTH nRecord, UINT32 nHash, void *pRecord)
     for (int nTries = 0; nTries < 2; nTries++)
     {
 #ifdef HP_PROTECTION
-        // First, is this page dealing with keys like this at all?
-        //
-        UINT32 nDepth = m_pHeader->m_nDepth;
-        if ((nHash & anGroupMask[nDepth]) != m_pHeader->m_nHashGroup)
-        {
-            Log.WriteString("CHashPage::Insert - Inserting into the wrong page." ENDLINE);
-            return HP_INSERT_ERROR_ILLEGAL;
-        }
+	// First, is this page dealing with keys like this at all?
+	//
+	UINT32 nDepth = m_pHeader->m_nDepth;
+	if ((nHash & anGroupMask[nDepth]) != m_pHeader->m_nHashGroup)
+	{
+	    Log.WriteString("CHashPage::Insert - Inserting into the wrong page." ENDLINE);
+	    return HP_INSERT_ERROR_ILLEGAL;
+	}
 #endif // HP_PROTECTION
 
-        // Where do we begin our first probe?
-        //
-        UINT32 di   = m_pHeader->m_Primes[nHash & 15];
-        UINT32 iDir = (nHash >> 4) % (m_pHeader->m_nDirSize);
-        m_nProbesLeft = m_pHeader->m_nDirSize;
-        while (m_nProbesLeft-- && (m_pDirectory[iDir] < HP_DIR_DELETED))
-        {
-            iDir += di;
-            if (iDir >= (m_pHeader->m_nDirSize))
-            {
-                iDir -= (m_pHeader->m_nDirSize);
-            }
-        }
-        if (m_nProbesLeft >= 0)
-        {
-            if (m_pHeader->m_nDirEmptyLeft < m_nDirEmptyTrigger)
-            {
-                if (!Defrag(nRecord))
-                {
-                    return HP_INSERT_ERROR_FULL;
-                }
-                ret = HP_INSERT_SUCCESS_DEFRAG;
-                continue;
-            }
-            if (HeapAlloc(iDir, nRecord, nHash, pRecord))
-            {
-                return ret;
-            }
-        }
-        if (!Defrag(nRecord))
-        {
-            return HP_INSERT_ERROR_FULL;
-        }
-        ret = HP_INSERT_SUCCESS_DEFRAG;
+	// Where do we begin our first probe?
+	//
+	UINT32 di   = m_pHeader->m_Primes[nHash & 15];
+	UINT32 iDir = (nHash >> 4) % (m_pHeader->m_nDirSize);
+	m_nProbesLeft = m_pHeader->m_nDirSize;
+	while (m_nProbesLeft-- && (m_pDirectory[iDir] < HP_DIR_DELETED))
+	{
+	    iDir += di;
+	    if (iDir >= (m_pHeader->m_nDirSize))
+	    {
+		iDir -= (m_pHeader->m_nDirSize);
+	    }
+	}
+	if (m_nProbesLeft >= 0)
+	{
+	    if (m_pHeader->m_nDirEmptyLeft < m_nDirEmptyTrigger)
+	    {
+		if (!Defrag(nRecord))
+		{
+		    return HP_INSERT_ERROR_FULL;
+		}
+		ret = HP_INSERT_SUCCESS_DEFRAG;
+		continue;
+	    }
+	    if (HeapAlloc(iDir, nRecord, nHash, pRecord))
+	    {
+		return ret;
+	    }
+	}
+	if (!Defrag(nRecord))
+	{
+	    return HP_INSERT_ERROR_FULL;
+	}
+	ret = HP_INSERT_SUCCESS_DEFRAG;
     }
     return HP_INSERT_ERROR_FULL;
 }
@@ -761,7 +761,7 @@ UINT32 CHashPage::FindFirstKey(UINT32 nHash, unsigned int *numchecks)
     UINT32 nDepth = m_pHeader->m_nDepth;
     if ((nHash & anGroupMask[nDepth]) != m_pHeader->m_nHashGroup)
     {
-        return HP_DIR_EMPTY;
+	return HP_DIR_EMPTY;
     }
 #endif // HP_PROTECTION
 
@@ -773,19 +773,19 @@ UINT32 CHashPage::FindFirstKey(UINT32 nHash, unsigned int *numchecks)
     UINT32 sOffset = m_pDirectory[iDir];
     if (sOffset < HP_DIR_DELETED)
     {
-        HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + sOffset);
-        if (pNode->u.s.nHash == nHash)
-        {
-            m_nProbesLeft = nDirSize - 1;
-            *numchecks = 1;
-            return iDir;
-        }
+	HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + sOffset);
+	if (pNode->u.s.nHash == nHash)
+	{
+	    m_nProbesLeft = nDirSize - 1;
+	    *numchecks = 1;
+	    return iDir;
+	}
     }
     else if (HP_DIR_EMPTY == sOffset)
     {
-        m_nProbesLeft = nDirSize;
-        *numchecks = 0;
-        return HP_DIR_EMPTY;
+	m_nProbesLeft = nDirSize;
+	*numchecks = 0;
+	return HP_DIR_EMPTY;
     }
 
     //    HP_DIR_DELETED == sOffset
@@ -797,31 +797,31 @@ UINT32 CHashPage::FindFirstKey(UINT32 nHash, unsigned int *numchecks)
     iDir += di;
     if (iDir >= nDirSize)
     {
-        iDir -= nDirSize;
+	iDir -= nDirSize;
     }
     sOffset = m_pDirectory[iDir];
 
     while (sOffset != HP_DIR_EMPTY)
     {
-        m_nProbesLeft--;
-        if (sOffset != HP_DIR_DELETED)
-        {
-            HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + sOffset);
-            if (pNode->u.s.nHash == nHash)
-            {
-                *numchecks = nDirSize - m_nProbesLeft;
-                return iDir;
-            }
-        }
+	m_nProbesLeft--;
+	if (sOffset != HP_DIR_DELETED)
+	{
+	    HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + sOffset);
+	    if (pNode->u.s.nHash == nHash)
+	    {
+		*numchecks = nDirSize - m_nProbesLeft;
+		return iDir;
+	    }
+	}
 
-        if (!m_nProbesLeft) break;
+	if (!m_nProbesLeft) break;
 
-        iDir += di;
-        if (iDir >= nDirSize)
-        {
-            iDir -= nDirSize;
-        }
-        sOffset = m_pDirectory[iDir];
+	iDir += di;
+	if (iDir >= nDirSize)
+	{
+	    iDir -= nDirSize;
+	}
+	sOffset = m_pDirectory[iDir];
     }
     *numchecks = nDirSize - m_nProbesLeft;
     return HP_DIR_EMPTY;
@@ -841,7 +841,7 @@ UINT32 CHashPage::FindNextKey(UINT32 iDir, UINT32 nHash, unsigned int *numchecks
     UINT32 nDepth = m_pHeader->m_nDepth;
     if ((nHash & anGroupMask[nDepth]) != m_pHeader->m_nHashGroup)
     {
-        return HP_DIR_EMPTY;
+	return HP_DIR_EMPTY;
     }
 #endif // HP_PROTECTION
 
@@ -854,28 +854,28 @@ UINT32 CHashPage::FindNextKey(UINT32 iDir, UINT32 nHash, unsigned int *numchecks
     iDir += di;
     if (iDir >= nDirSize)
     {
-        iDir -= nDirSize;
+	iDir -= nDirSize;
     }
     while (m_nProbesLeft && (m_pDirectory[iDir] != HP_DIR_EMPTY))
     {
-        m_nProbesLeft--;
-        (*numchecks)++;
-        if (m_pDirectory[iDir] != HP_DIR_DELETED)
-        {
-            if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
-            {
-                HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
-                if (pNode->u.s.nHash == nHash)
-                {
-                    return iDir;
-                }
-            }
-        }
-        iDir += di;
-        if (iDir >= nDirSize)
-        {
-            iDir -= nDirSize;
-        }
+	m_nProbesLeft--;
+	(*numchecks)++;
+	if (m_pDirectory[iDir] != HP_DIR_DELETED)
+	{
+	    if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
+	    {
+		HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
+		if (pNode->u.s.nHash == nHash)
+		{
+		    return iDir;
+		}
+	    }
+	}
+	iDir += di;
+	if (iDir >= nDirSize)
+	{
+	    iDir -= nDirSize;
+	}
     }
     return HP_DIR_EMPTY;
 }
@@ -888,7 +888,7 @@ bool CHashPage::HeapAlloc(UINT32 iDir, HP_HEAPLENGTH nRecord, UINT32 nHash, void
     //ValidateFreeList();
     if (m_pDirectory[iDir] < HP_DIR_DELETED)
     {
-        return false;
+	return false;
     }
 
     // How much space do we need?
@@ -896,7 +896,7 @@ bool CHashPage::HeapAlloc(UINT32 iDir, HP_HEAPLENGTH nRecord, UINT32 nHash, void
     HP_HEAPLENGTH nRequired = EXPAND_TO_BOUNDARY(HP_SIZEOF_HEAPNODE + nRecord);
     if (nRequired < HP_MIN_HEAP_ALLOC)
     {
-        nRequired = HP_MIN_HEAP_ALLOC;
+	nRequired = HP_MIN_HEAP_ALLOC;
     }
 
     // Search through the free list for something of the right size.
@@ -906,57 +906,57 @@ bool CHashPage::HeapAlloc(UINT32 iDir, HP_HEAPLENGTH nRecord, UINT32 nHash, void
     while (oNext != HP_NIL_OFFSET)
     {
 #if 0
-        if (!ValidateFreeBlock(oPrevious))
-        {
-            ValidateFreeList();
-            return false;
-        }
+	if (!ValidateFreeBlock(oPrevious))
+	{
+	    ValidateFreeList();
+	    return false;
+	}
 #endif // 0
-        unsigned char *pBlockStart = m_pHeapStart + oNext;
-        HP_PHEAPNODE pNode = (HP_PHEAPNODE)pBlockStart;
-        if (pNode->nBlockSize >= nRequired)
-        {
-            // We found something of the correct size.
-            //
-            // Do we cut it into two blocks or take the whole thing?
-            //
-            UINT32 nNewBlockSize = pNode->nBlockSize - nRequired;
-            if (nNewBlockSize >= EXPAND_TO_BOUNDARY(HP_MIN_HEAP_ALLOC+1))
-            {
-                // There is enough for leftovers, split it.
-                //
-                HP_PHEAPNODE pNewNode = (HP_PHEAPNODE)(pBlockStart + nRequired);
-                pNewNode->nBlockSize = static_cast<HP_HEAPLENGTH>(nNewBlockSize);
-                pNewNode->u.oNext = pNode->u.oNext;
+	unsigned char *pBlockStart = m_pHeapStart + oNext;
+	HP_PHEAPNODE pNode = (HP_PHEAPNODE)pBlockStart;
+	if (pNode->nBlockSize >= nRequired)
+	{
+	    // We found something of the correct size.
+	    //
+	    // Do we cut it into two blocks or take the whole thing?
+	    //
+	    UINT32 nNewBlockSize = pNode->nBlockSize - nRequired;
+	    if (nNewBlockSize >= EXPAND_TO_BOUNDARY(HP_MIN_HEAP_ALLOC+1))
+	    {
+		// There is enough for leftovers, split it.
+		//
+		HP_PHEAPNODE pNewNode = (HP_PHEAPNODE)(pBlockStart + nRequired);
+		pNewNode->nBlockSize = static_cast<HP_HEAPLENGTH>(nNewBlockSize);
+		pNewNode->u.oNext = pNode->u.oNext;
 
-                // Update current node.
-                //
-                pNode->nBlockSize = nRequired;
-                pNode->u.s.nHash = nHash;
-                pNode->u.s.nRecordSize = nRecord;
+		// Update current node.
+		//
+		pNode->nBlockSize = nRequired;
+		pNode->u.s.nHash = nHash;
+		pNode->u.s.nRecordSize = nRecord;
 
-                // Update Free list pointer.
-                //
-                *poPrev = static_cast<HP_HEAPLENGTH>(*poPrev + nRequired);
-            }
-            else
-            {
-                // Take the whole thing.
-                //
-                *poPrev = pNode->u.oNext;
-                pNode->u.s.nHash = nHash;
-                pNode->u.s.nRecordSize = nRecord;
-            }
-            memcpy(pNode+1, pRecord, nRecord);
-            if (m_pDirectory[iDir] == HP_DIR_EMPTY)
-            {
-                m_pHeader->m_nDirEmptyLeft--;
-            }
-            m_pDirectory[iDir] = (HP_HEAPOFFSET)(pBlockStart - m_pHeapStart);
-            return true;
-        }
-        poPrev = &(pNode->u.oNext);
-        oNext = pNode->u.oNext;
+		// Update Free list pointer.
+		//
+		*poPrev = static_cast<HP_HEAPLENGTH>(*poPrev + nRequired);
+	    }
+	    else
+	    {
+		// Take the whole thing.
+		//
+		*poPrev = pNode->u.oNext;
+		pNode->u.s.nHash = nHash;
+		pNode->u.s.nRecordSize = nRecord;
+	    }
+	    memcpy(pNode+1, pRecord, nRecord);
+	    if (m_pDirectory[iDir] == HP_DIR_EMPTY)
+	    {
+		m_pHeader->m_nDirEmptyLeft--;
+	    }
+	    m_pDirectory[iDir] = (HP_HEAPOFFSET)(pBlockStart - m_pHeapStart);
+	    return true;
+	}
+	poPrev = &(pNode->u.oNext);
+	oNext = pNode->u.oNext;
     }
     return false;
 }
@@ -969,22 +969,22 @@ void CHashPage::HeapFree(UINT32 iDir)
     //ValidateFreeList();
     if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
     {
-        HP_HEAPOFFSET oBlock = m_pDirectory[iDir];
-        HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + oBlock);
+	HP_HEAPOFFSET oBlock = m_pDirectory[iDir];
+	HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + oBlock);
 
-        // Clear it. The reason for clearing is that it makes debugging easier,
-        // and also, if the file is compressed by the file system, a string
-        // of zeros will yield a smaller result.
-        //
-        HP_HEAPLENGTH nBlockSize = pNode->nBlockSize;
-        memset(pNode, 0, nBlockSize);
-        pNode->nBlockSize = nBlockSize;
+	// Clear it. The reason for clearing is that it makes debugging easier,
+	// and also, if the file is compressed by the file system, a string
+	// of zeros will yield a smaller result.
+	//
+	HP_HEAPLENGTH nBlockSize = pNode->nBlockSize;
+	memset(pNode, 0, nBlockSize);
+	pNode->nBlockSize = nBlockSize;
 
-        // Push it onto the free list.
-        //
-        pNode->u.oNext = m_pHeader->m_oFreeList;
-        m_pHeader->m_oFreeList = oBlock;
-        m_pDirectory[iDir] = HP_DIR_DELETED;
+	// Push it onto the free list.
+	//
+	pNode->u.oNext = m_pHeader->m_oFreeList;
+	m_pHeader->m_oFreeList = oBlock;
+	m_pDirectory[iDir] = HP_DIR_DELETED;
     }
 }
 
@@ -994,12 +994,12 @@ void CHashPage::HeapCopy(UINT32 iDir, HP_PHEAPLENGTH pnRecord, void *pRecord)
 
     if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
     {
-        HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
+	HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
 
-        // Copy the record.
-        //
-        *pnRecord = pNode->u.s.nRecordSize;
-        memcpy(pRecord, pNode+1, pNode->u.s.nRecordSize);
+	// Copy the record.
+	//
+	*pnRecord = pNode->u.s.nRecordSize;
+	memcpy(pRecord, pNode+1, pNode->u.s.nRecordSize);
     }
 }
 
@@ -1009,10 +1009,10 @@ void CHashPage::HeapUpdate(UINT32 iDir, HP_HEAPLENGTH nRecord, void *pRecord)
 
     if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
     {
-        HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
+	HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
 
-        if (pNode->u.s.nRecordSize != nRecord) return;
-        memcpy(pNode+1, pRecord, nRecord);
+	if (pNode->u.s.nRecordSize != nRecord) return;
+	memcpy(pNode+1, pRecord, nRecord);
     }
 }
 
@@ -1026,8 +1026,8 @@ bool CHashPage::Split(CHashPage &hp0, CHashPage &hp1)
     GetStats(0, &nRecords, &nAllocatedSize, &nGoodDirSize);
     if (nRecords == 0)
     {
-        Log.WriteString(T("Why are we splitting a page with no records in it?" ENDLINE));
-        return false;
+	Log.WriteString(T("Why are we splitting a page with no records in it?" ENDLINE));
+	return false;
     }
 
     // Initialize that type of HashPage and copy records over.
@@ -1040,32 +1040,32 @@ bool CHashPage::Split(CHashPage &hp0, CHashPage &hp1)
     hp1.Empty(nNewDepth, nHashGroup1, nGoodDirSize);
     for (size_t iDir = 0; iDir < m_pHeader->m_nDirSize; iDir++)
     {
-        if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
-        {
-            HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
-            UINT32 nHash = pNode->u.s.nHash;
-            if ((nHash & anGroupMask[nNewDepth]) == (nHashGroup0 & anGroupMask[nNewDepth]))
-            {
-                if (!IS_HP_SUCCESS(hp0.Insert(pNode->u.s.nRecordSize, nHash, pNode+1)))
-                {
-                    Log.WriteString(T("CHashPage::Split - Ran out of room." ENDLINE));
-                    return false;
-                }
-            }
-            else if ((nHash & anGroupMask[nNewDepth]) == (nHashGroup1 & anGroupMask[nNewDepth]))
-            {
-                if (!IS_HP_SUCCESS(hp1.Insert(pNode->u.s.nRecordSize, nHash, pNode+1)))
-                {
-                    Log.WriteString(T("CHashPage::Split - Ran out of room." ENDLINE));
-                    return false;
-                }
-            }
-            else
-            {
-                Log.WriteString(T("CHashPage::Split - This record fits in neither page...lost." ENDLINE));
-                return false;
-            }
-        }
+	if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
+	{
+	    HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
+	    UINT32 nHash = pNode->u.s.nHash;
+	    if ((nHash & anGroupMask[nNewDepth]) == (nHashGroup0 & anGroupMask[nNewDepth]))
+	    {
+		if (!IS_HP_SUCCESS(hp0.Insert(pNode->u.s.nRecordSize, nHash, pNode+1)))
+		{
+		    Log.WriteString(T("CHashPage::Split - Ran out of room." ENDLINE));
+		    return false;
+		}
+	    }
+	    else if ((nHash & anGroupMask[nNewDepth]) == (nHashGroup1 & anGroupMask[nNewDepth]))
+	    {
+		if (!IS_HP_SUCCESS(hp1.Insert(pNode->u.s.nRecordSize, nHash, pNode+1)))
+		{
+		    Log.WriteString(T("CHashPage::Split - Ran out of room." ENDLINE));
+		    return false;
+		}
+	    }
+	    else
+	    {
+		Log.WriteString(T("CHashPage::Split - This record fits in neither page...lost." ENDLINE));
+		return false;
+	    }
+	}
     }
 #if 0
     int nRecords0, nRecords1;
@@ -1074,12 +1074,12 @@ bool CHashPage::Split(CHashPage &hp0, CHashPage &hp1)
     hp0.GetStats(0, &nRecords0, &nAllocatedSize0, &temp);
     hp1.GetStats(0, &nRecords1, &nAllocatedSize1, &temp);
     Log.tinyprintf(T("Split (%d %d) page into (%d %d) and (%d %d)" ENDLINE),
-        nRecords, nAllocatedSize, nRecords0, nAllocatedSize0, nRecords1,
-        nAllocatedSize1);
+	nRecords, nAllocatedSize, nRecords0, nAllocatedSize0, nRecords1,
+	nAllocatedSize1);
     if (nRecords0 + nRecords1 != nRecords)
     {
-        Log.WriteString("Lost something" ENDLINE);
-        return false;
+	Log.WriteString("Lost something" ENDLINE);
+	return false;
     }
 #endif // 0
     return true;
@@ -1096,7 +1096,7 @@ void CHashPage::GetRange
     int nShift = 32 - arg_nDirDepth;
     if (arg_nDirDepth > 0)
     {
-        nBase = m_pHeader->m_nHashGroup >> nShift;
+	nBase = m_pHeader->m_nHashGroup >> nShift;
     }
     UINT32 ulMask = anGroupMask[nShift + m_pHeader->m_nDepth];
     nStart = nBase & ulMask;
@@ -1111,22 +1111,22 @@ bool CHashPage::WritePage(HANDLE hFile, HF_FILEOFFSET oWhere)
     cs_dbwrites++;
     for ( ; ; MuxAlarm.Sleep(time_250ms))
     {
-        if (SetFilePointer(hFile, oWhere, 0, FILE_BEGIN) == 0xFFFFFFFFUL)
-        {
-            Log.tinyprintf(T("CHashPage::Write - SetFilePointer error %u." ENDLINE), GetLastError());
-            continue;
-        }
-        DWORD nWritten;
-        if (!WriteFile(hFile, m_pPage, m_nPageSize, &nWritten, 0) || nWritten != m_nPageSize)
-        {
-            UINT32 cc = GetLastError();
-            if (cc != ERROR_LOCK_VIOLATION)
-            {
-                Log.tinyprintf(T("CHashPage::Write - WriteFile error %u." ENDLINE), cc);
-            }
-            continue;
-        }
-        return true;
+	if (SetFilePointer(hFile, oWhere, 0, FILE_BEGIN) == 0xFFFFFFFFUL)
+	{
+	    Log.tinyprintf(T("CHashPage::Write - SetFilePointer error %u." ENDLINE), GetLastError());
+	    continue;
+	}
+	DWORD nWritten;
+	if (!WriteFile(hFile, m_pPage, m_nPageSize, &nWritten, 0) || nWritten != m_nPageSize)
+	{
+	    UINT32 cc = GetLastError();
+	    if (cc != ERROR_LOCK_VIOLATION)
+	    {
+		Log.tinyprintf(T("CHashPage::Write - WriteFile error %u." ENDLINE), cc);
+	    }
+	    continue;
+	}
+	return true;
     }
 }
 
@@ -1136,23 +1136,23 @@ bool CHashPage::ReadPage(HANDLE hFile, HF_FILEOFFSET oWhere)
     SetFixedPointers();
     for ( ; ; MuxAlarm.Sleep(time_250ms))
     {
-        if (SetFilePointer(hFile, oWhere, 0, FILE_BEGIN) == 0xFFFFFFFFUL)
-        {
-            Log.tinyprintf(T("CHashPage::Read - SetFilePointer error %u." ENDLINE), GetLastError());
-            continue;
-        }
-        DWORD nRead;
-        if (!ReadFile(hFile, m_pPage, m_nPageSize, &nRead, 0) || nRead != m_nPageSize)
-        {
-            UINT32 cc = GetLastError();
-            if (cc != ERROR_LOCK_VIOLATION)
-            {
-                Log.tinyprintf(T("CHashPage::Read - ReadFile error %u." ENDLINE), cc);
-            }
-            continue;
-        }
-        SetVariablePointers();
-        return true;
+	if (SetFilePointer(hFile, oWhere, 0, FILE_BEGIN) == 0xFFFFFFFFUL)
+	{
+	    Log.tinyprintf(T("CHashPage::Read - SetFilePointer error %u." ENDLINE), GetLastError());
+	    continue;
+	}
+	DWORD nRead;
+	if (!ReadFile(hFile, m_pPage, m_nPageSize, &nRead, 0) || nRead != m_nPageSize)
+	{
+	    UINT32 cc = GetLastError();
+	    if (cc != ERROR_LOCK_VIOLATION)
+	    {
+		Log.tinyprintf(T("CHashPage::Read - ReadFile error %u." ENDLINE), cc);
+	    }
+	    continue;
+	}
+	SetVariablePointers();
+	return true;
     }
 }
 
@@ -1164,30 +1164,30 @@ bool CHashPage::WritePage(HANDLE hFile, HF_FILEOFFSET oWhere)
     for ( ; cnt; MuxAlarm.Sleep(time_1s), cnt--)
     {
 #ifdef HAVE_PWRITE
-        int cc = pwrite(hFile, m_pPage, m_nPageSize, oWhere);
+	int cc = pwrite(hFile, m_pPage, m_nPageSize, oWhere);
 #else
-        if (mux_lseek(hFile, oWhere, SEEK_SET) == (off_t)-1)
-        {
-            Log.tinyprintf(T("CHashPage::Write - lseek error %u." ENDLINE), errno);
-            continue;
-        }
-        int cc = mux_write(hFile, m_pPage, m_nPageSize);
+	if (mux_lseek(hFile, oWhere, SEEK_SET) == (off_t)-1)
+	{
+	    Log.tinyprintf(T("CHashPage::Write - lseek error %u." ENDLINE), errno);
+	    continue;
+	}
+	int cc = mux_write(hFile, m_pPage, m_nPageSize);
 #endif // HAVE_PWRITE
-        if ((int)m_nPageSize != cc)
-        {
-            if (cc == -1)
-            {
-                Log.tinyprintf(T("CHashPage::Write - write error %u." ENDLINE), errno);
-            }
-            else
-            {
-                // Our write request was only partially filled. The disk is
-                // probably full.
-                //
-                Log.tinyprintf(T("CHashPage::Write - partial write." ENDLINE));
-            }
-        }
-        return true;
+	if ((int)m_nPageSize != cc)
+	{
+	    if (cc == -1)
+	    {
+		Log.tinyprintf(T("CHashPage::Write - write error %u." ENDLINE), errno);
+	    }
+	    else
+	    {
+		// Our write request was only partially filled. The disk is
+		// probably full.
+		//
+		Log.tinyprintf(T("CHashPage::Write - partial write." ENDLINE));
+	    }
+	}
+	return true;
     }
 
     // Don't struggle further.  You'll just make it worse.
@@ -1204,31 +1204,31 @@ bool CHashPage::ReadPage(HANDLE hFile, HF_FILEOFFSET oWhere)
     for ( ; cnt; MuxAlarm.Sleep(time_1s), cnt--)
     {
 #ifdef HAVE_PREAD
-        int cc = pread(hFile, m_pPage, m_nPageSize, oWhere);
+	int cc = pread(hFile, m_pPage, m_nPageSize, oWhere);
 #else
-        if (mux_lseek(hFile, oWhere, SEEK_SET) == (off_t)-1)
-        {
-            Log.tinyprintf(T("CHashPage::Read - lseek error %u." ENDLINE), errno);
-            continue;
-        }
-        int cc = mux_read(hFile, m_pPage, m_nPageSize);
+	if (mux_lseek(hFile, oWhere, SEEK_SET) == (off_t)-1)
+	{
+	    Log.tinyprintf(T("CHashPage::Read - lseek error %u." ENDLINE), errno);
+	    continue;
+	}
+	int cc = mux_read(hFile, m_pPage, m_nPageSize);
 #endif // HAVE_PREAD
-        if ((int)m_nPageSize != cc)
-        {
-            if (cc == -1)
-            {
-                Log.tinyprintf(T("CHashPage::Read - read error %u." ENDLINE), errno);
-            }
-            else
-            {
-                // Our read request was only partially filled. Surrender.
-                //
-                Log.tinyprintf(T("CHashPage::Read - partial read." ENDLINE));
-            }
-            continue;
-        }
-        SetVariablePointers();
-        return true;
+	if ((int)m_nPageSize != cc)
+	{
+	    if (cc == -1)
+	    {
+		Log.tinyprintf(T("CHashPage::Read - read error %u." ENDLINE), errno);
+	    }
+	    else
+	    {
+		// Our read request was only partially filled. Surrender.
+		//
+		Log.tinyprintf(T("CHashPage::Read - partial read." ENDLINE));
+	    }
+	    continue;
+	}
+	SetVariablePointers();
+	return true;
     }
 
     // Don't struggle further.  You'll just make it worse.
@@ -1255,8 +1255,8 @@ bool CHashPage::Defrag(HP_HEAPLENGTH nExtra)
     if (!hpNew) return false;
     if (!hpNew->Allocate(m_nPageSize))
     {
-        delete hpNew;
-        return false;
+	delete hpNew;
+	return false;
     }
 
     // Figure out what a good directory size is given the actual records in this page.
@@ -1272,25 +1272,25 @@ bool CHashPage::Defrag(HP_HEAPLENGTH nExtra)
     int errInserted = HP_INSERT_SUCCESS;
     for (size_t iDir = 0; iDir < m_pHeader->m_nDirSize && IS_HP_SUCCESS(errInserted); iDir++)
     {
-        if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
-        {
-            HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
-            errInserted = hpNew->Insert(pNode->u.s.nRecordSize, pNode->u.s.nHash, pNode+1);
-        }
+	if (m_pDirectory[iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
+	{
+	    HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[iDir]);
+	    errInserted = hpNew->Insert(pNode->u.s.nRecordSize, pNode->u.s.nHash, pNode+1);
+	}
     }
     if (IS_HP_SUCCESS(errInserted))
     {
-        // Swap buffers.
-        //
-        unsigned char *tmp;
-        tmp = hpNew->m_pPage;
-        hpNew->m_pPage = m_pPage;
-        m_pPage = tmp;
+	// Swap buffers.
+	//
+	unsigned char *tmp;
+	tmp = hpNew->m_pPage;
+	hpNew->m_pPage = m_pPage;
+	m_pPage = tmp;
 
-        SetFixedPointers();
-        SetVariablePointers();
-        delete hpNew;
-        return true;
+	SetFixedPointers();
+	SetVariablePointers();
+	delete hpNew;
+	return true;
     }
     delete hpNew;
     return false;
@@ -1310,13 +1310,13 @@ UINT32 CHashPage::FindFirst(HP_PHEAPLENGTH pnRecord, void *pRecord)
 {
     for (m_iDir = 0; m_iDir < m_pHeader->m_nDirSize; m_iDir++)
     {
-        if (m_pDirectory[m_iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
-        {
-            HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[m_iDir]);
-            *pnRecord = pNode->u.s.nRecordSize;
-            memcpy(pRecord, pNode+1, pNode->u.s.nRecordSize);
-            return m_iDir;
-        }
+	if (m_pDirectory[m_iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
+	{
+	    HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[m_iDir]);
+	    *pnRecord = pNode->u.s.nRecordSize;
+	    memcpy(pRecord, pNode+1, pNode->u.s.nRecordSize);
+	    return m_iDir;
+	}
     }
     return HP_DIR_EMPTY;
 }
@@ -1325,13 +1325,13 @@ UINT32 CHashPage::FindNext(HP_PHEAPLENGTH pnRecord, void *pRecord)
 {
     for (m_iDir++; m_iDir < m_pHeader->m_nDirSize; m_iDir++)
     {
-        if (m_pDirectory[m_iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
-        {
-            HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[m_iDir]);
-            *pnRecord = pNode->u.s.nRecordSize;
-            memcpy(pRecord, pNode+1, pNode->u.s.nRecordSize);
-            return m_iDir;
-        }
+	if (m_pDirectory[m_iDir] < HP_DIR_DELETED) // ValidateAllocatedBlock(iDir))
+	{
+	    HP_PHEAPNODE pNode = (HP_PHEAPNODE)(m_pHeapStart + m_pDirectory[m_iDir]);
+	    *pnRecord = pNode->u.s.nRecordSize;
+	    memcpy(pRecord, pNode+1, pNode->u.s.nRecordSize);
+	    return m_iDir;
+	}
     }
     return HP_DIR_EMPTY;
 }
@@ -1368,7 +1368,7 @@ void CHashFile::WriteDirectory(void)
 {
     if (INVALID_HANDLE_VALUE == m_hDirFile)
     {
-        return;
+	return;
     }
 
     SetFilePointer(m_hDirFile, 0, 0, FILE_BEGIN);
@@ -1378,7 +1378,7 @@ void CHashFile::WriteDirectory(void)
 #ifdef DO_COMMIT
     if (!mudstate.bStandAlone)
     {
-        FlushFileBuffers(m_hDirFile);
+	FlushFileBuffers(m_hDirFile);
     }
 #endif // DO_COMMIT
 }
@@ -1387,7 +1387,7 @@ void CHashFile::WriteDirectory(void)
 {
     if (MUX_OPEN_INVALID_HANDLE_VALUE == m_hDirFile)
     {
-        return;
+	return;
     }
 
 #ifdef HAVE_PWRITE
@@ -1400,7 +1400,7 @@ void CHashFile::WriteDirectory(void)
 #ifdef DO_COMMIT
     if (!mudstate.bStandAlone)
     {
-        fsync(m_hDirFile);
+	fsync(m_hDirFile);
     }
 #endif // DO_COMMIT
 }
@@ -1410,13 +1410,13 @@ bool CHashFile::InitializeDirectory(unsigned int n)
 {
     if (m_pDir)
     {
-        delete [] m_pDir;
-        m_pDir = NULL;
+	delete [] m_pDir;
+	m_pDir = NULL;
     }
     if (m_hpCacheLookup)
     {
-        delete [] m_hpCacheLookup;
-        m_hpCacheLookup = NULL;
+	delete [] m_hpCacheLookup;
+	m_hpCacheLookup = NULL;
     }
 
     m_nDir = n;
@@ -1424,48 +1424,48 @@ bool CHashFile::InitializeDirectory(unsigned int n)
     n >>= 1;
     while (n)
     {
-        m_nDirDepth++;
-        n >>= 1;
+	m_nDirDepth++;
+	n >>= 1;
     }
 
     m_pDir = NULL;
     try
     {
-        m_pDir = new HF_FILEOFFSET[m_nDir];
+	m_pDir = new HF_FILEOFFSET[m_nDir];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
     if (NULL == m_pDir)
     {
-        return false;
+	return false;
     }
 
     m_hpCacheLookup = NULL;
     try
     {
-        m_hpCacheLookup = new int[m_nDir];
+	m_hpCacheLookup = new int[m_nDir];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL == m_hpCacheLookup)
     {
-        if (m_pDir)
-        {
-            delete [] m_pDir;
-            m_pDir = NULL;
-        }
-        return false;
+	if (m_pDir)
+	{
+	    delete [] m_pDir;
+	    m_pDir = NULL;
+	}
+	return false;
     }
 
     for (unsigned int i = 0; i < m_nDir; i++)
     {
-        m_pDir[i] = 0xFFFFFFFFUL;
-        m_hpCacheLookup[i] = -1;
+	m_pDir[i] = 0xFFFFFFFFUL;
+	m_hpCacheLookup[i] = -1;
     }
 
     return true;
@@ -1482,12 +1482,12 @@ bool CHashFile::CreateFileSet(const UTF8 *szDirFile, const UTF8 *szPageFile)
     pFilename = ConvertFromUTF8ToUTF16(szPageFile, &nFilename);
     if (NULL == pFilename)
     {
-        return false;
+	return false;
     }
 
     m_hPageFile = CreateFile(pFilename, GENERIC_READ | GENERIC_WRITE,
-        FILE_SHARE_READ, 0, CREATE_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL + FILE_FLAG_RANDOM_ACCESS, NULL);
+	FILE_SHARE_READ, 0, CREATE_ALWAYS,
+	FILE_ATTRIBUTE_NORMAL + FILE_FLAG_RANDOM_ACCESS, NULL);
     bSuccess = (INVALID_HANDLE_VALUE != m_hPageFile);
 #elif defined(UNIX_FILES)
     bSuccess = mux_open(&m_hPageFile, szPageFile, O_RDWR|O_BINARY|O_CREAT|O_TRUNC);
@@ -1495,19 +1495,19 @@ bool CHashFile::CreateFileSet(const UTF8 *szDirFile, const UTF8 *szPageFile)
 
     if (!bSuccess)
     {
-        return false;
+	return false;
     }
 
 #if defined(WINDOWS_FILES)
     pFilename = ConvertFromUTF8ToUTF16(szDirFile, &nFilename);
     if (NULL == pFilename)
     {
-        return false;
+	return false;
     }
 
     m_hDirFile = CreateFile(pFilename, GENERIC_READ | GENERIC_WRITE,
-        FILE_SHARE_READ, 0, CREATE_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	FILE_SHARE_READ, 0, CREATE_ALWAYS,
+	FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
     bSuccess = (INVALID_HANDLE_VALUE != m_hDirFile);
 #elif defined(UNIX_FILES)
     bSuccess = mux_open(&m_hDirFile, szDirFile, O_RDWR|O_BINARY|O_CREAT|O_TRUNC);
@@ -1515,20 +1515,20 @@ bool CHashFile::CreateFileSet(const UTF8 *szDirFile, const UTF8 *szPageFile)
 
     if (!bSuccess)
     {
-        return false;
+	return false;
     }
 
     // Create empty structures in memory and write them out.
     //
     if (!InitializeDirectory(2))
     {
-        return false;
+	return false;
     }
 
     iCache = AllocateEmptyPage(0, 0);
     if (iCache < 0)
     {
-        return false;
+	return false;
     }
     m_Cache[iCache].m_hp.Empty(0, 0UL, 100);
     m_Cache[iCache].m_o = 0UL;
@@ -1553,62 +1553,62 @@ bool CHashFile::RebuildDirectory(void)
     //
     if (!InitializeDirectory(2))
     {
-        return false;
+	return false;
     }
 
     // Re-build the directory from CHashPages.
     //
     for (UINT32 oPage = 0; oPage < oEndOfFile; oPage += HF_SIZEOF_PAGE)
     {
-        int iCache;
-        if ((iCache = AllocateEmptyPage(0, NULL)) < 0)
-        {
-            Log.WriteString(T("CHashFile::RebuildDirectory.  AllocateEmptyPage failed. DB DAMAGE." ENDLINE));
-            return false;
-        }
+	int iCache;
+	if ((iCache = AllocateEmptyPage(0, NULL)) < 0)
+	{
+	    Log.WriteString(T("CHashFile::RebuildDirectory.  AllocateEmptyPage failed. DB DAMAGE." ENDLINE));
+	    return false;
+	}
 
-        if (m_Cache[iCache].m_hp.ReadPage(m_hPageFile, oPage))
-        {
-            m_Cache[iCache].m_o = oPage;
-            m_Cache[iCache].m_iState = HF_CACHE_CLEAN;
-            ResetAge(iCache);
-        }
-        else
-        {
-            Log.WriteString(T("CHashFile::RebuildDirectory.  ReadPage failed to get the page. DB DAMAGE." ENDLINE));
-        }
+	if (m_Cache[iCache].m_hp.ReadPage(m_hPageFile, oPage))
+	{
+	    m_Cache[iCache].m_o = oPage;
+	    m_Cache[iCache].m_iState = HF_CACHE_CLEAN;
+	    ResetAge(iCache);
+	}
+	else
+	{
+	    Log.WriteString(T("CHashFile::RebuildDirectory.  ReadPage failed to get the page. DB DAMAGE." ENDLINE));
+	}
 
-        UINT32 nPageDepth = m_Cache[iCache].m_hp.GetDepth();
-        while (m_nDirDepth < nPageDepth)
-        {
-            if (!DoubleDirectory())
-            {
-                return false;
-            }
-        }
-        UINT32 nStart, nEnd;
-        m_Cache[iCache].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
-        for ( ; nStart <= nEnd; nStart++)
-        {
-            if (m_pDir[nStart] != 0xFFFFFFFFUL)
-            {
-                Log.WriteString(T("CHashFile::Open - The keyspace of pages in Page File overlap." ENDLINE));
-                return false;
-            }
-            m_pDir[nStart] = oPage;
-            m_hpCacheLookup[nStart] = iCache;
-        }
+	UINT32 nPageDepth = m_Cache[iCache].m_hp.GetDepth();
+	while (m_nDirDepth < nPageDepth)
+	{
+	    if (!DoubleDirectory())
+	    {
+		return false;
+	    }
+	}
+	UINT32 nStart, nEnd;
+	m_Cache[iCache].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
+	for ( ; nStart <= nEnd; nStart++)
+	{
+	    if (m_pDir[nStart] != 0xFFFFFFFFUL)
+	    {
+		Log.WriteString(T("CHashFile::Open - The keyspace of pages in Page File overlap." ENDLINE));
+		return false;
+	    }
+	    m_pDir[nStart] = oPage;
+	    m_hpCacheLookup[nStart] = iCache;
+	}
     }
 
     // Validate that the directory does not have holes.
     //
     for (UINT32 iFileDir = 0; iFileDir < m_nDir; iFileDir++)
     {
-        if (m_pDir[iFileDir] == 0xFFFFFFFFUL)
-        {
-            Log.WriteString(T("CHashFile::Open - Page File is incomplete." ENDLINE));
-            return false;
-        }
+	if (m_pDir[iFileDir] == 0xFFFFFFFFUL)
+	{
+	    Log.WriteString(T("CHashFile::Open - Page File is incomplete." ENDLINE));
+	    return false;
+	}
     }
     WriteDirectory();
     return true;
@@ -1623,7 +1623,7 @@ bool CHashFile::ReadDirectory(void)
 #endif // UNIX_FILES
     if (cc == 0xFFFFFFFFUL)
     {
-        return false;
+	return false;
     }
 
     InitializeDirectory(cc / HF_SIZEOF_FILEOFFSET);
@@ -1633,7 +1633,7 @@ bool CHashFile::ReadDirectory(void)
     DWORD nRead;
     if (!ReadFile(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, &nRead, 0))
     {
-        return false;
+	return false;
     }
 #elif defined(UNIX_FILES)
 #ifdef HAVE_PREAD
@@ -1650,7 +1650,7 @@ void CHashFile::InitCache(int nCachePages)
 {
     if (m_Cache)
     {
-        return;
+	return;
     }
 
     // Allocate hash page cache.
@@ -1660,11 +1660,11 @@ void CHashFile::InitCache(int nCachePages)
     ISOUTOFMEMORY(m_Cache);
     for (int i = 0; i < m_nCache; i++)
     {
-        m_Cache[i].m_hp.Allocate(HF_SIZEOF_PAGE);
-        m_Cache[i].m_iState = HF_CACHE_EMPTY;
-        m_Cache[i].m_o = 0UL;
-        m_Cache[i].m_iYounger = i-1;
-        m_Cache[i].m_iOlder   = i+1;
+	m_Cache[i].m_hp.Allocate(HF_SIZEOF_PAGE);
+	m_Cache[i].m_iState = HF_CACHE_EMPTY;
+	m_Cache[i].m_o = 0UL;
+	m_Cache[i].m_iYounger = i-1;
+	m_Cache[i].m_iOlder   = i+1;
     }
     m_Cache[0].m_iYounger = m_nCache-1;
     m_Cache[m_nCache-1].m_iOlder = 0;
@@ -1686,26 +1686,26 @@ int CHashFile::Open(const UTF8 *szDirFile, const UTF8 *szPageFile, int nCachePag
     pFilename = ConvertFromUTF8ToUTF16(szPageFile, &nFilename);
     if (NULL == pFilename)
     {
-        return HF_OPEN_STATUS_ERROR;
+	return HF_OPEN_STATUS_ERROR;
     }
 
     m_hPageFile = CreateFile(pFilename, GENERIC_READ | GENERIC_WRITE,
-        FILE_SHARE_READ, 0, OPEN_EXISTING,
-        FILE_ATTRIBUTE_NORMAL + FILE_FLAG_RANDOM_ACCESS, NULL);
+	FILE_SHARE_READ, 0, OPEN_EXISTING,
+	FILE_ATTRIBUTE_NORMAL + FILE_FLAG_RANDOM_ACCESS, NULL);
     bSuccess = (INVALID_HANDLE_VALUE != m_hPageFile);
 #elif defined(UNIX_FILES)
     bSuccess = mux_open(&m_hPageFile, szPageFile, O_RDWR|O_BINARY);
 #endif // UNIX_FILES
     if (!bSuccess)
     {
-        // The PageFile doesn't exist, so we have'ta create both of them.
-        //
-        if (!CreateFileSet(szDirFile, szPageFile))
-        {
-            CloseAll();
-            return HF_OPEN_STATUS_ERROR;
-        }
-        return HF_OPEN_STATUS_NEW;
+	// The PageFile doesn't exist, so we have'ta create both of them.
+	//
+	if (!CreateFileSet(szDirFile, szPageFile))
+	{
+	    CloseAll();
+	    return HF_OPEN_STATUS_ERROR;
+	}
+	return HF_OPEN_STATUS_NEW;
     }
 
     // We have a page file open. Let's check how big it is. If it's
@@ -1720,27 +1720,27 @@ int CHashFile::Open(const UTF8 *szDirFile, const UTF8 *szPageFile, int nCachePag
 #endif // UNIX_FILES
     if (oEndOfFile == 0xFFFFFFFFUL)
     {
-        CloseAll();
-        return HF_OPEN_STATUS_ERROR;
+	CloseAll();
+	return HF_OPEN_STATUS_ERROR;
     }
     else if (oEndOfFile == 0UL)
     {
-        // The PageFile exists, but it's zero-length, so we have'ta create
-        // both of them.
-        //
-        if (!CreateFileSet(szDirFile, szPageFile))
-        {
-            CloseAll();
-            return HF_OPEN_STATUS_ERROR;
-        }
-        return HF_OPEN_STATUS_NEW;
+	// The PageFile exists, but it's zero-length, so we have'ta create
+	// both of them.
+	//
+	if (!CreateFileSet(szDirFile, szPageFile))
+	{
+	    CloseAll();
+	    return HF_OPEN_STATUS_ERROR;
+	}
+	return HF_OPEN_STATUS_NEW;
     }
     else if ((oEndOfFile % HF_SIZEOF_PAGE) != 0)
     {
-        // This is not a mulitple of HP_SIZEOF_PAGE. Weird unknown format.
-        //
-        CloseAll();
-        return HF_OPEN_STATUS_ERROR;
+	// This is not a mulitple of HP_SIZEOF_PAGE. Weird unknown format.
+	//
+	CloseAll();
+	return HF_OPEN_STATUS_ERROR;
     }
 
     // Now that the page file appears valid so far, let's see if the directory
@@ -1752,49 +1752,49 @@ int CHashFile::Open(const UTF8 *szDirFile, const UTF8 *szPageFile, int nCachePag
     pFilename = ConvertFromUTF8ToUTF16(szDirFile, &nFilename);
     if (NULL == pFilename)
     {
-        return HF_OPEN_STATUS_ERROR;
+	return HF_OPEN_STATUS_ERROR;
     }
 
     m_hDirFile = CreateFile(pFilename, GENERIC_READ | GENERIC_WRITE,
-        FILE_SHARE_READ, 0, OPEN_EXISTING,
-        FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	FILE_SHARE_READ, 0, OPEN_EXISTING,
+	FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
     bSuccess = (INVALID_HANDLE_VALUE != m_hDirFile);
 #elif defined(UNIX_FILES)
     bSuccess = mux_open(&m_hDirFile, szDirFile, O_RDWR|O_BINARY);
 #endif // UNIX_FILES
     if (!bSuccess)
     {
-        // The Directory doesn't exist, so we create it anew, and rebuild the
-        // index.
+	// The Directory doesn't exist, so we create it anew, and rebuild the
+	// index.
 #if defined(WINDOWS_FILES)
-        m_hDirFile = CreateFile(pFilename, GENERIC_READ | GENERIC_WRITE,
-            FILE_SHARE_READ, 0, CREATE_ALWAYS,
-            FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-        bSuccess = (INVALID_HANDLE_VALUE != m_hDirFile);
+	m_hDirFile = CreateFile(pFilename, GENERIC_READ | GENERIC_WRITE,
+	    FILE_SHARE_READ, 0, CREATE_ALWAYS,
+	    FILE_ATTRIBUTE_NORMAL + FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	bSuccess = (INVALID_HANDLE_VALUE != m_hDirFile);
 #elif defined(UNIX_FILES)
-        bSuccess = mux_open(&m_hDirFile, szDirFile, O_RDWR|O_BINARY|O_CREAT|O_TRUNC);
+	bSuccess = mux_open(&m_hDirFile, szDirFile, O_RDWR|O_BINARY|O_CREAT|O_TRUNC);
 #endif // UNIX_FILES
 
-        if (!bSuccess)
-        {
-            CloseAll();
-            return HF_OPEN_STATUS_ERROR;
-        }
+	if (!bSuccess)
+	{
+	    CloseAll();
+	    return HF_OPEN_STATUS_ERROR;
+	}
 
-        if (!RebuildDirectory())
-        {
-            CloseAll();
-            return HF_OPEN_STATUS_ERROR;
-        }
-        return HF_OPEN_STATUS_OLD;
+	if (!RebuildDirectory())
+	{
+	    CloseAll();
+	    return HF_OPEN_STATUS_ERROR;
+	}
+	return HF_OPEN_STATUS_OLD;
     }
 
     // Read in the directory.
     //
     if (!ReadDirectory())
     {
-        CloseAll();
-        return HF_OPEN_STATUS_ERROR;
+	CloseAll();
+	return HF_OPEN_STATUS_ERROR;
     }
     return HF_OPEN_STATUS_OLD;
 }
@@ -1807,29 +1807,29 @@ void CHashFile::Sync(void)
     if (MUX_OPEN_INVALID_HANDLE_VALUE != m_hPageFile)
 #endif // UNIX_FILES
     {
-        cs_syncs++;
-        bool bAllFlushed = true;
-        for (int i = 0; i < m_nCache; i++)
-        {
-            if (!FlushCache(i))
-            {
-                bAllFlushed = false;
-            }
-        }
-        if (!bAllFlushed)
-        {
-            Log.WriteString(T("CHashFile::Sync. Could not flush all the pages. DB DAMAGE." ENDLINE));
-        }
+	cs_syncs++;
+	bool bAllFlushed = true;
+	for (int i = 0; i < m_nCache; i++)
+	{
+	    if (!FlushCache(i))
+	    {
+		bAllFlushed = false;
+	    }
+	}
+	if (!bAllFlushed)
+	{
+	    Log.WriteString(T("CHashFile::Sync. Could not flush all the pages. DB DAMAGE." ENDLINE));
+	}
 
 #ifdef DO_COMMIT
-        if (!mudstate.bStandAlone)
-        {
+	if (!mudstate.bStandAlone)
+	{
 #if defined(WINDOWS_FILES)
-            FlushFileBuffers(m_hPageFile);
+	    FlushFileBuffers(m_hPageFile);
 #elif defined(UNIX_FILES)
-            fsync(m_hPageFile);
+	    fsync(m_hPageFile);
 #endif // UNIX_FILES
-        }
+	}
 #endif // DO_COMMIT
     }
 #ifdef DO_COMMIT
@@ -1841,9 +1841,9 @@ void CHashFile::Sync(void)
        && !mudstate.bStandAlone)
     {
 #if defined(WINDOWS_FILES)
-        FlushFileBuffers(m_hDirFile);
+	FlushFileBuffers(m_hDirFile);
 #elif defined(UNIX_FILES)
-        fsync(m_hDirFile);
+	fsync(m_hDirFile);
 #endif // UNIX_FILES
     }
 #endif // DO_COMMIT
@@ -1857,22 +1857,22 @@ void CHashFile::CloseAll(void)
     if (MUX_OPEN_INVALID_HANDLE_VALUE != m_hPageFile)
 #endif // UNIX_FILES
     {
-        Sync();
-        if (m_pDir)
-        {
-            delete [] m_pDir;
-            m_pDir = NULL;
-        }
-        if (m_hpCacheLookup)
-        {
-            delete [] m_hpCacheLookup;
-            m_hpCacheLookup = NULL;
-        }
+	Sync();
+	if (m_pDir)
+	{
+	    delete [] m_pDir;
+	    m_pDir = NULL;
+	}
+	if (m_hpCacheLookup)
+	{
+	    delete [] m_hpCacheLookup;
+	    m_hpCacheLookup = NULL;
+	}
 
 #if defined(WINDOWS_FILES)
-        CloseHandle(m_hPageFile);
+	CloseHandle(m_hPageFile);
 #elif defined(UNIX_FILES)
-        mux_close(m_hPageFile);
+	mux_close(m_hPageFile);
 #endif // UNIX_FILES
     }
 
@@ -1883,9 +1883,9 @@ void CHashFile::CloseAll(void)
 #endif // UNIX_FILES
     {
 #if defined(WINDOWS_FILES)
-        CloseHandle(m_hDirFile);
+	CloseHandle(m_hDirFile);
 #elif defined(UNIX_FILES)
-        mux_close(m_hDirFile);
+	mux_close(m_hDirFile);
 #endif // UNIX_FILES
     }
     Init();
@@ -1895,9 +1895,9 @@ void CHashFile::FinalCache(void)
 {
     if (m_Cache)
     {
-        delete [] m_Cache;
-        m_Cache = NULL;
-        m_nCache = 0;
+	delete [] m_Cache;
+	m_Cache = NULL;
+	m_nCache = 0;
     }
 }
 
@@ -1912,177 +1912,177 @@ bool CHashFile::Insert(HP_HEAPLENGTH nRecord, UINT32 nHash, void *pRecord)
     cs_writes++;
     for (;;)
     {
-        UINT32 iFileDir = nHash >> (32-m_nDirDepth);
-        if (iFileDir >= m_nDir)
-        {
-            Log.WriteString(T("CHashFile::Insert - iFileDir out of range." ENDLINE));
-            return false;
-        }
-        iCache = ReadCache(iFileDir, &cs_whits);
-        if (iCache < 0)
-        {
-            Log.WriteString(T("CHashFile::Insert - Page wasn\xE2\x80\x99t valid." ENDLINE));
-            return false;
-        }
+	UINT32 iFileDir = nHash >> (32-m_nDirDepth);
+	if (iFileDir >= m_nDir)
+	{
+	    Log.WriteString(T("CHashFile::Insert - iFileDir out of range." ENDLINE));
+	    return false;
+	}
+	iCache = ReadCache(iFileDir, &cs_whits);
+	if (iCache < 0)
+	{
+	    Log.WriteString(T("CHashFile::Insert - Page wasn\xE2\x80\x99t valid." ENDLINE));
+	    return false;
+	}
 
-        UINT32 nStart, nEnd;
-        m_Cache[iCache].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
-        if (iFileDir < nStart || nEnd < iFileDir)
-        {
-            Log.tinyprintf(T("CHashFile::Insert - Directory entry (0x%08X) points to the wrong page (0x%08X-0x%08X)." ENDLINE),
-                iFileDir, nStart, nEnd);
-            return false;
-        }
-        int errInserted = m_Cache[iCache].m_hp.Insert(nRecord, nHash, pRecord);
-        if (IS_HP_SUCCESS(errInserted))
-        {
-            // The record was inserted successfully, so the page is dirty.
-            //
-            m_Cache[iCache].m_iState = HF_CACHE_UNPROTECTED;
-            break;
-        }
-        else if (HP_INSERT_ERROR_ILLEGAL == errInserted)
-        {
-            return false;
-        }
+	UINT32 nStart, nEnd;
+	m_Cache[iCache].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
+	if (iFileDir < nStart || nEnd < iFileDir)
+	{
+	    Log.tinyprintf(T("CHashFile::Insert - Directory entry (0x%08X) points to the wrong page (0x%08X-0x%08X)." ENDLINE),
+		iFileDir, nStart, nEnd);
+	    return false;
+	}
+	int errInserted = m_Cache[iCache].m_hp.Insert(nRecord, nHash, pRecord);
+	if (IS_HP_SUCCESS(errInserted))
+	{
+	    // The record was inserted successfully, so the page is dirty.
+	    //
+	    m_Cache[iCache].m_iState = HF_CACHE_UNPROTECTED;
+	    break;
+	}
+	else if (HP_INSERT_ERROR_ILLEGAL == errInserted)
+	{
+	    return false;
+	}
 
 #if defined(HAVE_WORKING_FORK)
-        // First, if we are @dumping, then we have a @forked process
-        // that is also reading from the file. We must pause and let
-        // this reader process finish.
-        //
-        if (  !mudstate.bStandAlone
-           && mudstate.dumping)
-        {
-            STARTLOG(LOG_DBSAVES, "DMP", "DUMP");
-            log_text(T("Waiting on previously-forked child before page-splitting... "));
-            ENDLOG;
-            do
-            {
-                // We have a forked dump in progress, so we will wait until the
-                // child exits.
-                //
-                MuxAlarm.Sleep(time_1s);
-            } while (mudstate.dumping);
-        }
+	// First, if we are @dumping, then we have a @forked process
+	// that is also reading from the file. We must pause and let
+	// this reader process finish.
+	//
+	if (  !mudstate.bStandAlone
+	   && mudstate.dumping)
+	{
+	    STARTLOG(LOG_DBSAVES, "DMP", "DUMP");
+	    log_text(T("Waiting on previously-forked child before page-splitting... "));
+	    ENDLOG;
+	    do
+	    {
+		// We have a forked dump in progress, so we will wait until the
+		// child exits.
+		//
+		MuxAlarm.Sleep(time_1s);
+	    } while (mudstate.dumping);
+	}
 #endif // HAVE_WORKING_FORK
 
-        // If the depth of this page is already as deep as the directory
-        // depth,then we must increase depth of the directory, first.
-        //
-        if (m_nDirDepth == m_Cache[iCache].m_hp.GetDepth())
-        {
-            if (!DoubleDirectory())
-            {
-                return false;
-            }
-        }
+	// If the depth of this page is already as deep as the directory
+	// depth,then we must increase depth of the directory, first.
+	//
+	if (m_nDirDepth == m_Cache[iCache].m_hp.GetDepth())
+	{
+	    if (!DoubleDirectory())
+	    {
+		return false;
+	    }
+	}
 
-        // Split this page into two pages. We become a new one, and we
-        // are given a pointer to the other one.
-        //
-        int Safe[2];
-        int nSafe = 0;
-        int iEmpty0, iEmpty1;
+	// Split this page into two pages. We become a new one, and we
+	// are given a pointer to the other one.
+	//
+	int Safe[2];
+	int nSafe = 0;
+	int iEmpty0, iEmpty1;
 
-        Safe[nSafe++] = iCache;
-        iEmpty0 = AllocateEmptyPage(nSafe, Safe);
-        if (iEmpty0 < 0) return false;
+	Safe[nSafe++] = iCache;
+	iEmpty0 = AllocateEmptyPage(nSafe, Safe);
+	if (iEmpty0 < 0) return false;
 
-        if (iCache == iEmpty0)
-        {
-            Log.WriteString(T("CHashFile::Split - iCache == iEmpty0" ENDLINE));
-            return false;
-        }
+	if (iCache == iEmpty0)
+	{
+	    Log.WriteString(T("CHashFile::Split - iCache == iEmpty0" ENDLINE));
+	    return false;
+	}
 
-        Safe[nSafe++] = iEmpty0;
-        iEmpty1 = AllocateEmptyPage(nSafe, Safe);
-        if (iEmpty1 < 0) return false;
+	Safe[nSafe++] = iEmpty0;
+	iEmpty1 = AllocateEmptyPage(nSafe, Safe);
+	if (iEmpty1 < 0) return false;
 
-        if (iCache == iEmpty1)
-        {
-            Log.WriteString(T("CHashFile::Split - iCache == iEmpty1" ENDLINE));
-            return false;
-        }
+	if (iCache == iEmpty1)
+	{
+	    Log.WriteString(T("CHashFile::Split - iCache == iEmpty1" ENDLINE));
+	    return false;
+	}
 
-        if (iEmpty0 == iEmpty1)
-        {
-            Log.WriteString(T("CHashFile::Split - iEmpty0 == iEmpty1" ENDLINE));
-            return false;
-        }
+	if (iEmpty0 == iEmpty1)
+	{
+	    Log.WriteString(T("CHashFile::Split - iEmpty0 == iEmpty1" ENDLINE));
+	    return false;
+	}
 
-        if (!m_Cache[iCache].m_hp.Split(m_Cache[iEmpty0].m_hp, m_Cache[iEmpty1].m_hp))
-        {
-            return false;
-        }
+	if (!m_Cache[iCache].m_hp.Split(m_Cache[iEmpty0].m_hp, m_Cache[iEmpty1].m_hp))
+	{
+	    return false;
+	}
 
-        // Tack another page onto the end of the .pag file.
-        //
-        long oNew = oEndOfFile;
-        oEndOfFile += HF_SIZEOF_PAGE;
+	// Tack another page onto the end of the .pag file.
+	//
+	long oNew = oEndOfFile;
+	oEndOfFile += HF_SIZEOF_PAGE;
 
-        // iEmpty0 => iCache. iEmpty1 => end of file
-        //
-        m_Cache[iCache].m_iState = HF_CACHE_EMPTY;
-        m_Cache[iEmpty0].m_o = m_Cache[iCache].m_o;
-        m_Cache[iEmpty1].m_o = oNew;
-        m_Cache[iEmpty0].m_iState = HF_CACHE_UNPROTECTED;
-        m_Cache[iEmpty1].m_iState = HF_CACHE_UNPROTECTED;
+	// iEmpty0 => iCache. iEmpty1 => end of file
+	//
+	m_Cache[iCache].m_iState = HF_CACHE_EMPTY;
+	m_Cache[iEmpty0].m_o = m_Cache[iCache].m_o;
+	m_Cache[iEmpty1].m_o = oNew;
+	m_Cache[iEmpty0].m_iState = HF_CACHE_UNPROTECTED;
+	m_Cache[iEmpty1].m_iState = HF_CACHE_UNPROTECTED;
 
-        // Update the directory.
-        //
-        m_Cache[iEmpty0].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
-        for ( ; nStart <= nEnd; nStart++)
-        {
-            m_hpCacheLookup[nStart] = iEmpty0;
-        }
-        m_Cache[iEmpty1].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
-        for ( ; nStart <= nEnd; nStart++)
-        {
-            m_pDir[nStart] = oNew;
-            m_hpCacheLookup[nStart] = iEmpty1;
-        }
+	// Update the directory.
+	//
+	m_Cache[iEmpty0].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
+	for ( ; nStart <= nEnd; nStart++)
+	{
+	    m_hpCacheLookup[nStart] = iEmpty0;
+	}
+	m_Cache[iEmpty1].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
+	for ( ; nStart <= nEnd; nStart++)
+	{
+	    m_pDir[nStart] = oNew;
+	    m_hpCacheLookup[nStart] = iEmpty1;
+	}
 
-        // Flush the pages out.
-        //
-        FlushCache(iEmpty1);
-        FlushCache(iEmpty0);
+	// Flush the pages out.
+	//
+	FlushCache(iEmpty1);
+	FlushCache(iEmpty0);
 
 #ifdef DO_COMMIT
-        if (!mudstate.bStandAlone)
-        {
+	if (!mudstate.bStandAlone)
+	{
 #if defined(WINDOWS_FILES)
-            FlushFileBuffers(m_hPageFile);
+	    FlushFileBuffers(m_hPageFile);
 #elif defined(UNIX_FILES)
-            fsync(m_hPageFile);
+	    fsync(m_hPageFile);
 #endif // UNIX_FILES
-        }
+	}
 #endif // DO_COMMIT
 
-        // Write Directory
-        //
+	// Write Directory
+	//
 #if defined(WINDOWS_FILES)
-        SetFilePointer(m_hDirFile, 0, 0, FILE_BEGIN);
-        DWORD nWritten;
-        WriteFile(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, &nWritten, 0);
+	SetFilePointer(m_hDirFile, 0, 0, FILE_BEGIN);
+	DWORD nWritten;
+	WriteFile(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, &nWritten, 0);
 #elif defined(UNIX_FILES)
 #ifdef HAVE_PWRITE
-        pwrite(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, 0);
+	pwrite(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, 0);
 #else
-        mux_lseek(m_hDirFile, 0, SEEK_SET);
-        mux_write(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir);
+	mux_lseek(m_hDirFile, 0, SEEK_SET);
+	mux_write(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir);
 #endif // HAVE_PWRITE
 #endif // UNIX_FILES
 
 #ifdef DO_COMMIT
-        if (!mudstate.bStandAlone)
-        {
+	if (!mudstate.bStandAlone)
+	{
 #if defined(WINDOWS_FILES)
-            FlushFileBuffers(m_hDirFile);
+	    FlushFileBuffers(m_hDirFile);
 #elif defined(UNIX_FILES)
-            fsync(m_hDirFile);
+	    fsync(m_hDirFile);
 #endif // UNIX_FILES
-        }
+	}
 #endif // DO_COMMIT
     }
     return true;
@@ -2097,45 +2097,45 @@ bool CHashFile::DoubleDirectory(void)
     HF_PFILEOFFSET pNewDir = NULL;
     try
     {
-        pNewDir = new HF_FILEOFFSET[nNewDir];
+	pNewDir = new HF_FILEOFFSET[nNewDir];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
     if (NULL == pNewDir)
     {
-        return false;
+	return false;
     }
 
     int *pNewCacheLookup = NULL;
     try
     {
-        pNewCacheLookup = new int[nNewDir];
+	pNewCacheLookup = new int[nNewDir];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL == pNewCacheLookup)
     {
-        if (pNewDir)
-        {
-            delete [] pNewDir;
-            pNewDir = NULL;
-        }
-        return false;
+	if (pNewDir)
+	{
+	    delete [] pNewDir;
+	    pNewDir = NULL;
+	}
+	return false;
     }
 
     unsigned int iNewDir = 0;
     for (unsigned int iDir = 0; iDir < m_nDir; iDir++)
     {
-        pNewDir[iNewDir]   = m_pDir[iDir];
-        pNewDir[iNewDir+1] = m_pDir[iDir];
-        pNewCacheLookup[iNewDir]   = m_hpCacheLookup[iDir];
-        pNewCacheLookup[iNewDir+1] = m_hpCacheLookup[iDir];
-        iNewDir += 2;
+	pNewDir[iNewDir]   = m_pDir[iDir];
+	pNewDir[iNewDir+1] = m_pDir[iDir];
+	pNewCacheLookup[iNewDir]   = m_hpCacheLookup[iDir];
+	pNewCacheLookup[iNewDir+1] = m_hpCacheLookup[iDir];
+	iNewDir += 2;
     }
 
     // Write out the new directory. It's always larger than
@@ -2161,23 +2161,23 @@ UINT32 CHashFile::FindFirstKey(UINT32 nHash)
     UINT32 iFileDir = nHash >> (32-m_nDirDepth);
     if (iFileDir >= m_nDir)
     {
-        Log.WriteString(T("CHashFile::Insert - iFileDir out of range." ENDLINE));
-        cs_fails++;
-        return HF_FIND_END;
+	Log.WriteString(T("CHashFile::Insert - iFileDir out of range." ENDLINE));
+	cs_fails++;
+	return HF_FIND_END;
     }
     iCache = ReadCache(iFileDir, &cs_rhits);
     if (iCache < 0)
     {
-        cs_fails++;
-        return HF_FIND_END;
+	cs_fails++;
+	return HF_FIND_END;
     }
     UINT32 nStart, nEnd;
     m_Cache[iCache].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
     if (iFileDir < nStart || nEnd < iFileDir)
     {
-        Log.tinyprintf(T("CHashFile::Find - Directory entry (0x%08X) points to the wrong page (0x%08X-0x%08X)." ENDLINE),
-            iFileDir, nStart, nEnd);
-        return HF_FIND_END;
+	Log.tinyprintf(T("CHashFile::Find - Directory entry (0x%08X) points to the wrong page (0x%08X-0x%08X)." ENDLINE),
+	    iFileDir, nStart, nEnd);
+	return HF_FIND_END;
     }
 
     unsigned int numchecks;
@@ -2185,8 +2185,8 @@ UINT32 CHashFile::FindFirstKey(UINT32 nHash)
 
     if (iDir == HP_DIR_EMPTY)
     {
-        cs_fails++;
-        return HF_FIND_END;
+	cs_fails++;
+	return HF_FIND_END;
     }
     return iDir;
 }
@@ -2201,8 +2201,8 @@ UINT32 CHashFile::FindNextKey(UINT32 iDir, UINT32 nHash)
 
     if (iDir == HP_DIR_EMPTY)
     {
-        cs_fails++;
-        return HF_FIND_END;
+	cs_fails++;
+	return HF_FIND_END;
     }
     return iDir;
 }
@@ -2225,18 +2225,18 @@ bool CHashFile::FlushCache(int iCache)
     {
     case HF_CACHE_UNPROTECTED:
 #ifdef HP_PROTECTION
-        m_Cache[iCache].m_hp.Protection();
+	m_Cache[iCache].m_hp.Protection();
 #endif // HP_PROTECTION
 
     case HF_CACHE_UNWRITTEN:
-        if (m_Cache[iCache].m_hp.WritePage(m_hPageFile, m_Cache[iCache].m_o))
-        {
-            m_Cache[iCache].m_iState = HF_CACHE_CLEAN;
-        }
-        else
-        {
-            return false;
-        }
+	if (m_Cache[iCache].m_hp.WritePage(m_hPageFile, m_Cache[iCache].m_o))
+	{
+	    m_Cache[iCache].m_iState = HF_CACHE_CLEAN;
+	}
+	else
+	{
+	    return false;
+	}
     }
     return true;
 }
@@ -2246,35 +2246,35 @@ int CHashFile::AllocateEmptyPage(int nSafe, int Safe[])
     int cnt = m_nCache;
     while (cnt--)
     {
-        int i = m_iOldest;
+	int i = m_iOldest;
 
-        bool bExclude = false;
-        for (int j = 0; j < nSafe; j++)
-        {
-            if (Safe[j] == i)
-            {
-                bExclude = true;
-                break;
-            }
-        }
+	bool bExclude = false;
+	for (int j = 0; j < nSafe; j++)
+	{
+	    if (Safe[j] == i)
+	    {
+		bExclude = true;
+		break;
+	    }
+	}
 
-        ResetAge(i);
+	ResetAge(i);
 
-        if (  !bExclude
-           && FlushCache(i))
-        {
-            if (HF_CACHE_EMPTY != m_Cache[i].m_iState)
-            {
-                UINT32 nStart, nEnd;
-                m_Cache[i].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
-                for ( ; nStart <= nEnd; nStart++)
-                {
-                    m_hpCacheLookup[nStart] = -1;
-                }
-                m_Cache[i].m_iState = HF_CACHE_EMPTY;
-            }
-            return i;
-        }
+	if (  !bExclude
+	   && FlushCache(i))
+	{
+	    if (HF_CACHE_EMPTY != m_Cache[i].m_iState)
+	    {
+		UINT32 nStart, nEnd;
+		m_Cache[i].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
+		for ( ; nStart <= nEnd; nStart++)
+		{
+		    m_hpCacheLookup[nStart] = -1;
+		}
+		m_Cache[i].m_iState = HF_CACHE_EMPTY;
+	    }
+	    return i;
+	}
     }
     return -1;
 }
@@ -2283,33 +2283,33 @@ void CHashFile::ResetAge(int iEntry)
 {
     if (iEntry == m_iOldest)
     {
-        // Rotate the doubly-linked list to make the oldest entry the
-        // youngest.
-        //
-        m_iOldest = m_Cache[m_iOldest].m_iYounger;
+	// Rotate the doubly-linked list to make the oldest entry the
+	// youngest.
+	//
+	m_iOldest = m_Cache[m_iOldest].m_iYounger;
     }
     else if (iEntry == m_Cache[m_iOldest].m_iOlder)
     {
-        // This is already the youngest entry.
-        //
+	// This is already the youngest entry.
+	//
     }
     else
     {
-        // Unlink this entry.
-        //
-        int iYounger = m_Cache[iEntry].m_iYounger;
-        int iOlder   = m_Cache[iEntry].m_iOlder;
-        m_Cache[iYounger].m_iOlder = iOlder;
-        m_Cache[iOlder].m_iYounger = iYounger;
+	// Unlink this entry.
+	//
+	int iYounger = m_Cache[iEntry].m_iYounger;
+	int iOlder   = m_Cache[iEntry].m_iOlder;
+	m_Cache[iYounger].m_iOlder = iOlder;
+	m_Cache[iOlder].m_iYounger = iYounger;
 
-        // Re-link at the young end of the queue.
-        //
-        iYounger = m_iOldest;
-        iOlder   = m_Cache[iYounger].m_iOlder;
-        m_Cache[iEntry].m_iOlder   = iOlder;
-        m_Cache[iEntry].m_iYounger = iYounger;
-        m_Cache[iYounger].m_iOlder = iEntry;
-        m_Cache[iOlder].m_iYounger = iEntry;
+	// Re-link at the young end of the queue.
+	//
+	iYounger = m_iOldest;
+	iOlder   = m_Cache[iYounger].m_iOlder;
+	m_Cache[iEntry].m_iOlder   = iOlder;
+	m_Cache[iEntry].m_iYounger = iYounger;
+	m_Cache[iYounger].m_iOlder = iEntry;
+	m_Cache[iOlder].m_iYounger = iEntry;
     }
 }
 
@@ -2318,7 +2318,7 @@ void CHashFile::Tick(void)
     int nCycle = mudconf.check_interval;
     if (mudconf.dump_interval < nCycle)
     {
-        nCycle = mudconf.dump_interval;
+	nCycle = mudconf.dump_interval;
     }
 
     CLinearTimeDelta ltdCycle;
@@ -2327,20 +2327,20 @@ void CHashFile::Tick(void)
     int n = (mudconf.cache_tick_period*m_nCache)/ltdCycle;
     if (n < 1)
     {
-        n = 1;
+	n = 1;
     }
 
     for (int i = 0; i < n; i++)
     {
-        // Go ahead and flush a cache entry...just to keep the sync load
-        // down a bit. This gives the cache time to age, and yet, pushes
-        // the pages off to the disk eventually and gradually.
-        //
-        FlushCache(m_iLastFlushed++);
-        if (m_iLastFlushed >= m_nCache)
-        {
-            m_iLastFlushed = 0;
-        }
+	// Go ahead and flush a cache entry...just to keep the sync load
+	// down a bit. This gives the cache time to age, and yet, pushes
+	// the pages off to the disk eventually and gradually.
+	//
+	FlushCache(m_iLastFlushed++);
+	if (m_iLastFlushed >= m_nCache)
+	{
+	    m_iLastFlushed = 0;
+	}
     }
 }
 
@@ -2353,35 +2353,35 @@ int CHashFile::ReadCache(UINT32 iFileDir, int *phits)
        && m_Cache[iCache].m_iState != HF_CACHE_EMPTY
        && m_Cache[iCache].m_o == oPage)
     {
-        ResetAge(iCache);
-        (*phits)++;
-        return iCache;
+	ResetAge(iCache);
+	(*phits)++;
+	return iCache;
     }
 
     if ((iCache = AllocateEmptyPage(0, NULL)) >= 0)
     {
-        if (m_Cache[iCache].m_hp.ReadPage(m_hPageFile, oPage))
-        {
-            //if (m_Cache[i].m_hp.Validate())
-            //{
-                m_Cache[iCache].m_o = oPage;
-                m_Cache[iCache].m_iState = HF_CACHE_CLEAN;
-                ResetAge(iCache);
+	if (m_Cache[iCache].m_hp.ReadPage(m_hPageFile, oPage))
+	{
+	    //if (m_Cache[i].m_hp.Validate())
+	    //{
+		m_Cache[iCache].m_o = oPage;
+		m_Cache[iCache].m_iState = HF_CACHE_CLEAN;
+		ResetAge(iCache);
 
-                UINT32 nStart, nEnd;
-                m_Cache[iCache].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
-                for ( ; nStart <= nEnd; nStart++)
-                {
-                    m_hpCacheLookup[nStart] = iCache;
-                }
+		UINT32 nStart, nEnd;
+		m_Cache[iCache].m_hp.GetRange(m_nDirDepth, nStart, nEnd);
+		for ( ; nStart <= nEnd; nStart++)
+		{
+		    m_hpCacheLookup[nStart] = iCache;
+		}
 
-                return iCache;
-            //}
-        }
-        else
-        {
-            Log.WriteString(T("CHashFile::ReadCache.  ReadPage failed to get the page. DB DAMAGE." ENDLINE));
-        }
+		return iCache;
+	    //}
+	}
+	else
+	{
+	    Log.WriteString(T("CHashFile::ReadCache.  ReadPage failed to get the page. DB DAMAGE." ENDLINE));
+	}
     }
     return -1;
 }
@@ -2411,40 +2411,40 @@ void CHashTable::Init(void)
     UINT32 nDirRequest = 2;
     try
     {
-        m_pDir = new pCHashPage[nDirRequest];
+	m_pDir = new pCHashPage[nDirRequest];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (m_pDir)
     {
-        m_nDir = nDirRequest;
-        m_pDir[1] = m_pDir[0] = NULL;
-        try
-        {
-            m_pDir[1] = m_pDir[0] = new CHashPage;
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	m_nDir = nDirRequest;
+	m_pDir[1] = m_pDir[0] = NULL;
+	try
+	{
+	    m_pDir[1] = m_pDir[0] = new CHashPage;
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (m_pDir[0])
-        {
-            if (m_pDir[0]->Allocate(HT_SIZEOF_PAGE))
-            {
-                m_nPages = 1;
-                m_nDirDepth = 1;
-                m_pDir[0]->Empty(0, 0UL, 100);
-            }
-            else
-            {
-                delete m_pDir[0];
-                m_pDir[0] = NULL;
-            }
-        }
+	if (m_pDir[0])
+	{
+	    if (m_pDir[0]->Allocate(HT_SIZEOF_PAGE))
+	    {
+		m_nPages = 1;
+		m_nDirDepth = 1;
+		m_pDir[0]->Empty(0, 0UL, 100);
+	    }
+	    else
+	    {
+		delete m_pDir[0];
+		m_pDir[0] = NULL;
+	    }
+	}
     }
 }
 
@@ -2459,102 +2459,102 @@ bool CHashTable::Insert(HP_HEAPLENGTH nRecord, UINT32  nHash, void *pRecord)
 {
     for (;;)
     {
-        UINT32  iTableDir = nHash >> (32 - m_nDirDepth);
+	UINT32  iTableDir = nHash >> (32 - m_nDirDepth);
 #ifdef HP_PROTECTION
-        if (iTableDir >= m_nDir)
-        {
-            Log.WriteString(T("CHashTable::Insert - iTableDir out of range.") ENDLINE);
-            return false;
-        }
+	if (iTableDir >= m_nDir)
+	{
+	    Log.WriteString(T("CHashTable::Insert - iTableDir out of range.") ENDLINE);
+	    return false;
+	}
 #endif // HP_PROTECTION
-        m_hpLast = m_pDir[iTableDir];
-        if (!m_hpLast)
-        {
-            Log.WriteString(T("CHashTable::Insert - Page wasn\xE2\x80\x99t valid." ENDLINE));
-            return false;
-        }
-        UINT32  nStart, nEnd;
+	m_hpLast = m_pDir[iTableDir];
+	if (!m_hpLast)
+	{
+	    Log.WriteString(T("CHashTable::Insert - Page wasn\xE2\x80\x99t valid." ENDLINE));
+	    return false;
+	}
+	UINT32  nStart, nEnd;
 #ifdef HP_PROTECTION
-        m_hpLast->GetRange(m_nDirDepth, nStart, nEnd);
-        if (iTableDir < nStart || nEnd < iTableDir)
-        {
-            Log.WriteString("CHashTable::Insert - Directory points to the wrong page." ENDLINE);
-            return false;
-        }
+	m_hpLast->GetRange(m_nDirDepth, nStart, nEnd);
+	if (iTableDir < nStart || nEnd < iTableDir)
+	{
+	    Log.WriteString("CHashTable::Insert - Directory points to the wrong page." ENDLINE);
+	    return false;
+	}
 #endif // HP_PROTECTION
-        int errInserted = m_hpLast->Insert(nRecord, nHash, pRecord);
-        if (IS_HP_SUCCESS(errInserted))
-        {
-            if (errInserted == HP_INSERT_SUCCESS_DEFRAG)
-            {
-                // Otherwise, this value will be over inflated.
-                //
-                m_nMaxScan = 0;
-            }
-            break;
-        }
-        if (errInserted == HP_INSERT_ERROR_ILLEGAL)
-        {
-            return false;
-        }
+	int errInserted = m_hpLast->Insert(nRecord, nHash, pRecord);
+	if (IS_HP_SUCCESS(errInserted))
+	{
+	    if (errInserted == HP_INSERT_SUCCESS_DEFRAG)
+	    {
+		// Otherwise, this value will be over inflated.
+		//
+		m_nMaxScan = 0;
+	    }
+	    break;
+	}
+	if (errInserted == HP_INSERT_ERROR_ILLEGAL)
+	{
+	    return false;
+	}
 
-        // If the depth of this page is already as deep as the directory
-        // depth,then we must increase depth of the directory, first.
-        //
-        if (m_nDirDepth == m_hpLast->GetDepth())
-        {
-            if (!DoubleDirectory())
-            {
-                return false;
-            }
-        }
+	// If the depth of this page is already as deep as the directory
+	// depth,then we must increase depth of the directory, first.
+	//
+	if (m_nDirDepth == m_hpLast->GetDepth())
+	{
+	    if (!DoubleDirectory())
+	    {
+		return false;
+	    }
+	}
 
-        // Split this page into two pages. We become a new one, and we
-        // are given a pointer to the other one.
-        //
-        CHashPage *hpEmpty0 = new CHashPage;
-        if (!hpEmpty0) return false;
-        if (!hpEmpty0->Allocate(HT_SIZEOF_PAGE))
-        {
-            delete hpEmpty0;
-            return false;
-        }
+	// Split this page into two pages. We become a new one, and we
+	// are given a pointer to the other one.
+	//
+	CHashPage *hpEmpty0 = new CHashPage;
+	if (!hpEmpty0) return false;
+	if (!hpEmpty0->Allocate(HT_SIZEOF_PAGE))
+	{
+	    delete hpEmpty0;
+	    return false;
+	}
 
-        CHashPage *hpEmpty1 = new CHashPage;
-        if (!hpEmpty1) return false;
-        if (!hpEmpty1->Allocate(HT_SIZEOF_PAGE))
-        {
-            delete hpEmpty0;
-            delete hpEmpty1;
-            return false;
-        }
+	CHashPage *hpEmpty1 = new CHashPage;
+	if (!hpEmpty1) return false;
+	if (!hpEmpty1->Allocate(HT_SIZEOF_PAGE))
+	{
+	    delete hpEmpty0;
+	    delete hpEmpty1;
+	    return false;
+	}
 
-        if (!m_hpLast->Split(*hpEmpty0, *hpEmpty1))
-        {
-            return false;
-        }
+	if (!m_hpLast->Split(*hpEmpty0, *hpEmpty1))
+	{
+	    return false;
+	}
 
-        // Otherwise, this value will be over inflated.
-        //
-        m_nMaxScan = 0;
+	// Otherwise, this value will be over inflated.
+	//
+	m_nMaxScan = 0;
 
-        // Now, update the directory.
-        //
-        hpEmpty0->GetRange(m_nDirDepth, nStart, nEnd);
-        for ( ; nStart <= nEnd; nStart++)
-        {
-            m_pDir[nStart] = hpEmpty0;
-        }
+	// Now, update the directory.
+	//
+	hpEmpty0->GetRange(m_nDirDepth, nStart, nEnd);
+	for ( ; nStart <= nEnd; nStart++)
+	{
+	    m_pDir[nStart] = hpEmpty0;
+	}
 
-        hpEmpty1->GetRange(m_nDirDepth, nStart, nEnd);
-        for ( ; nStart <= nEnd; nStart++)
-        {
-            m_pDir[nStart] = hpEmpty1;
-        }
-        m_nPages++;
+	hpEmpty1->GetRange(m_nDirDepth, nStart, nEnd);
+	for ( ; nStart <= nEnd; nStart++)
+	{
+	    m_pDir[nStart] = hpEmpty1;
+	}
+	m_nPages++;
 
-        delete m_hpLast;
-        m_hpLast = 0;
+	delete m_hpLast;
+	m_hpLast = 0;
     }
     m_nEntries++;
     return true;
@@ -2568,19 +2568,19 @@ bool CHashTable::DoubleDirectory(void)
     pCHashPage *pNewDir = new pCHashPage[nNewDir];
     if (pNewDir)
     {
-        unsigned int iNewDir = 0;
-        for (unsigned int iDir = 0; iDir < m_nDir; iDir++)
-        {
-            pNewDir[iNewDir++] = m_pDir[iDir];
-            pNewDir[iNewDir++] = m_pDir[iDir];
-        }
+	unsigned int iNewDir = 0;
+	for (unsigned int iDir = 0; iDir < m_nDir; iDir++)
+	{
+	    pNewDir[iNewDir++] = m_pDir[iDir];
+	    pNewDir[iNewDir++] = m_pDir[iDir];
+	}
 
-        delete [] m_pDir;
+	delete [] m_pDir;
 
-        m_pDir = pNewDir;
-        m_nDirDepth = nNewDirDepth;
-        m_nDir = nNewDir;
-        return true;
+	m_pDir = pNewDir;
+	m_nDirDepth = nNewDirDepth;
+	m_nDir = nNewDir;
+	return true;
     }
     return false;
 }
@@ -2592,23 +2592,23 @@ UINT32 CHashTable::FindFirstKey(UINT32  nHash)
 #ifdef HP_PROTECTION
     if (iTableDir >= m_nDir)
     {
-        Log.WriteString(T("CHashTable::Insert - iTableDir out of range.") ENDLINE);
-        return HF_FIND_END;
+	Log.WriteString(T("CHashTable::Insert - iTableDir out of range.") ENDLINE);
+	return HF_FIND_END;
     }
 #endif // HP_PROTECTION
     m_hpLast = m_pDir[iTableDir];
     if (!m_hpLast)
     {
-        Log.WriteString(T("CHashTable::Insert - Page wasn\xE2\x80\x99t valid." ENDLINE));
-        return HF_FIND_END;
+	Log.WriteString(T("CHashTable::Insert - Page wasn\xE2\x80\x99t valid." ENDLINE));
+	return HF_FIND_END;
     }
 #ifdef HP_PROTECTION
     UINT32  nStart, nEnd;
     m_hpLast->GetRange(m_nDirDepth, nStart, nEnd);
     if (iTableDir < nStart || nEnd < iTableDir)
     {
-        Log.WriteString(T("CHashTable::Find - Directory points to the wrong page.") ENDLINE);
-        return HF_FIND_END;
+	Log.WriteString(T("CHashTable::Find - Directory points to the wrong page.") ENDLINE);
+	return HF_FIND_END;
     }
 #endif // HP_PROTECTION
     unsigned int numchecks;
@@ -2618,11 +2618,11 @@ UINT32 CHashTable::FindFirstKey(UINT32  nHash)
     m_nChecks += numchecks;
     if (numchecks > m_nMaxScan)
     {
-        m_nMaxScan = numchecks;
+	m_nMaxScan = numchecks;
     }
     if (iDir == HP_DIR_EMPTY)
     {
-        return HF_FIND_END;
+	return HF_FIND_END;
     }
     m_nHits++;
     return iDir;
@@ -2638,11 +2638,11 @@ UINT32 CHashTable::FindNextKey(UINT32 iDir, UINT32  nHash)
     m_nChecks += numchecks;
     if (numchecks > m_nMaxScan)
     {
-        m_nMaxScan = numchecks;
+	m_nMaxScan = numchecks;
     }
     if (iDir == HP_DIR_EMPTY)
     {
-        return HF_FIND_END;
+	return HF_FIND_END;
     }
     m_nHits++;
     return iDir;
@@ -2674,19 +2674,19 @@ void CHashTable::Final(void)
 {
     if (m_pDir)
     {
-        m_hpLast = 0;
-        for (unsigned int i = 0; i < m_nDir; i++)
-        {
-            CHashPage *hp = m_pDir[i];
+	m_hpLast = 0;
+	for (unsigned int i = 0; i < m_nDir; i++)
+	{
+	    CHashPage *hp = m_pDir[i];
 
-            if (hp != m_hpLast && hp)
-            {
-                delete hp;
-                m_hpLast = hp;
-            }
-        }
-        delete [] m_pDir;
-        m_pDir = NULL;
+	    if (hp != m_hpLast && hp)
+	    {
+		delete hp;
+		m_hpLast = hp;
+	    }
+	}
+	delete [] m_pDir;
+	m_pDir = NULL;
     }
 }
 
@@ -2701,16 +2701,16 @@ UINT32 CHashTable::FindFirst(HP_PHEAPLENGTH pnRecord, void *pRecord)
     m_hpLast = 0;
     for (m_iPage = 0; m_iPage < m_nDir; m_iPage++)
     {
-        if (m_pDir[m_iPage] == m_hpLast) continue;
-        m_hpLast = m_pDir[m_iPage];
-        if (m_hpLast)
-        {
-            UINT32 iDir = m_hpLast->FindFirst(pnRecord, pRecord);
-            if (iDir != HP_DIR_EMPTY)
-            {
-                return iDir;
-            }
-        }
+	if (m_pDir[m_iPage] == m_hpLast) continue;
+	m_hpLast = m_pDir[m_iPage];
+	if (m_hpLast)
+	{
+	    UINT32 iDir = m_hpLast->FindFirst(pnRecord, pRecord);
+	    if (iDir != HP_DIR_EMPTY)
+	    {
+		return iDir;
+	    }
+	}
     }
     return HF_FIND_END;
 }
@@ -2719,29 +2719,29 @@ UINT32 CHashTable::FindNext(HP_PHEAPLENGTH pnRecord, void *pRecord)
 {
     if (m_hpLast)
     {
-        UINT32 iDir = m_hpLast->FindNext(pnRecord, pRecord);
-        if (iDir != HP_DIR_EMPTY)
-        {
-            return iDir;
-        }
+	UINT32 iDir = m_hpLast->FindNext(pnRecord, pRecord);
+	if (iDir != HP_DIR_EMPTY)
+	{
+	    return iDir;
+	}
     }
 
     // Move on to the next page.
     //
     for ( ; m_iPage < m_nDir; m_iPage++)
     {
-        // Move on to the next page.
-        //
-        if (m_pDir[m_iPage] == m_hpLast) continue;
-        m_hpLast = m_pDir[m_iPage];
-        if (m_hpLast)
-        {
-            UINT32 iDir = m_hpLast->FindFirst(pnRecord, pRecord);
-            if (iDir != HP_DIR_EMPTY)
-            {
-                return iDir;
-            }
-        }
+	// Move on to the next page.
+	//
+	if (m_pDir[m_iPage] == m_hpLast) continue;
+	m_hpLast = m_pDir[m_iPage];
+	if (m_hpLast)
+	{
+	    UINT32 iDir = m_hpLast->FindFirst(pnRecord, pRecord);
+	    if (iDir != HP_DIR_EMPTY)
+	    {
+		return iDir;
+	    }
+	}
     }
     return HF_FIND_END;
 }
@@ -2826,18 +2826,18 @@ bool SubtractSpaceFromFileLine
     UINT32 iDir = hfIdentData.FindFirstKey(nHash);
     if (iDir != HF_FIND_END)
     {
-        HP_HEAPLENGTH nIdent;
-        char Buffer[1024];
-        hfIdentData.Copy(iDir, &nIdent, Buffer);
-        hfIdentData.Remove(iDir);
+	HP_HEAPLENGTH nIdent;
+	char Buffer[1024];
+	hfIdentData.Copy(iDir, &nIdent, Buffer);
+	hfIdentData.Remove(iDir);
 
-        IdentDataRec *idr = (IdentDataRec *)Buffer;
-        *pAllocLine = idr->line;
-        strcpy(file, idr->filename);
-        idr->nSize -= size;
-        *pnSpace = idr->nSize;
+	IdentDataRec *idr = (IdentDataRec *)Buffer;
+	*pAllocLine = idr->line;
+	strcpy(file, idr->filename);
+	idr->nSize -= size;
+	*pnSpace = idr->nSize;
 
-        hfIdentData.Insert(nIdent, nHash, Buffer);
+	hfIdentData.Insert(nIdent, nHash, Buffer);
     }
     return true;
 }
@@ -2861,24 +2861,24 @@ again:
     UINT32 iDir = hfIdentData.FindFirstKey(nHash);
     while (iDir != HF_FIND_END)
     {
-        hfIdentData.Copy(iDir, &nIdent, Buffer);
-        if (  line == idr->line
-           && strcmp(idr->filename, file) == 0)
-        {
-            hfIdentData.Remove(iDir);
-            nSpace += idr->nSize;
-            bFound = true;
-            goto again;
-        }
-        iDir = hfIdentData.FindNextKey(iDir, nHash);
+	hfIdentData.Copy(iDir, &nIdent, Buffer);
+	if (  line == idr->line
+	   && strcmp(idr->filename, file) == 0)
+	{
+	    hfIdentData.Remove(iDir);
+	    nSpace += idr->nSize;
+	    bFound = true;
+	    goto again;
+	}
+	iDir = hfIdentData.FindNextKey(iDir, nHash);
     }
     if (!bFound)
     {
-        idr->line = line;
-        strcpy(idr->filename, file);
+	idr->line = line;
+	strcpy(idr->filename, file);
 
-        char *p = idr->filename + strlen(idr->filename) + 1;
-        nIdent = p - Buffer;
+	char *p = idr->filename + strlen(idr->filename) + 1;
+	nIdent = p - Buffer;
     }
     idr->nSize = nSpace;
     hfIdentData.Insert(nIdent, nHash, Buffer);
@@ -2900,25 +2900,25 @@ again:
 
     while (iDir != HF_FIND_END)
     {
-        AllocDataRec adr2;
-        HP_HEAPLENGTH nRecord;
-        hfAllocData.Copy(iDir, &nRecord, &adr2);
-        if (adr2.address == adr.address)
-        {
-            // Whoa! We've been told this new pointer, but it's not.
-            //
-            mux_fprintf(stderr, T("The heap is giving us unfreed pointers (0x%08X). Weird.\n"), adr.address);
-            hfAllocData.Remove(iDir);
-            goto again;
-        }
-        iDir = hfAllocData.FindNextKey(iDir, nHash);
+	AllocDataRec adr2;
+	HP_HEAPLENGTH nRecord;
+	hfAllocData.Copy(iDir, &nRecord, &adr2);
+	if (adr2.address == adr.address)
+	{
+	    // Whoa! We've been told this new pointer, but it's not.
+	    //
+	    mux_fprintf(stderr, T("The heap is giving us unfreed pointers (0x%08X). Weird.\n"), adr.address);
+	    hfAllocData.Remove(iDir);
+	    goto again;
+	}
+	iDir = hfAllocData.FindNextKey(iDir, nHash);
     }
 
     size_t TotalSpace;
     adr.fileline = AddSpaceToFileLine(file, line, size, &TotalSpace);
     hfAllocData.Insert(sizeof(adr), nHash, &adr);
     mux_fprintf(stderr, T("malloc %d bytes %s, %d\n  bringing total to %d bytes\n"),
-        size, file, line, TotalSpace);
+	size, file, line, TotalSpace);
 }
 
 void AccountForFree(void *pointer, const char *file, int line)
@@ -2930,39 +2930,39 @@ again:
     UINT32 iDir = hfAllocData.FindFirstKey(nHash);
     while (iDir != HF_FIND_END)
     {
-        // We found it.
-        //
-        HP_HEAPLENGTH nRecord;
-        AllocDataRec adr;
-        hfAllocData.Copy(iDir, &nRecord, &adr);
-        if (adr.address == pointer)
-        {
-            bFound = true;
-            hfAllocData.Remove(iDir);
+	// We found it.
+	//
+	HP_HEAPLENGTH nRecord;
+	AllocDataRec adr;
+	hfAllocData.Copy(iDir, &nRecord, &adr);
+	if (adr.address == pointer)
+	{
+	    bFound = true;
+	    hfAllocData.Remove(iDir);
 
-            DebugTotalMemory -= adr.size;
-            size_t nSpace;
-            int AllocLine;
-            char filename[1024];
-            if (SubtractSpaceFromFileLine(adr.fileline, adr.size, &nSpace, &AllocLine, filename))
-            {
-                mux_fprintf(stderr, T("free %d bytes on %s, %d ...\n  allocated on %s, %d...\n  leaving total of %d bytes\n"),
-                    adr.size, file, line, filename, AllocLine, nSpace);
-            }
-            else
-            {
-                mux_fprintf(stderr, T("free %d bytes on %s, %d ...\n  allocated on UNKNOWN\n"), adr.size, file, line);
-            }
-            goto again;
-        }
-        iDir = hfAllocData.FindNextKey(iDir, nHash);
+	    DebugTotalMemory -= adr.size;
+	    size_t nSpace;
+	    int AllocLine;
+	    char filename[1024];
+	    if (SubtractSpaceFromFileLine(adr.fileline, adr.size, &nSpace, &AllocLine, filename))
+	    {
+		mux_fprintf(stderr, T("free %d bytes on %s, %d ...\n  allocated on %s, %d...\n  leaving total of %d bytes\n"),
+		    adr.size, file, line, filename, AllocLine, nSpace);
+	    }
+	    else
+	    {
+		mux_fprintf(stderr, T("free %d bytes on %s, %d ...\n  allocated on UNKNOWN\n"), adr.size, file, line);
+	    }
+	    goto again;
+	}
+	iDir = hfAllocData.FindNextKey(iDir, nHash);
     }
 
     if (!bFound)
     {
-        // Problems.
-        //
-        mux_fprintf(stderr, T("We are freeing unallocated pointers (0x%08X) on %s, %d\n"), pointer, file, line);
+	// Problems.
+	//
+	mux_fprintf(stderr, T("We are freeing unallocated pointers (0x%08X) on %s, %d\n"), pointer, file, line);
     }
 }
 
@@ -2973,23 +2973,23 @@ void *MemAllocate(size_t size, const char *file, int line)
     void *vp = malloc(size);
     if (vp)
     {
-        if (bMemAccountingInitialized)
-        {
-            if (iRecursion == 0)
-            {
-                iRecursion++;
-                AccountForAllocation(vp, size, file, line);
-                iRecursion--;
-            }
-        }
-        else
-        {
-            mux_fprintf(stderr, T("malloc not intitalized on %s, %d.\n"), file, line);
-        }
+	if (bMemAccountingInitialized)
+	{
+	    if (iRecursion == 0)
+	    {
+		iRecursion++;
+		AccountForAllocation(vp, size, file, line);
+		iRecursion--;
+	    }
+	}
+	else
+	{
+	    mux_fprintf(stderr, T("malloc not intitalized on %s, %d.\n"), file, line);
+	}
     }
     else
     {
-        mux_fprintf(stderr, T("malloc ran out of memory on %s, %d.\n"), file, line);
+	mux_fprintf(stderr, T("malloc ran out of memory on %s, %d.\n"), file, line);
     }
     return vp;
 }
@@ -2998,24 +2998,24 @@ void MemFree(void *pointer, const char *file, int line)
 {
     if (pointer)
     {
-        if (bMemAccountingInitialized)
-        {
-            if (iRecursion == 0)
-            {
-                iRecursion++;
-                AccountForFree(pointer, file, line);
-                iRecursion--;
-            }
-        }
-        else
-        {
-            mux_fprintf(stderr, T("free called on %s, %d before initialized with 0x%08X\n"), file, line, pointer);
-        }
-        free(pointer);
+	if (bMemAccountingInitialized)
+	{
+	    if (iRecursion == 0)
+	    {
+		iRecursion++;
+		AccountForFree(pointer, file, line);
+		iRecursion--;
+	    }
+	}
+	else
+	{
+	    mux_fprintf(stderr, T("free called on %s, %d before initialized with 0x%08X\n"), file, line, pointer);
+	}
+	free(pointer);
     }
     else
     {
-        mux_fprintf(stderr, T("We tried to free(0) on %s, %d\n"), file, line);
+	mux_fprintf(stderr, T("We tried to free(0) on %s, %d\n"), file, line);
     }
 }
 
@@ -3023,12 +3023,12 @@ void *MemRealloc(void *pointer, size_t size, const char *file, int line)
 {
     if (pointer)
     {
-        AccountForFree(pointer, file, line);
+	AccountForFree(pointer, file, line);
     }
     void * vp = realloc(pointer, size);
     if (vp)
     {
-        AccountForAllocation(vp, size, file, line);
+	AccountForAllocation(vp, size, file, line);
     }
     return vp;
 }

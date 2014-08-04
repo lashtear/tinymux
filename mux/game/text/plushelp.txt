@@ -20,12 +20,12 @@ Index
 Commands for Setting your Background:
 
   SYNTAX:  +bg <#>                 - Read a background section.
-           +bglist                 - List out sections that have been created
-           +bgadd <#>=<text>       - Add to a background section.
-           +bgrem <#>=<text>       - Removes text from a background section.
-           +bgrep <#>=<old>/<new>  - Replaces text in a background section.
-           +bgclear <#>            - Clears a background section.
-           +bglock <#>             - Locks a background section when finished.
+	   +bglist                 - List out sections that have been created
+	   +bgadd <#>=<text>       - Add to a background section.
+	   +bgrem <#>=<text>       - Removes text from a background section.
+	   +bgrep <#>=<old>/<new>  - Replaces text in a background section.
+	   +bgclear <#>            - Clears a background section.
+	   +bglock <#>             - Locks a background section when finished.
 
   The '<#>' sign in the BG help stands for the number of the section you are
   working on. The BG commands allows for multiple sections so that your
@@ -47,7 +47,7 @@ Commands for Setting your Background:
     look                      Shows you the room you are standing in.
     look <object or person>   Shows the desc for that object or person.
     pose <message>            You pose <message> EX: pose grins.->John Doe
-                              grins.
+			      grins.
     :<message>                See 'pose" above
     WHO                       Shows a list of who is connected to the MUSH.
     +staff                    Shows connected Staff.
@@ -64,11 +64,11 @@ Commands for Setting your Background:
 +cnotes
 
   SYNTAX: +cnotelist             - Gives you a list of all cnotes on your
-                                   character object.
-          +cnoteview <notename>  - Shows you the contents of the named cnote.
-          +cnote <notename>=text - Sets &cnote<notename> on the player to the
-                                   value of the text with person and time
-                                   added.
+				   character object.
+	  +cnoteview <notename>  - Shows you the contents of the named cnote.
+	  +cnote <notename>=text - Sets &cnote<notename> on the player to the
+				   value of the text with person and time
+				   added.
 
   To set notes on rooms, exits, and other objects that you own, set an
   attribute: &CNOTE_<notename> <object>=<text>
@@ -86,12 +86,12 @@ Credits
   and pithy comments are as follows:
 
     Audumla@Everywhere   --A little bit of everything, +staff and +staff/all,
-                           +beginner, +version, and installer files.
+			   +beginner, +version, and installer files.
     BEM@Granite          --Much of the base code including +who, joining
-                           and summon commands, debugging.
+			   and summon commands, debugging.
     Miateila@Granite     --+finger and LOTS of pithy commentary
     Hilikiradi@Sandbox   --Debugging, Penn platform tests, +cnotes,
-                           +lwho, PLACES upgrades, and installer files.
+			   +lwho, PLACES upgrades, and installer files.
     Brazil@Everywhere    --MUX 2.0 issues
     Talek, Javelin, Raevnos, David,
     Vexon@M*U*S*H        --Penn Issues
@@ -141,8 +141,8 @@ Finger Setup
   &FINGER-<whatever>:  Let's you add other fields.
 
   AFINGER:     Similar to @adesc, gets triggered when someone +fingers
-               you.%%0 is the name of the person who +fingered you,
-               %%1 is their dbref.
+	       you.%%0 is the name of the person who +fingered you,
+	       %%1 is their dbref.
 -----------------------------------------------------------------------------
 
 & +glance
@@ -170,7 +170,7 @@ Finger Setup
 +info
 
   SYNTAX: +info           Show you the info that you have set on yourself.
-          +info <player>  Shows you info set on other characters.
+	  +info <player>  Shows you info set on other characters.
 
   +info allows you to set information on yourself that would be useful to
   other players without them having them page you for it. This is an
@@ -219,8 +219,8 @@ noted member of the Camarilla...
 mp - multipaging:
 
   SYNTAX:  mp <names>=<message> - Allows multipaging to a list of players
-           mp <message>         - Allows multipaging to the last group of
-                                  players multipaged.
+	   mp <message>         - Allows multipaging to the last group of
+				  players multipaged.
 -----------------------------------------------------------------------------
 
 & mutter
@@ -228,8 +228,8 @@ mp - multipaging:
 mutter
 
   SYNTAX: mutter <target>=<string>
-          mutter/tt <target>=<string>
-          mutter/place <place number>=<string>
+	  mutter/tt <target>=<string>
+	  mutter/place <place number>=<string>
 
   The first form of this command behaves identically to "whisper", except
   that the other players in the room will see that you have said something.
@@ -275,7 +275,7 @@ mutter examples:
 Out of Character speech:
 
   SYNTAX:  ooc <message>
-           ' <message>
+	   ' <message>
 
   Allows a player to speak or pose OOCly or out of character.
 
@@ -286,22 +286,22 @@ Out of Character speech:
 PLACES
 
   SYNTAX:  Mv from <#> to <#>          Moves a vacancy from one place to another.
-           Join <place name>           Puts you at <place name>
-           Join at #<num>              Puts you at place #<num>.
-           Join with <name>            Puts you at the place with <name>.
-           Depart                      Removes you from your place.
-           sit *                        Alias for Join.
-           Depart                      Removes you from your place.
-           Places                      Lists who's present at all places.
-           Place <num>                 Lists who's present at place <num>.
-           Plook                       Lists in column format everyone around the
-                              room.
-           Plook <num>                 Lists name of <num> and virtual desc.
-           tt <message>                (Tete a tete) Relays a message to all those at
-                              your place. This command takes the usual
-                              say/pose tokens, and TT |<message> will emit.
-           ttooc <message>             (Tete a tete) Relays an OOC message
-           Update <#>/<Option>=<text>  See '+help places-options'
+	   Join <place name>           Puts you at <place name>
+	   Join at #<num>              Puts you at place #<num>.
+	   Join with <name>            Puts you at the place with <name>.
+	   Depart                      Removes you from your place.
+	   sit *                        Alias for Join.
+	   Depart                      Removes you from your place.
+	   Places                      Lists who's present at all places.
+	   Place <num>                 Lists who's present at place <num>.
+	   Plook                       Lists in column format everyone around the
+			      room.
+	   Plook <num>                 Lists name of <num> and virtual desc.
+	   tt <message>                (Tete a tete) Relays a message to all those at
+			      your place. This command takes the usual
+			      say/pose tokens, and TT |<message> will emit.
+	   ttooc <message>             (Tete a tete) Relays an OOC message
+	   Update <#>/<Option>=<text>  See '+help places-options'
 
   PLACES are virtual places to sit, stand or occupy. You remain in the same
   room, but join a group of people within that room who may or may not be
@@ -318,7 +318,7 @@ PLACES
 PLACES configuration:
 
   SYNTAX: Configure <num> places
-          Unconfigure places
+	  Unconfigure places
 
   Notes: A null fixed message means vacancies can be moved freely to and from
   the place.  This does not make sense for things like couches and rugs.  Set
@@ -328,11 +328,11 @@ PLACES configuration:
   messages are appended with the place name.
 
   Functions:  WHICHPLACE(<loc num>,<dbnum>) gives the number of a place where
-              <dbnum> is.
-              ATPLACE(<loc num>,<place num>) gives you a list of things at a
-              place.
-              PLACEINFO(<loc num>,<place num>,<option>) gives the value of
-              <option> at place.
+	      <dbnum> is.
+	      ATPLACE(<loc num>,<place num>) gives you a list of things at a
+	      place.
+	      PLACEINFO(<loc num>,<place num>,<option>) gives the value of
+	      <option> at place.
 -----------------------------------------------------------------------------
 
 & places-options
@@ -361,7 +361,7 @@ PLACES configuration:
 plook
 
   SYNTAX: plook
-          plook <target>
+	  plook <target>
 
   The first form gives you a list of places, in a three column format.
 
@@ -445,7 +445,7 @@ plook
 +timestop
 
   SYNTAX:  +timestop
-           +resume
+	   +resume
 
 
   +timestop create a timestop object and drops it in the room where the
@@ -467,9 +467,9 @@ plook
 & +view
 ------------------------------------------------------------------------------
   SYNTAX:  +view                  List all objects in the room with views set.
-           +view here             Lists all viewable items in the room.
-           +view <object>         Lists all views on a particular object.
-           +view <object>/<view>  Reads a view.
+	   +view here             Lists all viewable items in the room.
+	   +view <object>         Lists all views on a particular object.
+	   +view <object>/<view>  Reads a view.
 
   Setting viewable objects using this code allows for greater detail to be
   coded into a room without requiring huge, spammy descriptions. +view may
@@ -486,12 +486,12 @@ Setting views:
 
   Set an attribute on the object thus:
 
-               &view-<name of view> <object>=<text>
+	       &view-<name of view> <object>=<text>
 
   An example:  &view-painting here=You see a painting hanging on the walls,
   that seems to be done in an Impressionist tone...
 
-        To erase a view, simply leave the <text> area blank.
+	To erase a view, simply leave the <text> area blank.
 
   You may also set messages to be displayed to other players when a view is
   looked at. This is just like setting a view, but the attribute is called
@@ -543,7 +543,7 @@ Setting views:
 +who
 
   SYNTAX: +who
-          +who <string>
+	  +who <string>
 
   This command displays Player, Gender, Alias, Idletime, Location, dbref of
   location if findable and set JUMP_OK, and if the player is also staff.

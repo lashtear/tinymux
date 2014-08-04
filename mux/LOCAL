@@ -128,7 +128,7 @@ void local_startup(void)
     // The final two args to DeferTask are the user data values.
     //
     scheduler.DeferTask(ltaNow+period_15s, PRIORITY_SYSTEM,
-        myTimer, 0, 0);
+	myTimer, 0, 0);
 }
 
 If the timer should occur on a periodic basis, it must reschedule itself.
@@ -143,7 +143,7 @@ void myPeriodicTimer(void *pUnused, int iUnused)
     CLinearTimeAbsolute ltaNow;   // declare a time object
     ltaNow.GetUTC();              // set the value to UTC
     scheduler.DeferTask(ltaNow+period_15s, PRIORITY_SYSTEM,
-        myTimer, 0, 0);
+	myTimer, 0, 0);
 }
 
 Individuals using scheduled tasks should examine the CScheduler and

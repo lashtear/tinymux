@@ -20,12 +20,12 @@
 #
 &tr.tc001 test_edit_fn=
   @if strmatch(
-        setr(0,sha1(
-            [edit(This is a test,is,x)]
-            [edit(Atlantic,^,Trans)]
-          )
-        ),
-        0337BC64662CB00DFAE98EB132967118CBE47A9A
+	setr(0,sha1(
+	    [edit(This is a test,is,x)]
+	    [edit(Atlantic,^,Trans)]
+	  )
+	),
+	0337BC64662CB00DFAE98EB132967118CBE47A9A
       )=
   {
     @log smoke=TC001: edit examples. Succeeded.
@@ -39,12 +39,12 @@
 #
 &tr.tc002 test_edit_fn=
   @if strmatch(
-        setr(0,sha1(
-            [translate(edit(plain,plain,%xrplain),p)]
-            [translate(edit(abcdXYZabcd,XYZ,ansi(h,repeat(*,40))),p)]
-          )
-        ),
-        39E84B7C9068D0E5B89D0E0A7F602A558EF2D489
+	setr(0,sha1(
+	    [translate(edit(plain,plain,%xrplain),p)]
+	    [translate(edit(abcdXYZabcd,XYZ,ansi(h,repeat(*,40))),p)]
+	  )
+	),
+	39E84B7C9068D0E5B89D0E0A7F602A558EF2D489
       )=
   {
     @log smoke=TC002: Regressions. Succeeded.
@@ -63,13 +63,13 @@
   },
   {
     @if strmatch(
-          setr(0,sha1(
-              [translate(edit(|%xr||,|,%r),p)]
-              [translate(edit(CONNECTEDCONNECTEDabcdefCONNECTEDCONNECTED,CONNECTED,%xr-),p)]
-            )
-          ),
-          529C98FE0F4AEC3A37243A14BDC0C8511EF92EAB
-        )=
+	  setr(0,sha1(
+	      [translate(edit(|%xr||,|,%r),p)]
+	      [translate(edit(CONNECTEDCONNECTEDabcdefCONNECTEDCONNECTED,CONNECTED,%xr-),p)]
+	    )
+	  ),
+	  529C98FE0F4AEC3A37243A14BDC0C8511EF92EAB
+	)=
     {
       @log smoke=TC003: Regressions. Succeeded.
     },
@@ -88,15 +88,15 @@
   },
   {
     @if strmatch(
-          setr(0,sha1(
-              [translate(edit(repeat(a,500),repeat(a,500),%xra),p)]
-              [translate(edit(a,a,repeat(%xra,500)),p)]
-              [translate(edit(repeat(%xba,500),repeat(a,500),a),p)]
-              [translate(edit(%xba,a,repeat(a,500)),p)]
-            )
-          ),
-          CE1B02A3551DCB285F627943FE292C877C2C9955
-        )=
+	  setr(0,sha1(
+	      [translate(edit(repeat(a,500),repeat(a,500),%xra),p)]
+	      [translate(edit(a,a,repeat(%xra,500)),p)]
+	      [translate(edit(repeat(%xba,500),repeat(a,500),a),p)]
+	      [translate(edit(%xba,a,repeat(a,500)),p)]
+	    )
+	  ),
+	  CE1B02A3551DCB285F627943FE292C877C2C9955
+	)=
     {
       @log smoke=TC004: Single Change. Succeeded.
     },
@@ -116,15 +116,15 @@
   },
   {
     @if strmatch(
-          setr(0,sha1(
-              [translate(edit(repeat(a,500),a,%xrab),p)]
-              [translate(edit(repeat(ab,500),ab,%xra),p)]
-              [translate(edit(repeat(%xba,500),a,a),p)]
-              [translate(edit(repeat(%xbab,500),ab,a),p)]
-            )
-          ),
-          FE10E9EEDA8A5A742255BE48EC27E19E2881E007
-        )=
+	  setr(0,sha1(
+	      [translate(edit(repeat(a,500),a,%xrab),p)]
+	      [translate(edit(repeat(ab,500),ab,%xra),p)]
+	      [translate(edit(repeat(%xba,500),a,a),p)]
+	      [translate(edit(repeat(%xbab,500),ab,a),p)]
+	    )
+	  ),
+	  FE10E9EEDA8A5A742255BE48EC27E19E2881E007
+	)=
     {
       @log smoke=TC005: Multiple Changes. Succeeded.;
       @trig me/tr.done

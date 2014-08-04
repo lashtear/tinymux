@@ -32,7 +32,7 @@ UTF32 ReadCodePoint(FILE *fp)
     char *p = ReadLine(fp, buffer, sizeof(buffer));
     if (NULL == p)
     {
-        return UNI_EOF;
+	return UNI_EOF;
     }
 
     // Field #0 - Code Point
@@ -94,54 +94,54 @@ void VerifyTables(FILE *fp)
     UTF32 i;
     for (i = 0; i <= UNI_MAX_LEGAL_UTF32; i++)
     {
-        bool bMember;
-        if (i == nextcode)
-        {
-            bMember = true;
-            if (UNI_EOF != nextcode)
-            {
-                nextcode = ReadCodePoint(fp);
-                if (nextcode <= i)
-                {
-                    fprintf(stderr, "Codes in file are not in order (U+%04X).\n", nextcode);
-                    exit(0);
-                }
-            }
-        }
-        else
-        {
-            bMember = false;
-        }
+	bool bMember;
+	if (i == nextcode)
+	{
+	    bMember = true;
+	    if (UNI_EOF != nextcode)
+	    {
+		nextcode = ReadCodePoint(fp);
+		if (nextcode <= i)
+		{
+		    fprintf(stderr, "Codes in file are not in order (U+%04X).\n", nextcode);
+		    exit(0);
+		}
+	    }
+	}
+	else
+	{
+	    bMember = false;
+	}
 
-        UTF32 Source[2];
-        Source[0] = i;
-        Source[1] = L'\0';
-        const UTF32 *pSource = Source;
+	UTF32 Source[2];
+	Source[0] = i;
+	Source[1] = L'\0';
+	const UTF32 *pSource = Source;
 
-        UTF8 Target[5];
-        UTF8 *pTarget = Target;
+	UTF8 Target[5];
+	UTF8 *pTarget = Target;
 
-        ConversionResult cr;
-        cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
+	ConversionResult cr;
+	cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
 
-        if (conversionOK == cr)
-        {
-            int iState = PRINT_START_STATE;
-            UTF8 *p = Target;
-            while (  p < pTarget
-                  && iState < PRINT_ACCEPTING_STATES_START)
-            {
-                iState = print_stt[iState][print_itt[(unsigned char)*p]];
-                p++;
-            }
+	if (conversionOK == cr)
+	{
+	    int iState = PRINT_START_STATE;
+	    UTF8 *p = Target;
+	    while (  p < pTarget
+		  && iState < PRINT_ACCEPTING_STATES_START)
+	    {
+		iState = print_stt[iState][print_itt[(unsigned char)*p]];
+		p++;
+	    }
 
-            bool j = ((iState - PRINT_ACCEPTING_STATES_START) == 1) ? true : false;
-            if (j != bMember)
-            {
-                fprintf(stderr, "Input Translation Table and State Transition Table do not work.\n");
-                exit(0);
-            }
-        }
+	    bool j = ((iState - PRINT_ACCEPTING_STATES_START) == 1) ? true : false;
+	    if (j != bMember)
+	    {
+		fprintf(stderr, "Input Translation Table and State Transition Table do not work.\n");
+		exit(0);
+	    }
+	}
     }
 }
 #endif
@@ -157,40 +157,40 @@ void TestTable(FILE *fp)
     UTF32 i;
     for (i = 0; i <= UNI_MAX_LEGAL_UTF32; i++)
     {
-        bool bMember;
-        if (i == nextcode)
-        {
-            bMember = true;
-            if (UNI_EOF != nextcode)
-            {
-                nextcode = ReadCodePoint(fp);
-                if (nextcode <= i)
-                {
-                    fprintf(stderr, "Codes in file are not in order (U+%04X).\n", static_cast<unsigned int>(nextcode));
-                    exit(0);
-                }
-            }
-        }
-        else
-        {
-            bMember = false;
-        }
+	bool bMember;
+	if (i == nextcode)
+	{
+	    bMember = true;
+	    if (UNI_EOF != nextcode)
+	    {
+		nextcode = ReadCodePoint(fp);
+		if (nextcode <= i)
+		{
+		    fprintf(stderr, "Codes in file are not in order (U+%04X).\n", static_cast<unsigned int>(nextcode));
+		    exit(0);
+		}
+	    }
+	}
+	else
+	{
+	    bMember = false;
+	}
 
-        UTF32 Source[2];
-        Source[0] = i;
-        Source[1] = L'\0';
-        const UTF32 *pSource = Source;
+	UTF32 Source[2];
+	Source[0] = i;
+	Source[1] = L'\0';
+	const UTF32 *pSource = Source;
 
-        UTF8 Target[5];
-        UTF8 *pTarget = Target;
+	UTF8 Target[5];
+	UTF8 *pTarget = Target;
 
-        ConversionResult cr;
-        cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
+	ConversionResult cr;
+	cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
 
-        if (conversionOK == cr)
-        {
-            sm.TestString(Target, pTarget, bMember);
-        }
+	if (conversionOK == cr)
+	{
+	    sm.TestString(Target, pTarget, bMember);
+	}
     }
 }
 
@@ -207,46 +207,46 @@ void LoadStrings(FILE *fp, FILE *fpBody, FILE *fpInclude)
     UTF32 i;
     for (i = 0; i <= UNI_MAX_LEGAL_UTF32; i++)
     {
-        bool bMember;
-        if (i == nextcode)
-        {
-            bMember = true;
-            cIncluded++;
-            if (UNI_EOF != nextcode)
-            {
-                nextcode = ReadCodePoint(fp);
-                if (nextcode <= i)
-                {
-                    fprintf(stderr, "Codes in file are not in order (U+%04X).\n", static_cast<unsigned int>(nextcode));
-                    exit(0);
-                }
-            }
-        }
-        else
-        {
-            bMember = false;
-            cExcluded++;
-        }
+	bool bMember;
+	if (i == nextcode)
+	{
+	    bMember = true;
+	    cIncluded++;
+	    if (UNI_EOF != nextcode)
+	    {
+		nextcode = ReadCodePoint(fp);
+		if (nextcode <= i)
+		{
+		    fprintf(stderr, "Codes in file are not in order (U+%04X).\n", static_cast<unsigned int>(nextcode));
+		    exit(0);
+		}
+	    }
+	}
+	else
+	{
+	    bMember = false;
+	    cExcluded++;
+	}
 
-        UTF32 Source[2];
-        Source[0] = i;
-        Source[1] = L'\0';
-        const UTF32 *pSource = Source;
+	UTF32 Source[2];
+	Source[0] = i;
+	Source[1] = L'\0';
+	const UTF32 *pSource = Source;
 
-        UTF8 Target[5];
-        UTF8 *pTarget = Target;
+	UTF8 Target[5];
+	UTF8 *pTarget = Target;
 
-        ConversionResult cr;
-        cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
+	ConversionResult cr;
+	cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
 
-        if (conversionOK == cr)
-        {
-            sm.RecordString(Target, pTarget, bMember);
-        }
-        else
-        {
-            cErrors++;
-        }
+	if (conversionOK == cr)
+	{
+	    sm.RecordString(Target, pTarget, bMember);
+	}
+	else
+	{
+	    cErrors++;
+	}
     }
     fprintf(fpBody, "// %d included, %d excluded, %d errors.\n", cIncluded, cExcluded, cErrors);
     fprintf(fpInclude, "// %d included, %d excluded, %d errors.\n", cIncluded, cExcluded, cErrors);
@@ -301,17 +301,17 @@ int main(int argc, char *argv[])
     if (argc < 3)
     {
 #if 0
-        fprintf(stderr, "Usage: %s prefix unicodedata.txt\n", argv[0]);
-        exit(0);
+	fprintf(stderr, "Usage: %s prefix unicodedata.txt\n", argv[0]);
+	exit(0);
 #else
-        pFilename = "Printable.txt";
-        pPrefix   = "print";
+	pFilename = "Printable.txt";
+	pPrefix   = "print";
 #endif
     }
     else
     {
-        pPrefix   = argv[1];
-        pFilename = argv[2];
+	pPrefix   = argv[1];
+	pFilename = argv[2];
     }
 
     FILE *fp = fopen(pFilename, "rb");
@@ -321,8 +321,8 @@ int main(int argc, char *argv[])
        || NULL == fpBody
        || NULL == fpInclude)
     {
-        fprintf(stderr, "Cannot open %s, utf8tables.cpp.txt, or utf8tables.h.txt.\n", pFilename);
-        exit(0);
+	fprintf(stderr, "Cannot open %s, utf8tables.cpp.txt, or utf8tables.h.txt.\n", pFilename);
+	exit(0);
     }
 
     fprintf(fpBody, "// utf/%s\n//\n", pFilename);
@@ -337,15 +337,15 @@ int main(int argc, char *argv[])
     size_t i;
     for (i = 0; i < nPrefix; i++)
     {
-        if (isupper(pPrefixLower[i]))
-        {
-            pPrefixLower[i] = static_cast<char>(tolower(pPrefixLower[i]));
-        }
+	if (isupper(pPrefixLower[i]))
+	{
+	    pPrefixLower[i] = static_cast<char>(tolower(pPrefixLower[i]));
+	}
 
-        if (islower(pPrefixUpper[i]))
-        {
-            pPrefixUpper[i] = static_cast<char>(toupper(pPrefixUpper[i]));
-        }
+	if (islower(pPrefixUpper[i]))
+	{
+	    pPrefixUpper[i] = static_cast<char>(toupper(pPrefixUpper[i]));
+	}
     }
 
 #ifdef VERIFY

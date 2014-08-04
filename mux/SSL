@@ -20,9 +20,9 @@ Last Update: July 2012
 3) Once you have your certificate, you need to add a few options to your
    game's .conf file:
 
-        ssl_certificate_file <PEM file>
-        ssl_certificate_key <PEM file>
-        ssl_certificate_password <passphrase>
+	ssl_certificate_file <PEM file>
+	ssl_certificate_key <PEM file>
+	ssl_certificate_password <passphrase>
 
    The certificate and key can be included in the same PEM file, or in
    two separate ones.  If your passphrase is blank/empty, you can omit
@@ -34,14 +34,14 @@ Last Update: July 2012
    TinyFugue and other clients that support SSL, you will also need to
    add a directive with the SSL-specific ports.
 
-        port_ssl <port> [<port> [<port> ...]]
+	port_ssl <port> [<port> [<port> ...]]
 
    Just like the 'port' directive, 'port_ssl' builds a list of ports that
    the game should listen on.
 
 5) When you start the game, you should see a line along the lines of:
 
-        NET/SSL  : initialize_ssl: SSL engine initialized successfully.
+	NET/SSL  : initialize_ssl: SSL engine initialized successfully.
 
    If you do not see this line, look for SSL error messages in the log.
    A likely cause is an improper certificate passphrase.

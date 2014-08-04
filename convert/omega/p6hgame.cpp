@@ -79,91 +79,91 @@ char *P6H_LOCKEXP::Write(char *p)
     switch (m_op)
     {
     case P6H_LOCKEXP::le_is:
-        *p++ = '=';
-        p = m_le[0]->Write(p);
-        break;
+	*p++ = '=';
+	p = m_le[0]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_carry:
-        *p++ = '+';
-        p = m_le[0]->Write(p);
-        break;
+	*p++ = '+';
+	p = m_le[0]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_indirect:
-        *p++ = '@';
-        p = m_le[0]->Write(p);
-        break;
+	*p++ = '@';
+	p = m_le[0]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_indirect2:
-        *p++ = '@';
-        p = m_le[0]->Write(p);
-        *p++ = '/';
-        p = m_le[1]->Write(p);
-        break;
+	*p++ = '@';
+	p = m_le[0]->Write(p);
+	*p++ = '/';
+	p = m_le[1]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_owner:
-        *p++ = '$';
-        p = m_le[0]->Write(p);
-        break;
+	*p++ = '$';
+	p = m_le[0]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_or:
-        p = m_le[0]->Write(p);
-        *p++ = '|';
-        p = m_le[1]->Write(p);
-        break;
+	p = m_le[0]->Write(p);
+	*p++ = '|';
+	p = m_le[1]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_not:
-        *p++ = '!';
-        p = m_le[0]->Write(p);
-        break;
+	*p++ = '!';
+	p = m_le[0]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_attr:
-        p = m_le[0]->Write(p);
-        *p++ = ':';
-        p = m_le[1]->Write(p);
-        break;
+	p = m_le[0]->Write(p);
+	*p++ = ':';
+	p = m_le[1]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_eval:
-        p = m_le[0]->Write(p);
-        *p++ = '/';
-        p = m_le[1]->Write(p);
-        break;
+	p = m_le[0]->Write(p);
+	*p++ = '/';
+	p = m_le[1]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_and:
-        p = m_le[0]->Write(p);
-        *p++ = '&';
-        p = m_le[1]->Write(p);
-        break;
+	p = m_le[0]->Write(p);
+	*p++ = '&';
+	p = m_le[1]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_ref:
-        sprintf(p, "#%d", m_dbRef);
-        p += strlen(p);
-        break;
+	sprintf(p, "#%d", m_dbRef);
+	p += strlen(p);
+	break;
 
     case P6H_LOCKEXP::le_text:
-        sprintf(p, "%s", m_p[0]);
-        p += strlen(p);
-        break;
+	sprintf(p, "%s", m_p[0]);
+	p += strlen(p);
+	break;
 
     case P6H_LOCKEXP::le_class:
-        sprintf(p, "%s", m_p[0]);
-        p += strlen(p);
-        *p++ = '^';
-        p = m_le[1]->Write(p);
-        break;
+	sprintf(p, "%s", m_p[0]);
+	p += strlen(p);
+	*p++ = '^';
+	p = m_le[1]->Write(p);
+	break;
 
     case P6H_LOCKEXP::le_true:
-        sprintf(p, "#true", m_p[0]);
-        p += strlen(p);
-        break;
+	sprintf(p, "#true", m_p[0]);
+	p += strlen(p);
+	break;
 
     case P6H_LOCKEXP::le_false:
-        sprintf(p, "#false", m_p[0]);
-        p += strlen(p);
-        break;
+	sprintf(p, "#false", m_p[0]);
+	p += strlen(p);
+	break;
 
     default:
-        fprintf(stderr, "%d not recognized.\n", m_op);
-        break;
+	fprintf(stderr, "%d not recognized.\n", m_op);
+	break;
     }
     return p;
 }
@@ -173,129 +173,129 @@ bool P6H_LOCKEXP::ConvertFromT5X(T5X_LOCKEXP *p)
     switch (p->m_op)
     {
     case T5X_LOCKEXP::le_is:
-        m_op = P6H_LOCKEXP::le_is;
-        m_le[0] = new P6H_LOCKEXP;
-        if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
-        {
-            delete m_le[0];
-            m_le[0] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_is;
+	m_le[0] = new P6H_LOCKEXP;
+	if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
+	{
+	    delete m_le[0];
+	    m_le[0] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_carry:
-        m_op = P6H_LOCKEXP::le_carry;
-        m_le[0] = new P6H_LOCKEXP;
-        if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
-        {
-            delete m_le[0];
-            m_le[0] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_carry;
+	m_le[0] = new P6H_LOCKEXP;
+	if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
+	{
+	    delete m_le[0];
+	    m_le[0] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_indirect:
-        m_op = P6H_LOCKEXP::le_indirect;
-        m_le[0] = new P6H_LOCKEXP;
-        if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
-        {
-            delete m_le[0];
-            m_le[0] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_indirect;
+	m_le[0] = new P6H_LOCKEXP;
+	if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
+	{
+	    delete m_le[0];
+	    m_le[0] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_owner:
-        m_op = P6H_LOCKEXP::le_owner;
-        m_le[0] = new P6H_LOCKEXP;
-        if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
-        {
-            delete m_le[0];
-            m_le[0] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_owner;
+	m_le[0] = new P6H_LOCKEXP;
+	if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
+	{
+	    delete m_le[0];
+	    m_le[0] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_or:
-        m_op = P6H_LOCKEXP::le_or;
-        m_le[0] = new P6H_LOCKEXP;
-        m_le[1] = new P6H_LOCKEXP;
-        if (  !m_le[0]->ConvertFromT5X(p->m_le[0])
-           || !m_le[1]->ConvertFromT5X(p->m_le[1]))
-        {
-            delete m_le[0];
-            delete m_le[1];
-            m_le[0] = m_le[1] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_or;
+	m_le[0] = new P6H_LOCKEXP;
+	m_le[1] = new P6H_LOCKEXP;
+	if (  !m_le[0]->ConvertFromT5X(p->m_le[0])
+	   || !m_le[1]->ConvertFromT5X(p->m_le[1]))
+	{
+	    delete m_le[0];
+	    delete m_le[1];
+	    m_le[0] = m_le[1] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_not:
-        m_op = P6H_LOCKEXP::le_not;
-        m_le[0] = new P6H_LOCKEXP;
-        if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
-        {
-            delete m_le[0];
-            m_le[0] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_not;
+	m_le[0] = new P6H_LOCKEXP;
+	if (!m_le[0]->ConvertFromT5X(p->m_le[0]))
+	{
+	    delete m_le[0];
+	    m_le[0] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_attr:
-        m_op = P6H_LOCKEXP::le_attr;
-        m_le[0] = new P6H_LOCKEXP;
-        m_le[1] = new P6H_LOCKEXP;
-        if (  !m_le[0]->ConvertFromT5X(p->m_le[0])
-           || !m_le[1]->ConvertFromT5X(p->m_le[1]))
-        {
-            delete m_le[0];
-            delete m_le[1];
-            m_le[0] = m_le[1] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_attr;
+	m_le[0] = new P6H_LOCKEXP;
+	m_le[1] = new P6H_LOCKEXP;
+	if (  !m_le[0]->ConvertFromT5X(p->m_le[0])
+	   || !m_le[1]->ConvertFromT5X(p->m_le[1]))
+	{
+	    delete m_le[0];
+	    delete m_le[1];
+	    m_le[0] = m_le[1] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_eval:
-        m_op = P6H_LOCKEXP::le_eval;
-        m_le[0] = new P6H_LOCKEXP;
-        m_le[1] = new P6H_LOCKEXP;
-        if (  !m_le[0]->ConvertFromT5X(p->m_le[0])
-           || !m_le[1]->ConvertFromT5X(p->m_le[1]))
-        {
-            delete m_le[0];
-            delete m_le[1];
-            m_le[0] = m_le[1] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_eval;
+	m_le[0] = new P6H_LOCKEXP;
+	m_le[1] = new P6H_LOCKEXP;
+	if (  !m_le[0]->ConvertFromT5X(p->m_le[0])
+	   || !m_le[1]->ConvertFromT5X(p->m_le[1]))
+	{
+	    delete m_le[0];
+	    delete m_le[1];
+	    m_le[0] = m_le[1] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_and:
-        m_op = P6H_LOCKEXP::le_and;
-        m_le[0] = new P6H_LOCKEXP;
-        m_le[1] = new P6H_LOCKEXP;
-        if (  !m_le[0]->ConvertFromT5X(p->m_le[0])
-           || !m_le[1]->ConvertFromT5X(p->m_le[1]))
-        {
-            delete m_le[0];
-            delete m_le[1];
-            m_le[0] = m_le[1] = NULL;
-            return false;
-        }
-        break;
+	m_op = P6H_LOCKEXP::le_and;
+	m_le[0] = new P6H_LOCKEXP;
+	m_le[1] = new P6H_LOCKEXP;
+	if (  !m_le[0]->ConvertFromT5X(p->m_le[0])
+	   || !m_le[1]->ConvertFromT5X(p->m_le[1]))
+	{
+	    delete m_le[0];
+	    delete m_le[1];
+	    m_le[0] = m_le[1] = NULL;
+	    return false;
+	}
+	break;
 
     case T5X_LOCKEXP::le_ref:
-        m_op = P6H_LOCKEXP::le_ref;
-        m_dbRef = p->m_dbRef;
-        break;
+	m_op = P6H_LOCKEXP::le_ref;
+	m_dbRef = p->m_dbRef;
+	break;
 
     case T5X_LOCKEXP::le_text:
-        m_op = P6H_LOCKEXP::le_text;
-        m_p[0] = StringClone(p->m_p[0]);
-        break;
+	m_op = P6H_LOCKEXP::le_text;
+	m_p[0] = StringClone(p->m_p[0]);
+	break;
 
     default:
-        fprintf(stderr, "%d not recognized.\n", m_op);
-        break;
+	fprintf(stderr, "%d not recognized.\n", m_op);
+	break;
     }
     return true;
 }
@@ -304,7 +304,7 @@ void P6H_FLAGINFO::SetName(char *p)
 {
     if (NULL != m_pName)
     {
-        free(m_pName);
+	free(m_pName);
     }
     m_pName = p;
 }
@@ -313,7 +313,7 @@ void P6H_FLAGINFO::SetLetter(char *p)
 {
     if (NULL != m_pLetter)
     {
-        free(m_pLetter);
+	free(m_pLetter);
     }
     m_pLetter = p;
 }
@@ -322,7 +322,7 @@ void P6H_FLAGINFO::SetType(char *p)
 {
     if (NULL != m_pType)
     {
-        free(m_pType);
+	free(m_pType);
     }
     m_pType = p;
 }
@@ -331,7 +331,7 @@ void P6H_FLAGINFO::SetPerms(char *p)
 {
     if (NULL != m_pPerms)
     {
-        free(m_pPerms);
+	free(m_pPerms);
     }
     m_pPerms = p;
 }
@@ -340,7 +340,7 @@ void P6H_FLAGINFO::SetNegatePerms(char *p)
 {
     if (NULL != m_pNegatePerms)
     {
-        free(m_pNegatePerms);
+	free(m_pNegatePerms);
     }
     m_pNegatePerms = p;
 }
@@ -349,28 +349,28 @@ void P6H_FLAGINFO::Merge(P6H_FLAGINFO *pfi)
 {
     if (NULL != pfi->m_pName && NULL == m_pName)
     {
-        m_pName = pfi->m_pName;
-        pfi->m_pName = NULL;;
+	m_pName = pfi->m_pName;
+	pfi->m_pName = NULL;;
     }
     if (NULL != pfi->m_pLetter && NULL == m_pLetter)
     {
-        m_pLetter = pfi->m_pLetter;
-        pfi->m_pLetter = NULL;;
+	m_pLetter = pfi->m_pLetter;
+	pfi->m_pLetter = NULL;;
     }
     if (NULL != pfi->m_pType && NULL == m_pType)
     {
-        m_pType = pfi->m_pType;
-        pfi->m_pType = NULL;;
+	m_pType = pfi->m_pType;
+	pfi->m_pType = NULL;;
     }
     if (NULL != pfi->m_pPerms && NULL == m_pPerms)
     {
-        m_pPerms = pfi->m_pPerms;
-        pfi->m_pPerms = NULL;;
+	m_pPerms = pfi->m_pPerms;
+	pfi->m_pPerms = NULL;;
     }
     if (NULL != pfi->m_pNegatePerms && NULL == m_pNegatePerms)
     {
-        m_pNegatePerms = pfi->m_pNegatePerms;
-        pfi->m_pNegatePerms = NULL;;
+	m_pNegatePerms = pfi->m_pNegatePerms;
+	pfi->m_pNegatePerms = NULL;;
     }
 }
 
@@ -378,7 +378,7 @@ void P6H_FLAGALIASINFO::SetName(char *p)
 {
     if (NULL != m_pName)
     {
-        free(m_pName);
+	free(m_pName);
     }
     m_pName = p;
 }
@@ -387,7 +387,7 @@ void P6H_FLAGALIASINFO::SetAlias(char *p)
 {
     if (NULL != m_pAlias)
     {
-        free(m_pAlias);
+	free(m_pAlias);
     }
     m_pAlias = p;
 }
@@ -396,13 +396,13 @@ void P6H_FLAGALIASINFO::Merge(P6H_FLAGALIASINFO *pfai)
 {
     if (NULL != pfai->m_pName && NULL == m_pName)
     {
-        m_pName = pfai->m_pName;
-        pfai->m_pName = NULL;;
+	m_pName = pfai->m_pName;
+	pfai->m_pName = NULL;;
     }
     if (NULL != pfai->m_pAlias && NULL == m_pAlias)
     {
-        m_pAlias = pfai->m_pAlias;
-        pfai->m_pAlias = NULL;;
+	m_pAlias = pfai->m_pAlias;
+	pfai->m_pAlias = NULL;;
     }
 }
 
@@ -410,7 +410,7 @@ void P6H_OBJECTINFO::SetName(char *pName)
 {
     if (NULL != m_pName)
     {
-        free(m_pName);
+	free(m_pName);
     }
     m_pName = pName;
 }
@@ -418,18 +418,18 @@ void P6H_OBJECTINFO::SetName(char *pName)
 void P6H_OBJECTINFO::SetLocks(int nLocks, vector<P6H_LOCKINFO *> *pvli)
 {
     if (  (  NULL == pvli
-          && 0 != nLocks)
+	  && 0 != nLocks)
        || (  NULL != pvli
-          && nLocks != pvli->size()))
+	  && nLocks != pvli->size()))
     {
-        fprintf(stderr, "WARNING: lock count disagreement.\n");
+	fprintf(stderr, "WARNING: lock count disagreement.\n");
     }
 
     m_fLockCount = true;
     m_nLockCount = nLocks;
     if (NULL != m_pvli)
     {
-        delete m_pvli;
+	delete m_pvli;
     }
     m_pvli = pvli;
 }
@@ -438,7 +438,7 @@ void P6H_OBJECTINFO::SetFlags(char *pFlags)
 {
     if (NULL != m_pFlags)
     {
-        free(m_pFlags);
+	free(m_pFlags);
     }
     m_pFlags = pFlags;
 }
@@ -447,7 +447,7 @@ void P6H_OBJECTINFO::SetPowers(char *pPowers)
 {
     if (NULL != m_pPowers)
     {
-        free(m_pPowers);
+	free(m_pPowers);
     }
     m_pPowers = pPowers;
 }
@@ -456,7 +456,7 @@ void P6H_OBJECTINFO::SetWarnings(char *pWarnings)
 {
     if (NULL != m_pWarnings)
     {
-        free(m_pWarnings);
+	free(m_pWarnings);
     }
     m_pWarnings = pWarnings;
 }
@@ -464,18 +464,18 @@ void P6H_OBJECTINFO::SetWarnings(char *pWarnings)
 void P6H_OBJECTINFO::SetAttrs(int nAttrs, vector<P6H_ATTRINFO *> *pvai)
 {
     if (  (  NULL == pvai
-          && 0 != nAttrs)
+	  && 0 != nAttrs)
        || (  NULL != pvai
-          && nAttrs != pvai->size()))
+	  && nAttrs != pvai->size()))
     {
-        fprintf(stderr, "WARNING: attr count disagreement.\n");
+	fprintf(stderr, "WARNING: attr count disagreement.\n");
     }
 
     m_fAttrCount = true;
     m_nAttrCount = nAttrs;
     if (NULL != m_pvai)
     {
-        delete m_pvai;
+	delete m_pvai;
     }
     m_pvai = pvai;
 }
@@ -484,98 +484,98 @@ void P6H_OBJECTINFO::Merge(P6H_OBJECTINFO *poi)
 {
     if (NULL != poi->m_pName && NULL == m_pName)
     {
-        m_pName = poi->m_pName;
-        poi->m_pName = NULL;;
+	m_pName = poi->m_pName;
+	poi->m_pName = NULL;;
     }
     if (poi->m_fLocation && !m_fLocation)
     {
-        m_fLocation = true;
-        m_dbLocation = poi->m_dbLocation;
+	m_fLocation = true;
+	m_dbLocation = poi->m_dbLocation;
     }
     if (poi->m_fContents && !m_fContents)
     {
-        m_fContents = true;
-        m_dbContents = poi->m_dbContents;
+	m_fContents = true;
+	m_dbContents = poi->m_dbContents;
     }
     if (poi->m_fExits && !m_fExits)
     {
-        m_fExits = true;
-        m_dbExits = poi->m_dbExits;
+	m_fExits = true;
+	m_dbExits = poi->m_dbExits;
     }
     if (poi->m_fNext && !m_fNext)
     {
-        m_fNext = true;
-        m_dbNext = poi->m_dbNext;
+	m_fNext = true;
+	m_dbNext = poi->m_dbNext;
     }
     if (poi->m_fParent && !m_fParent)
     {
-        m_fParent = true;
-        m_dbParent = poi->m_dbParent;
+	m_fParent = true;
+	m_dbParent = poi->m_dbParent;
     }
     if (NULL != poi->m_pvli && NULL == m_pvli)
     {
-        m_pvli = poi->m_pvli;
-        poi->m_pvli = NULL;
+	m_pvli = poi->m_pvli;
+	poi->m_pvli = NULL;
     }
     if (poi->m_fLockCount && !m_fLockCount)
     {
-        m_fLockCount = true;
-        m_nLockCount = poi->m_nLockCount;
+	m_fLockCount = true;
+	m_nLockCount = poi->m_nLockCount;
     }
     if (poi->m_fOwner && !m_fOwner)
     {
-        m_fOwner = true;
-        m_dbOwner = poi->m_dbOwner;
+	m_fOwner = true;
+	m_dbOwner = poi->m_dbOwner;
     }
     if (poi->m_fZone && !m_fZone)
     {
-        m_fZone = true;
-        m_dbZone = poi->m_dbZone;
+	m_fZone = true;
+	m_dbZone = poi->m_dbZone;
     }
     if (poi->m_fPennies && !m_fPennies)
     {
-        m_fPennies = true;
-        m_iPennies = poi->m_iPennies;
+	m_fPennies = true;
+	m_iPennies = poi->m_iPennies;
     }
     if (poi->m_fType && !m_fType)
     {
-        m_fType = true;
-        m_iType = poi->m_iType;
+	m_fType = true;
+	m_iType = poi->m_iType;
     }
     if (poi->m_fCreated && !m_fCreated)
     {
-        m_fCreated = true;
-        m_iCreated = poi->m_iCreated;
+	m_fCreated = true;
+	m_iCreated = poi->m_iCreated;
     }
     if (poi->m_fModified && !m_fModified)
     {
-        m_fModified = true;
-        m_iModified = poi->m_iModified;
+	m_fModified = true;
+	m_iModified = poi->m_iModified;
     }
     if (NULL != poi->m_pFlags && NULL == m_pFlags)
     {
-        m_pFlags = poi->m_pFlags;
-        poi->m_pFlags = NULL;;
+	m_pFlags = poi->m_pFlags;
+	poi->m_pFlags = NULL;;
     }
     if (NULL != poi->m_pPowers && NULL == m_pPowers)
     {
-        m_pPowers = poi->m_pPowers;
-        poi->m_pPowers = NULL;;
+	m_pPowers = poi->m_pPowers;
+	poi->m_pPowers = NULL;;
     }
     if (NULL != poi->m_pWarnings && NULL == m_pWarnings)
     {
-        m_pWarnings = poi->m_pWarnings;
-        poi->m_pWarnings = NULL;;
+	m_pWarnings = poi->m_pWarnings;
+	poi->m_pWarnings = NULL;;
     }
     if (NULL != poi->m_pvai && NULL == m_pvai)
     {
-        m_pvai = poi->m_pvai;
-        poi->m_pvai = NULL;
+	m_pvai = poi->m_pvai;
+	poi->m_pvai = NULL;
     }
     if (poi->m_fAttrCount && !m_fAttrCount)
     {
-        m_fAttrCount = true;
-        m_nAttrCount = poi->m_nAttrCount;
+	m_fAttrCount = true;
+	m_nAttrCount = poi->m_nAttrCount;
     }
 }
 
@@ -583,7 +583,7 @@ void P6H_LOCKINFO::SetType(char *pType)
 {
     if (NULL != m_pType)
     {
-        free(m_pType);
+	free(m_pType);
     }
     m_pType = pType;
 }
@@ -592,7 +592,7 @@ void P6H_LOCKINFO::SetFlags(char *pFlags)
 {
     if (NULL != m_pFlags)
     {
-        free(m_pFlags);
+	free(m_pFlags);
     }
     m_pFlags = pFlags;
 }
@@ -601,18 +601,18 @@ void P6H_LOCKINFO::SetKey(char *pKey)
 {
     if (NULL != m_pKey)
     {
-        free(m_pKey);
+	free(m_pKey);
     }
     m_pKey = pKey;
 
     if (NULL != m_pKey)
     {
-        delete m_pKeyTree;
-        m_pKeyTree = p6hl_ParseKey(m_pKey);
-        if (NULL == m_pKeyTree)
-        {
-            fprintf(stderr, "WARNING: Lock key '%s' is not valid.\n", m_pKey);
-        }
+	delete m_pKeyTree;
+	m_pKeyTree = p6hl_ParseKey(m_pKey);
+	if (NULL == m_pKeyTree)
+	{
+	    fprintf(stderr, "WARNING: Lock key '%s' is not valid.\n", m_pKey);
+	}
     }
 }
 
@@ -620,33 +620,33 @@ void P6H_LOCKINFO::Merge(P6H_LOCKINFO *pli)
 {
     if (NULL != pli->m_pType && NULL == m_pType)
     {
-        m_pType = pli->m_pType;
-        pli->m_pType = NULL;;
+	m_pType = pli->m_pType;
+	pli->m_pType = NULL;;
     }
     if (pli->m_fCreator && !m_fCreator)
     {
-        m_fCreator = true;
-        m_dbCreator = pli->m_dbCreator;
+	m_fCreator = true;
+	m_dbCreator = pli->m_dbCreator;
     }
     if (NULL != pli->m_pFlags && NULL == m_pFlags)
     {
-        m_pFlags = pli->m_pFlags;
-        pli->m_pFlags = NULL;;
+	m_pFlags = pli->m_pFlags;
+	pli->m_pFlags = NULL;;
     }
     if (pli->m_fDerefs && !m_fDerefs)
     {
-        m_fDerefs = true;
-        m_iDerefs = pli->m_iDerefs;
+	m_fDerefs = true;
+	m_iDerefs = pli->m_iDerefs;
     }
     if (NULL != pli->m_pKey && NULL == m_pKey)
     {
-        m_pKey = pli->m_pKey;
-        pli->m_pKey = NULL;;
+	m_pKey = pli->m_pKey;
+	pli->m_pKey = NULL;;
     }
     if (pli->m_fFlags && !m_fFlags)
     {
-        m_fFlags = true;
-        m_iFlags = pli->m_iFlags;
+	m_fFlags = true;
+	m_iFlags = pli->m_iFlags;
     }
 }
 
@@ -654,7 +654,7 @@ void P6H_ATTRINFO::SetName(char *pName)
 {
     if (NULL != m_pName)
     {
-        free(m_pName);
+	free(m_pName);
     }
     m_pName = pName;
 }
@@ -663,7 +663,7 @@ void P6H_ATTRINFO::SetFlags(char *pFlags)
 {
     if (NULL != m_pFlags)
     {
-        free(m_pFlags);
+	free(m_pFlags);
     }
     m_pFlags = pFlags;
 }
@@ -672,7 +672,7 @@ void P6H_ATTRINFO::SetValue(char *pValue)
 {
     if (NULL != m_pValue)
     {
-        free(m_pValue);
+	free(m_pValue);
     }
     m_pValue = pValue;
 }
@@ -681,33 +681,33 @@ void P6H_ATTRINFO::Merge(P6H_ATTRINFO *pai)
 {
     if (NULL != pai->m_pName && NULL == m_pName)
     {
-        m_pName = pai->m_pName;
-        pai->m_pName = NULL;;
+	m_pName = pai->m_pName;
+	pai->m_pName = NULL;;
     }
     if (pai->m_fOwner && !m_fOwner)
     {
-        m_fOwner = true;
-        m_dbOwner = pai->m_dbOwner;
+	m_fOwner = true;
+	m_dbOwner = pai->m_dbOwner;
     }
     if (NULL != pai->m_pFlags && NULL == m_pFlags)
     {
-        m_pFlags = pai->m_pFlags;
-        pai->m_pFlags = NULL;;
+	m_pFlags = pai->m_pFlags;
+	pai->m_pFlags = NULL;;
     }
     if (pai->m_fDerefs && !m_fDerefs)
     {
-        m_fDerefs = true;
-        m_iDerefs = pai->m_iDerefs;
+	m_fDerefs = true;
+	m_iDerefs = pai->m_iDerefs;
     }
     if (NULL != pai->m_pValue && NULL == m_pValue)
     {
-        m_pValue = pai->m_pValue;
-        pai->m_pValue = NULL;;
+	m_pValue = pai->m_pValue;
+	pai->m_pValue = NULL;;
     }
     if (pai->m_fFlags && !m_fFlags)
     {
-        m_fFlags = true;
-        m_iFlags = pai->m_iFlags;
+	m_fFlags = true;
+	m_iFlags = pai->m_iFlags;
     }
 }
 
@@ -715,8 +715,8 @@ void P6H_GAME::SetSavedTime(char *p)
 {
     if (NULL != m_pSavedTime)
     {
-        free(m_pSavedTime);
-        m_pSavedTime = NULL;
+	free(m_pSavedTime);
+	m_pSavedTime = NULL;
     }
     m_pSavedTime = p;
 }
@@ -737,11 +737,11 @@ void P6H_GAME::ValidateFlags() const
     bool f177p40 = HasLabels();
     if (f177p40)
     {
-        fprintf(stderr, "INFO: Flatfile produced by 1.7.7p40 or later.\n");
+	fprintf(stderr, "INFO: Flatfile produced by 1.7.7p40 or later.\n");
     }
     else
     {
-        fprintf(stderr, "INFO: Flatfile predates PennMUSH 1.7.7p40\n");
+	fprintf(stderr, "INFO: Flatfile predates PennMUSH 1.7.7p40\n");
     }
 
     int flags = m_flags;
@@ -749,51 +749,51 @@ void P6H_GAME::ValidateFlags() const
     fprintf(stderr, "INFO: Flatfile flags are ");
     for (int i = 0; i < P6H_NUM_GAMEFLAGNAMES; i++)
     {
-        if (p6h_gameflagnames[i].mask & tflags)
-        {
-            fprintf(stderr, "%s ", p6h_gameflagnames[i].pName);
-            tflags &= ~p6h_gameflagnames[i].mask;
-        }
+	if (p6h_gameflagnames[i].mask & tflags)
+	{
+	    fprintf(stderr, "%s ", p6h_gameflagnames[i].pName);
+	    tflags &= ~p6h_gameflagnames[i].mask;
+	}
     }
     fprintf(stderr, "\n");
     if (0 != tflags)
     {
-        fprintf(stderr, "Unknown flags: 0x%x\n", tflags);
-        exit(1);
+	fprintf(stderr, "Unknown flags: 0x%x\n", tflags);
+	exit(1);
     }
 
     // Validate mandatory flags are present.
     //
     const int iMandatory = DBF_NO_CHAT_SYSTEM
-                         | DBF_CREATION_TIMES
-                         | DBF_NEW_STRINGS
-                         | DBF_TYPE_GARBAGE
-                         | DBF_LESS_GARBAGE
-                         | DBF_NO_TEMPLE
-                         | DBF_SPLIT_IMMORTAL
-                         | DBF_SPIFFY_LOCKS;
+			 | DBF_CREATION_TIMES
+			 | DBF_NEW_STRINGS
+			 | DBF_TYPE_GARBAGE
+			 | DBF_LESS_GARBAGE
+			 | DBF_NO_TEMPLE
+			 | DBF_SPLIT_IMMORTAL
+			 | DBF_SPIFFY_LOCKS;
 
     const int iMand177p40 = DBF_NEW_FLAGS
-                          | DBF_NEW_POWERS
-                          | DBF_LABELS;
+			  | DBF_NEW_POWERS
+			  | DBF_LABELS;
     if ((flags & iMandatory) != iMandatory)
     {
-        fprintf(stderr, "WARNING: Not all mandatory flags are present.\n");
+	fprintf(stderr, "WARNING: Not all mandatory flags are present.\n");
     }
 
     if (f177p40)
     {
-        if ((flags & iMand177p40) != iMand177p40)
-        {
-            fprintf(stderr, "WARNING: Not all mandatory flags for post-1.7.7p40 are are present.\n");
-        }
+	if ((flags & iMand177p40) != iMand177p40)
+	{
+	    fprintf(stderr, "WARNING: Not all mandatory flags for post-1.7.7p40 are are present.\n");
+	}
     }
     else
     {
-        if ((flags & iMand177p40) != 0)
-        {
-            fprintf(stderr, "WARNING: Unexpected flags for pre-1.7.7p40 appear.\n");
-        }
+	if ((flags & iMand177p40) != 0)
+	{
+	    fprintf(stderr, "WARNING: Unexpected flags for pre-1.7.7p40 appear.\n");
+	}
     }
 }
 
@@ -808,34 +808,34 @@ void P6H_GAME::Validate() const
     ValidateFlags();
     if (NULL != m_pSavedTime)
     {
-        ValidateSavedTime();
+	ValidateSavedTime();
     }
     if (m_fFlags || NULL != m_pvFlags)
     {
-        if (!m_fFlags)
-        {
-            fprintf(stderr, "WARNING: +FLAG LIST flagcount missing when list of flags is present.\n");
-        }
-        else if (0 < m_nFlags && NULL == m_pvFlags)
-        {
-            fprintf(stderr, "WARNING: +FLAG LIST list of flags is missing then flagcount is present.\n");
-        }
-        if (m_fFlags && NULL != m_pvFlags)
-        {
-            if (m_nFlags != m_pvFlags->size())
-            {
-                fprintf(stderr, "WARNING: flag count (%d) does not agree with flagcount (%d) in +FLAG LIST\n", m_pvFlags->size(), m_nFlags);
-            }
-            for (vector<P6H_FLAGINFO *>::iterator it = m_pvFlags->begin(); it != m_pvFlags->end(); ++it)
-            {
-                (*it)->Validate();
-            }
-        }
+	if (!m_fFlags)
+	{
+	    fprintf(stderr, "WARNING: +FLAG LIST flagcount missing when list of flags is present.\n");
+	}
+	else if (0 < m_nFlags && NULL == m_pvFlags)
+	{
+	    fprintf(stderr, "WARNING: +FLAG LIST list of flags is missing then flagcount is present.\n");
+	}
+	if (m_fFlags && NULL != m_pvFlags)
+	{
+	    if (m_nFlags != m_pvFlags->size())
+	    {
+		fprintf(stderr, "WARNING: flag count (%d) does not agree with flagcount (%d) in +FLAG LIST\n", m_pvFlags->size(), m_nFlags);
+	    }
+	    for (vector<P6H_FLAGINFO *>::iterator it = m_pvFlags->begin(); it != m_pvFlags->end(); ++it)
+	    {
+		(*it)->Validate();
+	    }
+	}
     }
 
     for (map<int, P6H_OBJECTINFO *, lti>::const_iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
     {
-        it->second->Validate();
+	it->second->Validate();
     }
 }
 
@@ -844,14 +844,14 @@ static char *EncodeString(const char *str)
     static char buf[65536];
     char *p = buf;
     while (  '\0' != *str
-          && p < buf + sizeof(buf) - 2)
+	  && p < buf + sizeof(buf) - 2)
     {
-        if (  '\\' == *str
-           || '"' == *str)
-        {
-            *p++ = '\\';
-        }
-        *p++ = *str++;
+	if (  '\\' == *str
+	   || '"' == *str)
+	{
+	    *p++ = '\\';
+	}
+	*p++ = *str++;
     }
     *p = '\0';
     return buf;
@@ -862,190 +862,190 @@ void P6H_OBJECTINFO::Write(FILE *fp, bool fLabels)
     fprintf(fp, "!%d\n", m_dbRef);
     if (NULL != m_pName)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "name \"%s\"\n", EncodeString(m_pName));
-        }
-        else
-        {
-            fprintf(fp, "\"%s\"\n", EncodeString(m_pName));
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "name \"%s\"\n", EncodeString(m_pName));
+	}
+	else
+	{
+	    fprintf(fp, "\"%s\"\n", EncodeString(m_pName));
+	}
     }
     if (m_fLocation)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "location #%d\n", m_dbLocation);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_dbLocation);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "location #%d\n", m_dbLocation);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_dbLocation);
+	}
     }
     if (m_fContents)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "contents #%d\n", m_dbContents);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_dbContents);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "contents #%d\n", m_dbContents);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_dbContents);
+	}
     }
     if (m_fExits)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "exits #%d\n", m_dbExits);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_dbExits);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "exits #%d\n", m_dbExits);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_dbExits);
+	}
     }
     if (m_fNext)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "next #%d\n", m_dbNext);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_dbNext);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "next #%d\n", m_dbNext);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_dbNext);
+	}
     }
     if (m_fParent)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "parent #%d\n", m_dbParent);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_dbParent);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "parent #%d\n", m_dbParent);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_dbParent);
+	}
     }
 
     if (m_fLockCount)
     {
-        if (NULL == m_pvli)
-        {
-            fprintf(fp, "lockcount 0\n");
-        }
-        else
-        {
-            fprintf(fp, "lockcount %d\n", m_pvli->size());
-            for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
-            {
-                (*it)->Write(fp, fLabels);
-            }
-        }
+	if (NULL == m_pvli)
+	{
+	    fprintf(fp, "lockcount 0\n");
+	}
+	else
+	{
+	    fprintf(fp, "lockcount %d\n", m_pvli->size());
+	    for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
+	    {
+		(*it)->Write(fp, fLabels);
+	    }
+	}
     }
     if (m_fOwner)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "owner #%d\n", m_dbOwner);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_dbOwner);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "owner #%d\n", m_dbOwner);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_dbOwner);
+	}
     }
     if (m_fZone)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "zone #%d\n", m_dbZone);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_dbZone);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "zone #%d\n", m_dbZone);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_dbZone);
+	}
     }
     if (m_fPennies)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "pennies %d\n", m_iPennies);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_iPennies);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "pennies %d\n", m_iPennies);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_iPennies);
+	}
     }
     if (m_fType)
     {
-        fprintf(fp, "type %d\n", m_iType);
+	fprintf(fp, "type %d\n", m_iType);
     }
     if (NULL != m_pFlags)
     {
-        fprintf(fp, "flags \"%s\"\n", EncodeString(m_pFlags));
+	fprintf(fp, "flags \"%s\"\n", EncodeString(m_pFlags));
     }
     if (m_fFlags)
     {
-        fprintf(fp, "%d\n", m_iFlags);
+	fprintf(fp, "%d\n", m_iFlags);
     }
     if (m_fToggles)
     {
-        fprintf(fp, "%d\n", m_iToggles);
+	fprintf(fp, "%d\n", m_iToggles);
     }
     if (NULL != m_pPowers)
     {
-        fprintf(fp, "powers \"%s\"\n", EncodeString(m_pPowers));
+	fprintf(fp, "powers \"%s\"\n", EncodeString(m_pPowers));
     }
     if (m_fPowers)
     {
-        fprintf(fp, "%d\n", m_iPowers);
+	fprintf(fp, "%d\n", m_iPowers);
     }
     if (NULL != m_pWarnings)
     {
-        fprintf(fp, "warnings \"%s\"\n", EncodeString(m_pWarnings));
+	fprintf(fp, "warnings \"%s\"\n", EncodeString(m_pWarnings));
     }
     if (m_fCreated)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "created %d\n", m_iCreated);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_iCreated);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "created %d\n", m_iCreated);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_iCreated);
+	}
     }
     if (m_fModified)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "modified %d\n", m_iModified);
-        }
-        else
-        {
-            fprintf(fp, "%d\n", m_iModified);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "modified %d\n", m_iModified);
+	}
+	else
+	{
+	    fprintf(fp, "%d\n", m_iModified);
+	}
     }
     if (NULL == m_pvai)
     {
-        if (fLabels)
-        {
-            fprintf(fp, "attrcount 0\n");
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "attrcount 0\n");
+	}
     }
     else
     {
-        if (fLabels)
-        {
-            fprintf(fp, "attrcount %d\n", m_pvai->size());
-        }
-        for (vector<P6H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
-        {
-            (*it)->Write(fp, fLabels);
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, "attrcount %d\n", m_pvai->size());
+	}
+	for (vector<P6H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
+	{
+	    (*it)->Write(fp, fLabels);
+	}
     }
     if (!fLabels)
     {
-        fprintf(fp, "<\n");
+	fprintf(fp, "<\n");
     }
 }
 
@@ -1053,25 +1053,25 @@ void P6H_OBJECTINFO::Validate() const
 {
     if (m_fLockCount || NULL != m_pvli)
     {
-        if (!m_fLockCount)
-        {
-            fprintf(stderr, "WARNING: lock list missing when list of locks is present.\n");
-        }
-        else if (0 < m_nLockCount && NULL == m_pvli)
-        {
-            fprintf(stderr, "WARNING: list of locks is missing when lockcount is present.\n");
-        }
-        if (m_fLockCount && NULL != m_pvli)
-        {
-            if (m_nLockCount != m_pvli->size())
-            {
-                fprintf(stderr, "WARNING: lock count (%d) does not agree with lockcount (%d)\n", m_pvli->size(), m_nLockCount);
-            }
-            for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
-            {
-                (*it)->Validate();
-            }
-        }
+	if (!m_fLockCount)
+	{
+	    fprintf(stderr, "WARNING: lock list missing when list of locks is present.\n");
+	}
+	else if (0 < m_nLockCount && NULL == m_pvli)
+	{
+	    fprintf(stderr, "WARNING: list of locks is missing when lockcount is present.\n");
+	}
+	if (m_fLockCount && NULL != m_pvli)
+	{
+	    if (m_nLockCount != m_pvli->size())
+	    {
+		fprintf(stderr, "WARNING: lock count (%d) does not agree with lockcount (%d)\n", m_pvli->size(), m_nLockCount);
+	    }
+	    for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
+	    {
+		(*it)->Validate();
+	    }
+	}
     }
 }
 
@@ -1203,99 +1203,99 @@ void P6H_OBJECTINFO::Upgrade()
 
     if (m_fFlags)
     {
-        int iTypeCode = m_iFlags & P6H_OLD_TYPE_MASK;
-        int iType = upgrade_type[iTypeCode];
-        SetType(iType);
+	int iTypeCode = m_iFlags & P6H_OLD_TYPE_MASK;
+	int iType = upgrade_type[iTypeCode];
+	SetType(iType);
 
-        char aBuffer[1000];
-        char *pBuffer = aBuffer;
+	char aBuffer[1000];
+	char *pBuffer = aBuffer;
 
-        // Remaining bits of m_flags.
-        //
-        bool fFirst = true;
-        for (int i = 0; i < sizeof(upgrade_obj_flags)/sizeof(upgrade_obj_flags[0]); i++)
-        {
-            if (upgrade_obj_flags[i].mask & m_iFlags)
-            {
-                if (!fFirst)
-                {
-                    *pBuffer++ = ' ';
-                }
-                fFirst = false;
-                strcpy(pBuffer, upgrade_obj_flags[i].pName);
-                pBuffer += strlen(upgrade_obj_flags[i].pName);
-            }
-        }
+	// Remaining bits of m_flags.
+	//
+	bool fFirst = true;
+	for (int i = 0; i < sizeof(upgrade_obj_flags)/sizeof(upgrade_obj_flags[0]); i++)
+	{
+	    if (upgrade_obj_flags[i].mask & m_iFlags)
+	    {
+		if (!fFirst)
+		{
+		    *pBuffer++ = ' ';
+		}
+		fFirst = false;
+		strcpy(pBuffer, upgrade_obj_flags[i].pName);
+		pBuffer += strlen(upgrade_obj_flags[i].pName);
+	    }
+	}
 
-        // Toggles.
-        //
-        if (m_fToggles)
-        {
-            NameMask *pnm = NULL;
-            int       nnm = 0;
+	// Toggles.
+	//
+	if (m_fToggles)
+	{
+	    NameMask *pnm = NULL;
+	    int       nnm = 0;
 
-            switch (iTypeCode)
-            {
-            case P6H_OLD_TYPE_ROOM:
-                pnm = upgrade_obj_toggles_room;
-                nnm = sizeof(upgrade_obj_toggles_room)/sizeof(upgrade_obj_toggles_room[0]);;
-                break;
+	    switch (iTypeCode)
+	    {
+	    case P6H_OLD_TYPE_ROOM:
+		pnm = upgrade_obj_toggles_room;
+		nnm = sizeof(upgrade_obj_toggles_room)/sizeof(upgrade_obj_toggles_room[0]);;
+		break;
 
-            case P6H_OLD_TYPE_THING:
-                pnm = upgrade_obj_toggles_thing;
-                nnm = sizeof(upgrade_obj_toggles_thing)/sizeof(upgrade_obj_toggles_thing[0]);;
-                break;
+	    case P6H_OLD_TYPE_THING:
+		pnm = upgrade_obj_toggles_thing;
+		nnm = sizeof(upgrade_obj_toggles_thing)/sizeof(upgrade_obj_toggles_thing[0]);;
+		break;
 
-            case P6H_OLD_TYPE_EXIT:
-                pnm = upgrade_obj_toggles_exit;
-                nnm = sizeof(upgrade_obj_toggles_exit)/sizeof(upgrade_obj_toggles_exit[0]);;
-                break;
+	    case P6H_OLD_TYPE_EXIT:
+		pnm = upgrade_obj_toggles_exit;
+		nnm = sizeof(upgrade_obj_toggles_exit)/sizeof(upgrade_obj_toggles_exit[0]);;
+		break;
 
-            case P6H_OLD_TYPE_PLAYER:
-                pnm = upgrade_obj_toggles_player;
-                nnm = sizeof(upgrade_obj_toggles_player)/sizeof(upgrade_obj_toggles_player[0]);;
-                break;
-            }
+	    case P6H_OLD_TYPE_PLAYER:
+		pnm = upgrade_obj_toggles_player;
+		nnm = sizeof(upgrade_obj_toggles_player)/sizeof(upgrade_obj_toggles_player[0]);;
+		break;
+	    }
 
-            for (int i = 0; i < nnm; i++)
-            {
-                if (pnm[i].mask & m_iToggles)
-                {
-                    if (!fFirst)
-                    {
-                        *pBuffer++ = ' ';
-                    }
-                    fFirst = false;
-                    strcpy(pBuffer, pnm[i].pName);
-                    pBuffer += strlen(pnm[i].pName);
-                }
-            }
-        }
-        *pBuffer = '\0';
-        SetFlags(StringClone(aBuffer));
+	    for (int i = 0; i < nnm; i++)
+	    {
+		if (pnm[i].mask & m_iToggles)
+		{
+		    if (!fFirst)
+		    {
+			*pBuffer++ = ' ';
+		    }
+		    fFirst = false;
+		    strcpy(pBuffer, pnm[i].pName);
+		    pBuffer += strlen(pnm[i].pName);
+		}
+	    }
+	}
+	*pBuffer = '\0';
+	SetFlags(StringClone(aBuffer));
 
-        // Powers.
-        //
-        pBuffer = aBuffer;
-        fFirst = true;
-        if (m_fPowers)
-        {
-            for (int i = 0; i < sizeof(upgrade_obj_powers)/sizeof(upgrade_obj_powers[0]); i++)
-            {
-                if (upgrade_obj_powers[i].mask & m_iPowers)
-                {
-                    if (!fFirst)
-                    {
-                        *pBuffer++ = ' ';
-                    }
-                    fFirst = false;
-                    strcpy(pBuffer, upgrade_obj_powers[i].pName);
-                    pBuffer += strlen(upgrade_obj_powers[i].pName);
-                }
-            }
-        }
-        *pBuffer = '\0';
-        SetPowers(StringClone(aBuffer));
+	// Powers.
+	//
+	pBuffer = aBuffer;
+	fFirst = true;
+	if (m_fPowers)
+	{
+	    for (int i = 0; i < sizeof(upgrade_obj_powers)/sizeof(upgrade_obj_powers[0]); i++)
+	    {
+		if (upgrade_obj_powers[i].mask & m_iPowers)
+		{
+		    if (!fFirst)
+		    {
+			*pBuffer++ = ' ';
+		    }
+		    fFirst = false;
+		    strcpy(pBuffer, upgrade_obj_powers[i].pName);
+		    pBuffer += strlen(upgrade_obj_powers[i].pName);
+		}
+	    }
+	}
+	*pBuffer = '\0';
+	SetPowers(StringClone(aBuffer));
     }
     m_fFlags = false;
     m_fToggles = false;
@@ -1303,17 +1303,17 @@ void P6H_OBJECTINFO::Upgrade()
 
     if (NULL != m_pvai)
     {
-        for (vector<P6H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
-        {
-            (*it)->Upgrade();
-        }
+	for (vector<P6H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
+	{
+	    (*it)->Upgrade();
+	}
     }
     if (NULL != m_pvli)
     {
-        for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
-        {
-            (*it)->Upgrade();
-        }
+	for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
+	{
+	    (*it)->Upgrade();
+	}
     }
 }
 
@@ -1328,78 +1328,78 @@ void P6H_FLAGINFO::Validate() const
 {
     if (NULL != m_pName)
     {
-        if (strlen(m_pName) <= 1)
-        {
-            fprintf(stderr, "WARNING: Flag name (%s) should be longer than a single character.\n", m_pName);
-        }
-        if (NULL != strchr(m_pName, ' '))
-        {
-            fprintf(stderr, "WARNING: Flag name (%s) should not contain spaces.\n", m_pName);
-        }
-        for (char *p = m_pName; *p; p++)
-        {
-            if (  ' ' != *p
-               && !p6h_IsValidGameCharacter(*p))
-            {
-                fprintf(stderr, "WARNING: Not all characters in flag name '%s' are valid.\n", m_pName);
-                break;
-            }
-        }
+	if (strlen(m_pName) <= 1)
+	{
+	    fprintf(stderr, "WARNING: Flag name (%s) should be longer than a single character.\n", m_pName);
+	}
+	if (NULL != strchr(m_pName, ' '))
+	{
+	    fprintf(stderr, "WARNING: Flag name (%s) should not contain spaces.\n", m_pName);
+	}
+	for (char *p = m_pName; *p; p++)
+	{
+	    if (  ' ' != *p
+	       && !p6h_IsValidGameCharacter(*p))
+	    {
+		fprintf(stderr, "WARNING: Not all characters in flag name '%s' are valid.\n", m_pName);
+		break;
+	    }
+	}
     }
     if (NULL != m_pLetter)
     {
-        if (1 < strlen(m_pLetter))
-        {
-            fprintf(stderr, "WARNING: Letter (%s), if used, should be a single character.\n", m_pLetter);
-        }
-        else
-        {
-            if (  '\0' != m_pLetter[0]
-               && !p6h_IsValidGameCharacter(m_pLetter[0]))
-            {
-                fprintf(stderr, "WARNING: Letter (0x%02X) is not valid.\n", m_pLetter[0]);
-            }
-        }
-        if (NULL != strchr(m_pLetter, ' '))
-        {
-            fprintf(stderr, "WARNING: Letter (%s) should not contain spaces.\n", m_pLetter);
-        }
+	if (1 < strlen(m_pLetter))
+	{
+	    fprintf(stderr, "WARNING: Letter (%s), if used, should be a single character.\n", m_pLetter);
+	}
+	else
+	{
+	    if (  '\0' != m_pLetter[0]
+	       && !p6h_IsValidGameCharacter(m_pLetter[0]))
+	    {
+		fprintf(stderr, "WARNING: Letter (0x%02X) is not valid.\n", m_pLetter[0]);
+	    }
+	}
+	if (NULL != strchr(m_pLetter, ' '))
+	{
+	    fprintf(stderr, "WARNING: Letter (%s) should not contain spaces.\n", m_pLetter);
+	}
     }
     if (NULL != m_pType)
     {
-        for (char *p = m_pType; *p; p++)
-        {
-            if (  ' ' != *p
-               && !p6h_IsValidGameCharacter(*p))
-            {
-                fprintf(stderr, "WARNING: Not all characters in flag type '%s' are valid.\n", m_pType);
-                break;
-            }
-        }
+	for (char *p = m_pType; *p; p++)
+	{
+	    if (  ' ' != *p
+	       && !p6h_IsValidGameCharacter(*p))
+	    {
+		fprintf(stderr, "WARNING: Not all characters in flag type '%s' are valid.\n", m_pType);
+		break;
+	    }
+	}
     }
     if (NULL != m_pPerms)
     {
-        for (char *p = m_pPerms; *p; p++)
-        {
-            if (  ' ' != *p
-               && !p6h_IsValidGameCharacter(*p))
-            {
-                fprintf(stderr, "WARNING: Not all characters in flag permissions '%s' are valid.\n", m_pPerms);
-                break;
-            }
-        }
+	for (char *p = m_pPerms; *p; p++)
+	{
+	    if (  ' ' != *p
+	       && !p6h_IsValidGameCharacter(*p))
+	    {
+		fprintf(stderr, "WARNING: Not all characters in flag permissions '%s' are valid.\n", m_pPerms);
+		break;
+	    }
+	}
     }
     if (NULL != m_pNegatePerms)
     {
-        for (char *p = m_pNegatePerms; *p; p++)
-        {
-            if (  ' ' != *p
-               && !p6h_IsValidGameCharacter(*p))
-            {
-                fprintf(stderr, "WARNING: Not all characters in flag negate permissions '%s' are valid.\n", m_pNegatePerms);
-                break;
-            }
-        }
+	for (char *p = m_pNegatePerms; *p; p++)
+	{
+	    if (  ' ' != *p
+	       && !p6h_IsValidGameCharacter(*p))
+	    {
+		fprintf(stderr, "WARNING: Not all characters in flag negate permissions '%s' are valid.\n", m_pNegatePerms);
+		break;
+	    }
+	}
     }
 }
 
@@ -1407,23 +1407,23 @@ void P6H_FLAGINFO::Write(FILE *fp)
 {
     if (NULL != m_pName)
     {
-        fprintf(fp, " name \"%s\"\n", EncodeString(m_pName));
-        if (NULL != m_pLetter)
-        {
-            fprintf(fp, "  letter \"%s\"\n", EncodeString(m_pLetter));
-        }
-        if (NULL != m_pType)
-        {
-            fprintf(fp, "  type \"%s\"\n", EncodeString(m_pType));
-        }
-        if (NULL != m_pPerms)
-        {
-            fprintf(fp, "  perms \"%s\"\n", EncodeString(m_pPerms));
-        }
-        if (NULL != m_pNegatePerms)
-        {
-            fprintf(fp, "  negate_perms \"%s\"\n", EncodeString(m_pNegatePerms));
-        }
+	fprintf(fp, " name \"%s\"\n", EncodeString(m_pName));
+	if (NULL != m_pLetter)
+	{
+	    fprintf(fp, "  letter \"%s\"\n", EncodeString(m_pLetter));
+	}
+	if (NULL != m_pType)
+	{
+	    fprintf(fp, "  type \"%s\"\n", EncodeString(m_pType));
+	}
+	if (NULL != m_pPerms)
+	{
+	    fprintf(fp, "  perms \"%s\"\n", EncodeString(m_pPerms));
+	}
+	if (NULL != m_pNegatePerms)
+	{
+	    fprintf(fp, "  negate_perms \"%s\"\n", EncodeString(m_pNegatePerms));
+	}
     }
 }
 
@@ -1431,11 +1431,11 @@ void P6H_FLAGALIASINFO::Write(FILE *fp)
 {
     if (NULL != m_pName)
     {
-        fprintf(fp, " name \"%s\"\n", EncodeString(m_pName));
-        if (NULL != m_pAlias)
-        {
-            fprintf(fp, "  alias \"%s\"\n", EncodeString(m_pAlias));
-        }
+	fprintf(fp, " name \"%s\"\n", EncodeString(m_pName));
+	if (NULL != m_pAlias)
+	{
+	    fprintf(fp, "  alias \"%s\"\n", EncodeString(m_pAlias));
+	}
     }
 }
 
@@ -1443,22 +1443,22 @@ void P6H_LOCKINFO::Validate() const
 {
     if (NULL != m_pType)
     {
-        if (NULL != strchr(m_pType, ' '))
-        {
-            fprintf(stderr, "WARNING: Found blank in lock type '%s'.\n", m_pType);
-        }
+	if (NULL != strchr(m_pType, ' '))
+	{
+	    fprintf(stderr, "WARNING: Found blank in lock type '%s'.\n", m_pType);
+	}
     }
     if (  NULL != m_pKey
        && NULL != m_pKeyTree)
     {
-        char buffer[65536];
-        char *p = m_pKeyTree->Write(buffer);
-        *p = '\0';
-        if (strcmp(m_pKey, buffer) != 0)
-        {
-             fprintf(stderr, "WARNING: Re-generated lock key '%s' does not agree with parsed key '%s'.\n", buffer, m_pKey);
-             exit(1);
-        }
+	char buffer[65536];
+	char *p = m_pKeyTree->Write(buffer);
+	*p = '\0';
+	if (strcmp(m_pKey, buffer) != 0)
+	{
+	     fprintf(stderr, "WARNING: Re-generated lock key '%s' does not agree with parsed key '%s'.\n", buffer, m_pKey);
+	     exit(1);
+	}
     }
 }
 
@@ -1466,55 +1466,55 @@ void P6H_LOCKINFO::Write(FILE *fp, bool fLabels) const
 {
     if (NULL != m_pType)
     {
-        if (fLabels)
-        {
-            fprintf(fp, " type \"%s\"\n", EncodeString(m_pType));
-        }
-        else
-        {
-            fprintf(fp, "type \"%s\"\n", EncodeString(m_pType));
-        }
-        if (m_fCreator)
-        {
-            if (fLabels)
-            {
-                fprintf(fp, "  creator #%d\n", m_dbCreator);
-            }
-            else
-            {
-                fprintf(fp, "creator %d\n", m_dbCreator);
-            }
-        }
-        if (NULL != m_pFlags)
-        {
-            fprintf(fp, "  flags \"%s\"\n", EncodeString(m_pFlags));
-        }
-        if (m_fFlags)
-        {
-            if (fLabels)
-            {
-                fprintf(fp, "  flags %d\n", m_iFlags);
-            }
-            else
-            {
-                fprintf(fp, "flags %d\n", m_iFlags);
-            }
-        }
-        if (m_fDerefs)
-        {
-            fprintf(fp, "  derefs %d\n", m_iDerefs);
-        }
-        if (NULL != m_pKey)
-        {
-            if (fLabels)
-            {
-                fprintf(fp, "  key \"%s\"\n", EncodeString(m_pKey));
-            }
-            else
-            {
-                fprintf(fp, "key \"%s\"\n", EncodeString(m_pKey));
-            }
-        }
+	if (fLabels)
+	{
+	    fprintf(fp, " type \"%s\"\n", EncodeString(m_pType));
+	}
+	else
+	{
+	    fprintf(fp, "type \"%s\"\n", EncodeString(m_pType));
+	}
+	if (m_fCreator)
+	{
+	    if (fLabels)
+	    {
+		fprintf(fp, "  creator #%d\n", m_dbCreator);
+	    }
+	    else
+	    {
+		fprintf(fp, "creator %d\n", m_dbCreator);
+	    }
+	}
+	if (NULL != m_pFlags)
+	{
+	    fprintf(fp, "  flags \"%s\"\n", EncodeString(m_pFlags));
+	}
+	if (m_fFlags)
+	{
+	    if (fLabels)
+	    {
+		fprintf(fp, "  flags %d\n", m_iFlags);
+	    }
+	    else
+	    {
+		fprintf(fp, "flags %d\n", m_iFlags);
+	    }
+	}
+	if (m_fDerefs)
+	{
+	    fprintf(fp, "  derefs %d\n", m_iDerefs);
+	}
+	if (NULL != m_pKey)
+	{
+	    if (fLabels)
+	    {
+		fprintf(fp, "  key \"%s\"\n", EncodeString(m_pKey));
+	    }
+	    else
+	    {
+		fprintf(fp, "key \"%s\"\n", EncodeString(m_pKey));
+	    }
+	}
     }
 }
 
@@ -1534,19 +1534,19 @@ void P6H_LOCKINFO::Upgrade()
     bool fFirst = true;
     if (m_fFlags)
     {
-        for (int i = 0; i < sizeof(upgrade_lock_flags)/sizeof(upgrade_lock_flags[0]); i++)
-        {
-            if (upgrade_lock_flags[i].mask & m_iFlags)
-            {
-                if (!fFirst)
-                {
-                    *pBuffer++ = ' ';
-                }
-                fFirst = false;
-                strcpy(pBuffer, upgrade_lock_flags[i].pName);
-                pBuffer += strlen(upgrade_lock_flags[i].pName);
-            }
-        }
+	for (int i = 0; i < sizeof(upgrade_lock_flags)/sizeof(upgrade_lock_flags[0]); i++)
+	{
+	    if (upgrade_lock_flags[i].mask & m_iFlags)
+	    {
+		if (!fFirst)
+		{
+		    *pBuffer++ = ' ';
+		}
+		fFirst = false;
+		strcpy(pBuffer, upgrade_lock_flags[i].pName);
+		pBuffer += strlen(upgrade_lock_flags[i].pName);
+	    }
+	}
     }
     *pBuffer = '\0';
     SetFlags(StringClone(aBuffer));
@@ -1558,37 +1558,37 @@ void P6H_ATTRINFO::Write(FILE *fp, bool fLabels) const
 {
     if (fLabels)
     {
-        if (NULL != m_pName)
-        {
-            fprintf(fp, " name \"%s\"\n", EncodeString(m_pName));
-            if (m_fOwner)
-            {
-                fprintf(fp, "  owner #%d\n", m_dbOwner);
-            }
-            if (NULL != m_pFlags)
-            {
-                fprintf(fp, "  flags \"%s\"\n", EncodeString(m_pFlags));
-            }
-            if (m_fFlags)
-            {
-                fprintf(fp, "  flags %d\n", m_iFlags);
-            }
-            if (m_fDerefs)
-            {
-                fprintf(fp, "  derefs %d\n", m_iDerefs);
-            }
-            if (NULL != m_pValue)
-            {
-                fprintf(fp, "  value \"%s\"\n", EncodeString(m_pValue));
-            }
-        }
+	if (NULL != m_pName)
+	{
+	    fprintf(fp, " name \"%s\"\n", EncodeString(m_pName));
+	    if (m_fOwner)
+	    {
+		fprintf(fp, "  owner #%d\n", m_dbOwner);
+	    }
+	    if (NULL != m_pFlags)
+	    {
+		fprintf(fp, "  flags \"%s\"\n", EncodeString(m_pFlags));
+	    }
+	    if (m_fFlags)
+	    {
+		fprintf(fp, "  flags %d\n", m_iFlags);
+	    }
+	    if (m_fDerefs)
+	    {
+		fprintf(fp, "  derefs %d\n", m_iDerefs);
+	    }
+	    if (NULL != m_pValue)
+	    {
+		fprintf(fp, "  value \"%s\"\n", EncodeString(m_pValue));
+	    }
+	}
     }
     else if (  NULL != m_pName
-            && m_fOwner
-            && m_fFlags
-            && NULL != m_pValue)
+	    && m_fOwner
+	    && m_fFlags
+	    && NULL != m_pValue)
     {
-        fprintf(fp, "]%s^%d^%d\n\"%s\"\n", m_pName, m_dbOwner, m_iFlags, EncodeString(m_pValue));
+	fprintf(fp, "]%s^%d^%d\n\"%s\"\n", m_pName, m_dbOwner, m_iFlags, EncodeString(m_pValue));
     }
 }
 
@@ -1621,19 +1621,19 @@ void P6H_ATTRINFO::Upgrade()
     bool fFirst = true;
     if (m_fFlags)
     {
-        for (int i = 0; i < sizeof(upgrade_attr_flags)/sizeof(upgrade_attr_flags[0]); i++)
-        {
-            if (upgrade_attr_flags[i].mask & m_iFlags)
-            {
-                if (!fFirst)
-                {
-                    *pBuffer++ = ' ';
-                }
-                fFirst = false;
-                strcpy(pBuffer, upgrade_attr_flags[i].pName);
-                pBuffer += strlen(upgrade_attr_flags[i].pName);
-            }
-        }
+	for (int i = 0; i < sizeof(upgrade_attr_flags)/sizeof(upgrade_attr_flags[0]); i++)
+	{
+	    if (upgrade_attr_flags[i].mask & m_iFlags)
+	    {
+		if (!fFirst)
+		{
+		    *pBuffer++ = ' ';
+		}
+		fFirst = false;
+		strcpy(pBuffer, upgrade_attr_flags[i].pName);
+		pBuffer += strlen(upgrade_attr_flags[i].pName);
+	    }
+	}
     }
     *pBuffer = '\0';
     SetFlags(StringClone(aBuffer));
@@ -1646,60 +1646,60 @@ void P6H_GAME::Write(FILE *fp)
     fprintf(fp, "+V%d\n", (m_flags + 5) * 256 + 2);
     if (NULL != m_pSavedTime)
     {
-        fprintf(fp, "savedtime \"%s\"\n", m_pSavedTime);
+	fprintf(fp, "savedtime \"%s\"\n", m_pSavedTime);
     }
     if (m_fFlags)
     {
-        fprintf(fp, "+FLAGS LIST\nflagcount %d\n", m_nFlags);
+	fprintf(fp, "+FLAGS LIST\nflagcount %d\n", m_nFlags);
     }
     if (NULL != m_pvFlags)
     {
-        for (vector<P6H_FLAGINFO *>::iterator it = m_pvFlags->begin(); it != m_pvFlags->end(); ++it)
-        {
-            (*it)->Write(fp);
-        }
+	for (vector<P6H_FLAGINFO *>::iterator it = m_pvFlags->begin(); it != m_pvFlags->end(); ++it)
+	{
+	    (*it)->Write(fp);
+	}
     }
     if (m_fFlagAliases)
     {
-        fprintf(fp, "flagaliascount %d\n", m_nFlagAliases);
+	fprintf(fp, "flagaliascount %d\n", m_nFlagAliases);
     }
     if (NULL != m_pvFlagAliases)
     {
-        for (vector<P6H_FLAGALIASINFO *>::iterator it = m_pvFlagAliases->begin(); it != m_pvFlagAliases->end(); ++it)
-        {
-            (*it)->Write(fp);
-        }
+	for (vector<P6H_FLAGALIASINFO *>::iterator it = m_pvFlagAliases->begin(); it != m_pvFlagAliases->end(); ++it)
+	{
+	    (*it)->Write(fp);
+	}
     }
     if (m_fPowers)
     {
-        fprintf(fp, "+POWER LIST\nflagcount %d\n", m_nPowers);
+	fprintf(fp, "+POWER LIST\nflagcount %d\n", m_nPowers);
     }
     if (NULL != m_pvPowers)
     {
-        for (vector<P6H_FLAGINFO *>::iterator it = m_pvPowers->begin(); it != m_pvPowers->end(); ++it)
-        {
-            (*it)->Write(fp);
-        }
+	for (vector<P6H_FLAGINFO *>::iterator it = m_pvPowers->begin(); it != m_pvPowers->end(); ++it)
+	{
+	    (*it)->Write(fp);
+	}
     }
     if (m_fPowerAliases)
     {
-        fprintf(fp, "flagaliascount %d\n", m_nPowerAliases);
+	fprintf(fp, "flagaliascount %d\n", m_nPowerAliases);
     }
     if (NULL != m_pvPowerAliases)
     {
-        for (vector<P6H_FLAGALIASINFO *>::iterator it = m_pvPowerAliases->begin(); it != m_pvPowerAliases->end(); ++it)
-        {
-            (*it)->Write(fp);
-        }
+	for (vector<P6H_FLAGALIASINFO *>::iterator it = m_pvPowerAliases->begin(); it != m_pvPowerAliases->end(); ++it)
+	{
+	    (*it)->Write(fp);
+	}
     }
     if (m_fSizeHint)
     {
-        fprintf(fp, "~%d\n", m_nSizeHint);
+	fprintf(fp, "~%d\n", m_nSizeHint);
     }
     bool fLabels = HasLabels();
     for (map<int, P6H_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
     {
-        it->second->Write(fp, fLabels);
+	it->second->Write(fp, fLabels);
     }
 
     fprintf(fp, "***END OF DUMP***\n");
@@ -1855,17 +1855,17 @@ void P6H_GAME::Upgrade()
     bool fLabels = HasLabels();
     if (fLabels)
     {
-        return;
+	return;
     }
 
     // Additional flatfile flags.
     //
     m_flags = m_flags
-            | DBF_LABELS
-            | DBF_NEW_FLAGS
-            | DBF_NEW_POWERS
-            | DBF_POWERS_LOGGED
-            | DBF_WARNINGS;
+	    | DBF_LABELS
+	    | DBF_NEW_FLAGS
+	    | DBF_NEW_POWERS
+	    | DBF_POWERS_LOGGED
+	    | DBF_WARNINGS;
 
     // savedtime
     //
@@ -1874,13 +1874,13 @@ void P6H_GAME::Upgrade()
     char *pTime = ctime(&ct);
     if (NULL != pTime)
     {
-        char *p = strchr(pTime, '\n');
-        if (NULL != p)
-        {
-            size_t n = p - pTime;
-            pTime = StringCloneLen(pTime, n);
-            SetSavedTime(pTime);
-        }
+	char *p = strchr(pTime, '\n');
+	if (NULL != p)
+	{
+	    size_t n = p - pTime;
+	    pTime = StringCloneLen(pTime, n);
+	    SetSavedTime(pTime);
+	}
     }
 
     // Add Flags
@@ -1888,13 +1888,13 @@ void P6H_GAME::Upgrade()
     vector<P6H_FLAGINFO *> *pvFlags= new vector<P6H_FLAGINFO *>;
     for (int i = 0; i < sizeof(upgrade_flags)/sizeof(upgrade_flags[0]); i++)
     {
-        P6H_FLAGINFO *pfi = new P6H_FLAGINFO;
-        pfi->SetName(StringClone(upgrade_flags[i].pName));
-        pfi->SetLetter(StringClone(upgrade_flags[i].pLetter));
-        pfi->SetType(StringClone(upgrade_flags[i].pType));
-        pfi->SetPerms(StringClone(upgrade_flags[i].pPerms));
-        pfi->SetNegatePerms(StringClone(upgrade_flags[i].pNegatePerms));
-        pvFlags->push_back(pfi);
+	P6H_FLAGINFO *pfi = new P6H_FLAGINFO;
+	pfi->SetName(StringClone(upgrade_flags[i].pName));
+	pfi->SetLetter(StringClone(upgrade_flags[i].pLetter));
+	pfi->SetType(StringClone(upgrade_flags[i].pType));
+	pfi->SetPerms(StringClone(upgrade_flags[i].pPerms));
+	pfi->SetNegatePerms(StringClone(upgrade_flags[i].pNegatePerms));
+	pvFlags->push_back(pfi);
     }
     SetFlagList(pvFlags);
     pvFlags = NULL;
@@ -1905,10 +1905,10 @@ void P6H_GAME::Upgrade()
     vector<P6H_FLAGALIASINFO *> *pvFlagAliases= new vector<P6H_FLAGALIASINFO *>;
     for (int i = 0; i < sizeof(upgrade_flagaliases)/sizeof(upgrade_flagaliases[0]); i++)
     {
-        P6H_FLAGALIASINFO *pfai = new P6H_FLAGALIASINFO;
-        pfai->SetName(StringClone(upgrade_flagaliases[i].pName));
-        pfai->SetAlias(StringClone(upgrade_flagaliases[i].pAlias));
-        pvFlagAliases->push_back(pfai);
+	P6H_FLAGALIASINFO *pfai = new P6H_FLAGALIASINFO;
+	pfai->SetName(StringClone(upgrade_flagaliases[i].pName));
+	pfai->SetAlias(StringClone(upgrade_flagaliases[i].pAlias));
+	pvFlagAliases->push_back(pfai);
     }
     SetFlagAliasList(pvFlagAliases);
     pvFlagAliases = NULL;
@@ -1919,13 +1919,13 @@ void P6H_GAME::Upgrade()
     pvFlags= new vector<P6H_FLAGINFO *>;
     for (int i = 0; i < sizeof(upgrade_powers)/sizeof(upgrade_powers[0]); i++)
     {
-        P6H_FLAGINFO *pfi = new P6H_FLAGINFO;
-        pfi->SetName(StringClone(upgrade_powers[i].pName));
-        pfi->SetLetter(StringClone(upgrade_powers[i].pLetter));
-        pfi->SetType(StringClone(upgrade_powers[i].pType));
-        pfi->SetPerms(StringClone(upgrade_powers[i].pPerms));
-        pfi->SetNegatePerms(StringClone(upgrade_powers[i].pNegatePerms));
-        pvFlags->push_back(pfi);
+	P6H_FLAGINFO *pfi = new P6H_FLAGINFO;
+	pfi->SetName(StringClone(upgrade_powers[i].pName));
+	pfi->SetLetter(StringClone(upgrade_powers[i].pLetter));
+	pfi->SetType(StringClone(upgrade_powers[i].pType));
+	pfi->SetPerms(StringClone(upgrade_powers[i].pPerms));
+	pfi->SetNegatePerms(StringClone(upgrade_powers[i].pNegatePerms));
+	pvFlags->push_back(pfi);
     }
     SetPowerList(pvFlags);
     pvFlags = NULL;
@@ -1936,10 +1936,10 @@ void P6H_GAME::Upgrade()
     pvFlagAliases= new vector<P6H_FLAGALIASINFO *>;
     for (int i = 0; i < sizeof(upgrade_poweraliases)/sizeof(upgrade_poweraliases[0]); i++)
     {
-        P6H_FLAGALIASINFO *pfai = new P6H_FLAGALIASINFO;
-        pfai->SetName(StringClone(upgrade_poweraliases[i].pName));
-        pfai->SetAlias(StringClone(upgrade_poweraliases[i].pAlias));
-        pvFlagAliases->push_back(pfai);
+	P6H_FLAGALIASINFO *pfai = new P6H_FLAGALIASINFO;
+	pfai->SetName(StringClone(upgrade_poweraliases[i].pName));
+	pfai->SetAlias(StringClone(upgrade_poweraliases[i].pAlias));
+	pvFlagAliases->push_back(pfai);
     }
     SetPowerAliasList(pvFlagAliases);
     pvFlagAliases = NULL;
@@ -1949,7 +1949,7 @@ void P6H_GAME::Upgrade()
     //
     for (map<int, P6H_OBJECTINFO *, lti>::iterator it = m_mObjects.begin(); it != m_mObjects.end(); ++it)
     {
-        it->second->Upgrade();
+	it->second->Upgrade();
     }
 }
 
@@ -1959,57 +1959,57 @@ void P6H_GAME::ResetPassword()
 
     for (map<int, P6H_OBJECTINFO *, lti>::iterator itObj = m_mObjects.begin(); itObj != m_mObjects.end(); ++itObj)
     {
-        if (1 == itObj->second->m_dbRef)
-        {
-            bool fFound = false;
-            if (NULL != itObj->second->m_pvai)
-            {
-                for (vector<P6H_ATTRINFO *>::iterator itAttr = itObj->second->m_pvai->begin(); itAttr != itObj->second->m_pvai->end(); ++itAttr)
-                {
-                    if (strcasecmp("XYXXY", (*itAttr)->m_pName) == 0)
-                    {
-                        // Change it to 'potrzebie'.
-                        //
-                        free((*itAttr)->m_pValue);
-                        (*itAttr)->m_pValue = StringClone("XX41009057111400169070");
+	if (1 == itObj->second->m_dbRef)
+	{
+	    bool fFound = false;
+	    if (NULL != itObj->second->m_pvai)
+	    {
+		for (vector<P6H_ATTRINFO *>::iterator itAttr = itObj->second->m_pvai->begin(); itAttr != itObj->second->m_pvai->end(); ++itAttr)
+		{
+		    if (strcasecmp("XYXXY", (*itAttr)->m_pName) == 0)
+		    {
+			// Change it to 'potrzebie'.
+			//
+			free((*itAttr)->m_pValue);
+			(*itAttr)->m_pValue = StringClone("XX41009057111400169070");
 
-                        fFound = true;
-                    }
-                }
-            }
+			fFound = true;
+		    }
+		}
+	    }
 
-            if (!fFound)
-            {
-                // Add it.
-                //
-                P6H_ATTRINFO *pai = new P6H_ATTRINFO;
-                pai->SetName(StringClone("XYXXY"));
-                pai->SetOwner(1);
-                if (fLabels)
-                {
-                    pai->SetFlags(StringClone("no_command wizard locked internal"));
-                }
-                else
-                {
-                    pai->SetFlags(54);
-                }
-                pai->SetDerefs(0);
-                pai->SetValue(StringClone("XX41009057111400169070"));
+	    if (!fFound)
+	    {
+		// Add it.
+		//
+		P6H_ATTRINFO *pai = new P6H_ATTRINFO;
+		pai->SetName(StringClone("XYXXY"));
+		pai->SetOwner(1);
+		if (fLabels)
+		{
+		    pai->SetFlags(StringClone("no_command wizard locked internal"));
+		}
+		else
+		{
+		    pai->SetFlags(54);
+		}
+		pai->SetDerefs(0);
+		pai->SetValue(StringClone("XX41009057111400169070"));
 
-                if (NULL == itObj->second->m_pvai)
-                {
-                    vector<P6H_ATTRINFO *> *pvai = new vector<P6H_ATTRINFO *>;
-                    pvai->push_back(pai);
-                    itObj->second->SetAttrs(pvai->size(), pvai);
-                }
-                else
-                {
-                    itObj->second->m_pvai->push_back(pai);
-                    itObj->second->m_fAttrCount = true;
-                    itObj->second->m_nAttrCount = itObj->second->m_pvai->size();
-                }
-            }
-        }
+		if (NULL == itObj->second->m_pvai)
+		{
+		    vector<P6H_ATTRINFO *> *pvai = new vector<P6H_ATTRINFO *>;
+		    pvai->push_back(pai);
+		    itObj->second->SetAttrs(pvai->size(), pvai);
+		}
+		else
+		{
+		    itObj->second->m_pvai->push_back(pai);
+		    itObj->second->m_fAttrCount = true;
+		    itObj->second->m_nAttrCount = itObj->second->m_pvai->size();
+		}
+	    }
+	}
     }
 }
 
@@ -2258,16 +2258,16 @@ static struct
 void P6H_GAME::ConvertFromT5X()
 {
     SetFlags( DBF_NO_CHAT_SYSTEM
-            | DBF_CREATION_TIMES
-            | DBF_NEW_STRINGS
-            | DBF_TYPE_GARBAGE
-            | DBF_LESS_GARBAGE
-            | DBF_SPIFFY_LOCKS
-            | DBF_NEW_FLAGS
-            | DBF_NEW_POWERS
-            | DBF_NO_TEMPLE
-            | DBF_SPLIT_IMMORTAL
-            | DBF_LABELS);
+	    | DBF_CREATION_TIMES
+	    | DBF_NEW_STRINGS
+	    | DBF_TYPE_GARBAGE
+	    | DBF_LESS_GARBAGE
+	    | DBF_SPIFFY_LOCKS
+	    | DBF_NEW_FLAGS
+	    | DBF_NEW_POWERS
+	    | DBF_NO_TEMPLE
+	    | DBF_SPLIT_IMMORTAL
+	    | DBF_LABELS);
 
     // savedtime
     //
@@ -2276,13 +2276,13 @@ void P6H_GAME::ConvertFromT5X()
     char *pTime = ctime(&ct);
     if (NULL != pTime)
     {
-        char *p = strchr(pTime, '\n');
-        if (NULL != p)
-        {
-            size_t n = p - pTime;
-            pTime = StringCloneLen(pTime, n);
-            SetSavedTime(pTime);
-        }
+	char *p = strchr(pTime, '\n');
+	if (NULL != p)
+	{
+	    size_t n = p - pTime;
+	    pTime = StringCloneLen(pTime, n);
+	    SetSavedTime(pTime);
+	}
     }
 
     // Add Flags
@@ -2290,13 +2290,13 @@ void P6H_GAME::ConvertFromT5X()
     vector<P6H_FLAGINFO *> *pvFlags= new vector<P6H_FLAGINFO *>;
     for (int i = 0; i < sizeof(upgrade_flags)/sizeof(upgrade_flags[0]); i++)
     {
-        P6H_FLAGINFO *pfi = new P6H_FLAGINFO;
-        pfi->SetName(StringClone(upgrade_flags[i].pName));
-        pfi->SetLetter(StringClone(upgrade_flags[i].pLetter));
-        pfi->SetType(StringClone(upgrade_flags[i].pType));
-        pfi->SetPerms(StringClone(upgrade_flags[i].pPerms));
-        pfi->SetNegatePerms(StringClone(upgrade_flags[i].pNegatePerms));
-        pvFlags->push_back(pfi);
+	P6H_FLAGINFO *pfi = new P6H_FLAGINFO;
+	pfi->SetName(StringClone(upgrade_flags[i].pName));
+	pfi->SetLetter(StringClone(upgrade_flags[i].pLetter));
+	pfi->SetType(StringClone(upgrade_flags[i].pType));
+	pfi->SetPerms(StringClone(upgrade_flags[i].pPerms));
+	pfi->SetNegatePerms(StringClone(upgrade_flags[i].pNegatePerms));
+	pvFlags->push_back(pfi);
     }
     SetFlagList(pvFlags);
     pvFlags = NULL;
@@ -2307,10 +2307,10 @@ void P6H_GAME::ConvertFromT5X()
     vector<P6H_FLAGALIASINFO *> *pvFlagAliases= new vector<P6H_FLAGALIASINFO *>;
     for (int i = 0; i < sizeof(upgrade_flagaliases)/sizeof(upgrade_flagaliases[0]); i++)
     {
-        P6H_FLAGALIASINFO *pfai = new P6H_FLAGALIASINFO;
-        pfai->SetName(StringClone(upgrade_flagaliases[i].pName));
-        pfai->SetAlias(StringClone(upgrade_flagaliases[i].pAlias));
-        pvFlagAliases->push_back(pfai);
+	P6H_FLAGALIASINFO *pfai = new P6H_FLAGALIASINFO;
+	pfai->SetName(StringClone(upgrade_flagaliases[i].pName));
+	pfai->SetAlias(StringClone(upgrade_flagaliases[i].pAlias));
+	pvFlagAliases->push_back(pfai);
     }
     SetFlagAliasList(pvFlagAliases);
     pvFlagAliases = NULL;
@@ -2321,13 +2321,13 @@ void P6H_GAME::ConvertFromT5X()
     pvFlags= new vector<P6H_FLAGINFO *>;
     for (int i = 0; i < sizeof(upgrade_powers)/sizeof(upgrade_powers[0]); i++)
     {
-        P6H_FLAGINFO *pfi = new P6H_FLAGINFO;
-        pfi->SetName(StringClone(upgrade_powers[i].pName));
-        pfi->SetLetter(StringClone(upgrade_powers[i].pLetter));
-        pfi->SetType(StringClone(upgrade_powers[i].pType));
-        pfi->SetPerms(StringClone(upgrade_powers[i].pPerms));
-        pfi->SetNegatePerms(StringClone(upgrade_powers[i].pNegatePerms));
-        pvFlags->push_back(pfi);
+	P6H_FLAGINFO *pfi = new P6H_FLAGINFO;
+	pfi->SetName(StringClone(upgrade_powers[i].pName));
+	pfi->SetLetter(StringClone(upgrade_powers[i].pLetter));
+	pfi->SetType(StringClone(upgrade_powers[i].pType));
+	pfi->SetPerms(StringClone(upgrade_powers[i].pPerms));
+	pfi->SetNegatePerms(StringClone(upgrade_powers[i].pNegatePerms));
+	pvFlags->push_back(pfi);
     }
     SetPowerList(pvFlags);
     pvFlags = NULL;
@@ -2338,10 +2338,10 @@ void P6H_GAME::ConvertFromT5X()
     pvFlagAliases= new vector<P6H_FLAGALIASINFO *>;
     for (int i = 0; i < sizeof(upgrade_poweraliases)/sizeof(upgrade_poweraliases[0]); i++)
     {
-        P6H_FLAGALIASINFO *pfai = new P6H_FLAGALIASINFO;
-        pfai->SetName(StringClone(upgrade_poweraliases[i].pName));
-        pfai->SetAlias(StringClone(upgrade_poweraliases[i].pAlias));
-        pvFlagAliases->push_back(pfai);
+	P6H_FLAGALIASINFO *pfai = new P6H_FLAGALIASINFO;
+	pfai->SetName(StringClone(upgrade_poweraliases[i].pName));
+	pfai->SetAlias(StringClone(upgrade_poweraliases[i].pAlias));
+	pvFlagAliases->push_back(pfai);
     }
     SetPowerAliasList(pvFlagAliases);
     pvFlagAliases = NULL;
@@ -2352,256 +2352,256 @@ void P6H_GAME::ConvertFromT5X()
     map<int, const char *, lti> AttrNames;
     for (int i = 0; i < sizeof(t5x_known_attrs)/sizeof(t5x_known_attrs[0]); i++)
     {
-        AttrNames[t5x_known_attrs[i].iNum] = StringClone(t5x_known_attrs[i].pName);
+	AttrNames[t5x_known_attrs[i].iNum] = StringClone(t5x_known_attrs[i].pName);
     }
     for (map<int, T5X_ATTRNAMEINFO *, lti>::iterator it = g_t5xgame.m_mAttrNames.begin(); it != g_t5xgame.m_mAttrNames.end(); ++it)
     {
-        AttrNames[it->second->m_iNum] = StringClone(it->second->m_pNameUnencoded);
+	AttrNames[it->second->m_iNum] = StringClone(it->second->m_pNameUnencoded);
     }
 
     // Upgrade objects.
     //
     for (map<int, T5X_OBJECTINFO *, lti>::iterator it = g_t5xgame.m_mObjects.begin(); it != g_t5xgame.m_mObjects.end(); ++it)
     {
-        if (!it->second->m_fFlags1)
-        {
-            continue;
-        }
-        int iType = (it->second->m_iFlags1) & T5X_TYPE_MASK;
+	if (!it->second->m_fFlags1)
+	{
+	    continue;
+	}
+	int iType = (it->second->m_iFlags1) & T5X_TYPE_MASK;
 
-        if (  iType < 0
-           || 7 < iType)
-        {
-            continue;
-        }
+	if (  iType < 0
+	   || 7 < iType)
+	{
+	    continue;
+	}
 
-        P6H_OBJECTINFO *poi = new P6H_OBJECTINFO;
+	P6H_OBJECTINFO *poi = new P6H_OBJECTINFO;
 
-        poi->SetRef(it->second->m_dbRef);
-        poi->SetName(StringClone(it->second->m_pName));
-        poi->SetLocation(it->second->m_dbLocation);
-        poi->SetContents(it->second->m_dbContents);
+	poi->SetRef(it->second->m_dbRef);
+	poi->SetName(StringClone(it->second->m_pName));
+	poi->SetLocation(it->second->m_dbLocation);
+	poi->SetContents(it->second->m_dbContents);
 
-        switch (iType)
-        {
-        case T5X_TYPE_PLAYER:
-        case T5X_TYPE_THING:
-            poi->SetExits(it->second->m_dbLink);
-            break;
+	switch (iType)
+	{
+	case T5X_TYPE_PLAYER:
+	case T5X_TYPE_THING:
+	    poi->SetExits(it->second->m_dbLink);
+	    break;
 
-        default:
-            poi->SetExits(it->second->m_dbExits);
-            break;
-        }
+	default:
+	    poi->SetExits(it->second->m_dbExits);
+	    break;
+	}
 
-        poi->SetNext(it->second->m_dbNext);
-        poi->SetParent(it->second->m_dbParent);
-        poi->SetOwner(it->second->m_dbOwner);
-        poi->SetZone(it->second->m_dbZone);
-        poi->SetPennies(it->second->m_iPennies);
-        poi->SetType(t5x_convert_type[iType]);
+	poi->SetNext(it->second->m_dbNext);
+	poi->SetParent(it->second->m_dbParent);
+	poi->SetOwner(it->second->m_dbOwner);
+	poi->SetZone(it->second->m_dbZone);
+	poi->SetPennies(it->second->m_iPennies);
+	poi->SetType(t5x_convert_type[iType]);
 
-        char aBuffer[1000];
-        char *pBuffer = aBuffer;
+	char aBuffer[1000];
+	char *pBuffer = aBuffer;
 
-        // Convert flags1 and flags2.
-        //
-        bool fFirst = true;
-        for (int i = 0; i < sizeof(t5x_convert_obj_flags1)/sizeof(t5x_convert_obj_flags1[0]); i++)
-        {
-            if (t5x_convert_obj_flags1[i].mask & it->second->m_iFlags1)
-            {
-                if (!fFirst)
-                {
-                    *pBuffer++ = ' ';
-                }
-                fFirst = false;
-                strcpy(pBuffer, t5x_convert_obj_flags1[i].pName);
-                pBuffer += strlen(t5x_convert_obj_flags1[i].pName);
-            }
-        }
-        for (int i = 0; i < sizeof(t5x_convert_obj_flags2)/sizeof(t5x_convert_obj_flags2[0]); i++)
-        {
-            if (t5x_convert_obj_flags2[i].mask & it->second->m_iFlags2)
-            {
-                if (!fFirst)
-                {
-                    *pBuffer++ = ' ';
-                }
-                fFirst = false;
-                strcpy(pBuffer, t5x_convert_obj_flags2[i].pName);
-                pBuffer += strlen(t5x_convert_obj_flags2[i].pName);
-            }
-        }
-        *pBuffer = '\0';
-        poi->SetFlags(StringClone(aBuffer));
+	// Convert flags1 and flags2.
+	//
+	bool fFirst = true;
+	for (int i = 0; i < sizeof(t5x_convert_obj_flags1)/sizeof(t5x_convert_obj_flags1[0]); i++)
+	{
+	    if (t5x_convert_obj_flags1[i].mask & it->second->m_iFlags1)
+	    {
+		if (!fFirst)
+		{
+		    *pBuffer++ = ' ';
+		}
+		fFirst = false;
+		strcpy(pBuffer, t5x_convert_obj_flags1[i].pName);
+		pBuffer += strlen(t5x_convert_obj_flags1[i].pName);
+	    }
+	}
+	for (int i = 0; i < sizeof(t5x_convert_obj_flags2)/sizeof(t5x_convert_obj_flags2[0]); i++)
+	{
+	    if (t5x_convert_obj_flags2[i].mask & it->second->m_iFlags2)
+	    {
+		if (!fFirst)
+		{
+		    *pBuffer++ = ' ';
+		}
+		fFirst = false;
+		strcpy(pBuffer, t5x_convert_obj_flags2[i].pName);
+		pBuffer += strlen(t5x_convert_obj_flags2[i].pName);
+	    }
+	}
+	*pBuffer = '\0';
+	poi->SetFlags(StringClone(aBuffer));
 
-        // Convert powers.
-        //
-        fFirst = true;
-        pBuffer = aBuffer;
-        for (int i = 0; i < sizeof(t5x_convert_obj_powers1)/sizeof(t5x_convert_obj_powers1[0]); i++)
-        {
-            if (t5x_convert_obj_powers1[i].mask & it->second->m_iPowers1)
-            {
-                if (!fFirst)
-                {
-                    *pBuffer++ = ' ';
-                }
-                fFirst = false;
-                strcpy(pBuffer, t5x_convert_obj_powers1[i].pName);
-                pBuffer += strlen(t5x_convert_obj_powers1[i].pName);
-            }
-        }
-        for (int i = 0; i < sizeof(t5x_convert_obj_powers2)/sizeof(t5x_convert_obj_powers2[0]); i++)
-        {
-            if (t5x_convert_obj_powers2[i].mask & it->second->m_iPowers2)
-            {
-                if (!fFirst)
-                {
-                    *pBuffer++ = ' ';
-                }
-                fFirst = false;
-                strcpy(pBuffer, t5x_convert_obj_powers2[i].pName);
-                pBuffer += strlen(t5x_convert_obj_powers2[i].pName);
-            }
-        }
+	// Convert powers.
+	//
+	fFirst = true;
+	pBuffer = aBuffer;
+	for (int i = 0; i < sizeof(t5x_convert_obj_powers1)/sizeof(t5x_convert_obj_powers1[0]); i++)
+	{
+	    if (t5x_convert_obj_powers1[i].mask & it->second->m_iPowers1)
+	    {
+		if (!fFirst)
+		{
+		    *pBuffer++ = ' ';
+		}
+		fFirst = false;
+		strcpy(pBuffer, t5x_convert_obj_powers1[i].pName);
+		pBuffer += strlen(t5x_convert_obj_powers1[i].pName);
+	    }
+	}
+	for (int i = 0; i < sizeof(t5x_convert_obj_powers2)/sizeof(t5x_convert_obj_powers2[0]); i++)
+	{
+	    if (t5x_convert_obj_powers2[i].mask & it->second->m_iPowers2)
+	    {
+		if (!fFirst)
+		{
+		    *pBuffer++ = ' ';
+		}
+		fFirst = false;
+		strcpy(pBuffer, t5x_convert_obj_powers2[i].pName);
+		pBuffer += strlen(t5x_convert_obj_powers2[i].pName);
+	    }
+	}
 
-        // Immortal power is special.
-        //
-        if (0x00200000 & it->second->m_iFlags1)
-        {
-            if (!fFirst)
-            {
-                *pBuffer++ = ' ';
-            }
-            fFirst = false;
-            strcpy(pBuffer, "Immortal");
-            pBuffer += strlen("Immortal");
-        }
-        *pBuffer = '\0';
-        poi->SetPowers(StringClone(aBuffer));
+	// Immortal power is special.
+	//
+	if (0x00200000 & it->second->m_iFlags1)
+	{
+	    if (!fFirst)
+	    {
+		*pBuffer++ = ' ';
+	    }
+	    fFirst = false;
+	    strcpy(pBuffer, "Immortal");
+	    pBuffer += strlen("Immortal");
+	}
+	*pBuffer = '\0';
+	poi->SetPowers(StringClone(aBuffer));
 
-        poi->SetWarnings(StringClone(""));
+	poi->SetWarnings(StringClone(""));
 
-        if (NULL != it->second->m_pvai)
-        {
-            vector<P6H_ATTRINFO *> *pvai = new vector<P6H_ATTRINFO *>;
-            vector<P6H_LOCKINFO *> *pvli = new vector<P6H_LOCKINFO *>;
-            for (vector<T5X_ATTRINFO *>::iterator itAttr = it->second->m_pvai->begin(); itAttr != it->second->m_pvai->end(); ++itAttr)
-            {
-                if ((*itAttr)->m_fNumAndValue)
-                {
-                    if ((*itAttr)->m_fIsLock)
-                    {
-                        const char *pType = NULL;
-                        for (int i = 0; i < sizeof(t5x_locknames)/sizeof(t5x_locknames[0]); i++)
-                        {
-                            if (t5x_locknames[i].iNum == (*itAttr)->m_iNum)
-                            {
-                                pType = t5x_locknames[i].pName;
-                            }
-                        }
+	if (NULL != it->second->m_pvai)
+	{
+	    vector<P6H_ATTRINFO *> *pvai = new vector<P6H_ATTRINFO *>;
+	    vector<P6H_LOCKINFO *> *pvli = new vector<P6H_LOCKINFO *>;
+	    for (vector<T5X_ATTRINFO *>::iterator itAttr = it->second->m_pvai->begin(); itAttr != it->second->m_pvai->end(); ++itAttr)
+	    {
+		if ((*itAttr)->m_fNumAndValue)
+		{
+		    if ((*itAttr)->m_fIsLock)
+		    {
+			const char *pType = NULL;
+			for (int i = 0; i < sizeof(t5x_locknames)/sizeof(t5x_locknames[0]); i++)
+			{
+			    if (t5x_locknames[i].iNum == (*itAttr)->m_iNum)
+			    {
+				pType = t5x_locknames[i].pName;
+			    }
+			}
 
-                        if (  NULL != pType
-                           && NULL != (*itAttr)->m_pKeyTree)
-                        {
-                            P6H_LOCKEXP *ple = new P6H_LOCKEXP;
-                            if (ple->ConvertFromT5X((*itAttr)->m_pKeyTree))
-                            {
-                                char *p = ple->Write(aBuffer);
-                                *p = '\0';
+			if (  NULL != pType
+			   && NULL != (*itAttr)->m_pKeyTree)
+			{
+			    P6H_LOCKEXP *ple = new P6H_LOCKEXP;
+			    if (ple->ConvertFromT5X((*itAttr)->m_pKeyTree))
+			    {
+				char *p = ple->Write(aBuffer);
+				*p = '\0';
 
-                                P6H_LOCKINFO *pli = new P6H_LOCKINFO;
-                                pli->SetType(StringClone(pType));
-                                pli->SetCreator(it->first);
-                                pli->SetFlags(StringClone(""));
-                                pli->SetDerefs(0);
-                                pli->SetKey(StringClone(aBuffer));
+				P6H_LOCKINFO *pli = new P6H_LOCKINFO;
+				pli->SetType(StringClone(pType));
+				pli->SetCreator(it->first);
+				pli->SetFlags(StringClone(""));
+				pli->SetDerefs(0);
+				pli->SetKey(StringClone(aBuffer));
 
-                                pvli->push_back(pli);
-                            }
-                            else
-                            {
-                                delete ple;
-                                fprintf(stderr, "WARNING: Could not convert '%s' lock on #%d containing '%s'.\n", pType, it->first, (*itAttr)->m_pValueUnencoded);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (  T5X_A_CREATED == (*itAttr)->m_iNum
-                           || T5X_A_MODIFIED  == (*itAttr)->m_iNum)
-                        {
-                            time_t t;
-                            if (ConvertTimeString((*itAttr)->m_pValueUnencoded, &t))
-                            {
-                                switch ((*itAttr)->m_iNum)
-                                {
-                                case T5X_A_CREATED: poi->SetCreated(t); break;
-                                case T5X_A_MODIFIED: poi->SetModified(t); break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            map<int, const char *, lti>::iterator itFound = AttrNames.find((*itAttr)->m_iNum);
-                            if (itFound != AttrNames.end())
-                            {
-                                P6H_ATTRINFO *pai = new P6H_ATTRINFO;
-                                pai->SetName(StringClone(itFound->second));
-                                pai->SetDerefs(0);
-                                char *pValue = (*itAttr)->m_pValueUnencoded;
-                                if (T5X_A_PASS == (*itAttr)->m_iNum)
-                                {
-                                    const char sP6HPrefix[] = "$P6H$$";
-                                    if (memcmp(pValue, sP6HPrefix, sizeof(sP6HPrefix)-1) == 0)
-                                    {
-                                        pValue += sizeof(sP6HPrefix) - 1;
-                                    }
-                                }
-                                pai->SetValue(StringClone(pValue));
-                                pai->SetOwner((*itAttr)->m_dbOwner);
+				pvli->push_back(pli);
+			    }
+			    else
+			    {
+				delete ple;
+				fprintf(stderr, "WARNING: Could not convert '%s' lock on #%d containing '%s'.\n", pType, it->first, (*itAttr)->m_pValueUnencoded);
+			    }
+			}
+		    }
+		    else
+		    {
+			if (  T5X_A_CREATED == (*itAttr)->m_iNum
+			   || T5X_A_MODIFIED  == (*itAttr)->m_iNum)
+			{
+			    time_t t;
+			    if (ConvertTimeString((*itAttr)->m_pValueUnencoded, &t))
+			    {
+				switch ((*itAttr)->m_iNum)
+				{
+				case T5X_A_CREATED: poi->SetCreated(t); break;
+				case T5X_A_MODIFIED: poi->SetModified(t); break;
+				}
+			    }
+			}
+			else
+			{
+			    map<int, const char *, lti>::iterator itFound = AttrNames.find((*itAttr)->m_iNum);
+			    if (itFound != AttrNames.end())
+			    {
+				P6H_ATTRINFO *pai = new P6H_ATTRINFO;
+				pai->SetName(StringClone(itFound->second));
+				pai->SetDerefs(0);
+				char *pValue = (*itAttr)->m_pValueUnencoded;
+				if (T5X_A_PASS == (*itAttr)->m_iNum)
+				{
+				    const char sP6HPrefix[] = "$P6H$$";
+				    if (memcmp(pValue, sP6HPrefix, sizeof(sP6HPrefix)-1) == 0)
+				    {
+					pValue += sizeof(sP6HPrefix) - 1;
+				    }
+				}
+				pai->SetValue(StringClone(pValue));
+				pai->SetOwner((*itAttr)->m_dbOwner);
 
-                                pBuffer = aBuffer;
-                                fFirst = true;
-                                for (int i = 0; i < sizeof(t5x_attr_flags)/sizeof(t5x_attr_flags[0]); i++)
-                                {
-                                    if (t5x_attr_flags[i].mask & (*itAttr)->m_iFlags)
-                                    {
-                                        if (!fFirst)
-                                        {
-                                            *pBuffer++ = ' ';
-                                        }
-                                        fFirst = false;
-                                        strcpy(pBuffer, t5x_attr_flags[i].pName);
-                                        pBuffer += strlen(t5x_attr_flags[i].pName);
-                                    }
-                                }
-                                *pBuffer = '\0';
-                                pai->SetFlags(StringClone(aBuffer));
+				pBuffer = aBuffer;
+				fFirst = true;
+				for (int i = 0; i < sizeof(t5x_attr_flags)/sizeof(t5x_attr_flags[0]); i++)
+				{
+				    if (t5x_attr_flags[i].mask & (*itAttr)->m_iFlags)
+				    {
+					if (!fFirst)
+					{
+					    *pBuffer++ = ' ';
+					}
+					fFirst = false;
+					strcpy(pBuffer, t5x_attr_flags[i].pName);
+					pBuffer += strlen(t5x_attr_flags[i].pName);
+				    }
+				}
+				*pBuffer = '\0';
+				pai->SetFlags(StringClone(aBuffer));
 
-                                pvai->push_back(pai);
-                            }
-                        }
-                    }
-                }
-            }
-            if (0 < pvai->size())
-            {
-                poi->SetAttrs(pvai->size(), pvai);
-                pvai = NULL;
-            }
-            if (0 < pvli->size())
-            {
-                poi->SetLocks(pvli->size(), pvli);
-                pvli = NULL;
-            }
-            delete pvai;
-            delete pvli;
-        }
+				pvai->push_back(pai);
+			    }
+			}
+		    }
+		}
+	    }
+	    if (0 < pvai->size())
+	    {
+		poi->SetAttrs(pvai->size(), pvai);
+		pvai = NULL;
+	    }
+	    if (0 < pvli->size())
+	    {
+		poi->SetLocks(pvli->size(), pvli);
+		pvli = NULL;
+	    }
+	    delete pvai;
+	    delete pvli;
+	}
 
-        AddObject(poi);
+	AddObject(poi);
     }
 
     // Set database size hints.
@@ -2612,7 +2612,7 @@ void P6H_GAME::ConvertFromT5X()
     //
     for (map<int, const char *, lti>::iterator it = AttrNames.begin(); it != AttrNames.end(); ++it)
     {
-        delete it->second;
+	delete it->second;
     }
 }
 
@@ -2622,11 +2622,11 @@ void P6H_GAME::Extract(FILE *fp, int dbExtract) const
     itFound = m_mObjects.find(dbExtract);
     if (itFound == m_mObjects.end())
     {
-        fprintf(stderr, "WARNING: Object #%d does not exist in the database.\n", dbExtract);
+	fprintf(stderr, "WARNING: Object #%d does not exist in the database.\n", dbExtract);
     }
     else
     {
-        itFound->second->Extract(fp);
+	itFound->second->Extract(fp);
     }
 }
 
@@ -2683,36 +2683,36 @@ static bool ScanForFragment(const char *p, bool fEval, int &iFragment, size_t &n
     if (  NULL == p
        && '\0' == *p)
     {
-        nSkip = 0;
-        return false;
+	nSkip = 0;
+	return false;
     }
 
     for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
     {
-        if (  (  !fragments[i].fEvalOnly
-              || fEval)
-           && strncmp(p, fragments[i].pFragment, fragments[i].nFragment) == 0)
-        {
-            iFragment = i;
-            return true;
-        }
+	if (  (  !fragments[i].fEvalOnly
+	      || fEval)
+	   && strncmp(p, fragments[i].pFragment, fragments[i].nFragment) == 0)
+	{
+	    iFragment = i;
+	    return true;
+	}
     }
     const char *q = p + 1;
     for ( ; '\0' != *q; q++)
     {
-        bool fFound = false;
-        for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
-        {
-            if (*q == fragments[i].pFragment[0])
-            {
-                fFound = true;
-                break;
-            }
-        }
-        if (fFound)
-        {
-            break;
-        }
+	bool fFound = false;
+	for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
+	{
+	    if (*q == fragments[i].pFragment[0])
+	    {
+		fFound = true;
+		break;
+	    }
+	}
+	if (fFound)
+	{
+	    break;
+	}
     }
     nSkip = q - p;
     return false;
@@ -2731,111 +2731,111 @@ static char *EncodeSubstitutions(char *pValue, bool &fNeedEval)
     char *qsave;
 
     while (  '\0' != *p
-          && q < ((fInColor)?(temp + sizeof(temp) - 1):(buffer + sizeof(buffer) - 1)))
+	  && q < ((fInColor)?(temp + sizeof(temp) - 1):(buffer + sizeof(buffer) - 1)))
     {
-        int iFragment;
-        size_t nSkip;
-        if (ScanForFragment(p, fEval, iFragment, nSkip))
-        {
-            if (  !fEval
-               && fragments[iFragment].fNeedEval)
-            {
-                fEval = true;
-                fInColor = false;
-                p = pValue;
-                q = buffer;
-            }
-            else
-            {
-                size_t nskp = fragments[iFragment].nFragment;
-                if (fragments[iFragment].fColor)
-                {
-                    if ('n' == fragments[iFragment].pSubstitution[0])
-                    {
-                        if (fInColor)
-                        {
-                            size_t n = q - temp;
-                            q = qsave;
-                            if (0 < n)
-                            {
-                                memcpy(q, "[ansi(", 6);
-                                q += 6;
-                                for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
-                                {
-                                    if (aCodes[i])
-                                    {
-                                        *q++ = fragments[i].pSubstitution[0];
-                                    }
-                                }
-                                *q++ = ',';
-                                memcpy(q, temp, n);
-                                q += n;
-                                memcpy(q, ")]", 2);
-                                q += 2;
-                            }
-                            fInColor = false;
-                        }
-                    }
-                    else
-                    {
-                        if (!fInColor)
-                        {
-                            qsave = q;
-                            q = temp;
-                            fInColor = true;
-                            for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
-                            {
-                                aCodes[i] = false;
-                            }
-                        }
-                        aCodes[iFragment] = true;
-                    }
-                }
-                else
-                {
-                    size_t ncpy = fragments[iFragment].nSubstitution;
-                    if (q + ncpy < ((fInColor)?(temp + sizeof(temp) - 1):(buffer + sizeof(buffer) - 1)))
-                    {
-                        memcpy(q, fragments[iFragment].pSubstitution, ncpy);
-                        q += ncpy;
-                    }
-                }
-                p += nskp;
-            }
-        }
-        else
-        {
-            if (q + nSkip < ((fInColor)?(temp + sizeof(temp) - 1):(buffer + sizeof(buffer) - 1)))
-            {
-                memcpy(q, p, nSkip);
-                q += nSkip;
-            }
-            p += nSkip;
-        }
+	int iFragment;
+	size_t nSkip;
+	if (ScanForFragment(p, fEval, iFragment, nSkip))
+	{
+	    if (  !fEval
+	       && fragments[iFragment].fNeedEval)
+	    {
+		fEval = true;
+		fInColor = false;
+		p = pValue;
+		q = buffer;
+	    }
+	    else
+	    {
+		size_t nskp = fragments[iFragment].nFragment;
+		if (fragments[iFragment].fColor)
+		{
+		    if ('n' == fragments[iFragment].pSubstitution[0])
+		    {
+			if (fInColor)
+			{
+			    size_t n = q - temp;
+			    q = qsave;
+			    if (0 < n)
+			    {
+				memcpy(q, "[ansi(", 6);
+				q += 6;
+				for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
+				{
+				    if (aCodes[i])
+				    {
+					*q++ = fragments[i].pSubstitution[0];
+				    }
+				}
+				*q++ = ',';
+				memcpy(q, temp, n);
+				q += n;
+				memcpy(q, ")]", 2);
+				q += 2;
+			    }
+			    fInColor = false;
+			}
+		    }
+		    else
+		    {
+			if (!fInColor)
+			{
+			    qsave = q;
+			    q = temp;
+			    fInColor = true;
+			    for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
+			    {
+				aCodes[i] = false;
+			    }
+			}
+			aCodes[iFragment] = true;
+		    }
+		}
+		else
+		{
+		    size_t ncpy = fragments[iFragment].nSubstitution;
+		    if (q + ncpy < ((fInColor)?(temp + sizeof(temp) - 1):(buffer + sizeof(buffer) - 1)))
+		    {
+			memcpy(q, fragments[iFragment].pSubstitution, ncpy);
+			q += ncpy;
+		    }
+		}
+		p += nskp;
+	    }
+	}
+	else
+	{
+	    if (q + nSkip < ((fInColor)?(temp + sizeof(temp) - 1):(buffer + sizeof(buffer) - 1)))
+	    {
+		memcpy(q, p, nSkip);
+		q += nSkip;
+	    }
+	    p += nSkip;
+	}
     }
     if (  fInColor
        && q != temp)
     {
-        size_t n = q - temp;
-        q = qsave;
-        if (0 < n)
-        {
-            memcpy(q, "[ansi(", 6);
-            q += 6;
-            for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
-            {
-                if (aCodes[i])
-                {
-                    *q++ = fragments[i].pSubstitution[0];
-                }
-            }
-            *q++ = ',';
-            memcpy(q, temp, n);
-            q += n;
-            memcpy(q, ")]", 2);
-            q += 2;
-        }
-        fInColor = false;
+	size_t n = q - temp;
+	q = qsave;
+	if (0 < n)
+	{
+	    memcpy(q, "[ansi(", 6);
+	    q += 6;
+	    for (int i = 0; i < sizeof(fragments)/sizeof(fragments[0]); i++)
+	    {
+		if (aCodes[i])
+		{
+		    *q++ = fragments[i].pSubstitution[0];
+		}
+	    }
+	    *q++ = ',';
+	    memcpy(q, temp, n);
+	    q += n;
+	    memcpy(q, ")]", 2);
+	    q += 2;
+	}
+	fInColor = false;
     }
     *q = '\0';
     fNeedEval = fEval;
@@ -2850,33 +2850,33 @@ static char *StripColor(char *pValue)
     bool fEval = false;
 
     while (  '\0' != *p
-          && q < buffer + sizeof(buffer) - 1)
+	  && q < buffer + sizeof(buffer) - 1)
     {
-        int iFragment;
-        size_t nSkip;
-        if (ScanForFragment(p, fEval, iFragment, nSkip))
-        {
-            size_t nskp = fragments[iFragment].nFragment;
-            if (fragments[iFragment].fColor)
-            {
-                size_t ncpy = fragments[iFragment].nSubstitution;
-                if (q + ncpy < buffer + sizeof(buffer) - 1)
-                {
-                    memcpy(q, fragments[iFragment].pSubstitution, ncpy);
-                    q += ncpy;
-                }
-            }
-            p += nskp;
-        }
-        else
-        {
-            if (q + nSkip < buffer + sizeof(buffer) - 1)
-            {
-                memcpy(q, p, nSkip);
-                q += nSkip;
-            }
-            p += nSkip;
-        }
+	int iFragment;
+	size_t nSkip;
+	if (ScanForFragment(p, fEval, iFragment, nSkip))
+	{
+	    size_t nskp = fragments[iFragment].nFragment;
+	    if (fragments[iFragment].fColor)
+	    {
+		size_t ncpy = fragments[iFragment].nSubstitution;
+		if (q + ncpy < buffer + sizeof(buffer) - 1)
+		{
+		    memcpy(q, fragments[iFragment].pSubstitution, ncpy);
+		    q += ncpy;
+		}
+	    }
+	    p += nskp;
+	}
+	else
+	{
+	    if (q + nSkip < buffer + sizeof(buffer) - 1)
+	    {
+		memcpy(q, p, nSkip);
+		q += nSkip;
+	    }
+	    p += nSkip;
+	}
     }
     *q = '\0';
     return buffer;
@@ -2888,8 +2888,8 @@ void P6H_OBJECTINFO::Extract(FILE *fp) const
     fprintf(fp, "@@ encoding is latin-1\n", m_dbRef);
     if (NULL != m_pName)
     {
-        bool fNeedEval;
-        fprintf(fp, "@@ %s\n", EncodeSubstitutions(m_pName, fNeedEval));
+	bool fNeedEval;
+	fprintf(fp, "@@ %s\n", EncodeSubstitutions(m_pName, fNeedEval));
     }
     char *pStrippedObjName = StringClone(StripColor(m_pName));
 
@@ -2897,35 +2897,35 @@ void P6H_OBJECTINFO::Extract(FILE *fp) const
     //
     if (NULL != m_pFlags)
     {
-        fprintf(fp, "@set %s=%s\n", pStrippedObjName, m_pFlags);
+	fprintf(fp, "@set %s=%s\n", pStrippedObjName, m_pFlags);
     }
     if (m_fFlags)
     {
-        fprintf(fp, "@@ Omega doesn't support extracting object flags from older flatfiles versions, yet.\n");
+	fprintf(fp, "@@ Omega doesn't support extracting object flags from older flatfiles versions, yet.\n");
     }
 
     // Object powers.
     //
     if (NULL != m_pPowers)
     {
-        fprintf(fp, "@power %s=%s\n", pStrippedObjName, m_pPowers);
+	fprintf(fp, "@power %s=%s\n", pStrippedObjName, m_pPowers);
     }
 
     // Attribute values.
     //
     if (NULL != m_pvai)
     {
-        for (vector<P6H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
-        {
-            (*it)->Extract(fp, pStrippedObjName);
-        }
+	for (vector<P6H_ATTRINFO *>::iterator it = m_pvai->begin(); it != m_pvai->end(); ++it)
+	{
+	    (*it)->Extract(fp, pStrippedObjName);
+	}
     }
     if (NULL != m_pvli)
     {
-        for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
-        {
-            (*it)->Extract(fp, pStrippedObjName);
-        }
+	for (vector<P6H_LOCKINFO *>::iterator it = m_pvli->begin(); it != m_pvli->end(); ++it)
+	{
+	    (*it)->Extract(fp, pStrippedObjName);
+	}
     }
     free(pStrippedObjName);
 }
@@ -2934,28 +2934,28 @@ void P6H_ATTRINFO::Extract(FILE *fp, char *pObjName) const
 {
     if (NULL != m_pName)
     {
-        if (NULL != m_pValue)
-        {
-            bool fNeedEval;
-            const char *p = EncodeSubstitutions(m_pValue, fNeedEval);
-            if (fNeedEval)
-            {
-                fprintf(fp, "@set %s=%s:%s\n", pObjName, m_pName, p);
-            }
-            else
-            {
-                fprintf(fp, "&%s %s=%s\n", m_pName, pObjName, p);
-            }
-        }
-        else
-        {
-            fprintf(fp, "&%s %s=\n", m_pName, pObjName);
-        }
-        if (  NULL != m_pFlags
-           && '\0' != m_pFlags[0])
-        {
-            fprintf(fp, "@set %s/%s=%s\n", pObjName, m_pName, m_pFlags);
-        }
+	if (NULL != m_pValue)
+	{
+	    bool fNeedEval;
+	    const char *p = EncodeSubstitutions(m_pValue, fNeedEval);
+	    if (fNeedEval)
+	    {
+		fprintf(fp, "@set %s=%s:%s\n", pObjName, m_pName, p);
+	    }
+	    else
+	    {
+		fprintf(fp, "&%s %s=%s\n", m_pName, pObjName, p);
+	    }
+	}
+	else
+	{
+	    fprintf(fp, "&%s %s=\n", m_pName, pObjName);
+	}
+	if (  NULL != m_pFlags
+	   && '\0' != m_pFlags[0])
+	{
+	    fprintf(fp, "@set %s/%s=%s\n", pObjName, m_pName, m_pFlags);
+	}
     }
 }
 
@@ -2964,27 +2964,27 @@ void P6H_LOCKINFO::Extract(FILE *fp, char *pObjName) const
     if (  NULL != m_pType
        && NULL != m_pKey)
     {
-        bool fNeedEval;
-        const char *p = EncodeSubstitutions(m_pKey, fNeedEval);
-        if (fNeedEval)
-        {
-            fprintf(fp, "@wait 0={@lock/%s %s=%s}\n", m_pType, pObjName, p);
-        }
-        else
-        {
-            fprintf(fp, "@lock/%s %s=%s\n", m_pType, pObjName, p);
-        }
-        if (  NULL != m_pFlags
-           && '\0' != *m_pFlags)
-        {
-            if (fNeedEval)
-            {
-                fprintf(fp, "@wait 0={@lset %s/%s=%s}\n", pObjName, m_pType, m_pFlags);
-            }
-            else
-            {
-                fprintf(fp, "@lset %s/%s=%s\n", pObjName, m_pType, m_pFlags);
-            }
-        }
+	bool fNeedEval;
+	const char *p = EncodeSubstitutions(m_pKey, fNeedEval);
+	if (fNeedEval)
+	{
+	    fprintf(fp, "@wait 0={@lock/%s %s=%s}\n", m_pType, pObjName, p);
+	}
+	else
+	{
+	    fprintf(fp, "@lock/%s %s=%s\n", m_pType, pObjName, p);
+	}
+	if (  NULL != m_pFlags
+	   && '\0' != *m_pFlags)
+	{
+	    if (fNeedEval)
+	    {
+		fprintf(fp, "@wait 0={@lset %s/%s=%s}\n", pObjName, m_pType, m_pFlags);
+	    }
+	    else
+	    {
+		fprintf(fp, "@lset %s/%s=%s\n", pObjName, m_pType, m_pFlags);
+	    }
+	}
     }
 }

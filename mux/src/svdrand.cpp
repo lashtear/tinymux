@@ -42,12 +42,12 @@ void SeedRandomNumberGenerator(void)
     int fd;
     if (mux_open(&fd, T("/dev/urandom"), O_RDONLY))
     {
-        int len = mux_read(fd, aRandomSystemBytes, sizeof aRandomSystemBytes);
-        mux_close(fd);
-        if (len > 0)
-        {
-            nRandomSystemBytes = len/sizeof(UINT32);
-        }
+	int len = mux_read(fd, aRandomSystemBytes, sizeof aRandomSystemBytes);
+	mux_close(fd);
+	if (len > 0)
+	{
+	    nRandomSystemBytes = len/sizeof(UINT32);
+	}
     }
 #endif // HAVE_DEV_URANDOM
 #if defined(WINDOWS_CRYPT)
@@ -55,23 +55,23 @@ void SeedRandomNumberGenerator(void)
     if (  CryptAcquireContext(&hProv, NULL, NULL, PROV_DSS, 0)
        || CryptAcquireContext(&hProv, NULL, NULL, PROV_DSS, CRYPT_NEWKEYSET))
     {
-        if (CryptGenRandom(hProv, sizeof(aRandomSystemBytes), (BYTE *)aRandomSystemBytes))
-        {
-            nRandomSystemBytes = NUM_RANDOM_UINT32;
-        }
-        CryptReleaseContext(hProv, 0);
+	if (CryptGenRandom(hProv, sizeof(aRandomSystemBytes), (BYTE *)aRandomSystemBytes))
+	{
+	    nRandomSystemBytes = NUM_RANDOM_UINT32;
+	}
+	CryptReleaseContext(hProv, 0);
     }
 #endif // WINDOWS_CRYPT
 
     if (nRandomSystemBytes >= sizeof(UINT32))
     {
-        unsigned int i;
-        for (i = 0; i < nRandomSystemBytes; i++)
-        {
-            aRandomSystemBytes[i] &= 0xFFFFFFFFUL;
-        }
-        sgenrand_from_array(aRandomSystemBytes, nRandomSystemBytes);
-        return;
+	unsigned int i;
+	for (i = 0; i < nRandomSystemBytes; i++)
+	{
+	    aRandomSystemBytes[i] &= 0xFFFFFFFFUL;
+	}
+	sgenrand_from_array(aRandomSystemBytes, nRandomSystemBytes);
+	return;
     }
 
     // Determine the initial seed.
@@ -86,7 +86,7 @@ void SeedRandomNumberGenerator(void)
 
     if (nSeed <= 1000)
     {
-        nSeed += 22261048;
+	nSeed += 22261048;
     }
 
     // ASSERT: 1000 < nSeed
@@ -102,17 +102,17 @@ INT32 RandomINT32(INT32 lLow, INT32 lHigh)
     //
     if (lHigh < lLow)
     {
-        return -1;
+	return -1;
     }
     else if (lHigh == lLow)
     {
-        return lLow;
+	return lLow;
     }
 
     UINT32 x = lHigh-lLow;
     if (INT32_MAX_VALUE < x)
     {
-        return -1;
+	return -1;
     }
     x++;
 
@@ -137,7 +137,7 @@ INT32 RandomINT32(INT32 lLow, INT32 lHigh)
 
     do
     {
-        n = genrand();
+	n = genrand();
     } while (n >= nLimit);
 
     return lLow + (n % x);
@@ -181,13 +181,13 @@ static void sgenrand(UINT32 nSeed)
     mt[0] = nSeed & 0xffffffffUL;
     for (j = 1; j < N; j++)
     {
-        // See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier.
-        // In the previous versions, MSBs of the seed affect
-        // only MSBs of the array mt[].
-        // 2002/01/09 modified by Makoto Matsumoto.
-        //
-        mt[j] = 1812433253UL * (mt[j-1] ^ (mt[j-1] >> 30)) + j;
-        mt[j] &= 0xffffffffUL;  // for >32 bit machines.
+	// See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier.
+	// In the previous versions, MSBs of the seed affect
+	// only MSBs of the array mt[].
+	// 2002/01/09 modified by Makoto Matsumoto.
+	//
+	mt[j] = 1812433253UL * (mt[j-1] ^ (mt[j-1] >> 30)) + j;
+	mt[j] &= 0xffffffffUL;  // for >32 bit machines.
     }
     left = 1;
 }
@@ -204,31 +204,31 @@ static void sgenrand_from_array(UINT32 *init_key, int key_length)
     int k = (N > key_length ? N : key_length);
     for (; k; k--)
     {
-        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))
-              + init_key[j] + j;
-        mt[i] &= 0xffffffffUL; // for > 32-bit machines.
-        i++;
-        j++;
-        if (i >= N)
-        {
-            mt[0] = mt[N-1];
-            i = 1;
-        }
-        if (j >= key_length)
-        {
-            j = 0;
-        }
+	mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))
+	      + init_key[j] + j;
+	mt[i] &= 0xffffffffUL; // for > 32-bit machines.
+	i++;
+	j++;
+	if (i >= N)
+	{
+	    mt[0] = mt[N-1];
+	    i = 1;
+	}
+	if (j >= key_length)
+	{
+	    j = 0;
+	}
     }
     for (k = N-1; k; k--)
     {
-        mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL)) - i;
-        mt[i] &= 0xffffffffUL; // for > 32-bit machines.
-        i++;
-        if (i >= N)
-        {
-            mt[0] = mt[N-1];
-            i = 1;
-        }
+	mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL)) - i;
+	mt[i] &= 0xffffffffUL; // for > 32-bit machines.
+	i++;
+	if (i >= N)
+	{
+	    mt[0] = mt[N-1];
+	    i = 1;
+	}
     }
 
     mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
@@ -242,17 +242,17 @@ static void next_state(void)
 
     if (!bSeeded)
     {
-        SeedRandomNumberGenerator();
+	SeedRandomNumberGenerator();
     }
 
     for (j = N-M+1; --j; p++)
     {
-        *p = p[M] ^ TWIST(p[0], p[1]);
+	*p = p[M] ^ TWIST(p[0], p[1]);
     }
 
     for (j = M; --j; p++)
     {
-        *p = p[M-N] ^ TWIST(p[0], p[1]);
+	*p = p[M-N] ^ TWIST(p[0], p[1]);
     }
 
     *p = p[M-N] ^ TWIST(p[0], mt[0]);
@@ -269,7 +269,7 @@ static UINT32 genrand(void)
 
     if (--left == 0)
     {
-        next_state();
+	next_state();
     }
     y = *next++;
 

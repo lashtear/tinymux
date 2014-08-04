@@ -41,8 +41,8 @@ void do_dump(dbref executor, dbref caller, dbref enactor, int eval, int key)
 #if defined(HAVE_WORKING_FORK)
     if (mudstate.dumping)
     {
-        notify(executor, T("Dumping in progress. Try again later."));
-        return;
+	notify(executor, T("Dumping in progress. Try again later."));
+	return;
     }
 #endif
     notify(executor, T("Dumping..."));
@@ -60,16 +60,16 @@ void report(void)
     ENDLOG;
     if (Good_obj(mudstate.curr_executor))
     {
-        STARTLOG(LOG_BUGS, "BUG", "INFO");
-        log_text(T("Player: "));
-        log_name_and_loc(mudstate.curr_executor);
-        if (  mudstate.curr_enactor != mudstate.curr_executor
-           && Good_obj(mudstate.curr_enactor))
-        {
-            log_text(T(" Enactor: "));
-            log_name_and_loc(mudstate.curr_enactor);
-        }
-        ENDLOG;
+	STARTLOG(LOG_BUGS, "BUG", "INFO");
+	log_text(T("Player: "));
+	log_name_and_loc(mudstate.curr_executor);
+	if (  mudstate.curr_enactor != mudstate.curr_executor
+	   && Good_obj(mudstate.curr_enactor))
+	{
+	    log_text(T(" Enactor: "));
+	    log_name_and_loc(mudstate.curr_enactor);
+	}
+	ENDLOG;
     }
 }
 
@@ -102,12 +102,12 @@ bool regexp_match
     if (  MuxAlarm.bAlarmed
        || (re = pcre_compile((char *)pattern, PCRE_UTF8|case_opt, &errptr, &erroffset, NULL)) == NULL)
     {
-        /*
-         * This is a matching error. We have an error message in
-         * regexp_errbuf that we can ignore, since we're doing
-         * command-matching.
-         */
-        return false;
+	/*
+	 * This is a matching error. We have an error message in
+	 * regexp_errbuf that we can ignore, since we're doing
+	 * command-matching.
+	 */
+	return false;
     }
 
     // To capture N substrings, you need space for 3(N+1) offsets in the
@@ -123,17 +123,17 @@ bool regexp_match
     matches = pcre_exec(re, NULL, (char *)str, static_cast<int>(strlen((char *)str)), 0, 0, ovec, ovecsize);
     if (matches < 0)
     {
-        delete [] ovec;
-        MEMFREE(re);
-        return false;
+	delete [] ovec;
+	MEMFREE(re);
+	return false;
     }
 
     if (matches == 0)
     {
-        // There were too many substring matches. See docs for
-        // pcre_copy_substring().
-        //
-        matches = ovecsize / 3;
+	// There were too many substring matches. See docs for
+	// pcre_copy_substring().
+	//
+	matches = ovecsize / 3;
     }
 
     /*
@@ -145,13 +145,13 @@ bool regexp_match
 
     for (i = 0; i < nargs; ++i)
     {
-        args[i] = alloc_lbuf("regexp_match");
-        if (pcre_copy_substring((char *)str, ovec, matches, i,
-                                (char *)args[i], LBUF_SIZE) < 0)
-        {
-            free_lbuf(args[i]);
-            args[i] = NULL;
-        }
+	args[i] = alloc_lbuf("regexp_match");
+	if (pcre_copy_substring((char *)str, ovec, matches, i,
+				(char *)args[i], LBUF_SIZE) < 0)
+	{
+	    free_lbuf(args[i]);
+	    args[i] = NULL;
+	}
     }
 
     delete [] ovec;
@@ -179,41 +179,41 @@ static int atr_match1
     //
     if (!could_doit(player, parent, A_LUSE))
     {
-        return -1;
+	return -1;
     }
 
     int match = 0;
     if (  (  AMATCH_CMD    == type
-          && mudstate.bfNoCommands.IsSet(parent))
+	  && mudstate.bfNoCommands.IsSet(parent))
        || (  AMATCH_LISTEN == type
-          && mudstate.bfNoListens.IsSet(parent)))
+	  && mudstate.bfNoListens.IsSet(parent)))
     {
-        // We may need to process the hash_insert to support exclusion of
-        // this parent's $-commands before we return no matches.
-        //
-        if (hash_insert)
-        {
-            // Because we know this object contains no commands, there is no
-            // need to look at the attribute values.
-            //
-            atr_push();
-            unsigned char *as;
-            for (int atr = atr_head(parent, &as); atr; atr = atr_next(&as))
-            {
-                ATTR *ap = atr_num(atr);
+	// We may need to process the hash_insert to support exclusion of
+	// this parent's $-commands before we return no matches.
+	//
+	if (hash_insert)
+	{
+	    // Because we know this object contains no commands, there is no
+	    // need to look at the attribute values.
+	    //
+	    atr_push();
+	    unsigned char *as;
+	    for (int atr = atr_head(parent, &as); atr; atr = atr_next(&as))
+	    {
+		ATTR *ap = atr_num(atr);
 
-                if (  ap
-                   && 0 == (ap->flags & AF_NOPROG)
-                   && (  !check_exclude
-                      || (  0 == (ap->flags & AF_PRIVATE)
-                         && !hashfindLEN(&(ap->number), sizeof(ap->number), &mudstate.parent_htab))))
-                {
-                    hashaddLEN(&(ap->number), sizeof(ap->number), &atr, &mudstate.parent_htab);
-                }
-            }
-            atr_pop();
-        }
-        return match;
+		if (  ap
+		   && 0 == (ap->flags & AF_NOPROG)
+		   && (  !check_exclude
+		      || (  0 == (ap->flags & AF_PRIVATE)
+			 && !hashfindLEN(&(ap->number), sizeof(ap->number), &mudstate.parent_htab))))
+		{
+		    hashaddLEN(&(ap->number), sizeof(ap->number), &atr, &mudstate.parent_htab);
+		}
+	    }
+	    atr_pop();
+	}
+	return match;
     }
 
     bool bFoundCommands = false;
@@ -223,132 +223,132 @@ static int atr_match1
     unsigned char *as;
     for (int atr = atr_head(parent, &as); atr; atr = atr_next(&as))
     {
-        ATTR *ap = atr_num(atr);
+	ATTR *ap = atr_num(atr);
 
-        // Never check NOPROG attributes.
-        //
-        if (  !ap
-           || (ap->flags & AF_NOPROG))
-        {
-            continue;
-        }
+	// Never check NOPROG attributes.
+	//
+	if (  !ap
+	   || (ap->flags & AF_NOPROG))
+	{
+	    continue;
+	}
 
-        // We need to grab the attribute even before we know whether we'll use
-        // it or not in order to maintain cached knowledge about ^-Commands
-        // and $-Commands.
-        //
-        dbref aowner;
-        int   aflags;
-        UTF8 buff[LBUF_SIZE];
-        atr_get_str(buff, parent, atr, &aowner, &aflags);
+	// We need to grab the attribute even before we know whether we'll use
+	// it or not in order to maintain cached knowledge about ^-Commands
+	// and $-Commands.
+	//
+	dbref aowner;
+	int   aflags;
+	UTF8 buff[LBUF_SIZE];
+	atr_get_str(buff, parent, atr, &aowner, &aflags);
 
-        UTF8 *s = NULL;
-        if (  0 == (aflags & AF_NOPROG)
-           &&  (  AMATCH_CMD    == buff[0]
-               || AMATCH_LISTEN == buff[0]))
-        {
-            s = (UTF8 *)strchr((char *)buff+1, ':');
-            if (s)
-            {
-                if (AMATCH_CMD == buff[0])
-                {
-                    bFoundCommands = true;
-                }
-                else
-                {
-                    bFoundListens = true;
-                }
-            }
-        }
+	UTF8 *s = NULL;
+	if (  0 == (aflags & AF_NOPROG)
+	   &&  (  AMATCH_CMD    == buff[0]
+	       || AMATCH_LISTEN == buff[0]))
+	{
+	    s = (UTF8 *)strchr((char *)buff+1, ':');
+	    if (s)
+	    {
+		if (AMATCH_CMD == buff[0])
+		{
+		    bFoundCommands = true;
+		}
+		else
+		{
+		    bFoundListens = true;
+		}
+	    }
+	}
 
-        // If we aren't the bottom level, check if we saw this attr
-        // before. Also exclude it if the attribute type is PRIVATE.
-        //
-        if (  check_exclude
-           && (  (ap->flags & AF_PRIVATE)
-              || (aflags & AF_PRIVATE)
-              || hashfindLEN(&(ap->number), sizeof(ap->number), &mudstate.parent_htab)))
-        {
-            continue;
-        }
+	// If we aren't the bottom level, check if we saw this attr
+	// before. Also exclude it if the attribute type is PRIVATE.
+	//
+	if (  check_exclude
+	   && (  (ap->flags & AF_PRIVATE)
+	      || (aflags & AF_PRIVATE)
+	      || hashfindLEN(&(ap->number), sizeof(ap->number), &mudstate.parent_htab)))
+	{
+	    continue;
+	}
 
-        // If we aren't the top level, remember this attr so we
-        // exclude it from now on.
-        //
-        if (hash_insert)
-        {
-            hashaddLEN(&(ap->number), sizeof(ap->number), &atr, &mudstate.parent_htab);
-        }
+	// If we aren't the top level, remember this attr so we
+	// exclude it from now on.
+	//
+	if (hash_insert)
+	{
+	    hashaddLEN(&(ap->number), sizeof(ap->number), &atr, &mudstate.parent_htab);
+	}
 
-        if (aflags & AF_NOPROG)
-        {
-            continue;
-        }
+	if (aflags & AF_NOPROG)
+	{
+	    continue;
+	}
 
-        // Check for the leadin character after excluding the attrib.
-        // This lets non-command attribs on the child block commands
-        // on the parent.
-        //
-        if (buff[0] != type)
-        {
-            continue;
-        }
+	// Check for the leadin character after excluding the attrib.
+	// This lets non-command attribs on the child block commands
+	// on the parent.
+	//
+	if (buff[0] != type)
+	{
+	    continue;
+	}
 
-        // Was there a ':'?
-        //
-        if (!s)
-        {
-            continue;
-        }
-        *s++ = '\0';
+	// Was there a ':'?
+	//
+	if (!s)
+	{
+	    continue;
+	}
+	*s++ = '\0';
 
-        UTF8 *args[NUM_ENV_VARS];
-        if (  (  0 != (aflags & AF_REGEXP)
-            && regexp_match(buff + 1, (aflags & AF_NOPARSE) ? raw_str : str,
-                ((aflags & AF_CASE) ? 0 : PCRE_CASELESS), args, NUM_ENV_VARS))
-           || (  0 == (aflags & AF_REGEXP)
-              && wild(buff + 1, (aflags & AF_NOPARSE) ? raw_str : str,
-                args, NUM_ENV_VARS)))
-        {
-            match = 1;
-            CLinearTimeAbsolute lta;
-            wait_que(thing, player, player, AttrTrace(aflags, 0), false, lta,
-                NOTHING, 0,
-                s,
-                NUM_ENV_VARS, (const UTF8 **)args,
-                mudstate.global_regs);
+	UTF8 *args[NUM_ENV_VARS];
+	if (  (  0 != (aflags & AF_REGEXP)
+	    && regexp_match(buff + 1, (aflags & AF_NOPARSE) ? raw_str : str,
+		((aflags & AF_CASE) ? 0 : PCRE_CASELESS), args, NUM_ENV_VARS))
+	   || (  0 == (aflags & AF_REGEXP)
+	      && wild(buff + 1, (aflags & AF_NOPARSE) ? raw_str : str,
+		args, NUM_ENV_VARS)))
+	{
+	    match = 1;
+	    CLinearTimeAbsolute lta;
+	    wait_que(thing, player, player, AttrTrace(aflags, 0), false, lta,
+		NOTHING, 0,
+		s,
+		NUM_ENV_VARS, (const UTF8 **)args,
+		mudstate.global_regs);
 
-            for (int i = 0; i < NUM_ENV_VARS; i++)
-            {
-                if (args[i])
-                {
-                    free_lbuf(args[i]);
-                }
-            }
-        }
+	    for (int i = 0; i < NUM_ENV_VARS; i++)
+	    {
+		if (args[i])
+		{
+		    free_lbuf(args[i]);
+		}
+	    }
+	}
     }
     atr_pop();
 
     if (bFoundCommands)
     {
-        mudstate.bfNoCommands.Clear(parent);
-        mudstate.bfCommands.Set(parent);
+	mudstate.bfNoCommands.Clear(parent);
+	mudstate.bfCommands.Set(parent);
     }
     else
     {
-        mudstate.bfCommands.Clear(parent);
-        mudstate.bfNoCommands.Set(parent);
+	mudstate.bfCommands.Clear(parent);
+	mudstate.bfNoCommands.Set(parent);
     }
 
     if (bFoundListens)
     {
-        mudstate.bfNoListens.Clear(parent);
-        mudstate.bfListens.Set(parent);
+	mudstate.bfNoListens.Clear(parent);
+	mudstate.bfListens.Set(parent);
     }
     else
     {
-        mudstate.bfListens.Clear(parent);
-        mudstate.bfNoListens.Set(parent);
+	mudstate.bfListens.Clear(parent);
+	mudstate.bfNoListens.Set(parent);
     }
     return match;
 }
@@ -372,19 +372,19 @@ bool atr_match
     //
     if (  Halted(thing)
        || (  AMATCH_CMD == type
-          && No_Command(thing)))
+	  && No_Command(thing)))
     {
-        return false;
+	return false;
     }
 
     // If we're matching ^-commands, strip ANSI
     //
     if (AMATCH_LISTEN == type)
     {
-        // Remember, strip_color returns a pointer to a static buffer
-        // within itself.
-        //
-        str = strip_color(str);
+	// Remember, strip_color returns a pointer to a static buffer
+	// within itself.
+	//
+	str = strip_color(str);
     }
 
     // If not checking parents, just check the thing
@@ -392,7 +392,7 @@ bool atr_match
     bool match = false;
     if (!check_parents)
     {
-        return (atr_match1(thing, thing, player, type, str, raw_str, false, false) > 0);
+	return (atr_match1(thing, thing, player, type, str, raw_str, false, false) > 0);
     }
 
     // Check parents, ignoring halted objects
@@ -402,21 +402,21 @@ bool atr_match
     hashflush(&mudstate.parent_htab);
     ITER_PARENTS(thing, parent, lev)
     {
-        if (!Good_obj(Parent(parent)))
-        {
-            insert = false;
-        }
-        result = atr_match1(thing, parent, player, type, str, raw_str,
-            exclude, insert);
-        if (result > 0)
-        {
-            match = true;
-        }
-        else if (result < 0)
-        {
-            return match;
-        }
-        exclude = true;
+	if (!Good_obj(Parent(parent)))
+	{
+	    insert = false;
+	}
+	result = atr_match1(thing, parent, player, type, str, raw_str,
+	    exclude, insert);
+	if (result > 0)
+	{
+	    match = true;
+	}
+	else if (result < 0)
+	{
+	    return match;
+	}
+	exclude = true;
     }
     return match;
 }
@@ -433,8 +433,8 @@ static bool check_filter(dbref object, dbref player, int filter, const UTF8 *msg
     UTF8 *buf = atr_pget(object, filter, &aowner, &aflags);
     if (!*buf)
     {
-        free_lbuf(buf);
-        return true;
+	free_lbuf(buf);
+	return true;
     }
 
     reg_ref **preserve = NULL;
@@ -444,8 +444,8 @@ static bool check_filter(dbref object, dbref player, int filter, const UTF8 *msg
     UTF8 *nbuf = alloc_lbuf("check_filter");
     UTF8 *dp = nbuf;
     mux_exec(buf, LBUF_SIZE-1, nbuf, &dp, object, player, player,
-        AttrTrace(aflags, EV_FIGNORE|EV_EVAL|EV_TOP),
-        NULL, 0);
+	AttrTrace(aflags, EV_FIGNORE|EV_EVAL|EV_TOP),
+	NULL, 0);
     *dp = '\0';
     dp = nbuf;
     free_lbuf(buf);
@@ -456,43 +456,43 @@ static bool check_filter(dbref object, dbref player, int filter, const UTF8 *msg
 
     if (!(aflags & AF_REGEXP))
     {
-        do
-        {
-            UTF8 *cp = parse_to(&dp, ',', EV_STRIP_CURLY);
-            mudstate.wild_invk_ctr = 0;
-            if (  MuxAlarm.bAlarmed
-               || quick_wild(cp, msg))
-            {
-                free_lbuf(nbuf);
-                return false;
-            }
-        } while (dp != NULL);
+	do
+	{
+	    UTF8 *cp = parse_to(&dp, ',', EV_STRIP_CURLY);
+	    mudstate.wild_invk_ctr = 0;
+	    if (  MuxAlarm.bAlarmed
+	       || quick_wild(cp, msg))
+	    {
+		free_lbuf(nbuf);
+		return false;
+	    }
+	} while (dp != NULL);
     }
     else
     {
-        int case_opt = (aflags & AF_CASE) ? 0 : PCRE_CASELESS;
-        do
-        {
-            int erroffset;
-            const char *errptr;
-            UTF8 *cp = parse_to(&dp, ',', EV_STRIP_CURLY);
-            pcre *re;
-            if (  !MuxAlarm.bAlarmed
-               && (re = pcre_compile((char *)cp, PCRE_UTF8|case_opt, &errptr, &erroffset, NULL)) != NULL)
-            {
-                const int ovecsize = 33;
-                int ovec[ovecsize];
-                int matches = pcre_exec(re, NULL, (char *)msg, static_cast<int>(strlen((char *)msg)), 0, 0,
-                    ovec, ovecsize);
-                if (0 <= matches)
-                {
-                    MEMFREE(re);
-                    free_lbuf(nbuf);
-                    return false;
-                }
-                MEMFREE(re);
-            }
-        } while (dp != NULL);
+	int case_opt = (aflags & AF_CASE) ? 0 : PCRE_CASELESS;
+	do
+	{
+	    int erroffset;
+	    const char *errptr;
+	    UTF8 *cp = parse_to(&dp, ',', EV_STRIP_CURLY);
+	    pcre *re;
+	    if (  !MuxAlarm.bAlarmed
+	       && (re = pcre_compile((char *)cp, PCRE_UTF8|case_opt, &errptr, &erroffset, NULL)) != NULL)
+	    {
+		const int ovecsize = 33;
+		int ovec[ovecsize];
+		int matches = pcre_exec(re, NULL, (char *)msg, static_cast<int>(strlen((char *)msg)), 0, 0,
+		    ovec, ovecsize);
+		if (0 <= matches)
+		{
+		    MEMFREE(re);
+		    free_lbuf(nbuf);
+		    return false;
+		}
+		MEMFREE(re);
+	    }
+	} while (dp != NULL);
     }
     free_lbuf(nbuf);
     return true;
@@ -507,45 +507,45 @@ static UTF8 *make_prefix(dbref object, dbref player, int prefix, const UTF8 *dfl
     buf = atr_pget(object, prefix, &aowner, &aflags);
     if (!*buf)
     {
-        cp = buf;
-        if (NULL == dflt)
-        {
-            safe_str(T("From "), buf, &cp);
-            if (Good_obj(object))
-            {
-                safe_str(Moniker(object), buf, &cp);
-            }
-            else
-            {
-                safe_str(Moniker(player), buf, &cp);
-            }
-            safe_chr(',', buf, &cp);
-        }
-        else
-        {
-            safe_str(dflt, buf, &cp);
-        }
+	cp = buf;
+	if (NULL == dflt)
+	{
+	    safe_str(T("From "), buf, &cp);
+	    if (Good_obj(object))
+	    {
+		safe_str(Moniker(object), buf, &cp);
+	    }
+	    else
+	    {
+		safe_str(Moniker(player), buf, &cp);
+	    }
+	    safe_chr(',', buf, &cp);
+	}
+	else
+	{
+	    safe_str(dflt, buf, &cp);
+	}
     }
     else
     {
-        reg_ref **preserve = NULL;
-        preserve = PushRegisters(MAX_GLOBAL_REGS);
-        save_global_regs(preserve);
+	reg_ref **preserve = NULL;
+	preserve = PushRegisters(MAX_GLOBAL_REGS);
+	save_global_regs(preserve);
 
-        nbuf = cp = alloc_lbuf("add_prefix");
-        mux_exec(buf, LBUF_SIZE-1, nbuf, &cp, object, player, player,
-            AttrTrace(aflags, EV_FIGNORE|EV_EVAL|EV_TOP),
-            NULL, 0);
-        free_lbuf(buf);
+	nbuf = cp = alloc_lbuf("add_prefix");
+	mux_exec(buf, LBUF_SIZE-1, nbuf, &cp, object, player, player,
+	    AttrTrace(aflags, EV_FIGNORE|EV_EVAL|EV_TOP),
+	    NULL, 0);
+	free_lbuf(buf);
 
-        restore_global_regs(preserve);
-        PopRegisters(preserve, MAX_GLOBAL_REGS);
+	restore_global_regs(preserve);
+	PopRegisters(preserve, MAX_GLOBAL_REGS);
 
-        buf = nbuf;
+	buf = nbuf;
     }
     if (cp != buf)
     {
-        safe_chr(' ', buf, &cp);
+	safe_chr(' ', buf, &cp);
     }
     *cp = '\0';
     return buf;
@@ -568,43 +568,43 @@ bool html_escape(const UTF8 *src, UTF8 *dest, UTF8 **destp)
 
     if (destp == 0)
     {
-        UTF8 *temp = dest;
-        destp = &temp;
+	UTF8 *temp = dest;
+	destp = &temp;
     }
 
     for (msg_orig = src; msg_orig && *msg_orig && !ret; msg_orig++)
     {
-        UTF8 *p = *destp;
-        switch (*msg_orig)
-        {
-        case '<':
-            safe_str(T("&lt;"), dest, destp);
-            break;
+	UTF8 *p = *destp;
+	switch (*msg_orig)
+	{
+	case '<':
+	    safe_str(T("&lt;"), dest, destp);
+	    break;
 
-        case '>':
-            safe_str(T("&gt;"), dest, destp);
-            break;
+	case '>':
+	    safe_str(T("&gt;"), dest, destp);
+	    break;
 
-        case '&':
-            safe_str(T("&amp;"), dest, destp);
-            break;
+	case '&':
+	    safe_str(T("&amp;"), dest, destp);
+	    break;
 
-        case '\"':
-            safe_str(T("&quot;"), dest, destp);
-            break;
+	case '\"':
+	    safe_str(T("&quot;"), dest, destp);
+	    break;
 
-        default:
-            safe_chr(*msg_orig, dest, destp);
-            break;
-        }
+	default:
+	    safe_chr(*msg_orig, dest, destp);
+	    break;
+	}
 
-        // For <>&\, this may cause an extra loop around before it figures out that we are
-        // out of buffer, but no harm is done in this, and the common case is a single character.
-        //
-        if (p == *destp)
-        {
-            ret = true;
-        }
+	// For <>&\, this may cause an extra loop around before it figures out that we are
+	// out of buffer, but no harm is done in this, and the common case is a single character.
+	//
+	if (p == *destp)
+	{
+	    ret = true;
+	}
     }
     **destp = 0;
     return ret;
@@ -617,26 +617,26 @@ void notify_check(dbref target, dbref sender, const mux_string &msg, int key)
     if (  !Good_obj(target)
        || 0 == msg.length_byte())
     {
-        return;
+	return;
     }
 
 #ifdef HAVE_WOD_REALMS
     if ((key & MSG_OOC) == 0)
     {
-        if ((key & MSG_SAYPOSE) != 0)
-        {
-            if (REALM_DO_HIDDEN_FROM_YOU == DoThingToThingVisibility(target, sender, ACTION_IS_TALKING))
-            {
-                return;
-            }
-        }
-        else
-        {
-            if (REALM_DO_HIDDEN_FROM_YOU == DoThingToThingVisibility(target, sender, ACTION_IS_MOVING))
-            {
-                return;
-            }
-        }
+	if ((key & MSG_SAYPOSE) != 0)
+	{
+	    if (REALM_DO_HIDDEN_FROM_YOU == DoThingToThingVisibility(target, sender, ACTION_IS_TALKING))
+	    {
+		return;
+	    }
+	}
+	else
+	{
+	    if (REALM_DO_HIDDEN_FROM_YOU == DoThingToThingVisibility(target, sender, ACTION_IS_MOVING))
+	    {
+		return;
+	    }
+	}
     }
 #endif // HAVE_WOD_REALMS
 
@@ -645,8 +645,8 @@ void notify_check(dbref target, dbref sender, const mux_string &msg, int key)
     mudstate.ntfy_nest_lev++;
     if (mudconf.ntfy_nest_lim <= mudstate.ntfy_nest_lev)
     {
-        mudstate.ntfy_nest_lev--;
-        return;
+	mudstate.ntfy_nest_lev--;
+	return;
     }
 
     mux_string *msg_ns = new mux_string;
@@ -662,63 +662,63 @@ void notify_check(dbref target, dbref sender, const mux_string &msg, int key)
     //
     if (key & MSG_ME)
     {
-        if (  Nospoof(target)
-           && target != sender
-           && target != mudstate.curr_enactor
-           && target != mudstate.curr_executor)
-        {
-            // I'd really like to use tprintf here but I can't because the
-            // caller may have.  notify(target, tprintf(...)) is quite common
-            // in the code.
-            //
-            msg_ns->import(T("["), 1);
-            msg_ns->append(Moniker(sender));
-            msg_ns->append_TextPlain(T("("), 1);
-            msg_ns->append(sender);
-            msg_ns->append_TextPlain(T(")"), 1);
+	if (  Nospoof(target)
+	   && target != sender
+	   && target != mudstate.curr_enactor
+	   && target != mudstate.curr_executor)
+	{
+	    // I'd really like to use tprintf here but I can't because the
+	    // caller may have.  notify(target, tprintf(...)) is quite common
+	    // in the code.
+	    //
+	    msg_ns->import(T("["), 1);
+	    msg_ns->append(Moniker(sender));
+	    msg_ns->append_TextPlain(T("("), 1);
+	    msg_ns->append(sender);
+	    msg_ns->append_TextPlain(T(")"), 1);
 
-            if (sender != Owner(sender))
-            {
-                msg_ns->append_TextPlain(T("{"), 1);
-                msg_ns->append(Moniker(Owner(sender)));
-                msg_ns->append_TextPlain(T("}"), 1);
-            }
+	    if (sender != Owner(sender))
+	    {
+		msg_ns->append_TextPlain(T("{"), 1);
+		msg_ns->append(Moniker(Owner(sender)));
+		msg_ns->append_TextPlain(T("}"), 1);
+	    }
 
-            if (sender != mudstate.curr_enactor)
-            {
-                msg_ns->append_TextPlain(T("<-("), 3);
-                msg_ns->append(mudstate.curr_enactor);
-                msg_ns->append_TextPlain(T(")"), 1);
-            }
+	    if (sender != mudstate.curr_enactor)
+	    {
+		msg_ns->append_TextPlain(T("<-("), 3);
+		msg_ns->append(mudstate.curr_enactor);
+		msg_ns->append_TextPlain(T(")"), 1);
+	    }
 
-            switch (DecodeMsgSource(key))
-            {
-            case MSG_SRC_COMSYS:
-                msg_ns->append_TextPlain(T(",comsys"));
-                break;
+	    switch (DecodeMsgSource(key))
+	    {
+	    case MSG_SRC_COMSYS:
+		msg_ns->append_TextPlain(T(",comsys"));
+		break;
 
-            case MSG_SRC_KILL:
-                msg_ns->append_TextPlain(T(",kill"));
-                break;
+	    case MSG_SRC_KILL:
+		msg_ns->append_TextPlain(T(",kill"));
+		break;
 
-            case MSG_SRC_GIVE:
-                msg_ns->append_TextPlain(T(",give"));
-                break;
+	    case MSG_SRC_GIVE:
+		msg_ns->append_TextPlain(T(",give"));
+		break;
 
-            case MSG_SRC_PAGE:
-                msg_ns->append_TextPlain(T(",page"));
-                break;
+	    case MSG_SRC_PAGE:
+		msg_ns->append_TextPlain(T(",page"));
+		break;
 
-            default:
-                if (key & MSG_SAYPOSE)
-                {
-                    msg_ns->append_TextPlain(T(",saypose"));
-                }
-                break;
-            }
+	    default:
+		if (key & MSG_SAYPOSE)
+		{
+		    msg_ns->append_TextPlain(T(",saypose"));
+		}
+		break;
+	    }
 
-            msg_ns->append_TextPlain(T("] "), 2);
-        }
+	    msg_ns->append_TextPlain(T("] "), 2);
+	}
     }
     msg_ns->append(msg);
 
@@ -728,331 +728,331 @@ void notify_check(dbref target, dbref sender, const mux_string &msg, int key)
     switch (Typeof(target))
     {
     case TYPE_PLAYER:
-        if (key & MSG_ME)
-        {
-            if (key & MSG_ATCP)
-            {
-                check_listens = false;
-                raw_notify_atcp(target, *msg_ns);
-            }
-            else if (key & MSG_HTML)
-            {
-                raw_notify_html(target, msg);
-            }
-            else
-            {
-                msgFinal->import(*msg_ns);
-                if (Html(target))
-                {
-                    msgFinal->encode_Html();
-                }
-                raw_notify(target, *msgFinal);
-            }
-        }
-        if (!mudconf.player_listen)
-        {
-            check_listens = false;
-        }
+	if (key & MSG_ME)
+	{
+	    if (key & MSG_ATCP)
+	    {
+		check_listens = false;
+		raw_notify_atcp(target, *msg_ns);
+	    }
+	    else if (key & MSG_HTML)
+	    {
+		raw_notify_html(target, msg);
+	    }
+	    else
+	    {
+		msgFinal->import(*msg_ns);
+		if (Html(target))
+		{
+		    msgFinal->encode_Html();
+		}
+		raw_notify(target, *msgFinal);
+	    }
+	}
+	if (!mudconf.player_listen)
+	{
+	    check_listens = false;
+	}
 
-        // FALLTHROUGH
+	// FALLTHROUGH
 
     case TYPE_THING:
     case TYPE_ROOM:
 
-        // If we're in a pipe, objects can receive raw_notify if
-        // they're not a player. (players were already notified
-        // above.
-        //
-        if (  mudstate.inpipe
-           && !isPlayer(target))
-        {
-            raw_notify(target, *msg_ns);
-        }
+	// If we're in a pipe, objects can receive raw_notify if
+	// they're not a player. (players were already notified
+	// above.
+	//
+	if (  mudstate.inpipe
+	   && !isPlayer(target))
+	{
+	    raw_notify(target, *msg_ns);
+	}
 
-        // Forward puppet message if it is for me.
-        //
-        bool has_neighbors = Has_location(target);
-        dbref targetloc = where_is(target);
-        bool is_audible = Audible(target);
+	// Forward puppet message if it is for me.
+	//
+	bool has_neighbors = Has_location(target);
+	dbref targetloc = where_is(target);
+	bool is_audible = Audible(target);
 
-        if ( (key & MSG_ME)
-           && Puppet(target)
-           && (target != Owner(target))
-           && (  (key & MSG_PUP_ALWAYS)
-              || (  targetloc != Location(Owner(target))
-                 && targetloc != Owner(target))))
-        {
-            msgFinal->import(Moniker(target));
-            msgFinal->append_TextPlain(T("> "), 2);
-            msgFinal->append(*msg_ns);
-            raw_notify(Owner(target), *msgFinal);
-        }
+	if ( (key & MSG_ME)
+	   && Puppet(target)
+	   && (target != Owner(target))
+	   && (  (key & MSG_PUP_ALWAYS)
+	      || (  targetloc != Location(Owner(target))
+		 && targetloc != Owner(target))))
+	{
+	    msgFinal->import(Moniker(target));
+	    msgFinal->append_TextPlain(T("> "), 2);
+	    msgFinal->append(*msg_ns);
+	    raw_notify(Owner(target), *msgFinal);
+	}
 
-        // Check for @Listen match if it will be useful.
-        //
-        UTF8 *msgPlain = alloc_lbuf("notify_check.plain");
-        msg.export_TextPlain(msgPlain);
-        bool pass_listen = false;
-        UTF8 *args[NUM_ENV_VARS];
-        nargs = 0;
-        if (  check_listens
-           && (key & (MSG_ME | MSG_INV_L))
-           && H_Listen(target))
-        {
-            tp = atr_get("notify_check.790", target, A_LISTEN, &aowner, &aflags);
-            if (*tp && wild(tp, msgPlain, args, NUM_ENV_VARS))
-            {
-                for (nargs = NUM_ENV_VARS; nargs && (!args[nargs - 1] || !(*args[nargs - 1])); nargs--)
-                {
-                    ; // Nothing
-                }
-                pass_listen = true;
-            }
-            free_lbuf(tp);
-        }
+	// Check for @Listen match if it will be useful.
+	//
+	UTF8 *msgPlain = alloc_lbuf("notify_check.plain");
+	msg.export_TextPlain(msgPlain);
+	bool pass_listen = false;
+	UTF8 *args[NUM_ENV_VARS];
+	nargs = 0;
+	if (  check_listens
+	   && (key & (MSG_ME | MSG_INV_L))
+	   && H_Listen(target))
+	{
+	    tp = atr_get("notify_check.790", target, A_LISTEN, &aowner, &aflags);
+	    if (*tp && wild(tp, msgPlain, args, NUM_ENV_VARS))
+	    {
+		for (nargs = NUM_ENV_VARS; nargs && (!args[nargs - 1] || !(*args[nargs - 1])); nargs--)
+		{
+		    ; // Nothing
+		}
+		pass_listen = true;
+	    }
+	    free_lbuf(tp);
+	}
 
-        // If we matched the @listen or are monitoring, check the
-        // USE lock.
-        //
-        bool pass_uselock = false;
-        if (  (key & MSG_ME)
-           && check_listens
-           && (  pass_listen
-              || Monitor(target)))
-        {
-            pass_uselock = could_doit(sender, target, A_LUSE);
-        }
+	// If we matched the @listen or are monitoring, check the
+	// USE lock.
+	//
+	bool pass_uselock = false;
+	if (  (key & MSG_ME)
+	   && check_listens
+	   && (  pass_listen
+	      || Monitor(target)))
+	{
+	    pass_uselock = could_doit(sender, target, A_LUSE);
+	}
 
-        // Process AxHEAR if we pass LISTEN, USElock and it's for me.
-        //
-        if (  (key & MSG_ME)
-           && pass_listen
-           && pass_uselock
-           && mudstate.nHearNest <= 2)
-        {
-            mudstate.nHearNest++;
-            if (sender != target)
-            {
-                did_it( sender, target, 0, NULL, 0, NULL, A_AHEAR, 0,
-                        (const UTF8 **)args, nargs);
-            }
-            else
-            {
-                did_it( sender, target, 0, NULL, 0, NULL, A_AMHEAR, 0,
-                        (const UTF8 **)args, nargs);
-            }
-            did_it( sender, target, 0, NULL, 0, NULL, A_AAHEAR, 0,
-                    (const UTF8 **)args, nargs);
-            mudstate.nHearNest--;
-        }
+	// Process AxHEAR if we pass LISTEN, USElock and it's for me.
+	//
+	if (  (key & MSG_ME)
+	   && pass_listen
+	   && pass_uselock
+	   && mudstate.nHearNest <= 2)
+	{
+	    mudstate.nHearNest++;
+	    if (sender != target)
+	    {
+		did_it( sender, target, 0, NULL, 0, NULL, A_AHEAR, 0,
+			(const UTF8 **)args, nargs);
+	    }
+	    else
+	    {
+		did_it( sender, target, 0, NULL, 0, NULL, A_AMHEAR, 0,
+			(const UTF8 **)args, nargs);
+	    }
+	    did_it( sender, target, 0, NULL, 0, NULL, A_AAHEAR, 0,
+		    (const UTF8 **)args, nargs);
+	    mudstate.nHearNest--;
+	}
 
-        // Get rid of match arguments. We don't need them anymore.
-        //
-        if (pass_listen)
-        {
-            for (i = 0; i < nargs; i++)
-            {
-                if (args[i] != NULL)
-                {
-                    free_lbuf(args[i]);
-                }
-            }
-        }
+	// Get rid of match arguments. We don't need them anymore.
+	//
+	if (pass_listen)
+	{
+	    for (i = 0; i < nargs; i++)
+	    {
+		if (args[i] != NULL)
+		{
+		    free_lbuf(args[i]);
+		}
+	    }
+	}
 
-        // Process ^-listens if for me, MONITOR, and we pass USElock.
-        //
-        if (  (key & MSG_ME)
-           && pass_uselock
-           && sender != target
-           && Monitor(target))
-        {
-            atr_match(target, sender, AMATCH_LISTEN, msgPlain, msgPlain, false);
-        }
+	// Process ^-listens if for me, MONITOR, and we pass USElock.
+	//
+	if (  (key & MSG_ME)
+	   && pass_uselock
+	   && sender != target
+	   && Monitor(target))
+	{
+	    atr_match(target, sender, AMATCH_LISTEN, msgPlain, msgPlain, false);
+	}
 
-        // Deliver message to forwardlist members.
-        //
-        if ( (key & MSG_FWDLIST)
-           && is_audible
-           && check_filter(target, sender, A_FILTER, msgPlain))
-        {
-            fp = fwdlist_get(target);
-            if (NULL != fp)
-            {
-                prefix = make_prefix(target, sender, A_PREFIX, NULL);
-                msgFinal->import(prefix);
-                free_lbuf(prefix);
-                msgFinal->append(msg);
+	// Deliver message to forwardlist members.
+	//
+	if ( (key & MSG_FWDLIST)
+	   && is_audible
+	   && check_filter(target, sender, A_FILTER, msgPlain))
+	{
+	    fp = fwdlist_get(target);
+	    if (NULL != fp)
+	    {
+		prefix = make_prefix(target, sender, A_PREFIX, NULL);
+		msgFinal->import(prefix);
+		free_lbuf(prefix);
+		msgFinal->append(msg);
 
-                for (i = 0; i < fp->count; i++)
-                {
-                    recip = fp->data[i];
-                    if (  !Good_obj(recip)
-                       || recip == target)
-                    {
-                        continue;
-                    }
-                    notify_check(recip, sender, *msgFinal,
-                        MSG_ME | MSG_F_UP | MSG_F_CONTENTS | MSG_S_INSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
-                }
-            }
-        }
+		for (i = 0; i < fp->count; i++)
+		{
+		    recip = fp->data[i];
+		    if (  !Good_obj(recip)
+		       || recip == target)
+		    {
+			continue;
+		    }
+		    notify_check(recip, sender, *msgFinal,
+			MSG_ME | MSG_F_UP | MSG_F_CONTENTS | MSG_S_INSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
+		}
+	    }
+	}
 
-        // Deliver message through audible exits.
-        //
-        if (key & MSG_INV_EXITS)
-        {
-            DOLIST(obj, Exits(target))
-            {
-                recip = Location(obj);
-                if (  Audible(obj)
-                   && (  recip != target
-                      && check_filter(obj, sender, A_FILTER, msgPlain)))
-                {
-                    prefix = make_prefix(obj, target, A_PREFIX, T("From a distance,"));
-                    msgFinal->import(prefix);
-                    free_lbuf(prefix);
+	// Deliver message through audible exits.
+	//
+	if (key & MSG_INV_EXITS)
+	{
+	    DOLIST(obj, Exits(target))
+	    {
+		recip = Location(obj);
+		if (  Audible(obj)
+		   && (  recip != target
+		      && check_filter(obj, sender, A_FILTER, msgPlain)))
+		{
+		    prefix = make_prefix(obj, target, A_PREFIX, T("From a distance,"));
+		    msgFinal->import(prefix);
+		    free_lbuf(prefix);
 
-                    msgFinal->append(msg);
-                    notify_check(recip, sender, *msgFinal,
-                        MSG_ME | MSG_F_UP | MSG_F_CONTENTS | MSG_S_INSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
-                }
-            }
-        }
+		    msgFinal->append(msg);
+		    notify_check(recip, sender, *msgFinal,
+			MSG_ME | MSG_F_UP | MSG_F_CONTENTS | MSG_S_INSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
+		}
+	    }
+	}
 
-        // Deliver message through neighboring audible exits.
-        //
-        if (  has_neighbors
-           && (  (key & MSG_NBR_EXITS)
-              || (  (key & MSG_NBR_EXITS_A)
-                 && is_audible)))
-        {
-            // If from inside, we have to add the prefix string of
-            // the container.
-            //
-            if (key & MSG_S_INSIDE)
-            {
-                prefix = make_prefix(target, sender, A_PREFIX, NULL);
-                msgFinal->import(prefix);
-                free_lbuf(prefix);
+	// Deliver message through neighboring audible exits.
+	//
+	if (  has_neighbors
+	   && (  (key & MSG_NBR_EXITS)
+	      || (  (key & MSG_NBR_EXITS_A)
+		 && is_audible)))
+	{
+	    // If from inside, we have to add the prefix string of
+	    // the container.
+	    //
+	    if (key & MSG_S_INSIDE)
+	    {
+		prefix = make_prefix(target, sender, A_PREFIX, NULL);
+		msgFinal->import(prefix);
+		free_lbuf(prefix);
 
-                msgFinal->append(msg);
-            }
-            else
-            {
-                msgFinal->import(msg);
-            }
+		msgFinal->append(msg);
+	    }
+	    else
+	    {
+		msgFinal->import(msg);
+	    }
 
-            mux_string *msgPrefixed2 = new mux_string;
+	    mux_string *msgPrefixed2 = new mux_string;
 
-            DOLIST(obj, Exits(Location(target)))
-            {
-                recip = Location(obj);
-                if (  Good_obj(recip)
-                   && Audible(obj)
-                   && recip != targetloc
-                   && recip != target
-                   && check_filter(obj, sender, A_FILTER, msgPlain))
-                {
-                    prefix = make_prefix(obj, target, A_PREFIX, T("From a distance,"));
-                    msgPrefixed2->import(prefix);
-                    free_lbuf(prefix);
+	    DOLIST(obj, Exits(Location(target)))
+	    {
+		recip = Location(obj);
+		if (  Good_obj(recip)
+		   && Audible(obj)
+		   && recip != targetloc
+		   && recip != target
+		   && check_filter(obj, sender, A_FILTER, msgPlain))
+		{
+		    prefix = make_prefix(obj, target, A_PREFIX, T("From a distance,"));
+		    msgPrefixed2->import(prefix);
+		    free_lbuf(prefix);
 
-                    msgPrefixed2->append(*msgFinal);
-                    notify_check(recip, sender, *msgPrefixed2,
-                        MSG_ME | MSG_F_UP | MSG_F_CONTENTS | MSG_S_INSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
-                }
-            }
-            delete msgPrefixed2;
-        }
+		    msgPrefixed2->append(*msgFinal);
+		    notify_check(recip, sender, *msgPrefixed2,
+			MSG_ME | MSG_F_UP | MSG_F_CONTENTS | MSG_S_INSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
+		}
+	    }
+	    delete msgPrefixed2;
+	}
 
-        // Deliver message to contents.
-        //
-        if (  (  (key & MSG_INV)
-              || (  (key & MSG_INV_L)
-                 && pass_listen))
-           && check_filter(target, sender, A_INFILTER, msgPlain))
-        {
-            // Don't prefix the message if we were given the MSG_NOPREFIX key.
-            //
-            if (key & MSG_S_OUTSIDE)
-            {
-                prefix = make_prefix(target, sender, A_INPREFIX, T(""));
-                msgFinal->import(prefix);
-                free_lbuf(prefix);
+	// Deliver message to contents.
+	//
+	if (  (  (key & MSG_INV)
+	      || (  (key & MSG_INV_L)
+		 && pass_listen))
+	   && check_filter(target, sender, A_INFILTER, msgPlain))
+	{
+	    // Don't prefix the message if we were given the MSG_NOPREFIX key.
+	    //
+	    if (key & MSG_S_OUTSIDE)
+	    {
+		prefix = make_prefix(target, sender, A_INPREFIX, T(""));
+		msgFinal->import(prefix);
+		free_lbuf(prefix);
 
-                msgFinal->append(msg);
-            }
-            else
-            {
-                msgFinal->import(msg);
-            }
+		msgFinal->append(msg);
+	    }
+	    else
+	    {
+		msgFinal->import(msg);
+	    }
 
-            DOLIST(obj, Contents(target))
-            {
-                if (obj != target)
-                {
-                    notify_check(obj, sender, *msgFinal,
-                        MSG_ME | MSG_F_DOWN | MSG_S_OUTSIDE | (key & (MSG_HTML | MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
-                }
-            }
-        }
+	    DOLIST(obj, Contents(target))
+	    {
+		if (obj != target)
+		{
+		    notify_check(obj, sender, *msgFinal,
+			MSG_ME | MSG_F_DOWN | MSG_S_OUTSIDE | (key & (MSG_HTML | MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
+		}
+	    }
+	}
 
-        // Deliver message to neighbors.
-        //
-        if (  has_neighbors
-           && (  (key & MSG_NBR)
-              || (  (key & MSG_NBR_A)
-                 && is_audible
-                 && check_filter(target, sender, A_FILTER, msgPlain))))
-        {
-            if (key & MSG_S_INSIDE)
-            {
-                prefix = make_prefix(target, sender, A_PREFIX, T(""));
-                msgFinal->import(prefix);
-                free_lbuf(prefix);
+	// Deliver message to neighbors.
+	//
+	if (  has_neighbors
+	   && (  (key & MSG_NBR)
+	      || (  (key & MSG_NBR_A)
+		 && is_audible
+		 && check_filter(target, sender, A_FILTER, msgPlain))))
+	{
+	    if (key & MSG_S_INSIDE)
+	    {
+		prefix = make_prefix(target, sender, A_PREFIX, T(""));
+		msgFinal->import(prefix);
+		free_lbuf(prefix);
 
-                msgFinal->append(msg);
-            }
-            else
-            {
-                msgFinal->import(msg);
-            }
+		msgFinal->append(msg);
+	    }
+	    else
+	    {
+		msgFinal->import(msg);
+	    }
 
-            DOLIST(obj, Contents(targetloc))
-            {
-                if (  obj != target
-                   && obj != targetloc)
-                {
-                    notify_check(obj, sender, *msgFinal,
-                        MSG_ME | MSG_F_DOWN | MSG_S_OUTSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
-                }
-            }
-        }
+	    DOLIST(obj, Contents(targetloc))
+	    {
+		if (  obj != target
+		   && obj != targetloc)
+		{
+		    notify_check(obj, sender, *msgFinal,
+			MSG_ME | MSG_F_DOWN | MSG_S_OUTSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
+		}
+	    }
+	}
 
-        // Deliver message to container.
-        //
-        if (  has_neighbors
-           && (  (key & MSG_LOC)
-              || ( (key & MSG_LOC_A)
-                 && is_audible
-                 && check_filter(target, sender, A_FILTER, msgPlain))))
-        {
-            if (key & MSG_S_INSIDE)
-            {
-                prefix = make_prefix(target, sender, A_PREFIX, NULL);
-                msgFinal->import(prefix);
-                free_lbuf(prefix);
-                msgFinal->append(msg);
-            }
-            else
-            {
-                msgFinal->import(msg);
-            }
+	// Deliver message to container.
+	//
+	if (  has_neighbors
+	   && (  (key & MSG_LOC)
+	      || ( (key & MSG_LOC_A)
+		 && is_audible
+		 && check_filter(target, sender, A_FILTER, msgPlain))))
+	{
+	    if (key & MSG_S_INSIDE)
+	    {
+		prefix = make_prefix(target, sender, A_PREFIX, NULL);
+		msgFinal->import(prefix);
+		free_lbuf(prefix);
+		msgFinal->append(msg);
+	    }
+	    else
+	    {
+		msgFinal->import(msg);
+	    }
 
-            notify_check(targetloc, sender, *msgFinal,
-                MSG_ME | MSG_F_UP | MSG_S_INSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
-        }
-        free_lbuf(msgPlain);
+	    notify_check(targetloc, sender, *msgFinal,
+		MSG_ME | MSG_F_UP | MSG_S_INSIDE | (key & (MSG_SRC_MASK | MSG_SAYPOSE | MSG_OOC)));
+	}
+	free_lbuf(msgPlain);
     }
     delete msgFinal;
     delete msg_ns;
@@ -1067,7 +1067,7 @@ void notify_check(dbref target, dbref sender, const UTF8 *msg, int key)
        || !msg
        || !*msg)
     {
-        return;
+	return;
     }
 
     mux_string *sMsg = new mux_string(msg);
@@ -1083,14 +1083,14 @@ void notify_except(dbref loc, dbref player, dbref exception, const UTF8 *msg, in
 
     if (loc != exception)
     {
-        notify_check(loc, player, msg, MSG_ME_ALL | MSG_F_UP | MSG_S_INSIDE | MSG_NBR_EXITS_A | key);
+	notify_check(loc, player, msg, MSG_ME_ALL | MSG_F_UP | MSG_S_INSIDE | MSG_NBR_EXITS_A | key);
     }
     DOLIST(first, Contents(loc))
     {
-        if (first != exception)
-        {
-            notify_check(first, player, msg, MSG_ME | MSG_F_DOWN | MSG_S_OUTSIDE | key);
-        }
+	if (first != exception)
+	{
+	    notify_check(first, player, msg, MSG_ME | MSG_F_DOWN | MSG_S_OUTSIDE | key);
+	}
     }
 }
 
@@ -1101,15 +1101,15 @@ void notify_except2(dbref loc, dbref player, dbref exc1, dbref exc2, const UTF8 
     if (  loc != exc1
        && loc != exc2)
     {
-        notify_check(loc, player, msg, MSG_ME_ALL | MSG_F_UP | MSG_S_INSIDE | MSG_NBR_EXITS_A);
+	notify_check(loc, player, msg, MSG_ME_ALL | MSG_F_UP | MSG_S_INSIDE | MSG_NBR_EXITS_A);
     }
     DOLIST(first, Contents(loc))
     {
-        if (  first != exc1
-           && first != exc2)
-        {
-            notify_check(first, player, msg, MSG_ME | MSG_F_DOWN | MSG_S_OUTSIDE);
-        }
+	if (  first != exc1
+	   && first != exc2)
+	{
+	    notify_check(first, player, msg, MSG_ME | MSG_F_DOWN | MSG_S_OUTSIDE);
+	}
     }
 }
 
@@ -1134,21 +1134,21 @@ static void report_timecheck
     if (  yes_log
        && (LOG_TIMEUSE & mudconf.log_options))
     {
-        start_log(T("OBJ"), T("CPU"));
-        log_name(player);
-        log_text(T(" checks object time use over "));
-        log_number(ltdPeriod.ReturnSeconds());
-        log_text(T(" seconds" ENDLINE));
+	start_log(T("OBJ"), T("CPU"));
+	log_name(player);
+	log_text(T(" checks object time use over "));
+	log_number(ltdPeriod.ReturnSeconds());
+	log_text(T(" seconds" ENDLINE));
     }
     else
     {
-        yes_log = false;
-        STARTLOG(LOG_ALWAYS, "WIZ", "TIMECHECK");
-        log_name(player);
-        log_text(T(" checks object time use over "));
-        log_number(ltdPeriod.ReturnSeconds());
-        log_text(T(" seconds"));
-        ENDLOG;
+	yes_log = false;
+	STARTLOG(LOG_ALWAYS, "WIZ", "TIMECHECK");
+	log_name(player);
+	log_text(T(" checks object time use over "));
+	log_number(ltdPeriod.ReturnSeconds());
+	log_text(T(" seconds"));
+	ENDLOG;
     }
 
     obj_counted = 0;
@@ -1158,25 +1158,25 @@ static void report_timecheck
     //
     DO_WHOLE_DB(thing)
     {
-        CLinearTimeDelta &ltd = db[thing].cpu_time_used;
-        if (ltd.Return100ns())
-        {
-            ltdTotal += ltd;
-            long used_msecs = ltd.ReturnMilliseconds();
-            obj_counted++;
-            if (yes_log)
-            {
-                Log.tinyprintf(T("#%d\t%ld" ENDLINE), thing, used_msecs);
-            }
-            if (yes_screen)
-            {
-                raw_notify(player, tprintf(T("#%d\t%ld"), thing, used_msecs));
-            }
-            if (yes_clear)
-            {
-                ltd.Set100ns(0);
-            }
-        }
+	CLinearTimeDelta &ltd = db[thing].cpu_time_used;
+	if (ltd.Return100ns())
+	{
+	    ltdTotal += ltd;
+	    long used_msecs = ltd.ReturnMilliseconds();
+	    obj_counted++;
+	    if (yes_log)
+	    {
+		Log.tinyprintf(T("#%d\t%ld" ENDLINE), thing, used_msecs);
+	    }
+	    if (yes_screen)
+	    {
+		raw_notify(player, tprintf(T("#%d\t%ld"), thing, used_msecs));
+	    }
+	    if (yes_clear)
+	    {
+		ltd.Set100ns(0);
+	    }
+	}
     }
 
     long lTotal = ltdTotal.ReturnMilliseconds();
@@ -1184,21 +1184,21 @@ static void report_timecheck
 
     if (yes_screen)
     {
-        raw_notify(player,
-            tprintf(T("Counted %d objects using %ld msecs over %d seconds."),
-            obj_counted, lTotal, lPeriod));
+	raw_notify(player,
+	    tprintf(T("Counted %d objects using %ld msecs over %d seconds."),
+	    obj_counted, lTotal, lPeriod));
     }
 
     if (yes_log)
     {
-        Log.tinyprintf(T("Counted %d objects using %ld msecs over %d seconds."),
-            obj_counted, lTotal, lPeriod);
-        end_log();
+	Log.tinyprintf(T("Counted %d objects using %ld msecs over %d seconds."),
+	    obj_counted, lTotal, lPeriod);
+	end_log();
     }
 
     if (yes_clear)
     {
-        mudstate.cpu_count_from = ltaNow;
+	mudstate.cpu_count_from = ltaNow;
     }
 }
 
@@ -1214,25 +1214,25 @@ void do_timecheck(dbref executor, dbref caller, dbref enactor, int eval, int key
 
     if (key == 0)
     {
-        // No switches, default to printing to screen and clearing counters.
-        //
-        yes_screen = true;
-        yes_clear = true;
+	// No switches, default to printing to screen and clearing counters.
+	//
+	yes_screen = true;
+	yes_clear = true;
     }
     else
     {
-        if (key & TIMECHK_RESET)
-        {
-            yes_clear = true;
-        }
-        if (key & TIMECHK_SCREEN)
-        {
-            yes_screen = true;
-        }
-        if (key & TIMECHK_LOG)
-        {
-            yes_log = true;
-        }
+	if (key & TIMECHK_RESET)
+	{
+	    yes_clear = true;
+	}
+	if (key & TIMECHK_SCREEN)
+	{
+	    yes_screen = true;
+	}
+	if (key & TIMECHK_LOG)
+	{
+	    yes_log = true;
+	}
     }
     report_timecheck(executor, yes_screen, yes_log, yes_clear);
 }
@@ -1257,8 +1257,8 @@ void do_shutdown
 
     if (!Can_SiteAdmin(executor))
     {
-        notify(executor, NOPERM_MESSAGE);
-        return;
+	notify(executor, NOPERM_MESSAGE);
+	return;
     }
 
     raw_broadcast(0, T("GAME: Shutdown by %s"), Moniker(Owner(executor)));
@@ -1275,13 +1275,13 @@ void do_shutdown
     int fd;
     if (mux_open(&fd, mudconf.status_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY))
     {
-        mux_write(fd, message, static_cast<unsigned int>(strlen((char *)message)));
-        mux_write(fd, ENDLINE, sizeof(ENDLINE)-1);
-        DebugTotalFiles++;
-        if (mux_close(fd) == 0)
-        {
-            DebugTotalFiles--;
-        }
+	mux_write(fd, message, static_cast<unsigned int>(strlen((char *)message)));
+	mux_write(fd, ENDLINE, sizeof(ENDLINE)-1);
+	DebugTotalFiles++;
+	if (mux_close(fd) == 0)
+	{
+	    DebugTotalFiles--;
+	}
     }
 
     // Do we perform a normal or an emergency shutdown? Normal
@@ -1290,42 +1290,42 @@ void do_shutdown
     //
     if (key & SHUTDN_PANIC)
     {
-        // Close down the network interface.
-        //
-        emergency_shutdown();
+	// Close down the network interface.
+	//
+	emergency_shutdown();
 
-        local_presync_database();
+	local_presync_database();
 #if defined(TINYMUX_MODULES)
-        ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
-        while (NULL != p)
-        {
-            p->pSink->presync_database();
-            p = p->pNext;
-        }
-        final_modules();
+	ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
+	while (NULL != p)
+	{
+	    p->pSink->presync_database();
+	    p = p->pNext;
+	}
+	final_modules();
 #endif // TINYMUX_MODULES
 
-        // Close the attribute text db and dump the header db.
-        //
+	// Close the attribute text db and dump the header db.
+	//
 #ifndef HAVE_MEMORY_BASED
-        // Save cached modified attribute list
-        //
-        al_store();
+	// Save cached modified attribute list
+	//
+	al_store();
 #endif // HAVE_MEMORY_BASED
 
-        pcache_sync();
-        SYNC;
-        CLOSE;
+	pcache_sync();
+	SYNC;
+	CLOSE;
 
-        STARTLOG(LOG_ALWAYS, "DMP", "PANIC");
-        log_text(T("Panic dump: "));
-        log_text(mudconf.crashdb);
-        ENDLOG;
-        dump_database_internal(DUMP_I_PANIC);
-        STARTLOG(LOG_ALWAYS, "DMP", "DONE");
-        log_text(T("Panic dump complete: "));
-        log_text(mudconf.crashdb);
-        ENDLOG;
+	STARTLOG(LOG_ALWAYS, "DMP", "PANIC");
+	log_text(T("Panic dump: "));
+	log_text(mudconf.crashdb);
+	ENDLOG;
+	dump_database_internal(DUMP_I_PANIC);
+	STARTLOG(LOG_ALWAYS, "DMP", "DONE");
+	log_text(T("Panic dump complete: "));
+	log_text(mudconf.crashdb);
+	ENDLOG;
     }
 
     // Set up for normal shutdown.
@@ -1385,7 +1385,7 @@ void dump_database_internal(int dump_type)
     if (  dump_type < 0
        || NUM_DUMP_TYPES <= dump_type)
     {
-        return;
+	return;
     }
 
     bool bPotentialConflicts = false;
@@ -1397,9 +1397,9 @@ void dump_database_internal(int dump_type)
     //
     if (  mudstate.dumping
        && (  dump_type == DUMP_I_PANIC
-          || dump_type == DUMP_I_SIGNAL))
+	  || dump_type == DUMP_I_SIGNAL))
     {
-        bPotentialConflicts = true;
+	bPotentialConflicts = true;
     }
 #endif // HAVE_WORKING_FORK
 
@@ -1411,146 +1411,146 @@ void dump_database_internal(int dump_type)
     ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
-        p->pSink->dump_database(dump_type);
-        p = p->pNext;
+	p->pSink->dump_database(dump_type);
+	p = p->pNext;
     }
 #endif // TINYMUX_MODULES
 
     if (0 < dump_type)
     {
-        DUMP_PROCEDURE *dp = &DumpProcedures[dump_type];
-        bool bOpen;
+	DUMP_PROCEDURE *dp = &DumpProcedures[dump_type];
+	bool bOpen;
 
-        mux_sprintf(outfn, sizeof(outfn), T("%s%s"), *(dp->ppszOutputBase), dp->szOutputSuffix);
-        if (dp->bUseTemporary)
-        {
-            mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#"), outfn, mudstate.epoch);
-            RemoveFile(tmpfile);
-            bOpen = mux_fopen(&f, tmpfile, T("wb"));
-        }
-        else
-        {
-            RemoveFile(outfn);
-            bOpen = mux_fopen(&f, outfn, T("wb"));
-        }
+	mux_sprintf(outfn, sizeof(outfn), T("%s%s"), *(dp->ppszOutputBase), dp->szOutputSuffix);
+	if (dp->bUseTemporary)
+	{
+	    mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#"), outfn, mudstate.epoch);
+	    RemoveFile(tmpfile);
+	    bOpen = mux_fopen(&f, tmpfile, T("wb"));
+	}
+	else
+	{
+	    RemoveFile(outfn);
+	    bOpen = mux_fopen(&f, outfn, T("wb"));
+	}
 
-        if (bOpen)
-        {
-            DebugTotalFiles++;
-            setvbuf(f, NULL, _IOFBF, 16384);
-            db_write(f, F_MUX, dp->fType);
-            if (fclose(f) == 0)
-            {
-                DebugTotalFiles--;
-            }
+	if (bOpen)
+	{
+	    DebugTotalFiles++;
+	    setvbuf(f, NULL, _IOFBF, 16384);
+	    db_write(f, F_MUX, dp->fType);
+	    if (fclose(f) == 0)
+	    {
+		DebugTotalFiles--;
+	    }
 
-            if (dp->bUseTemporary)
-            {
-                ReplaceFile(tmpfile, outfn);
-            }
-        }
-        else
-        {
-            log_perror(T("DMP"), T("FAIL"), dp->pszErrorMessage, outfn);
-        }
+	    if (dp->bUseTemporary)
+	    {
+		ReplaceFile(tmpfile, outfn);
+	    }
+	}
+	else
+	{
+	    log_perror(T("DMP"), T("FAIL"), dp->pszErrorMessage, outfn);
+	}
 
-        if (!bPotentialConflicts)
-        {
-            if (mudconf.have_mailer)
-            {
-                if (mux_fopen(&f, mudconf.mail_db, T("wb")))
-                {
-                    DebugTotalFiles++;
-                    dump_mail(f);
-                    if (fclose(f) == 0)
-                    {
-                        DebugTotalFiles--;
-                    }
-                }
-            }
-            if (mudconf.have_comsys)
-            {
-                save_comsys(mudconf.comsys_db);
-            }
-        }
-        return;
+	if (!bPotentialConflicts)
+	{
+	    if (mudconf.have_mailer)
+	    {
+		if (mux_fopen(&f, mudconf.mail_db, T("wb")))
+		{
+		    DebugTotalFiles++;
+		    dump_mail(f);
+		    if (fclose(f) == 0)
+		    {
+			DebugTotalFiles--;
+		    }
+		}
+	    }
+	    if (mudconf.have_comsys)
+	    {
+		save_comsys(mudconf.comsys_db);
+	    }
+	}
+	return;
     }
 
     // Nuke our predecessor
     //
     if (mudconf.compress_db)
     {
-        mux_sprintf(prevfile, sizeof(prevfile), T("%s.prev.gz"), mudconf.outdb);
-        mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#.gz"), mudconf.outdb, mudstate.epoch - 1);
-        RemoveFile(tmpfile);
-        mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#.gz"), mudconf.outdb, mudstate.epoch);
-        mux_sprintf(outfn, sizeof(outfn), T("%s.gz"), mudconf.outdb);
+	mux_sprintf(prevfile, sizeof(prevfile), T("%s.prev.gz"), mudconf.outdb);
+	mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#.gz"), mudconf.outdb, mudstate.epoch - 1);
+	RemoveFile(tmpfile);
+	mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#.gz"), mudconf.outdb, mudstate.epoch);
+	mux_sprintf(outfn, sizeof(outfn), T("%s.gz"), mudconf.outdb);
 
-        f = popen((char *)tprintf(T("%s > %s"), mudconf.compress, tmpfile), POPEN_WRITE_OP);
-        if (f)
-        {
-            DebugTotalFiles++;
-            setvbuf(f, NULL, _IOFBF, 16384);
-            db_write(f, F_MUX, OUTPUT_VERSION | OUTPUT_FLAGS);
-            if (pclose(f) != -1)
-            {
-                DebugTotalFiles--;
-            }
-            ReplaceFile(outfn, prevfile);
-            if (ReplaceFile(tmpfile, outfn) < 0)
-            {
-                log_perror(T("SAV"), T("FAIL"), T("Renaming output file to DB file"), tmpfile);
-            }
-        }
-        else
-        {
-            log_perror(T("SAV"), T("FAIL"), T("Opening"), tmpfile);
-        }
+	f = popen((char *)tprintf(T("%s > %s"), mudconf.compress, tmpfile), POPEN_WRITE_OP);
+	if (f)
+	{
+	    DebugTotalFiles++;
+	    setvbuf(f, NULL, _IOFBF, 16384);
+	    db_write(f, F_MUX, OUTPUT_VERSION | OUTPUT_FLAGS);
+	    if (pclose(f) != -1)
+	    {
+		DebugTotalFiles--;
+	    }
+	    ReplaceFile(outfn, prevfile);
+	    if (ReplaceFile(tmpfile, outfn) < 0)
+	    {
+		log_perror(T("SAV"), T("FAIL"), T("Renaming output file to DB file"), tmpfile);
+	    }
+	}
+	else
+	{
+	    log_perror(T("SAV"), T("FAIL"), T("Opening"), tmpfile);
+	}
     }
     else
     {
-        mux_sprintf(prevfile, sizeof(prevfile), T("%s.prev"), mudconf.outdb);
-        mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#"), mudconf.outdb, mudstate.epoch - 1);
-        RemoveFile(tmpfile);
-        mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#"), mudconf.outdb, mudstate.epoch);
+	mux_sprintf(prevfile, sizeof(prevfile), T("%s.prev"), mudconf.outdb);
+	mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#"), mudconf.outdb, mudstate.epoch - 1);
+	RemoveFile(tmpfile);
+	mux_sprintf(tmpfile, sizeof(tmpfile), T("%s.#%d#"), mudconf.outdb, mudstate.epoch);
 
-        if (mux_fopen(&f, tmpfile, T("wb")))
-        {
-            DebugTotalFiles++;
-            setvbuf(f, NULL, _IOFBF, 16384);
-            db_write(f, F_MUX, OUTPUT_VERSION | OUTPUT_FLAGS);
-            if (fclose(f) == 0)
-            {
-                DebugTotalFiles--;
-            }
-            ReplaceFile(mudconf.outdb, prevfile);
-            if (ReplaceFile(tmpfile, mudconf.outdb) < 0)
-            {
-                log_perror(T("SAV"), T("FAIL"), T("Renaming output file to DB file"), tmpfile);
-            }
-        }
-        else
-        {
-            log_perror(T("SAV"), T("FAIL"), T("Opening"), tmpfile);
-        }
+	if (mux_fopen(&f, tmpfile, T("wb")))
+	{
+	    DebugTotalFiles++;
+	    setvbuf(f, NULL, _IOFBF, 16384);
+	    db_write(f, F_MUX, OUTPUT_VERSION | OUTPUT_FLAGS);
+	    if (fclose(f) == 0)
+	    {
+		DebugTotalFiles--;
+	    }
+	    ReplaceFile(mudconf.outdb, prevfile);
+	    if (ReplaceFile(tmpfile, mudconf.outdb) < 0)
+	    {
+		log_perror(T("SAV"), T("FAIL"), T("Renaming output file to DB file"), tmpfile);
+	    }
+	}
+	else
+	{
+	    log_perror(T("SAV"), T("FAIL"), T("Opening"), tmpfile);
+	}
     }
 
     if (mudconf.have_mailer)
     {
-        if (mux_fopen(&f, mudconf.mail_db, T("wb")))
-        {
-            DebugTotalFiles++;
-            dump_mail(f);
-            if (fclose(f) == 0)
-            {
-                DebugTotalFiles--;
-            }
-        }
+	if (mux_fopen(&f, mudconf.mail_db, T("wb")))
+	{
+	    DebugTotalFiles++;
+	    dump_mail(f);
+	    if (fclose(f) == 0)
+	    {
+		DebugTotalFiles--;
+	    }
+	}
     }
 
     if (mudconf.have_comsys)
     {
-        save_comsys(mudconf.comsys_db);
+	save_comsys(mudconf.comsys_db);
     }
 }
 
@@ -1563,17 +1563,17 @@ static void dump_database(void)
 #if defined(HAVE_WORKING_FORK)
     if (mudstate.dumping)
     {
-        STARTLOG(LOG_DBSAVES, "DMP", "DUMP");
-        log_text(T("Waiting on previously-forked child before dumping... "));
-        ENDLOG;
+	STARTLOG(LOG_DBSAVES, "DMP", "DUMP");
+	log_text(T("Waiting on previously-forked child before dumping... "));
+	ENDLOG;
 
-        while (mudstate.dumping)
-        {
-            // We have a forked dump in progress, so we will wait until the
-            // child exits.
-            //
-            MuxAlarm.Sleep(time_1s);
-        }
+	while (mudstate.dumping)
+	{
+	    // We have a forked dump in progress, so we will wait until the
+	    // child exits.
+	    //
+	    MuxAlarm.Sleep(time_1s);
+	}
     }
     mudstate.dumping = true;
     mudstate.dumped  = 0;
@@ -1591,8 +1591,8 @@ static void dump_database(void)
     ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
-        p->pSink->presync_database();
-        p = p->pNext;
+	p->pSink->presync_database();
+	p = p->pNext;
     }
 #endif // TINYMUX_MODULES
 
@@ -1625,8 +1625,8 @@ static void dump_database(void)
     p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
-        p->pSink->dump_complete_signal();
-        p = p->pNext;
+	p->pSink->dump_complete_signal();
+	p = p->pNext;
     }
 #endif // TINYMUX_MODULES
 }
@@ -1642,7 +1642,7 @@ void fork_and_dump(int key)
     if (  bRequestAccepted
        || mudstate.dumping)
     {
-        return;
+	return;
     }
     bRequestAccepted = true;
 #endif // HAVE_WORKING_FORK
@@ -1651,42 +1651,42 @@ void fork_and_dump(int key)
     //
     if (key == 0)
     {
-        key = DUMP_TEXT+DUMP_STRUCT;
+	key = DUMP_TEXT+DUMP_STRUCT;
     }
 
     if (*mudconf.dump_msg)
     {
-        raw_broadcast(0, T("%s"), mudconf.dump_msg);
+	raw_broadcast(0, T("%s"), mudconf.dump_msg);
     }
     check_mail_expiration();
     UTF8 *buff = alloc_lbuf("fork_and_dump");
     if (key & (DUMP_TEXT|DUMP_STRUCT))
     {
-        STARTLOG(LOG_DBSAVES, "DMP", "CHKPT");
-        if (key & DUMP_TEXT)
-        {
-            log_text(T("SYNCing"));
-            if (key & DUMP_STRUCT)
-            {
-                log_text(T(" and "));
-            }
-        }
-        if (key & DUMP_STRUCT)
-        {
-            mudstate.epoch++;
-            mux_sprintf(buff, LBUF_SIZE, T("%s.#%d#"), mudconf.outdb, mudstate.epoch);
-            log_text(T("Checkpointing: "));
-            log_text(buff);
-        }
-        ENDLOG;
+	STARTLOG(LOG_DBSAVES, "DMP", "CHKPT");
+	if (key & DUMP_TEXT)
+	{
+	    log_text(T("SYNCing"));
+	    if (key & DUMP_STRUCT)
+	    {
+		log_text(T(" and "));
+	    }
+	}
+	if (key & DUMP_STRUCT)
+	{
+	    mudstate.epoch++;
+	    mux_sprintf(buff, LBUF_SIZE, T("%s.#%d#"), mudconf.outdb, mudstate.epoch);
+	    log_text(T("Checkpointing: "));
+	    log_text(buff);
+	}
+	ENDLOG;
     }
     if (key & DUMP_FLATFILE)
     {
-        STARTLOG(LOG_DBSAVES, "DMP", "FLAT");
-        log_text(T("Creating flatfile: "));
-        mux_sprintf(buff, LBUF_SIZE, T("%s.FLAT"), mudconf.outdb);
-        log_text(buff);
-        ENDLOG;
+	STARTLOG(LOG_DBSAVES, "DMP", "FLAT");
+	log_text(T("Creating flatfile: "));
+	mux_sprintf(buff, LBUF_SIZE, T("%s.FLAT"), mudconf.outdb);
+	log_text(buff);
+	ENDLOG;
     }
     free_lbuf(buff);
 
@@ -1695,8 +1695,8 @@ void fork_and_dump(int key)
     ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
-        p->pSink->presync_database();
-        p = p->pNext;
+	p->pSink->presync_database();
+	p = p->pNext;
     }
 #endif // TINYMUX_MODULES
 
@@ -1720,10 +1720,10 @@ void fork_and_dump(int key)
  || !defined(HAVE_PWRITE)
     if (key & DUMP_FLATFILE)
     {
-        // Don't attempt a fork()'ed @dump/flat without pread()/pwrite()
-        // support.
-        //
-        bAttemptFork = false;
+	// Don't attempt a fork()'ed @dump/flat without pread()/pwrite()
+	// support.
+	//
+	bAttemptFork = false;
     }
 #endif // !HAVE_PREAD !HAVE_PWRITE
 #endif // HAVE_WORKING_FORK
@@ -1731,59 +1731,59 @@ void fork_and_dump(int key)
     if (key & (DUMP_STRUCT|DUMP_FLATFILE))
     {
 #if defined(HAVE_WORKING_FORK)
-        if (bAttemptFork)
-        {
-            child = fork();
-        }
-        if (child == 0)
-        {
-            // If we don't clear this alarm, the child will eventually receive a
-            // SIG_PROF.
-            //
-            MuxAlarm.Clear();
+	if (bAttemptFork)
+	{
+	    child = fork();
+	}
+	if (child == 0)
+	{
+	    // If we don't clear this alarm, the child will eventually receive a
+	    // SIG_PROF.
+	    //
+	    MuxAlarm.Clear();
 #endif // HAVE_WORKING_FORK
 
-            if (key & DUMP_STRUCT)
-            {
-                dump_database_internal(DUMP_I_NORMAL);
-            }
-            if (key & DUMP_FLATFILE)
-            {
-                dump_database_internal(DUMP_I_FLAT);
-            }
+	    if (key & DUMP_STRUCT)
+	    {
+		dump_database_internal(DUMP_I_NORMAL);
+	    }
+	    if (key & DUMP_FLATFILE)
+	    {
+		dump_database_internal(DUMP_I_FLAT);
+	    }
 #if defined(HAVE_WORKING_FORK)
-            if (mudconf.fork_dump)
-            {
-                _exit(0);
-            }
-        }
-        else if (child < 0)
-        {
-            log_perror(T("DMP"), T("FORK"), NULL, T("fork()"));
-        }
-        else
-        {
-            mudstate.dumper = child;
-            if (mudstate.dumper == mudstate.dumped)
-            {
-                // The child process executed and exited before fork() returned
-                // to the parent process.  Without a process id, the parent's
-                // SIGCHLD handler could not be certain that the pid of the
-                // exiting process would match the pid of this child.
-                //
-                // At the this point, we can be sure, however, there's
-                // nothing much left to do.
-                //
-                // See SIGCHLD handler in bsd.cpp.
-                //
-                mudstate.dumper = 0;
-                mudstate.dumped = 0;
-            }
-            else
-            {
-                bChildExists = true;
-            }
-        }
+	    if (mudconf.fork_dump)
+	    {
+		_exit(0);
+	    }
+	}
+	else if (child < 0)
+	{
+	    log_perror(T("DMP"), T("FORK"), NULL, T("fork()"));
+	}
+	else
+	{
+	    mudstate.dumper = child;
+	    if (mudstate.dumper == mudstate.dumped)
+	    {
+		// The child process executed and exited before fork() returned
+		// to the parent process.  Without a process id, the parent's
+		// SIGCHLD handler could not be certain that the pid of the
+		// exiting process would match the pid of this child.
+		//
+		// At the this point, we can be sure, however, there's
+		// nothing much left to do.
+		//
+		// See SIGCHLD handler in bsd.cpp.
+		//
+		mudstate.dumper = 0;
+		mudstate.dumped = 0;
+	    }
+	    else
+	    {
+		bChildExists = true;
+	    }
+	}
 #endif // HAVE_WORKING_FORK
     }
 
@@ -1791,21 +1791,21 @@ void fork_and_dump(int key)
     mudstate.write_protect = false;
     if (!bChildExists)
     {
-        // We have the ability to fork children, but we are not configured to
-        // use it; or, we tried to fork a child and failed; or, we didn't
-        // need to dump the structure or a flatfile; or, the child has finished
-        // dumping already.
-        //
-        mudstate.dumper = 0;
-        mudstate.dumping = false;
-        local_dump_complete_signal();
+	// We have the ability to fork children, but we are not configured to
+	// use it; or, we tried to fork a child and failed; or, we didn't
+	// need to dump the structure or a flatfile; or, the child has finished
+	// dumping already.
+	//
+	mudstate.dumper = 0;
+	mudstate.dumping = false;
+	local_dump_complete_signal();
 #if defined(TINYMUX_MODULES)
-        ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
-        while (NULL != p)
-        {
-            p->pSink->dump_complete_signal();
-            p = p->pNext;
-        }
+	ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
+	while (NULL != p)
+	{
+	    p->pSink->dump_complete_signal();
+	    p = p->pNext;
+	}
 #endif // TINYMUX_MODULES
     }
     bRequestAccepted = false;
@@ -1813,7 +1813,7 @@ void fork_and_dump(int key)
 
     if (*mudconf.postdump_msg)
     {
-        raw_broadcast(0, T("%s"), mudconf.postdump_msg);
+	raw_broadcast(0, T("%s"), mudconf.postdump_msg);
     }
 }
 
@@ -1837,35 +1837,35 @@ static int load_game(int ccPageFile)
 
     if (mudconf.compress_db)
     {
-        mux_sprintf(infile, sizeof(infile), T("%s.gz"), mudconf.indb);
-        if (stat((char *)infile, &statbuf) == 0)
-        {
-            f = popen((char *)tprintf(T(" %s < %s"), mudconf.uncompress, infile), POPEN_READ_OP);
-            if (f != NULL)
-            {
-                DebugTotalFiles++;
-                compressed = true;
-            }
-        }
+	mux_sprintf(infile, sizeof(infile), T("%s.gz"), mudconf.indb);
+	if (stat((char *)infile, &statbuf) == 0)
+	{
+	    f = popen((char *)tprintf(T(" %s < %s"), mudconf.uncompress, infile), POPEN_READ_OP);
+	    if (f != NULL)
+	    {
+		DebugTotalFiles++;
+		compressed = true;
+	    }
+	}
     }
 
     if (!compressed)
     {
-        mux_strncpy(infile, mudconf.indb, sizeof(infile)-1);
-        if (stat((char *)infile, &statbuf) != 0)
-        {
-            // Indicate that we couldn't load because the input db didn't
-            // exist.
-            //
-            return LOAD_GAME_NO_INPUT_DB;
-        }
+	mux_strncpy(infile, mudconf.indb, sizeof(infile)-1);
+	if (stat((char *)infile, &statbuf) != 0)
+	{
+	    // Indicate that we couldn't load because the input db didn't
+	    // exist.
+	    //
+	    return LOAD_GAME_NO_INPUT_DB;
+	}
 
-        if (!mux_fopen(&f, infile, T("rb")))
-        {
-            return LOAD_GAME_CANNOT_OPEN;
-        }
-        DebugTotalFiles++;
-        setvbuf(f, NULL, _IOFBF, 16384);
+	if (!mux_fopen(&f, infile, T("rb")))
+	{
+	    return LOAD_GAME_CANNOT_OPEN;
+	}
+	DebugTotalFiles++;
+	setvbuf(f, NULL, _IOFBF, 16384);
     }
 
     // Ok, read it in.
@@ -1876,94 +1876,94 @@ static int load_game(int ccPageFile)
     ENDLOG
     if (db_read(f, &db_format, &db_version, &db_flags) < 0)
     {
-        // Everything is not ok.
-        //
-        if (compressed)
-        {
-            if (pclose(f) != -1)
-            {
-                DebugTotalFiles--;
-            }
-        }
-        else
-        {
-            if (fclose(f) == 0)
-            {
-                DebugTotalFiles--;
-            }
-        }
-        f = 0;
+	// Everything is not ok.
+	//
+	if (compressed)
+	{
+	    if (pclose(f) != -1)
+	    {
+		DebugTotalFiles--;
+	    }
+	}
+	else
+	{
+	    if (fclose(f) == 0)
+	    {
+		DebugTotalFiles--;
+	    }
+	}
+	f = 0;
 
-        STARTLOG(LOG_ALWAYS, "INI", "FATAL")
-        log_text(T("Error loading "));
-        log_text(infile);
-        ENDLOG
-        return LOAD_GAME_LOADING_PROBLEM;
+	STARTLOG(LOG_ALWAYS, "INI", "FATAL")
+	log_text(T("Error loading "));
+	log_text(infile);
+	ENDLOG
+	return LOAD_GAME_LOADING_PROBLEM;
     }
 
     // Everything is ok.
     //
     if (compressed)
     {
-        if (pclose(f) != -1)
-        {
-            DebugTotalFiles--;
-        }
+	if (pclose(f) != -1)
+	{
+	    DebugTotalFiles--;
+	}
     }
     else
     {
-        if (fclose(f) == 0)
-        {
-            DebugTotalFiles--;
-        }
+	if (fclose(f) == 0)
+	{
+	    DebugTotalFiles--;
+	}
     }
     f = 0;
 
 #ifndef HAVE_MEMORY_BASED
     if (db_flags & V_DATABASE)
     {
-        // It loaded an output file.
-        //
-        if (ccPageFile == HF_OPEN_STATUS_NEW)
-        {
-            STARTLOG(LOG_STARTUP, "INI", "LOAD");
-            log_text(T("Attributes are not present in either the input file or the attribute database."));
-            ENDLOG;
-        }
+	// It loaded an output file.
+	//
+	if (ccPageFile == HF_OPEN_STATUS_NEW)
+	{
+	    STARTLOG(LOG_STARTUP, "INI", "LOAD");
+	    log_text(T("Attributes are not present in either the input file or the attribute database."));
+	    ENDLOG;
+	}
     }
     else
     {
-        // It loaded a flatfile.
-        //
-        if (ccPageFile == HF_OPEN_STATUS_OLD)
-        {
-            STARTLOG(LOG_STARTUP, "INI", "LOAD");
-            log_text(T("Attributes present in both the input file and the attribute database."));
-            ENDLOG;
-        }
+	// It loaded a flatfile.
+	//
+	if (ccPageFile == HF_OPEN_STATUS_OLD)
+	{
+	    STARTLOG(LOG_STARTUP, "INI", "LOAD");
+	    log_text(T("Attributes present in both the input file and the attribute database."));
+	    ENDLOG;
+	}
     }
 #endif // !HAVE_MEMORY_BASED
 
     if (mudconf.have_comsys)
     {
-        load_comsys(mudconf.comsys_db);
+	load_comsys(mudconf.comsys_db);
     }
 
     if (mudconf.have_mailer)
     {
-        if (mux_fopen(&f, mudconf.mail_db, T("rb")))
-        {
-            DebugTotalFiles++;
-            setvbuf(f, NULL, _IOFBF, 16384);
-            Log.tinyprintf(T("LOADING: %s" ENDLINE), mudconf.mail_db);
-            load_mail(f);
-            Log.tinyprintf(T("LOADING: %s (done)" ENDLINE), mudconf.mail_db);
-            if (fclose(f) == 0)
-            {
-                DebugTotalFiles--;
-            }
-            f = 0;
-        }
+	if (mux_fopen(&f, mudconf.mail_db, T("rb")))
+	{
+	    DebugTotalFiles++;
+	    setvbuf(f, NULL, _IOFBF, 16384);
+	    Log.tinyprintf(T("LOADING: %s" ENDLINE), mudconf.mail_db);
+	    load_mail(f);
+	    Log.tinyprintf(T("LOADING: %s (done)" ENDLINE), mudconf.mail_db);
+	    if (fclose(f) == 0)
+	    {
+		DebugTotalFiles--;
+	    }
+	    f = 0;
+	}
     }
     STARTLOG(LOG_STARTUP, "INI", "LOAD");
     log_text(T("Load complete."));
@@ -1998,27 +1998,27 @@ bool list_check
     while (NOTHING != thing)
     {
 #ifdef HAVE_REALITY_LVLS
-        if ((thing != player)
-           && (!(No_Command(thing)))
-           && IsReal(thing, player))
+	if ((thing != player)
+	   && (!(No_Command(thing)))
+	   && IsReal(thing, player))
 #else
-        if (  thing != player
-           && !No_Command(thing))
+	if (  thing != player
+	   && !No_Command(thing))
 #endif // HAVE_REALITY_LVLS
-        {
-            bMatch |= atr_match(thing, player, type, str, raw_str, check_parent);
-        }
+	{
+	    bMatch |= atr_match(thing, player, type, str, raw_str, check_parent);
+	}
 
-        // Non-authoritative test of circular reference.
-        //
-        dbref next;
-        if (  thing == (next = Next(thing))
-           || --limit < 0
-           || MuxAlarm.bAlarmed)
-        {
-            break;
-        }
-        thing = next;
+	// Non-authoritative test of circular reference.
+	//
+	dbref next;
+	if (  thing == (next = Next(thing))
+	   || --limit < 0
+	   || MuxAlarm.bAlarmed)
+	{
+	    break;
+	}
+	thing = next;
     }
     return bMatch;
 }
@@ -2028,88 +2028,88 @@ bool Hearer(dbref thing)
     if (  mudstate.inpipe
        && thing == mudstate.poutobj)
     {
-        return true;
+	return true;
     }
 
     if (  Connected(thing)
        || Puppet(thing)
        || H_Listen(thing))
     {
-        return true;
+	return true;
     }
 
     if (Monitor(thing))
     {
-        if (mudstate.bfListens.IsSet(thing))
-        {
-            return true;
-        }
-        else if (mudstate.bfNoListens.IsSet(thing))
-        {
-            return false;
-        }
-        else
-        {
-            bool bFoundCommands = false;
+	if (mudstate.bfListens.IsSet(thing))
+	{
+	    return true;
+	}
+	else if (mudstate.bfNoListens.IsSet(thing))
+	{
+	    return false;
+	}
+	else
+	{
+	    bool bFoundCommands = false;
 
-            UTF8 *buff = alloc_lbuf("Hearer");
-            atr_push();
-            unsigned char *as;
-            for (int atr = atr_head(thing, &as); atr; atr = atr_next(&as))
-            {
-                ATTR *ap = atr_num(atr);
-                if (  !ap
-                   || (ap->flags & AF_NOPROG))
-                {
-                    continue;
-                }
+	    UTF8 *buff = alloc_lbuf("Hearer");
+	    atr_push();
+	    unsigned char *as;
+	    for (int atr = atr_head(thing, &as); atr; atr = atr_next(&as))
+	    {
+		ATTR *ap = atr_num(atr);
+		if (  !ap
+		   || (ap->flags & AF_NOPROG))
+		{
+		    continue;
+		}
 
-                int   aflags;
-                dbref aowner;
-                atr_get_str(buff, thing, atr, &aowner, &aflags);
+		int   aflags;
+		dbref aowner;
+		atr_get_str(buff, thing, atr, &aowner, &aflags);
 
-                if (aflags & AF_NOPROG)
-                {
-                    continue;
-                }
+		if (aflags & AF_NOPROG)
+		{
+		    continue;
+		}
 
-                UTF8 *s = NULL;
-                if (  AMATCH_CMD    == buff[0]
-                   || AMATCH_LISTEN == buff[0])
-                {
-                    s = (UTF8 *)strchr((char *)buff+1, ':');
-                    if (s)
-                    {
-                        if (AMATCH_CMD == buff[0])
-                        {
-                            bFoundCommands = true;
-                        }
-                        else
-                        {
-                            free_lbuf(buff);
-                            atr_pop();
-                            mudstate.bfListens.Set(thing);
-                            return true;
-                        }
-                    }
-                }
-            }
-            free_lbuf(buff);
-            atr_pop();
+		UTF8 *s = NULL;
+		if (  AMATCH_CMD    == buff[0]
+		   || AMATCH_LISTEN == buff[0])
+		{
+		    s = (UTF8 *)strchr((char *)buff+1, ':');
+		    if (s)
+		    {
+			if (AMATCH_CMD == buff[0])
+			{
+			    bFoundCommands = true;
+			}
+			else
+			{
+			    free_lbuf(buff);
+			    atr_pop();
+			    mudstate.bfListens.Set(thing);
+			    return true;
+			}
+		    }
+		}
+	    }
+	    free_lbuf(buff);
+	    atr_pop();
 
-            mudstate.bfNoListens.Set(thing);
+	    mudstate.bfNoListens.Set(thing);
 
-            if (bFoundCommands)
-            {
-                mudstate.bfNoCommands.Clear(thing);
-                mudstate.bfCommands.Set(thing);
-            }
-            else
-            {
-                mudstate.bfCommands.Clear(thing);
-                mudstate.bfNoCommands.Set(thing);
-            }
-        }
+	    if (bFoundCommands)
+	    {
+		mudstate.bfNoCommands.Clear(thing);
+		mudstate.bfCommands.Set(thing);
+	    }
+	    else
+	    {
+		mudstate.bfCommands.Clear(thing);
+		mudstate.bfNoCommands.Set(thing);
+	    }
+	}
     }
     return false;
 }
@@ -2134,55 +2134,55 @@ static void process_preload(void)
     tstr = alloc_lbuf("process_preload.string");
     DO_WHOLE_DB(thing)
     {
-        // Ignore GOING objects.
-        //
-        if (Going(thing))
-        {
-            continue;
-        }
+	// Ignore GOING objects.
+	//
+	if (Going(thing))
+	{
+	    continue;
+	}
 
-        scheduler.RunTasks(10);
+	scheduler.RunTasks(10);
 
-        // Look for a STARTUP attribute in parents.
-        //
-        if (mudconf.run_startup)
-        {
-            ITER_PARENTS(thing, parent, lev)
-            {
-                if (H_Startup(thing))
-                {
-                    did_it(Owner(thing), thing, 0, NULL, 0, NULL, A_STARTUP,
-                        0, NULL, 0);
+	// Look for a STARTUP attribute in parents.
+	//
+	if (mudconf.run_startup)
+	{
+	    ITER_PARENTS(thing, parent, lev)
+	    {
+		if (H_Startup(thing))
+		{
+		    did_it(Owner(thing), thing, 0, NULL, 0, NULL, A_STARTUP,
+			0, NULL, 0);
 
-                    // Process queue entries as we add them.
-                    //
-                    scheduler.RunTasks(10);
-                    break;
-                 }
-            }
-        }
+		    // Process queue entries as we add them.
+		    //
+		    scheduler.RunTasks(10);
+		    break;
+		 }
+	    }
+	}
 
-        // Look for a FORWARDLIST attribute.
-        //
-        if (H_Fwdlist(thing))
-        {
-            atr_get_str(tstr, thing, A_FORWARDLIST, &aowner, &aflags);
-            if (*tstr)
-            {
-                FWDLIST *fp = fwdlist_load(GOD, tstr);
-                if (NULL != fp)
-                {
-                    fwdlist_set(thing, fp);
+	// Look for a FORWARDLIST attribute.
+	//
+	if (H_Fwdlist(thing))
+	{
+	    atr_get_str(tstr, thing, A_FORWARDLIST, &aowner, &aflags);
+	    if (*tstr)
+	    {
+		FWDLIST *fp = fwdlist_load(GOD, tstr);
+		if (NULL != fp)
+		{
+		    fwdlist_set(thing, fp);
 
-                    if (fp->data)
-                    {
-                        delete [] fp->data;
-                    }
-                    delete fp;
-                    fp = NULL;
-                }
-            }
-        }
+		    if (fp->data)
+		    {
+			delete [] fp->data;
+		    }
+		    delete fp;
+		    fp = NULL;
+		}
+	    }
+	}
     }
     free_lbuf(tstr);
 }
@@ -2200,38 +2200,38 @@ static void info(int fmt, int flags, int ver)
 
     if (fmt == F_MUX)
     {
-        cp = T("MUX");
+	cp = T("MUX");
     }
     else
     {
-        cp = T("*unknown*");
+	cp = T("*unknown*");
     }
     Log.tinyprintf(T("%s version %d:"), cp, ver);
     if (  ver < MIN_SUPPORTED_VERSION
        || MAX_SUPPORTED_VERSION < ver)
     {
-        Log.WriteString(T(" Unsupported version"));
-        exit(1);
+	Log.WriteString(T(" Unsupported version"));
+	exit(1);
     }
     else if (  (  (  1 == ver
-                  || 2 == ver)
-               && (flags & MANDFLAGS_V2) != MANDFLAGS_V2)
-            || (  3 == ver
-               && (flags & MANDFLAGS_V3) != MANDFLAGS_V3)
-            || (  4 == ver
-               && (flags & MANDFLAGS_V4) != MANDFLAGS_V4))
+		  || 2 == ver)
+	       && (flags & MANDFLAGS_V2) != MANDFLAGS_V2)
+	    || (  3 == ver
+	       && (flags & MANDFLAGS_V3) != MANDFLAGS_V3)
+	    || (  4 == ver
+	       && (flags & MANDFLAGS_V4) != MANDFLAGS_V4))
     {
-        Log.WriteString(T(" Unsupported flags"));
-        exit(1);
+	Log.WriteString(T(" Unsupported flags"));
+	exit(1);
     }
     if (flags & V_DATABASE)
-        Log.WriteString(T(" Database"));
+	Log.WriteString(T(" Database"));
     if (flags & V_ATRNAME)
-        Log.WriteString(T(" AtrName"));
+	Log.WriteString(T(" AtrName"));
     if (flags & V_ATRKEY)
-        Log.WriteString(T(" AtrKey"));
+	Log.WriteString(T(" AtrKey"));
     if (flags & V_ATRMONEY)
-        Log.WriteString(T(" AtrMoney"));
+	Log.WriteString(T(" AtrMoney"));
     Log.WriteString(T(ENDLINE));
 }
 
@@ -2268,20 +2268,20 @@ static void dbconvert(void)
     bool do_write = true;
     if (standalone_check)
     {
-        do_write = false;
+	do_write = false;
     }
     if (standalone_load)
     {
-        clrflags = 0xffffffff;
-        setflags = OUTPUT_FLAGS;
-        ver = OUTPUT_VERSION;
-        do_redirect = true;
+	clrflags = 0xffffffff;
+	setflags = OUTPUT_FLAGS;
+	ver = OUTPUT_VERSION;
+	do_redirect = true;
     }
     else if (standalone_unload)
     {
-        clrflags = 0xffffffff;
-        setflags = UNLOAD_FLAGS;
-        ver = UNLOAD_VERSION;
+	clrflags = 0xffffffff;
+	setflags = UNLOAD_FLAGS;
+	ver = UNLOAD_VERSION;
     }
 
     // Open the database
@@ -2303,88 +2303,88 @@ static void dbconvert(void)
     int cc = init_dbfile(dirfile, pagfile, 650);
     if (cc == HF_OPEN_STATUS_ERROR)
     {
-        Log.tinyprintf(T("Can\xE2\x80\x99t open database in (%s, %s) files\n"), dirfile, pagfile);
-        exit(1);
+	Log.tinyprintf(T("Can\xE2\x80\x99t open database in (%s, %s) files\n"), dirfile, pagfile);
+	exit(1);
     }
     else if (cc == HF_OPEN_STATUS_OLD)
     {
-        if (setflags == OUTPUT_FLAGS)
-        {
-            Log.tinyprintf(T("Would overwrite existing database (%s, %s)\n"), dirfile, pagfile);
-            CLOSE;
-            exit(1);
-        }
+	if (setflags == OUTPUT_FLAGS)
+	{
+	    Log.tinyprintf(T("Would overwrite existing database (%s, %s)\n"), dirfile, pagfile);
+	    CLOSE;
+	    exit(1);
+	}
     }
     else if (cc == HF_OPEN_STATUS_NEW)
     {
-        if (setflags == UNLOAD_FLAGS)
-        {
-            Log.tinyprintf(T("Database (%s, %s) is empty.\n"), dirfile, pagfile);
-            CLOSE;
-            exit(1);
-        }
+	if (setflags == UNLOAD_FLAGS)
+	{
+	    Log.tinyprintf(T("Database (%s, %s) is empty.\n"), dirfile, pagfile);
+	    CLOSE;
+	    exit(1);
+	}
     }
 
     FILE *fpIn;
     if (!mux_fopen(&fpIn, standalone_infile, T("rb")))
     {
-        exit(1);
+	exit(1);
     }
 
     // Go do it.
     //
     if (do_redirect)
     {
-        cache_redirect();
+	cache_redirect();
     }
 
     setvbuf(fpIn, NULL, _IOFBF, 16384);
     if (db_read(fpIn, &db_format, &db_ver, &db_flags) < 0)
     {
-        cache_cleanup();
-        exit(1);
+	cache_cleanup();
+	exit(1);
     }
 
     if (do_redirect)
     {
-        cache_pass2();
+	cache_pass2();
     }
     Log.WriteString(T("Input: "));
     info(db_format, db_flags, db_ver);
 
     if (standalone_check)
     {
-        do_dbck(NOTHING, NOTHING, NOTHING, 0, DBCK_FULL);
+	do_dbck(NOTHING, NOTHING, NOTHING, 0, DBCK_FULL);
     }
     fclose(fpIn);
 
     if (do_write)
     {
-        FILE *fpOut;
-        if (!mux_fopen(&fpOut, standalone_outfile, T("wb")))
-        {
-            exit(1);
-        }
+	FILE *fpOut;
+	if (!mux_fopen(&fpOut, standalone_outfile, T("wb")))
+	{
+	    exit(1);
+	}
 
-        db_flags = (db_flags & ~clrflags) | setflags;
-        if (db_format != F_MUX)
-        {
-            db_ver = 3;
-        }
-        if (ver != 0)
-        {
-            db_ver = ver;
-        }
-        Log.WriteString(T("Output: "));
-        info(F_MUX, db_flags, db_ver);
-        setvbuf(fpOut, NULL, _IOFBF, 16384);
+	db_flags = (db_flags & ~clrflags) | setflags;
+	if (db_format != F_MUX)
+	{
+	    db_ver = 3;
+	}
+	if (ver != 0)
+	{
+	    db_ver = ver;
+	}
+	Log.WriteString(T("Output: "));
+	info(F_MUX, db_flags, db_ver);
+	setvbuf(fpOut, NULL, _IOFBF, 16384);
 #ifndef HAVE_MEMORY_BASED
-        // Save cached modified attribute list
-        //
-        al_store();
+	// Save cached modified attribute list
+	//
+	al_store();
 #endif // HAVE_MEMORY_BASED
-        db_write(fpOut, F_MUX, db_ver | db_flags);
-        fclose(fpOut);
+	db_write(fpOut, F_MUX, db_ver | db_flags);
+	fclose(fpOut);
     }
     CLOSE;
 #ifdef HAVE_SELFCHECK
@@ -2399,14 +2399,14 @@ static void write_pidfile(const UTF8 *pFilename)
     FILE *fp;
     if (mux_fopen(&fp, pFilename, T("wb")))
     {
-        mux_fprintf(fp, T("%d" ENDLINE), game_pid);
-        fclose(fp);
+	mux_fprintf(fp, T("%d" ENDLINE), game_pid);
+	fclose(fp);
     }
     else
     {
-        STARTLOG(LOG_ALWAYS, "PID", "FAIL");
-        Log.tinyprintf(T("Failed to write pidfile %s\n"), pFilename);
-        ENDLOG;
+	STARTLOG(LOG_ALWAYS, "PID", "FAIL");
+	Log.tinyprintf(T("Failed to write pidfile %s\n"), pFilename);
+	ENDLOG;
     }
 }
 
@@ -2415,57 +2415,57 @@ static void init_sql(void)
 {
     if ('\0' != mudconf.sql_server[0])
     {
-        STARTLOG(LOG_STARTUP,"SQL","CONN");
-        log_text(T("Connecting: "));
-        log_text(mudconf.sql_database);
-        log_text(T("@"));
-        log_text(mudconf.sql_server);
-        log_text(T(" as "));
-        log_text(mudconf.sql_user);
-        ENDLOG;
+	STARTLOG(LOG_STARTUP,"SQL","CONN");
+	log_text(T("Connecting: "));
+	log_text(mudconf.sql_database);
+	log_text(T("@"));
+	log_text(mudconf.sql_server);
+	log_text(T(" as "));
+	log_text(mudconf.sql_user);
+	ENDLOG;
 
-        mush_database = mysql_init(NULL);
+	mush_database = mysql_init(NULL);
 
-        if (mush_database)
-        {
+	if (mush_database)
+	{
 #ifdef MYSQL_OPT_RECONNECT
-            // As of MySQL 5.0.3, the default is no longer to reconnect.
-            //
-            my_bool reconnect = 1;
-            mysql_options(mush_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
+	    // As of MySQL 5.0.3, the default is no longer to reconnect.
+	    //
+	    my_bool reconnect = 1;
+	    mysql_options(mush_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
 #endif
-            mysql_options(mush_database, MYSQL_SET_CHARSET_NAME, "utf8");
+	    mysql_options(mush_database, MYSQL_SET_CHARSET_NAME, "utf8");
 
-            if (mysql_real_connect(mush_database,
-                       (char *)mudconf.sql_server, (char *)mudconf.sql_user,
-                       (char *)mudconf.sql_password,
-                       (char *)mudconf.sql_database, 0, NULL, 0))
-            {
+	    if (mysql_real_connect(mush_database,
+		       (char *)mudconf.sql_server, (char *)mudconf.sql_user,
+		       (char *)mudconf.sql_password,
+		       (char *)mudconf.sql_database, 0, NULL, 0))
+	    {
 #ifdef MYSQL_OPT_RECONNECT
-                // Before MySQL 5.0.19, mysql_real_connect sets the option
-                // back to default, so we set it again.
-                //
-                mysql_options(mush_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
+		// Before MySQL 5.0.19, mysql_real_connect sets the option
+		// back to default, so we set it again.
+		//
+		mysql_options(mush_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
 #endif
-                STARTLOG(LOG_STARTUP,"SQL","CONN");
-                log_text(T("Connected to MySQL"));
-                ENDLOG;
-            }
-            else
-            {
-                STARTLOG(LOG_STARTUP,"SQL","CONN");
-                log_text(T("Unable to connect"));
-                ENDLOG;
-                mysql_close(mush_database);
-                mush_database = NULL;
-            }
-        }
-        else
-        {
-            STARTLOG(LOG_STARTUP,"SQL","CONN");
-            log_text(T("MySQL Library unavailable"));
-            ENDLOG;
-        }
+		STARTLOG(LOG_STARTUP,"SQL","CONN");
+		log_text(T("Connected to MySQL"));
+		ENDLOG;
+	    }
+	    else
+	    {
+		STARTLOG(LOG_STARTUP,"SQL","CONN");
+		log_text(T("Unable to connect"));
+		ENDLOG;
+		mysql_close(mush_database);
+		mush_database = NULL;
+	    }
+	}
+	else
+	{
+	    STARTLOG(LOG_STARTUP,"SQL","CONN");
+	    log_text(T("MySQL Library unavailable"));
+	    ENDLOG;
+	}
     }
 }
 
@@ -2523,74 +2523,74 @@ static void CLI_CallBack(CLI_OptionEntry *p, const char *pValue)
 {
     if (p)
     {
-        switch (p->m_Unique)
-        {
-        case CLI_DO_PID_FILE:
-            bServerOption = true;
-            mudconf.pid_file = (UTF8 *)pValue;
-            break;
+	switch (p->m_Unique)
+	{
+	case CLI_DO_PID_FILE:
+	    bServerOption = true;
+	    mudconf.pid_file = (UTF8 *)pValue;
+	    break;
 
-        case CLI_DO_CONFIG_FILE:
-            bServerOption = true;
-            conffile = (UTF8 *)pValue;
-            break;
+	case CLI_DO_CONFIG_FILE:
+	    bServerOption = true;
+	    conffile = (UTF8 *)pValue;
+	    break;
 
-        case CLI_DO_MINIMAL:
-            bServerOption = true;
-            bMinDB = true;
-            break;
+	case CLI_DO_MINIMAL:
+	    bServerOption = true;
+	    bMinDB = true;
+	    break;
 
-        case CLI_DO_VERSION:
-            bServerOption = true;
-            bVersion = true;
-            break;
+	case CLI_DO_VERSION:
+	    bServerOption = true;
+	    bVersion = true;
+	    break;
 
-        case CLI_DO_ERRORPATH:
-            bServerOption = true;
-            pErrorBasename = (UTF8 *)pValue;
-            break;
+	case CLI_DO_ERRORPATH:
+	    bServerOption = true;
+	    pErrorBasename = (UTF8 *)pValue;
+	    break;
 
 #ifndef HAVE_MEMORY_BASED
-        case CLI_DO_INFILE:
-            mudstate.bStandAlone = true;
-            standalone_infile = (UTF8 *)pValue;
-            break;
+	case CLI_DO_INFILE:
+	    mudstate.bStandAlone = true;
+	    standalone_infile = (UTF8 *)pValue;
+	    break;
 
-        case CLI_DO_OUTFILE:
-            mudstate.bStandAlone = true;
-            standalone_outfile = (UTF8 *)pValue;
-            break;
+	case CLI_DO_OUTFILE:
+	    mudstate.bStandAlone = true;
+	    standalone_outfile = (UTF8 *)pValue;
+	    break;
 
-        case CLI_DO_CHECK:
-            mudstate.bStandAlone = true;
-            standalone_check = true;
-            break;
+	case CLI_DO_CHECK:
+	    mudstate.bStandAlone = true;
+	    standalone_check = true;
+	    break;
 
-        case CLI_DO_LOAD:
-            mudstate.bStandAlone = true;
-            standalone_load = true;
-            break;
+	case CLI_DO_LOAD:
+	    mudstate.bStandAlone = true;
+	    standalone_load = true;
+	    break;
 
-        case CLI_DO_UNLOAD:
-            mudstate.bStandAlone = true;
-            standalone_unload = true;
-            break;
+	case CLI_DO_UNLOAD:
+	    mudstate.bStandAlone = true;
+	    standalone_unload = true;
+	    break;
 
-        case CLI_DO_BASENAME:
-            mudstate.bStandAlone = true;
-            standalone_basename = (UTF8 *)pValue;
-            break;
+	case CLI_DO_BASENAME:
+	    mudstate.bStandAlone = true;
+	    standalone_basename = (UTF8 *)pValue;
+	    break;
 #endif
 
-        case CLI_DO_USAGE:
-        default:
-            bSyntaxError = true;
-            break;
-        }
+	case CLI_DO_USAGE:
+	default:
+	    bSyntaxError = true;
+	    break;
+	}
     }
     else
     {
-        bSyntaxError = true;
+	bSyntaxError = true;
     }
 }
 
@@ -2670,33 +2670,33 @@ static void cpu_init(void)
     //
     __asm
     {
-        // Obtain a copy of the flags register.
-        //
-        pushfd
-        pop     eax
-        mov     dwCPUID,eax
+	// Obtain a copy of the flags register.
+	//
+	pushfd
+	pop     eax
+	mov     dwCPUID,eax
 
-        // Attempt to flip the ID bit.
-        //
-        xor     eax,CPU_FD_ID
-        push    eax
-        popfd
+	// Attempt to flip the ID bit.
+	//
+	xor     eax,CPU_FD_ID
+	push    eax
+	popfd
 
-        // Obtain a second copy of the flags register.
-        //
-        pushfd
-        pop     eax
-        xor     dwCPUID,eax
+	// Obtain a second copy of the flags register.
+	//
+	pushfd
+	pop     eax
+	xor     dwCPUID,eax
     }
 
     // If the ID bit didn't toggle, the CPUID instruction is not supported.
     //
     if (CPU_FD_ID != dwCPUID)
     {
-        // CPUID instruction is not supported.
-        //
-        __intel_cpu_indicator = CPU_TYPE_UNSPECIALIZED;
-        return;
+	// CPUID instruction is not supported.
+	//
+	__intel_cpu_indicator = CPU_TYPE_UNSPECIALIZED;
+	return;
     }
 
     UINT32 dwHighest;
@@ -2708,26 +2708,26 @@ static void cpu_init(void)
     //
     __asm
     {
-        mov eax,CPUID_0
-        cpuid
-        mov dwHighest,eax
-        mov dwMfgStr_ebx,ebx
-        mov dwMfgStr_ecx,ecx
-        mov dwMfgStr_edx,edx
+	mov eax,CPUID_0
+	cpuid
+	mov dwHighest,eax
+	mov dwMfgStr_ebx,ebx
+	mov dwMfgStr_ecx,ecx
+	mov dwMfgStr_edx,edx
     }
 
     if (0 == dwHighest)
     {
-        // We can't decipher anything with only CPUID (EAX=$0) available.
-        //
-        __intel_cpu_indicator = CPU_TYPE_UNSPECIALIZED;
-        return;
+	// We can't decipher anything with only CPUID (EAX=$0) available.
+	//
+	__intel_cpu_indicator = CPU_TYPE_UNSPECIALIZED;
+	return;
     }
 
     typedef enum
     {
-        Intel = 0,
-        AMD
+	Intel = 0,
+	AMD
     } CPUMaker;
 
     CPUMaker maker;
@@ -2735,20 +2735,20 @@ static void cpu_init(void)
        && INTEL_MFGSTR_ECX == dwMfgStr_ecx
        && INTEL_MFGSTR_EDX == dwMfgStr_edx)
     {
-        maker = Intel;
+	maker = Intel;
     }
     else if (  AMD_MFGSTR_EBX == dwMfgStr_ebx
-            && AMD_MFGSTR_ECX == dwMfgStr_ecx
-            && AMD_MFGSTR_EDX == dwMfgStr_edx)
+	    && AMD_MFGSTR_ECX == dwMfgStr_ecx
+	    && AMD_MFGSTR_EDX == dwMfgStr_edx)
     {
-        maker = AMD;
+	maker = AMD;
     }
     else
     {
-        // It's not Intel or AMD.
-        //
-        __intel_cpu_indicator = CPU_TYPE_UNSPECIALIZED;
-        return;
+	// It's not Intel or AMD.
+	//
+	__intel_cpu_indicator = CPU_TYPE_UNSPECIALIZED;
+	return;
     }
 
     UINT32 dwSignature;
@@ -2758,12 +2758,12 @@ static void cpu_init(void)
 
     __asm
     {
-        mov eax,CPUID_1
-        cpuid
-        mov dwSignature,eax
-        mov dwBrand,ebx
-        mov dwFeatures2,ecx
-        mov dwFeatures,edx
+	mov eax,CPUID_1
+	cpuid
+	mov dwSignature,eax
+	mov dwBrand,ebx
+	mov dwFeatures2,ecx
+	mov dwFeatures,edx
     }
 
     (void)(dwBrand);
@@ -2773,20 +2773,20 @@ static void cpu_init(void)
     UINT32 dwEffFamily;
     if (CPU_FAMILY(dwSignature) == 0xF)
     {
-        dwEffFamily = CPU_FAMILY(dwSignature) + CPU_EXTFAMILY(dwSignature);
+	dwEffFamily = CPU_FAMILY(dwSignature) + CPU_EXTFAMILY(dwSignature);
     }
     else
     {
-        dwEffFamily = CPU_FAMILY(dwSignature);
+	dwEffFamily = CPU_FAMILY(dwSignature);
     }
     UINT32 dwEffModel;
     if (CPU_MODEL(dwSignature) == 0xF)
     {
-        dwEffModel = CPU_MODEL(dwSignature) + (CPU_EXTMODEL(dwSignature) << 4);
+	dwEffModel = CPU_MODEL(dwSignature) + (CPU_EXTMODEL(dwSignature) << 4);
     }
     else
     {
-        dwEffModel = CPU_MODEL(dwSignature);
+	dwEffModel = CPU_MODEL(dwSignature);
     }
 
 #define ADVF_MMX   0x00000001UL
@@ -2805,39 +2805,39 @@ static void cpu_init(void)
     //
     if (dwFeatures & CPU_FEATURE_MMX)
     {
-        dwAdvFeatures |= ADVF_MMX;
+	dwAdvFeatures |= ADVF_MMX;
     }
     if (dwFeatures & CPU_FEATURE_FSXR)
     {
-        dwAdvFeatures |= ADVF_FSXR;
+	dwAdvFeatures |= ADVF_FSXR;
     }
     if (dwFeatures & CPU_FEATURE_SSE)
     {
-        dwAdvFeatures |= ADVF_SSE;
+	dwAdvFeatures |= ADVF_SSE;
     }
     if (dwFeatures & CPU_FEATURE_SSE2)
     {
-        dwAdvFeatures |= ADVF_SSE2;
+	dwAdvFeatures |= ADVF_SSE2;
     }
     if (dwFeatures2 & CPU_FEATURE2_SSE3)
     {
-        dwAdvFeatures |= ADVF_SSE3;
+	dwAdvFeatures |= ADVF_SSE3;
     }
     if (dwFeatures2 & CPU_FEATURE2_SSSE3)
     {
-        dwAdvFeatures |= ADVF_SSSE3;
+	dwAdvFeatures |= ADVF_SSSE3;
     }
     if (dwFeatures2 & CPU_FEATURE2_SSE41)
     {
-        dwAdvFeatures |= ADVF_SSE41;
+	dwAdvFeatures |= ADVF_SSE41;
     }
     if (dwFeatures2 & CPU_FEATURE2_SSE42)
     {
-        dwAdvFeatures |= ADVF_SSE42;
+	dwAdvFeatures |= ADVF_SSE42;
     }
     if (dwFeatures2 & CPU_FEATURE2_AES)
     {
-        dwAdvFeatures |= ADVF_AES;
+	dwAdvFeatures |= ADVF_AES;
     }
 
     // Test whether operating system will allow use of these extensions.
@@ -2845,265 +2845,265 @@ static void cpu_init(void)
     UINT32 dwUseable = dwAdvFeatures;
     if (dwUseable & ADVF_MMX)
     {
-        try
-        {
-            __asm
-            {
-                // Let's try a MMX instruction.
-                //
-                emms
-            }
-        }
-        catch (...)
-        {
-            dwUseable &= ~(ADVF_MMX|ADVF_SSE|ADVF_SSE2|ADVF_SSE3|ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
-        }
+	try
+	{
+	    __asm
+	    {
+		// Let's try a MMX instruction.
+		//
+		emms
+	    }
+	}
+	catch (...)
+	{
+	    dwUseable &= ~(ADVF_MMX|ADVF_SSE|ADVF_SSE2|ADVF_SSE3|ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
+	}
     }
 
     if (dwUseable & ADVF_SSE)
     {
-        try
-        {
-            __asm
-            {
-                // Let's try a SSE instruction.
-                //
-                xorps xmm0, xmm0
-            }
-        }
-        catch (...)
-        {
-            dwUseable &= ~(ADVF_SSE|ADVF_SSE2|ADVF_SSE3|ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
-        }
+	try
+	{
+	    __asm
+	    {
+		// Let's try a SSE instruction.
+		//
+		xorps xmm0, xmm0
+	    }
+	}
+	catch (...)
+	{
+	    dwUseable &= ~(ADVF_SSE|ADVF_SSE2|ADVF_SSE3|ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
+	}
     }
 
     if (dwUseable & ADVF_SSE2)
     {
-        try
-        {
-            __asm
-            {
-                // Let's try a SSE2 instruction.
-                //
-                xorpd xmm0, xmm0
-            }
-        }
-        catch (...)
-        {
-            dwUseable &= ~(ADVF_SSE2|ADVF_SSE3|ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
-        }
+	try
+	{
+	    __asm
+	    {
+		// Let's try a SSE2 instruction.
+		//
+		xorpd xmm0, xmm0
+	    }
+	}
+	catch (...)
+	{
+	    dwUseable &= ~(ADVF_SSE2|ADVF_SSE3|ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
+	}
     }
 
     if (dwUseable & ADVF_SSE3)
     {
-        try
-        {
-            __asm
-            {
-                // Let's try a SSE3 instruction.
-                //
-                haddpd xmm1,xmm2
-            }
-        }
-        catch (...)
-        {
-            dwUseable &= ~(ADVF_SSE3|ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
-        }
+	try
+	{
+	    __asm
+	    {
+		// Let's try a SSE3 instruction.
+		//
+		haddpd xmm1,xmm2
+	    }
+	}
+	catch (...)
+	{
+	    dwUseable &= ~(ADVF_SSE3|ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
+	}
     }
 
     if (dwUseable & ADVF_SSSE3)
     {
-        try
-        {
-            __asm
-            {
-                // Let's try a SSSE3 instruction.
-                //
-                phaddw xmm1,xmm2
-            }
-        }
-        catch (...)
-        {
-            dwUseable &= ~(ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
-        }
+	try
+	{
+	    __asm
+	    {
+		// Let's try a SSSE3 instruction.
+		//
+		phaddw xmm1,xmm2
+	    }
+	}
+	catch (...)
+	{
+	    dwUseable &= ~(ADVF_SSSE3|ADVF_SSE41|ADVF_SSE42|ADVF_AES);
+	}
     }
 
     if (dwUseable & ADVF_SSE41)
     {
-        try
-        {
-            __asm
-            {
-                // Let's try a SSE41 instruction.
-                //
-                pcmpeqq xmm1,xmm2
-            }
-        }
-        catch (...)
-        {
-            dwUseable &= ~(ADVF_SSE41|ADVF_SSE42|ADVF_AES);
-        }
+	try
+	{
+	    __asm
+	    {
+		// Let's try a SSE41 instruction.
+		//
+		pcmpeqq xmm1,xmm2
+	    }
+	}
+	catch (...)
+	{
+	    dwUseable &= ~(ADVF_SSE41|ADVF_SSE42|ADVF_AES);
+	}
     }
 
     if (dwUseable & ADVF_SSE42)
     {
-        try
-        {
-            __asm
-            {
-                // Let's try a SSE42 instruction.
-                //
-                pcmpgtq xmm1,xmm2
-            }
-        }
-        catch (...)
-        {
-            dwUseable &= ~(ADVF_SSE42|ADVF_AES);
-        }
+	try
+	{
+	    __asm
+	    {
+		// Let's try a SSE42 instruction.
+		//
+		pcmpgtq xmm1,xmm2
+	    }
+	}
+	catch (...)
+	{
+	    dwUseable &= ~(ADVF_SSE42|ADVF_AES);
+	}
     }
 
     if (dwUseable & ADVF_AES)
     {
-        try
-        {
-            __asm
-            {
-                // Let's try a AES instruction.
-                //
-                aesenc xmm1,xmm2
-            }
-        }
-        catch (...)
-        {
-            dwUseable &= ~(ADVF_AES);
-        }
+	try
+	{
+	    __asm
+	    {
+		// Let's try a AES instruction.
+		//
+		aesenc xmm1,xmm2
+	    }
+	}
+	catch (...)
+	{
+	    dwUseable &= ~(ADVF_AES);
+	}
     }
 
     // Map tested features to an indicator for CPU dispatching.
     //
     if (dwEffFamily <= 4)
     {
-        __intel_cpu_indicator = CPU_TYPE_UNSPECIALIZED;
+	__intel_cpu_indicator = CPU_TYPE_UNSPECIALIZED;
     }
     else if (5 == dwEffFamily)
     {
-        if (dwUseable & ADVF_MMX)
-        {
-            __intel_cpu_indicator = CPU_TYPE_FAMILY_5_MMX;
-        }
-        else
-        {
-            __intel_cpu_indicator = CPU_TYPE_FAMILY_5;
-        }
+	if (dwUseable & ADVF_MMX)
+	{
+	    __intel_cpu_indicator = CPU_TYPE_FAMILY_5_MMX;
+	}
+	else
+	{
+	    __intel_cpu_indicator = CPU_TYPE_FAMILY_5;
+	}
     }
     else
     {
-        if (dwUseable & ADVF_MMX)
-        {
-            if (dwUseable & ADVF_FSXR)
-            {
-                if (dwUseable & ADVF_SSE)
-                {
-                    if (dwUseable & ADVF_SSE2)
-                    {
-                        if (dwUseable & ADVF_SSE3)
-                        {
-                            if (dwUseable & ADVF_SSSE3)
-                            {
-                                if (dwUseable & ADVF_SSE41)
-                                {
-                                    if (dwUseable & ADVF_SSE42)
-                                    {
-                                        if (dwUseable & ADVF_AES)
-                                        {
-                                            __intel_cpu_indicator = CPU_TYPE_FAMILY_6_AES_DTE64;
-                                        }
-                                        else
-                                        {
-                                            __intel_cpu_indicator = CPU_TYPE_FAMILY_6_SSE42_POPCNT;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        __intel_cpu_indicator = CPU_TYPE_FAMILY_6_SSE41;
-                                    }
-                                }
-                                else
-                                {
-                                    __intel_cpu_indicator = CPU_TYPE_FAMILY_6_SSSE3;
-                                }
-                            }
-                            else if (dwEffFamily < 15)
-                            {
-                                __intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX_FSXR_SSE3;
-                            }
-                            else
-                            {
-                                __intel_cpu_indicator = CPU_TYPE_FAMILY_F_SSE3;
-                            }
-                        }
-                        else
-                        {
-                            if (dwEffFamily < 15)
-                            {
-                                __intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX_FSXR_SSE2;
-                            }
-                            else
-                            {
-                                __intel_cpu_indicator = CPU_TYPE_FAMILY_F_SSE2;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        __intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX_FSXR_SSE;
-                    }
-                }
-                else
-                {
-                    __intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX_FSXR;
-                }
-            }
-            else
-            {
-                __intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX;
-            }
-        }
-        else
-        {
-            __intel_cpu_indicator = CPU_TYPE_FAMILY_6;
-        }
+	if (dwUseable & ADVF_MMX)
+	{
+	    if (dwUseable & ADVF_FSXR)
+	    {
+		if (dwUseable & ADVF_SSE)
+		{
+		    if (dwUseable & ADVF_SSE2)
+		    {
+			if (dwUseable & ADVF_SSE3)
+			{
+			    if (dwUseable & ADVF_SSSE3)
+			    {
+				if (dwUseable & ADVF_SSE41)
+				{
+				    if (dwUseable & ADVF_SSE42)
+				    {
+					if (dwUseable & ADVF_AES)
+					{
+					    __intel_cpu_indicator = CPU_TYPE_FAMILY_6_AES_DTE64;
+					}
+					else
+					{
+					    __intel_cpu_indicator = CPU_TYPE_FAMILY_6_SSE42_POPCNT;
+					}
+				    }
+				    else
+				    {
+					__intel_cpu_indicator = CPU_TYPE_FAMILY_6_SSE41;
+				    }
+				}
+				else
+				{
+				    __intel_cpu_indicator = CPU_TYPE_FAMILY_6_SSSE3;
+				}
+			    }
+			    else if (dwEffFamily < 15)
+			    {
+				__intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX_FSXR_SSE3;
+			    }
+			    else
+			    {
+				__intel_cpu_indicator = CPU_TYPE_FAMILY_F_SSE3;
+			    }
+			}
+			else
+			{
+			    if (dwEffFamily < 15)
+			    {
+				__intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX_FSXR_SSE2;
+			    }
+			    else
+			    {
+				__intel_cpu_indicator = CPU_TYPE_FAMILY_F_SSE2;
+			    }
+			}
+		    }
+		    else
+		    {
+			__intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX_FSXR_SSE;
+		    }
+		}
+		else
+		{
+		    __intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX_FSXR;
+		}
+	    }
+	    else
+	    {
+		__intel_cpu_indicator = CPU_TYPE_FAMILY_6_MMX;
+	    }
+	}
+	else
+	{
+	    __intel_cpu_indicator = CPU_TYPE_FAMILY_6;
+	}
     }
 
     // Report findings to the log.
     //
     mux_fprintf(stderr, T("cpu_init: %s, Family %u, Model %u, %s%s%s%s%s%s%s%s%s" ENDLINE),
-        (Intel == maker ? "Intel" : (AMD == maker ? "AMD" : "Unknown")),
-        dwEffFamily,
-        dwEffModel,
-        (dwUseable & ADVF_MMX)  ? "MMX " : "",
-        (dwUseable & ADVF_FSXR) ? "FSXR ": "",
-        (dwUseable & ADVF_SSE)  ? "SSE ": "",
-        (dwUseable & ADVF_SSE2) ? "SSE2 ": "",
-        (dwUseable & ADVF_SSE3) ? "SSE3 ": "",
-        (dwUseable & ADVF_SSSE3) ? "SSSE3 ": "",
-        (dwUseable & ADVF_SSE41) ? "SSE41 ": "",
-        (dwUseable & ADVF_SSE42) ? "SSE42 ": "",
-        (dwUseable & ADVF_AES) ? "AES ": "");
+	(Intel == maker ? "Intel" : (AMD == maker ? "AMD" : "Unknown")),
+	dwEffFamily,
+	dwEffModel,
+	(dwUseable & ADVF_MMX)  ? "MMX " : "",
+	(dwUseable & ADVF_FSXR) ? "FSXR ": "",
+	(dwUseable & ADVF_SSE)  ? "SSE ": "",
+	(dwUseable & ADVF_SSE2) ? "SSE2 ": "",
+	(dwUseable & ADVF_SSE3) ? "SSE3 ": "",
+	(dwUseable & ADVF_SSSE3) ? "SSSE3 ": "",
+	(dwUseable & ADVF_SSE41) ? "SSE41 ": "",
+	(dwUseable & ADVF_SSE42) ? "SSE42 ": "",
+	(dwUseable & ADVF_AES) ? "AES ": "");
 
     if (dwUseable != dwAdvFeatures)
     {
-        UINT32 dw = dwAdvFeatures & (~dwUseable);
-        mux_fprintf(stderr, T("cpu_init: %s%s%s%s%s%s%s%s%s unsupported by OS." ENDLINE),
-            (dw & ADVF_MMX)  ? "MMX ": "",
-            (dw & ADVF_FSXR) ? "FSXR ": "",
-            (dw & ADVF_SSE)  ? "SSE ": "",
-            (dw & ADVF_SSE2) ? "SSE2 ": "",
-            (dw & ADVF_SSE3) ? "SSE3 ": "",
-            (dw & ADVF_SSSE3) ? "SSSE3 ": "",
-            (dw & ADVF_SSE41) ? "SSE41 ": "",
-            (dw & ADVF_SSE42) ? "SSE42 ": "",
-            (dw & ADVF_AES) ? "AES ": "");
+	UINT32 dw = dwAdvFeatures & (~dwUseable);
+	mux_fprintf(stderr, T("cpu_init: %s%s%s%s%s%s%s%s%s unsupported by OS." ENDLINE),
+	    (dw & ADVF_MMX)  ? "MMX ": "",
+	    (dw & ADVF_FSXR) ? "FSXR ": "",
+	    (dw & ADVF_SSE)  ? "SSE ": "",
+	    (dw & ADVF_SSE2) ? "SSE2 ": "",
+	    (dw & ADVF_SSE3) ? "SSE3 ": "",
+	    (dw & ADVF_SSSE3) ? "SSSE3 ": "",
+	    (dw & ADVF_SSE41) ? "SSE41 ": "",
+	    (dw & ADVF_SSE42) ? "SSE42 ": "",
+	    (dw & ADVF_AES) ? "AES ": "");
     }
 }
 
@@ -3117,48 +3117,48 @@ void DetectWindowsCapabilities()
     HINSTANCE hInstWs2_32 = LoadLibrary(L"ws2_32");
     if (NULL != hInstWs2_32)
     {
-        fpGetNameInfo = (FGETNAMEINFO *)GetProcAddress(hInstWs2_32, "getnameinfo");
-        fpGetAddrInfo = (FGETADDRINFO *)GetProcAddress(hInstWs2_32, "getaddrinfo");
-        fpFreeAddrInfo = (FFREEADDRINFO *)GetProcAddress(hInstWs2_32, "freeaddrinfo");
+	fpGetNameInfo = (FGETNAMEINFO *)GetProcAddress(hInstWs2_32, "getnameinfo");
+	fpGetAddrInfo = (FGETADDRINFO *)GetProcAddress(hInstWs2_32, "getaddrinfo");
+	fpFreeAddrInfo = (FFREEADDRINFO *)GetProcAddress(hInstWs2_32, "freeaddrinfo");
 
-        // These interfaces are all-or-nothing.
-        //
-        if (  NULL == fpGetNameInfo
-           || NULL == fpGetAddrInfo
-           || NULL == fpFreeAddrInfo)
-        {
-            fpGetNameInfo = NULL;
-            fpGetAddrInfo = NULL;
-            fpFreeAddrInfo = NULL;
-            FreeLibrary(hInstWs2_32);
-            hInstWs2_32 = NULL;
-        }
+	// These interfaces are all-or-nothing.
+	//
+	if (  NULL == fpGetNameInfo
+	   || NULL == fpGetAddrInfo
+	   || NULL == fpFreeAddrInfo)
+	{
+	    fpGetNameInfo = NULL;
+	    fpGetAddrInfo = NULL;
+	    fpFreeAddrInfo = NULL;
+	    FreeLibrary(hInstWs2_32);
+	    hInstWs2_32 = NULL;
+	}
     }
 
     if (NULL == hInstWs2_32)
     {
-        // Get a handle to wship6.dll (part of the Windows 2000 IPv6 technology preview).
-        //
-        HINSTANCE hInstWship6 = LoadLibrary(L"wship6");
-        if (NULL != hInstWship6)
-        {
-            fpGetNameInfo = (FGETNAMEINFO *)GetProcAddress(hInstWship6, "getnameinfo");
-            fpGetAddrInfo = (FGETADDRINFO *)GetProcAddress(hInstWship6, "getaddrinfo");
-            fpFreeAddrInfo = (FFREEADDRINFO *)GetProcAddress(hInstWship6, "freeaddrinfo");
+	// Get a handle to wship6.dll (part of the Windows 2000 IPv6 technology preview).
+	//
+	HINSTANCE hInstWship6 = LoadLibrary(L"wship6");
+	if (NULL != hInstWship6)
+	{
+	    fpGetNameInfo = (FGETNAMEINFO *)GetProcAddress(hInstWship6, "getnameinfo");
+	    fpGetAddrInfo = (FGETADDRINFO *)GetProcAddress(hInstWship6, "getaddrinfo");
+	    fpFreeAddrInfo = (FFREEADDRINFO *)GetProcAddress(hInstWship6, "freeaddrinfo");
 
-            // These interfaces are all-or-nothing.
-            //
-            if (  NULL == fpGetNameInfo
-               || NULL == fpGetAddrInfo
-               || NULL == fpFreeAddrInfo)
-            {
-                fpGetNameInfo = NULL;
-                fpGetAddrInfo = NULL;
-                fpFreeAddrInfo = NULL;
-                FreeLibrary(hInstWship6);
-                hInstWship6 = NULL;
-            }
-        }
+	    // These interfaces are all-or-nothing.
+	    //
+	    if (  NULL == fpGetNameInfo
+	       || NULL == fpGetAddrInfo
+	       || NULL == fpFreeAddrInfo)
+	    {
+		fpGetNameInfo = NULL;
+		fpGetAddrInfo = NULL;
+		fpFreeAddrInfo = NULL;
+		FreeLibrary(hInstWship6);
+		hInstWship6 = NULL;
+	    }
+	}
     }
 }
 #endif // WINDOWS_NETWORKING
@@ -3179,18 +3179,18 @@ int DCL_CDECL main(int argc, char *argv[])
     size_t nProg = strlen(argv[0]);
     const char *pProg = argv[0] + nProg - 1;
     while (  nProg
-          && (  mux_isalpha(*pProg)
-             || *pProg == '.'))
+	  && (  mux_isalpha(*pProg)
+	     || *pProg == '.'))
     {
-        nProg--;
-        pProg--;
+	nProg--;
+	pProg--;
     }
     pProg++;
     mudstate.bStandAlone = false;
     if (  mux_stricmp((UTF8 *)pProg, DBCONVERT_NAME1) == 0
        || mux_stricmp((UTF8 *)pProg, DBCONVERT_NAME2) == 0)
     {
-        mudstate.bStandAlone = true;
+	mudstate.bStandAlone = true;
     }
 
     mudconf.pid_file = (UTF8 *)"netmux.pid";
@@ -3202,67 +3202,67 @@ int DCL_CDECL main(int argc, char *argv[])
 #ifndef HAVE_MEMORY_BASED
     if (mudstate.bStandAlone)
     {
-        int n = 0;
-        if (standalone_check)
-        {
-            n++;
-        }
-        if (standalone_load)
-        {
-            n++;
-        }
-        if (standalone_unload)
-        {
-            n++;
-        }
-        if (  !standalone_basename
-           || !standalone_infile
-           || !standalone_outfile
-           || n != 1
-           || bServerOption)
-        {
-            bSyntaxError = true;
-        }
-        else
-        {
-            dbconvert();
-            return 0;
-        }
+	int n = 0;
+	if (standalone_check)
+	{
+	    n++;
+	}
+	if (standalone_load)
+	{
+	    n++;
+	}
+	if (standalone_unload)
+	{
+	    n++;
+	}
+	if (  !standalone_basename
+	   || !standalone_infile
+	   || !standalone_outfile
+	   || n != 1
+	   || bServerOption)
+	{
+	    bSyntaxError = true;
+	}
+	else
+	{
+	    dbconvert();
+	    return 0;
+	}
     }
     else
 #endif // HAVE_MEMORY_BASED
 
     if (bVersion)
     {
-        mux_fprintf(stderr, T("Version: %s" ENDLINE), mudstate.version);
-        return 1;
+	mux_fprintf(stderr, T("Version: %s" ENDLINE), mudstate.version);
+	return 1;
     }
     if (  bSyntaxError
        || conffile == NULL
        || !bServerOption)
     {
-        mux_fprintf(stderr, T("Version: %s" ENDLINE), mudstate.version);
-        if (mudstate.bStandAlone)
-        {
-            mux_fprintf(stderr, T("Usage: %s -d <dbname> -i <infile> [-o <outfile>] [-l|-u|-k]" ENDLINE), pProg);
-            mux_fprintf(stderr, T("  -d  Basename." ENDLINE));
-            mux_fprintf(stderr, T("  -i  Input file." ENDLINE));
-            mux_fprintf(stderr, T("  -k  Check." ENDLINE));
-            mux_fprintf(stderr, T("  -l  Load." ENDLINE));
-            mux_fprintf(stderr, T("  -o  Output file." ENDLINE));
-            mux_fprintf(stderr, T("  -u  Unload." ENDLINE));
-        }
-        else
-        {
-            mux_fprintf(stderr, T("Usage: %s [-c <filename>] [-p <filename>] [-h] [-s] [-v]" ENDLINE), pProg);
-            mux_fprintf(stderr, T("  -c  Specify configuration file." ENDLINE));
-            mux_fprintf(stderr, T("  -e  Specify logfile basename (or '-' for stderr)." ENDLINE));
-            mux_fprintf(stderr, T("  -h  Display this help." ENDLINE));
-            mux_fprintf(stderr, T("  -p  Specify process ID file." ENDLINE));
-            mux_fprintf(stderr, T("  -s  Start with a minimal database." ENDLINE));
-            mux_fprintf(stderr, T("  -v  Display version string." ENDLINE ENDLINE));
-        }
-        return 1;
+	mux_fprintf(stderr, T("Version: %s" ENDLINE), mudstate.version);
+	if (mudstate.bStandAlone)
+	{
+	    mux_fprintf(stderr, T("Usage: %s -d <dbname> -i <infile> [-o <outfile>] [-l|-u|-k]" ENDLINE), pProg);
+	    mux_fprintf(stderr, T("  -d  Basename." ENDLINE));
+	    mux_fprintf(stderr, T("  -i  Input file." ENDLINE));
+	    mux_fprintf(stderr, T("  -k  Check." ENDLINE));
+	    mux_fprintf(stderr, T("  -l  Load." ENDLINE));
+	    mux_fprintf(stderr, T("  -o  Output file." ENDLINE));
+	    mux_fprintf(stderr, T("  -u  Unload." ENDLINE));
+	}
+	else
+	{
+	    mux_fprintf(stderr, T("Usage: %s [-c <filename>] [-p <filename>] [-h] [-s] [-v]" ENDLINE), pProg);
+	    mux_fprintf(stderr, T("  -c  Specify configuration file." ENDLINE));
+	    mux_fprintf(stderr, T("  -e  Specify logfile basename (or '-' for stderr)." ENDLINE));
+	    mux_fprintf(stderr, T("  -h  Display this help." ENDLINE));
+	    mux_fprintf(stderr, T("  -p  Specify process ID file." ENDLINE));
+	    mux_fprintf(stderr, T("  -s  Start with a minimal database." ENDLINE));
+	    mux_fprintf(stderr, T("  -v  Display version string." ENDLINE ENDLINE));
+	}
+	return 1;
     }
 
     mudstate.bStandAlone = false;
@@ -3298,19 +3298,19 @@ int DCL_CDECL main(int argc, char *argv[])
     WSADATA wsaData;
     if (WSAStartup(wVersionRequested, &wsaData) != 0)
     {
-        Log.WriteString(T("ERROR: Could not initialize WinSock." ENDLINE));
-        return 101;
+	Log.WriteString(T("ERROR: Could not initialize WinSock." ENDLINE));
+	return 101;
     }
 
     if (  LOBYTE(wsaData.wVersion) != 2
        || HIBYTE(wsaData.wVersion) != 2)
     {
-        // We can't run on this version of WinSock.
-        //
-        Log.tinyprintf(T("INFO: WinSock v%d.%d instead of v2.2." ENDLINE),
-            LOBYTE(wsaData.wVersion), HIBYTE(wsaData.wVersion));
-        //WSACleanup();
-        //return 102;
+	// We can't run on this version of WinSock.
+	//
+	Log.tinyprintf(T("INFO: WinSock v%d.%d instead of v2.2." ENDLINE),
+	    LOBYTE(wsaData.wVersion), HIBYTE(wsaData.wVersion));
+	//WSACleanup();
+	//return 102;
     }
 
 #endif // WINDOWS_NETWORKING
@@ -3364,54 +3364,54 @@ int DCL_CDECL main(int argc, char *argv[])
     MUX_RESULT mr = mux_CreateInstance(CID_QueryServer, NULL, UseSlaveProcess, IID_IQueryControl, (void **)&mudstate.pIQueryControl);
     if (MUX_SUCCEEDED(mr))
     {
-        mr = mudstate.pIQueryControl->Connect(mudconf.sql_server, mudconf.sql_database, mudconf.sql_user, mudconf.sql_password);
-        if (MUX_SUCCEEDED(mr))
-        {
-            mux_IQuerySink *pIQuerySink = NULL;
-            mr = mux_CreateInstance(CID_QueryClient, NULL, UseSameProcess, IID_IQuerySink, (void **)&pIQuerySink);
-            if (MUX_SUCCEEDED(mr))
-            {
-                mr = mudstate.pIQueryControl->Advise(pIQuerySink);
-                if (MUX_SUCCEEDED(mr))
-                {
-                    pIQuerySink->Release();
-                    pIQuerySink = NULL;
-                }
-                else
-                {
-                    mudstate.pIQueryControl->Release();
-                    mudstate.pIQueryControl = NULL;
+	mr = mudstate.pIQueryControl->Connect(mudconf.sql_server, mudconf.sql_database, mudconf.sql_user, mudconf.sql_password);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    mux_IQuerySink *pIQuerySink = NULL;
+	    mr = mux_CreateInstance(CID_QueryClient, NULL, UseSameProcess, IID_IQuerySink, (void **)&pIQuerySink);
+	    if (MUX_SUCCEEDED(mr))
+	    {
+		mr = mudstate.pIQueryControl->Advise(pIQuerySink);
+		if (MUX_SUCCEEDED(mr))
+		{
+		    pIQuerySink->Release();
+		    pIQuerySink = NULL;
+		}
+		else
+		{
+		    mudstate.pIQueryControl->Release();
+		    mudstate.pIQueryControl = NULL;
 
-                    STARTLOG(LOG_ALWAYS, "INI", "LOAD");
-                    log_printf(T("Couldn\xE2\x80\x99t connect sink to server (%d)."), mr);
-                    ENDLOG;
-                }
-            }
-            else
-            {
-                mudstate.pIQueryControl->Release();
-                mudstate.pIQueryControl = NULL;
+		    STARTLOG(LOG_ALWAYS, "INI", "LOAD");
+		    log_printf(T("Couldn\xE2\x80\x99t connect sink to server (%d)."), mr);
+		    ENDLOG;
+		}
+	    }
+	    else
+	    {
+		mudstate.pIQueryControl->Release();
+		mudstate.pIQueryControl = NULL;
 
-                STARTLOG(LOG_ALWAYS, "INI", "LOAD");
-                log_printf(T("Couldn\xE2\x80\x99t create Query Sink (%d)."), mr);
-                ENDLOG;
-            }
-        }
-        else
-        {
-            mudstate.pIQueryControl->Release();
-            mudstate.pIQueryControl = NULL;
+		STARTLOG(LOG_ALWAYS, "INI", "LOAD");
+		log_printf(T("Couldn\xE2\x80\x99t create Query Sink (%d)."), mr);
+		ENDLOG;
+	    }
+	}
+	else
+	{
+	    mudstate.pIQueryControl->Release();
+	    mudstate.pIQueryControl = NULL;
 
-            STARTLOG(LOG_ALWAYS, "INI", "LOAD");
-            log_printf(T("Couldn\xE2\x80\x99t connect to Query Server (%d)."), mr);
-            ENDLOG;
-        }
+	    STARTLOG(LOG_ALWAYS, "INI", "LOAD");
+	    log_printf(T("Couldn\xE2\x80\x99t connect to Query Server (%d)."), mr);
+	    ENDLOG;
+	}
     }
     else
     {
-        STARTLOG(LOG_ALWAYS, "INI", "LOAD");
-        log_text(T("Couldn\xE2\x80\x99t create interface to Query Server."));
-        ENDLOG;
+	STARTLOG(LOG_ALWAYS, "INI", "LOAD");
+	log_text(T("Couldn\xE2\x80\x99t create interface to Query Server."));
+	ENDLOG;
     }
 #endif // TINYMUX_MODULES
 
@@ -3422,8 +3422,8 @@ int DCL_CDECL main(int argc, char *argv[])
 #ifdef UNIX_SSL
     if (!initialize_ssl())
     {
-        // Do some extra handling?
-        // We do log all errors in initialize_ssl, so it may be unneeded.
+	// Do some extra handling?
+	// We do log all errors in initialize_ssl, so it may be unneeded.
     }
 #endif
 
@@ -3435,18 +3435,18 @@ int DCL_CDECL main(int argc, char *argv[])
 #else // HAVE_MEMORY_BASED
     if (bMinDB)
     {
-        RemoveFile(mudconf.game_dir);
-        RemoveFile(mudconf.game_pag);
+	RemoveFile(mudconf.game_dir);
+	RemoveFile(mudconf.game_pag);
     }
     int ccPageFile = init_dbfile(mudconf.game_dir, mudconf.game_pag, mudconf.cache_pages);
     if (HF_OPEN_STATUS_ERROR == ccPageFile)
     {
-        STARTLOG(LOG_ALWAYS, "INI", "LOAD");
-        log_text(T("Couldn\xE2\x80\x99t load text database: "));
-        log_text(mudconf.game_dir);
-        log_text(mudconf.game_pag);
-        ENDLOG;
-        return 2;
+	STARTLOG(LOG_ALWAYS, "INI", "LOAD");
+	log_text(T("Couldn\xE2\x80\x99t load text database: "));
+	log_text(mudconf.game_dir);
+	log_text(mudconf.game_pag);
+	ENDLOG;
+	return 2;
     }
 #endif // HAVE_MEMORY_BASED
 
@@ -3454,40 +3454,40 @@ int DCL_CDECL main(int argc, char *argv[])
 
     if (bMinDB)
     {
-        db_make_minimal();
+	db_make_minimal();
     }
     else
     {
 #ifdef HAVE_MEMORY_BASED
-        int ccInFile = load_game();
+	int ccInFile = load_game();
 #else // HAVE_MEMORY_BASED
-        int ccInFile = load_game(ccPageFile);
+	int ccInFile = load_game(ccPageFile);
 #endif // HAVE_MEMORY_BASED
-        if (LOAD_GAME_NO_INPUT_DB == ccInFile)
-        {
-            // The input file didn't exist.
-            //
+	if (LOAD_GAME_NO_INPUT_DB == ccInFile)
+	{
+	    // The input file didn't exist.
+	    //
 #ifndef HAVE_MEMORY_BASED
-            if (HF_OPEN_STATUS_NEW == ccPageFile)
-            {
-                // Since the .db file didn't exist, and the .pag/.dir files
-                // were newly created, just create a minimal DB.
-                //
+	    if (HF_OPEN_STATUS_NEW == ccPageFile)
+	    {
+		// Since the .db file didn't exist, and the .pag/.dir files
+		// were newly created, just create a minimal DB.
+		//
 #endif // !HAVE_MEMORY_BASED
-                db_make_minimal();
-                ccInFile = LOAD_GAME_SUCCESS;
+		db_make_minimal();
+		ccInFile = LOAD_GAME_SUCCESS;
 #ifndef HAVE_MEMORY_BASED
-            }
+	    }
 #endif // !HAVE_MEMORY_BASED
-        }
-        if (ccInFile != LOAD_GAME_SUCCESS)
-        {
-            STARTLOG(LOG_ALWAYS, "INI", "LOAD")
-            log_text(T("Couldn\xE2\x80\x99t load: "));
-            log_text(mudconf.indb);
-            ENDLOG
-            return 2;
-        }
+	}
+	if (ccInFile != LOAD_GAME_SUCCESS)
+	{
+	    STARTLOG(LOG_ALWAYS, "INI", "LOAD")
+	    log_text(T("Couldn\xE2\x80\x99t load: "));
+	    log_text(mudconf.indb);
+	    ENDLOG
+	    return 2;
+	}
     }
     set_signals();
     Guest.StartUp();
@@ -3518,14 +3518,14 @@ int DCL_CDECL main(int argc, char *argv[])
     if (!mudstate.restarting)
 #endif // HAVE_WORKING_FORK
     {
-        if (fclose(stdout) == 0)
-        {
-            DebugTotalFiles--;
-        }
-        if (fclose(stdin) == 0)
-        {
-            DebugTotalFiles--;
-        }
+	if (fclose(stdout) == 0)
+	{
+	    DebugTotalFiles--;
+	}
+	if (fclose(stdin) == 0)
+	{
+	    DebugTotalFiles--;
+	}
     }
 #ifdef UNIX_SSL
     SetupPorts(&nMainGamePorts, aMainGamePorts, &mudconf.ports, &mudconf.sslPorts, mudconf.ip_address);
@@ -3546,8 +3546,8 @@ int DCL_CDECL main(int argc, char *argv[])
     ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
-        p->pSink->startup();
-        p = p->pNext;
+	p->pSink->startup();
+	p = p->pNext;
     }
 #endif // TINYMUX_MODULES
 
@@ -3558,11 +3558,11 @@ int DCL_CDECL main(int argc, char *argv[])
 #ifdef INLINESQL
      if (mush_database)
      {
-         mysql_close(mush_database);
-         mush_database = NULL;
-         STARTLOG(LOG_STARTUP,"SQL","DISC");
-         log_text(T("SQL shut down"));
-         ENDLOG;
+	 mysql_close(mush_database);
+	 mush_database = NULL;
+	 STARTLOG(LOG_STARTUP,"SQL","DISC");
+	 log_text(T("SQL shut down"));
+	 ENDLOG;
      }
 #endif // INLINESQL
 
@@ -3578,8 +3578,8 @@ int DCL_CDECL main(int argc, char *argv[])
     p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
-        p->pSink->shutdown();
-        p = p->pNext;
+	p->pSink->shutdown();
+	p = p->pNext;
     }
     final_modules();
 #endif // TINYMUX_MODULES
@@ -3604,7 +3604,7 @@ int DCL_CDECL main(int argc, char *argv[])
     int i;
     for (i = 0; i < mudstate.nHelpDesc; i++)
     {
-        helpindex_clean(i);
+	helpindex_clean(i);
     }
 
     finish_mail();
@@ -3635,14 +3635,14 @@ void init_rlimit(void)
 
     if (getrlimit(RLIMIT_NOFILE, rlp))
     {
-        log_perror(T("RLM"), T("FAIL"), NULL, T("getrlimit()"));
-        free_lbuf(rlp);
-        return;
+	log_perror(T("RLM"), T("FAIL"), NULL, T("getrlimit()"));
+	free_lbuf(rlp);
+	return;
     }
     rlp->rlim_cur = rlp->rlim_max;
     if (setrlimit(RLIMIT_NOFILE, rlp))
     {
-        log_perror(T("RLM"), T("FAIL"), NULL, T("setrlimit()"));
+	log_perror(T("RLM"), T("FAIL"), NULL, T("setrlimit()"));
     }
     free_lbuf(rlp);
 
@@ -3653,22 +3653,22 @@ bool mux_fopen(FILE **pFile, const UTF8 *filename, const UTF8 *mode)
 {
     if (pFile)
     {
-        *pFile = NULL;
-        if (  NULL != filename
-           && NULL != mode)
-        {
+	*pFile = NULL;
+	if (  NULL != filename
+	   && NULL != mode)
+	{
 #if defined(WINDOWS_FILES) && !defined(__INTEL_COMPILER) && (_MSC_VER >= 1400)
-            // 1400 is Visual C++ 2005
-            //
-            return (fopen_s(pFile, (const char *)filename, (const char *)mode) == 0);
+	    // 1400 is Visual C++ 2005
+	    //
+	    return (fopen_s(pFile, (const char *)filename, (const char *)mode) == 0);
 #else
-            *pFile = fopen((char *)filename, (char *)mode);
-            if (NULL != *pFile)
-            {
-                return true;
-            }
+	    *pFile = fopen((char *)filename, (char *)mode);
+	    if (NULL != *pFile)
+	    {
+		return true;
+	    }
 #endif // WINDOWS_FILES
-        }
+	}
     }
     return false;
 }
@@ -3677,21 +3677,21 @@ bool mux_open(int *pfh, const UTF8 *filename, int oflag)
 {
     if (NULL != pfh)
     {
-        *pfh = MUX_OPEN_INVALID_HANDLE_VALUE;
-        if (NULL != filename)
-        {
+	*pfh = MUX_OPEN_INVALID_HANDLE_VALUE;
+	if (NULL != filename)
+	{
 #if defined(WINDOWS_FILES) && !defined(__INTEL_COMPILER) && (_MSC_VER >= 1400)
-            // 1400 is Visual C++ 2005
-            //
-            return (_sopen_s(pfh, (const char *)filename, oflag, _SH_DENYNO, _S_IREAD|_S_IWRITE) == 0);
+	    // 1400 is Visual C++ 2005
+	    //
+	    return (_sopen_s(pfh, (const char *)filename, oflag, _SH_DENYNO, _S_IREAD|_S_IWRITE) == 0);
 #elif defined(WINDOWS_FILES)
-            *pfh = _open((char *)filename, oflag, _S_IREAD|_S_IWRITE);
-            return (0 <= *pfh);
+	    *pfh = _open((char *)filename, oflag, _S_IREAD|_S_IWRITE);
+	    return (0 <= *pfh);
 #else
-            *pfh = open((char *)filename, oflag, 0600);
-            return (0 <= *pfh);
+	    *pfh = open((char *)filename, oflag, 0600);
+	    return (0 <= *pfh);
 #endif
-        }
+	}
     }
     return false;
 }

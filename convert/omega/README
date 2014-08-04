@@ -86,7 +86,7 @@ FEATURE: Conversions
 It will take time to cover all possible conversions, but here's a table which
 summarizes the status of the different conversion paths:
 
-             ---------------- To: -----------------------
+	     ---------------- To: -----------------------
 From: ---    PennMUSH    TinyMUSH    TinyMUX    RhoshMUSH
 PennMUSH        -           A           A           A
 TinyMUSH        H           -           A           H

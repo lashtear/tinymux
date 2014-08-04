@@ -57,7 +57,7 @@ Asynchronous SQL:
        @pemit %#=Rows: [rsrows()];
        @if rsrows()=
        {
-         @trig me/bar.tr
+	 @trig me/bar.tr
        }
      },
      {

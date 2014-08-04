@@ -162,8 +162,8 @@ I'll assume the +materialize command is defined like:
 &CMD_MATERIALIZE <cmdobject>=$+materialize:@txlevel %#=Real; @pemit %#=You
 are now material.
 
-        John            |         Jack          |         Frank
-                        |                       |
+	John            |         Jack          |         Frank
+			|                       |
 > l                     |                       |
 A room                  |                       |
 This is a bare room.    |                       |
@@ -171,44 +171,44 @@ Contents:               |                       |
 Jack                    |                       |
 Obvious exits:          |                       |
 Out <O>                 |                       |
-                        |> l                    |
-                        |A room                 |
-                        |This is a bare room.   |
-                        |Contents:              |
-                        |John Frank             |
-                        |Obvious exits:         |
-                        |Out <O>                |
-                        |                       |> l
-                        |                       |A room
-                        |                       |This is a bare room.
-                        |                       |Contents:
-                        |                       |John Jack
-                        |                       |Obvious exits:
-                        |                       |Out <O>
+			|> l                    |
+			|A room                 |
+			|This is a bare room.   |
+			|Contents:              |
+			|John Frank             |
+			|Obvious exits:         |
+			|Out <O>                |
+			|                       |> l
+			|                       |A room
+			|                       |This is a bare room.
+			|                       |Contents:
+			|                       |John Jack
+			|                       |Obvious exits:
+			|                       |Out <O>
 >l Jack                 |                       |
 Jack                    |John has looked at you.|John has looked at Jack.
 This is Jack.           |                       |
 >l Frank                |                       |
 I don't see that here.  |                       |
-                        |>l Frank               |
-                        |Frank                  |Jack has looked at you.
-                        |This is Frank's ghostly|
-                        |shape.                 |
-                        |                       |>l John
-                        |Frank has looked at    |John
-                        |John.                  |This is John.
-                        |                       |>+materialize
-                        |                       |You are now material.
+			|>l Frank               |
+			|Frank                  |Jack has looked at you.
+			|This is Frank's ghostly|
+			|shape.                 |
+			|                       |>l John
+			|Frank has looked at    |John
+			|John.                  |This is John.
+			|                       |>+materialize
+			|                       |You are now material.
 >l Frank                |                       |
 Frank                   |John has looked at     |Frank has looked at you.
 This is Frank, looking  |Frank.                 |
 human.                  |                       |
-                        |>l Frank               |
+			|>l Frank               |
 Jack has looked at      |Frank                  |John has looked at you.
 Frank.                  |This is Frank, looking |
-                        |human.                 |
-                        |This is Frank's ghostly|
-                        |shape.                 |
+			|human.                 |
+			|This is Frank's ghostly|
+			|shape.                 |
 
 
 Example 2: A WoD setup

@@ -20,11 +20,11 @@
 //#define M_RECEIPT   0x0020
 #define M_TAG       0x0040
 #define M_FORWARD   0x0080
-        /* 0x0100 - 0x0F00 reserved for folder numbers */
+	/* 0x0100 - 0x0F00 reserved for folder numbers */
 #define M_FMASK     0xF0FF
 #define M_ALL       0x1000  /* Used in mail_selectors */
 #define M_MSUNREAD  0x2000  /* Mail selectors */
-        /* 0x4000 - 0x8000 available */
+	/* 0x4000 - 0x8000 available */
 #define M_REPLY     0x4000
 
 #define MAX_FOLDERS 15

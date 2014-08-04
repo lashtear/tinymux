@@ -12,55 +12,55 @@
 %%
 
 \#-?[0-9]+     {
-                   p6hllval.i = atoi(p6hltext+1);
-                   return DBREF;
-               }
+		   p6hllval.i = atoi(p6hltext+1);
+		   return DBREF;
+	       }
 \#FALSE        {
-                   return BOOLFALSE;
-               }
+		   return BOOLFALSE;
+	       }
 \#TRUE         {
-                   return BOOLTRUE;
-               }
+		   return BOOLTRUE;
+	       }
 \=             {
-                   return '=';
-               }
+		   return '=';
+	       }
 \+             {
-                   return '+';
-               }
+		   return '+';
+	       }
 \@             {
-                   return '@';
-               }
+		   return '@';
+	       }
 \$             {
-                   return '$';
-               }
+		   return '$';
+	       }
 \&             {
-                   return '&';
-               }
+		   return '&';
+	       }
 \|             {
-                   return '|';
-               }
+		   return '|';
+	       }
 \!             {
-                   return '!';
-               }
+		   return '!';
+	       }
 \:             {
-                   return ':';
-               }
+		   return ':';
+	       }
 \/             {
-                   return '/';
-               }
+		   return '/';
+	       }
 \^             {
-                   return '^';
-               }
+		   return '^';
+	       }
 \(             {
-                   return '(';
-               }
+		   return '(';
+	       }
 \)             {
-                   return ')';
-               }
+		   return ')';
+	       }
 [^()=+@$&|!:/\n\t ]+  {
-                   p6hllval.p = StringClone(p6hltext);
-                   return LTEXT;
-               }
+		   p6hllval.p = StringClone(p6hltext);
+		   return LTEXT;
+	       }
 [\n\t ]+       /* ignore whitespace */ ;
 %%
 
@@ -77,11 +77,11 @@ P6H_LOCKEXP *p6hl_ParseKey(char *pKey)
     P6H_LOCKEXP *ple = NULL;
     if (p6hlparse())
     {
-        delete g_p6hKeyExp;
+	delete g_p6hKeyExp;
     }
     else
     {
-        ple = g_p6hKeyExp;
+	ple = g_p6hKeyExp;
     }
     p6hl_delete_buffer(bp);
     g_p6hKeyExp = NULL;

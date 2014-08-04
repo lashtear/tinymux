@@ -135,16 +135,16 @@ static UTF8 *CopyUTF8(const UTF8 *pString)
 
     try
     {
-        p = new UTF8[n+1];
+	p = new UTF8[n+1];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL != p)
     {
-        memcpy(p, pString, n+1);
+	memcpy(p, pString, n+1);
     }
     return p;
 }
@@ -157,16 +157,16 @@ static UTF16 *CopyUTF16(const UTF16 *pString)
 
     try
     {
-        p = new UTF16[n+1];
+	p = new UTF16[n+1];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL != p)
     {
-        memcpy(p, pString, (n+1) * sizeof(UTF16));
+	memcpy(p, pString, (n+1) * sizeof(UTF16));
     }
     return p;
 }
@@ -189,19 +189,19 @@ static int ClassFind(MUX_CID cid)
     int hi = g_nClasses - 1;
     while (lo <= hi)
     {
-        mid = ((hi - lo) >> 1) + lo;
-        if (cid < g_pClasses[mid].ci.cid)
-        {
-            hi = mid - 1;
-        }
-        else if (g_pClasses[mid].ci.cid < cid)
-        {
-            lo = mid + 1;
-        }
-        else // (g_pClasses[mid].ci.cid == cid)
-        {
-            return mid;
-        }
+	mid = ((hi - lo) >> 1) + lo;
+	if (cid < g_pClasses[mid].ci.cid)
+	{
+	    hi = mid - 1;
+	}
+	else if (g_pClasses[mid].ci.cid < cid)
+	{
+	    lo = mid + 1;
+	}
+	else // (g_pClasses[mid].ci.cid == cid)
+	{
+	    return mid;
+	}
     }
     return lo;
 }
@@ -221,7 +221,7 @@ static MUX_MODULE_INFO_PRIVATE *ModuleFindFromCID(MUX_CID cid)
     if (  i < g_nClasses
        && g_pClasses[i].ci.cid == cid)
    {
-        return g_pClasses[i].pModule;
+	return g_pClasses[i].pModule;
     }
     return NULL;
 }
@@ -240,11 +240,11 @@ static MUX_MODULE_INFO_PRIVATE *ModuleFindFromName(const UTF8 aModuleName[])
     MUX_MODULE_INFO_PRIVATE *pModule = g_pModuleList;
     while (NULL != pModule)
     {
-        if (strcmp((const char *)aModuleName, (const char *)pModule->pModuleName) == 0)
-        {
-            return pModule;
-        }
-        pModule = pModule->pNext;
+	if (strcmp((const char *)aModuleName, (const char *)pModule->pModuleName) == 0)
+	{
+	    return pModule;
+	}
+	pModule = pModule->pNext;
     }
     return NULL;
 }
@@ -267,11 +267,11 @@ static MUX_MODULE_INFO_PRIVATE *ModuleFindFromFileName(const UTF8 aFileName[])
     MUX_MODULE_INFO_PRIVATE *pModule = g_pModuleList;
     while (NULL != pModule)
     {
-        if (strcmp((const char *)aFileName, (const char *)pModule->pFileName) == 0)
-        {
-            return pModule;
-        }
-        pModule = pModule->pNext;
+	if (strcmp((const char *)aFileName, (const char *)pModule->pFileName) == 0)
+	{
+	    return pModule;
+	}
+	pModule = pModule->pNext;
     }
     return NULL;
 }
@@ -282,11 +282,11 @@ static UINT32 GrowByFactor(UINT32 i)
 {
     if (i < MINIMUM_SIZE)
     {
-        return MINIMUM_SIZE;
+	return MINIMUM_SIZE;
     }
     else
     {
-        return 2*i;
+	return 2*i;
     }
 }
 
@@ -305,14 +305,14 @@ static void ClassAdd(MUX_CLASS_INFO *pci, MUX_MODULE_INFO_PRIVATE *pModule)
     if (  i < g_nClasses
        && g_pClasses[i].ci.cid == pci->cid)
     {
-        return;
+	return;
     }
 
     if (i != g_nClasses)
     {
-        memmove( g_pClasses + i + 1,
-                 g_pClasses + i,
-                 (g_nClasses - i) * sizeof(MUX_CLASS_INFO_PRIVATE));
+	memmove( g_pClasses + i + 1,
+		 g_pClasses + i,
+		 (g_nClasses - i) * sizeof(MUX_CLASS_INFO_PRIVATE));
     }
     g_nClasses++;
 
@@ -332,13 +332,13 @@ static void ClassRemove(MUX_CID cid)
     if (  i < g_nClasses
        && g_pClasses[i].ci.cid == cid)
     {
-        g_nClasses--;
-        if (i != g_nClasses)
-        {
-            memmove( g_pClasses + i,
-                     g_pClasses + i + 1,
-                     (g_nClasses - i) * sizeof(MUX_CLASS_INFO_PRIVATE));
-        }
+	g_nClasses--;
+	if (i != g_nClasses)
+	{
+	    memmove( g_pClasses + i,
+		     g_pClasses + i + 1,
+		     (g_nClasses - i) * sizeof(MUX_CLASS_INFO_PRIVATE));
+	}
     }
 }
 
@@ -351,19 +351,19 @@ static int InterfaceFind(MUX_IID iid)
     int hi = g_nInterfaces - 1;
     while (lo <= hi)
     {
-        mid = ((hi - lo) >> 1) + lo;
-        if (iid < g_pInterfaces[mid].iid)
-        {
-            hi = mid - 1;
-        }
-        else if (g_pInterfaces[mid].iid < iid)
-        {
-            lo = mid + 1;
-        }
-        else // (g_pInterfaces[mid].iid == iid)
-        {
-            return mid;
-        }
+	mid = ((hi - lo) >> 1) + lo;
+	if (iid < g_pInterfaces[mid].iid)
+	{
+	    hi = mid - 1;
+	}
+	else if (g_pInterfaces[mid].iid < iid)
+	{
+	    lo = mid + 1;
+	}
+	else // (g_pInterfaces[mid].iid == iid)
+	{
+	    return mid;
+	}
     }
     return lo;
 }
@@ -374,14 +374,14 @@ static void InterfaceAdd(MUX_INTERFACE_INFO *pii)
     if (  i < g_nInterfaces
        && g_pInterfaces[i].iid == pii->iid)
     {
-        return;
+	return;
     }
 
     if (i != g_nInterfaces)
     {
-        memmove( g_pInterfaces + i + 1,
-                 g_pInterfaces + i,
-                 (g_nInterfaces - i) * sizeof(MUX_INTERFACE_INFO));
+	memmove( g_pInterfaces + i + 1,
+		 g_pInterfaces + i,
+		 (g_nInterfaces - i) * sizeof(MUX_INTERFACE_INFO));
     }
     g_nInterfaces++;
 
@@ -394,13 +394,13 @@ static void InterfaceRemove(MUX_IID iid)
     if (  i < g_nInterfaces
        && g_pInterfaces[i].iid == iid)
     {
-        g_nInterfaces--;
-        if (i != g_nInterfaces)
-        {
-            memmove( g_pInterfaces + i,
-                     g_pInterfaces + i + 1,
-                     (g_nInterfaces - i) * sizeof(MUX_INTERFACE_INFO));
-        }
+	g_nInterfaces--;
+	if (i != g_nInterfaces)
+	{
+	    memmove( g_pInterfaces + i,
+		     g_pInterfaces + i + 1,
+		     (g_nInterfaces - i) * sizeof(MUX_INTERFACE_INFO));
+	}
     }
 }
 
@@ -426,74 +426,74 @@ static MUX_MODULE_INFO_PRIVATE *ModuleAdd(const UTF8 aModuleName[], const UTF8 a
     if (  NULL == pModuleFromMN
        && NULL == pModuleFromFN)
     {
-        // Ensure that enough room is available to append a new MUX_MODULE_INFO_PRIVATE.
-        //
-        MUX_MODULE_INFO_PRIVATE *pModule = NULL;
-        try
-        {
-            pModule = new MUX_MODULE_INFO_PRIVATE;
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	// Ensure that enough room is available to append a new MUX_MODULE_INFO_PRIVATE.
+	//
+	MUX_MODULE_INFO_PRIVATE *pModule = NULL;
+	try
+	{
+	    pModule = new MUX_MODULE_INFO_PRIVATE;
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pModule)
-        {
-            return NULL;
-        }
+	if (NULL == pModule)
+	{
+	    return NULL;
+	}
 
-        // Fill in new MUX_MODULE_INFO_PRIVATE
-        //
-        pModule->fpGetClassObject = NULL;
-        pModule->fpCanUnloadNow = NULL;
-        pModule->fpRegister = NULL;
-        pModule->fpUnregister = NULL;
-        pModule->hInst = NULL;
-        pModule->pModuleName = CopyUTF8(aModuleName);
+	// Fill in new MUX_MODULE_INFO_PRIVATE
+	//
+	pModule->fpGetClassObject = NULL;
+	pModule->fpCanUnloadNow = NULL;
+	pModule->fpRegister = NULL;
+	pModule->fpUnregister = NULL;
+	pModule->hInst = NULL;
+	pModule->pModuleName = CopyUTF8(aModuleName);
 #if defined(WINDOWS_FILES)
-        pModule->pFileName = CopyUTF16(aFileName);
+	pModule->pFileName = CopyUTF16(aFileName);
 #elif defined(UNIX_FILES)
-        pModule->pFileName = CopyUTF8(aFileName);
+	pModule->pFileName = CopyUTF8(aFileName);
 #endif // UNIX_FILES
-        pModule->bLoaded = false;
-        pModule->eState  = eModuleInitialized;
+	pModule->bLoaded = false;
+	pModule->eState  = eModuleInitialized;
 
-        if (  NULL != pModule->pModuleName
-           && NULL != pModule->pFileName)
-        {
-            // Add new MUX_MODULE_INFO_PRIVATE to the end of the list.
-            //
-            pModule->pNext = NULL;
-            if (NULL == g_pModuleLast)
-            {
-                g_pModuleList = pModule;
-            }
-            else
-            {
-                g_pModuleLast->pNext = pModule;
-                g_pModuleLast = pModule;
-            }
-            return pModule;
-        }
-        else
-        {
-            // Clean up after failing to copy string.
-            //
-            if (NULL != pModule->pModuleName)
-            {
-                delete [] pModule->pModuleName;
-                pModule->pModuleName = NULL;
-            }
+	if (  NULL != pModule->pModuleName
+	   && NULL != pModule->pFileName)
+	{
+	    // Add new MUX_MODULE_INFO_PRIVATE to the end of the list.
+	    //
+	    pModule->pNext = NULL;
+	    if (NULL == g_pModuleLast)
+	    {
+		g_pModuleList = pModule;
+	    }
+	    else
+	    {
+		g_pModuleLast->pNext = pModule;
+		g_pModuleLast = pModule;
+	    }
+	    return pModule;
+	}
+	else
+	{
+	    // Clean up after failing to copy string.
+	    //
+	    if (NULL != pModule->pModuleName)
+	    {
+		delete [] pModule->pModuleName;
+		pModule->pModuleName = NULL;
+	    }
 
-            if (NULL != pModule->pFileName)
-            {
-                delete [] pModule->pFileName;
-                pModule->pFileName = NULL;
-            }
+	    if (NULL != pModule->pFileName)
+	    {
+		delete [] pModule->pFileName;
+		pModule->pFileName = NULL;
+	    }
 
-            delete pModule;
-        }
+	    delete pModule;
+	}
     }
     return NULL;
 }
@@ -510,52 +510,52 @@ static void ModuleRemove(MUX_MODULE_INFO_PRIVATE *pModule)
 
     while (NULL != p)
     {
-        if (pModule == p)
-        {
-            // Unlink from list.
-            //
-            if (NULL == q)
-            {
-                g_pModuleList = p->pNext;
-            }
-            else
-            {
-                q->pNext = p->pNext;
-            }
+	if (pModule == p)
+	{
+	    // Unlink from list.
+	    //
+	    if (NULL == q)
+	    {
+		g_pModuleList = p->pNext;
+	    }
+	    else
+	    {
+		q->pNext = p->pNext;
+	    }
 
-            // As a precaution, remove any any references in the class id
-            // table.  This should have been done when we asked the module to
-            // revoke its class ids.
-            //
-            int i;
-            for (i = 0; i < g_nClasses; i++)
-            {
-                if (g_pClasses[i].pModule == pModule)
-                {
-                    ClassRemove(g_pClasses[i].ci.cid);
-                }
-            }
+	    // As a precaution, remove any any references in the class id
+	    // table.  This should have been done when we asked the module to
+	    // revoke its class ids.
+	    //
+	    int i;
+	    for (i = 0; i < g_nClasses; i++)
+	    {
+		if (g_pClasses[i].pModule == pModule)
+		{
+		    ClassRemove(g_pClasses[i].ci.cid);
+		}
+	    }
 
-            // Free associated memory.
-            //
-            if (NULL != p->pModuleName)
-            {
-                delete [] p->pModuleName;
-                p->pModuleName = NULL;
-            }
+	    // Free associated memory.
+	    //
+	    if (NULL != p->pModuleName)
+	    {
+		delete [] p->pModuleName;
+		p->pModuleName = NULL;
+	    }
 
-            if (NULL != p->pFileName)
-            {
-                delete [] p->pFileName;
-                p->pFileName = NULL;
-            }
+	    if (NULL != p->pFileName)
+	    {
+		delete [] p->pFileName;
+		p->pFileName = NULL;
+	    }
 
-            delete p;
-            return;
-        }
+	    delete p;
+	    return;
+	}
 
-        q = p;
-        p = p->pNext;
+	q = p;
+	p = p->pNext;
     }
 }
 
@@ -569,39 +569,39 @@ static void ModuleLoad(MUX_MODULE_INFO_PRIVATE *pModule)
     if (  pModule->bLoaded
        || eModuleUnloadable == pModule->eState)
     {
-        // Module is already in loaded state or it is unloadable.
-        //
-        return;
+	// Module is already in loaded state or it is unloadable.
+	//
+	return;
     }
 
     pModule->hInst = MOD_OPEN(pModule->pFileName);
     if (NULL != pModule->hInst)
     {
-        pModule->fpGetClassObject = (FPGETCLASSOBJECT *)MOD_SYM(pModule->hInst, "mux_GetClassObject");
-        pModule->fpCanUnloadNow   = (FPCANUNLOADNOW *)MOD_SYM(pModule->hInst, "mux_CanUnloadNow");
-        pModule->fpRegister       = (FPREGISTER *)MOD_SYM(pModule->hInst, "mux_Register");
-        pModule->fpUnregister     = (FPUNREGISTER *)MOD_SYM(pModule->hInst, "mux_Unregister");
+	pModule->fpGetClassObject = (FPGETCLASSOBJECT *)MOD_SYM(pModule->hInst, "mux_GetClassObject");
+	pModule->fpCanUnloadNow   = (FPCANUNLOADNOW *)MOD_SYM(pModule->hInst, "mux_CanUnloadNow");
+	pModule->fpRegister       = (FPREGISTER *)MOD_SYM(pModule->hInst, "mux_Register");
+	pModule->fpUnregister     = (FPUNREGISTER *)MOD_SYM(pModule->hInst, "mux_Unregister");
 
-        if (  NULL != pModule->fpGetClassObject
-           && NULL != pModule->fpCanUnloadNow
-           && NULL != pModule->fpRegister
-           && NULL != pModule->fpUnregister)
-        {
-            pModule->bLoaded = true;
-        }
-        else
-        {
-            pModule->fpGetClassObject = NULL;
-            pModule->fpCanUnloadNow   = NULL;
-            pModule->fpRegister       = NULL;
-            pModule->fpUnregister     = NULL;
-            MOD_CLOSE(pModule->hInst);
-            pModule->eState = eModuleUnloadable;
-        }
+	if (  NULL != pModule->fpGetClassObject
+	   && NULL != pModule->fpCanUnloadNow
+	   && NULL != pModule->fpRegister
+	   && NULL != pModule->fpUnregister)
+	{
+	    pModule->bLoaded = true;
+	}
+	else
+	{
+	    pModule->fpGetClassObject = NULL;
+	    pModule->fpCanUnloadNow   = NULL;
+	    pModule->fpRegister       = NULL;
+	    pModule->fpUnregister     = NULL;
+	    MOD_CLOSE(pModule->hInst);
+	    pModule->eState = eModuleUnloadable;
+	}
     }
     else
     {
-        pModule->eState = eModuleUnloadable;
+	pModule->eState = eModuleUnloadable;
     }
 }
 
@@ -614,13 +614,13 @@ static void ModuleUnload(MUX_MODULE_INFO_PRIVATE *pModule)
 {
     if (pModule->bLoaded)
     {
-        MOD_CLOSE(pModule->hInst);
-        pModule->hInst = NULL;
-        pModule->fpGetClassObject = NULL;
-        pModule->fpCanUnloadNow = NULL;
-        pModule->fpRegister = NULL;
-        pModule->fpUnregister = NULL;
-        pModule->bLoaded = false;
+	MOD_CLOSE(pModule->hInst);
+	pModule->hInst = NULL;
+	pModule->fpGetClassObject = NULL;
+	pModule->fpCanUnloadNow = NULL;
+	pModule->fpRegister = NULL;
+	pModule->fpUnregister = NULL;
+	pModule->bLoaded = false;
     }
 }
 
@@ -635,80 +635,80 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_CreateInstance(MUX_CID cid, mux_IUn
 {
     if (eLibraryInitialized != g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     MUX_RESULT mr = MUX_S_OK;
 
     if (  (UseSameProcess & ctx)
        || (  IsMainProcess == g_ProcessContext
-          && (UseMainProcess & ctx))
+	  && (UseMainProcess & ctx))
        || (  IsSlaveProcess == g_ProcessContext
-          && (UseSlaveProcess & ctx)))
+	  && (UseSlaveProcess & ctx)))
     {
-        // In-proc component.
-        //
-        MUX_MODULE_INFO_PRIVATE *pModule = ModuleFindFromCID(cid);
-        if (NULL != pModule)
-        {
-            if (pModule == &g_MainModule)
-            {
-                if (NULL == pModule->fpGetClassObject)
-                {
-                    mr = MUX_E_CLASSNOTAVAILABLE;
-                }
-            }
-            else if (!pModule->bLoaded)
-            {
-                ModuleLoad(pModule);
-                if (!pModule->bLoaded)
-                {
-                    mr = MUX_E_CLASSNOTAVAILABLE;
-                }
-            }
+	// In-proc component.
+	//
+	MUX_MODULE_INFO_PRIVATE *pModule = ModuleFindFromCID(cid);
+	if (NULL != pModule)
+	{
+	    if (pModule == &g_MainModule)
+	    {
+		if (NULL == pModule->fpGetClassObject)
+		{
+		    mr = MUX_E_CLASSNOTAVAILABLE;
+		}
+	    }
+	    else if (!pModule->bLoaded)
+	    {
+		ModuleLoad(pModule);
+		if (!pModule->bLoaded)
+		{
+		    mr = MUX_E_CLASSNOTAVAILABLE;
+		}
+	    }
 
-            if (MUX_SUCCEEDED(mr))
-            {
-                mux_IClassFactory *pIClassFactory = NULL;
-                mr = pModule->fpGetClassObject(cid, mux_IID_IClassFactory, (void **)&pIClassFactory);
-                if (  MUX_SUCCEEDED(mr)
-                   && NULL != pIClassFactory)
-                {
-                    mr = pIClassFactory->CreateInstance(pUnknownOuter, iid, ppv);
-                    pIClassFactory->Release();
-                }
-            }
-        }
-        else
-        {
-            mr = MUX_E_CLASSNOTAVAILABLE;
-        }
+	    if (MUX_SUCCEEDED(mr))
+	    {
+		mux_IClassFactory *pIClassFactory = NULL;
+		mr = pModule->fpGetClassObject(cid, mux_IID_IClassFactory, (void **)&pIClassFactory);
+		if (  MUX_SUCCEEDED(mr)
+		   && NULL != pIClassFactory)
+		{
+		    mr = pIClassFactory->CreateInstance(pUnknownOuter, iid, ppv);
+		    pIClassFactory->Release();
+		}
+	    }
+	}
+	else
+	{
+	    mr = MUX_E_CLASSNOTAVAILABLE;
+	}
     }
     else if (NULL != g_fpPipePump)
     {
-        // Out-of-Proc component.
-        //
-        // 1. Send cid and iid to a priori endpoint on the other side and
-        //    block until the other side responds with a return frame.
-        //
-        QUEUE_INFO qiFrame;
+	// Out-of-Proc component.
+	//
+	// 1. Send cid and iid to a priori endpoint on the other side and
+	//    block until the other side responds with a return frame.
+	//
+	QUEUE_INFO qiFrame;
 
-        Pipe_InitializeQueueInfo(&qiFrame);
-        Pipe_AppendBytes(&qiFrame, sizeof(cid), (UINT8*)(&cid));
-        Pipe_AppendBytes(&qiFrame, sizeof(iid), (UINT8*)(&iid));
+	Pipe_InitializeQueueInfo(&qiFrame);
+	Pipe_AppendBytes(&qiFrame, sizeof(cid), (UINT8*)(&cid));
+	Pipe_AppendBytes(&qiFrame, sizeof(iid), (UINT8*)(&iid));
 
-        mr = Pipe_SendCallPacketAndWait(0, &qiFrame);
+	mr = Pipe_SendCallPacketAndWait(0, &qiFrame);
 
-        if (MUX_SUCCEEDED(mr))
-        {
-            mr = mux_UnmarshalInterface(&qiFrame, iid, ppv);
-        }
+	if (MUX_SUCCEEDED(mr))
+	{
+	    mr = mux_UnmarshalInterface(&qiFrame, iid, ppv);
+	}
 
-        Pipe_EmptyQueue(&qiFrame);
+	Pipe_EmptyQueue(&qiFrame);
     }
     else
     {
-        mr = MUX_E_CLASSNOTAVAILABLE;
+	mr = MUX_E_CLASSNOTAVAILABLE;
     }
     return mr;
 }
@@ -730,13 +730,13 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RegisterClassObjects(int nci, MUX_C
 {
     if (eLibraryInitialized != g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     if (  nci <= 0
        || NULL == aci)
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     // Modules export a mux_GetClassObject handler, but the main program
@@ -746,11 +746,11 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RegisterClassObjects(int nci, MUX_C
     // allow that.
     //
     if (  (  NULL != g_pModule
-          && NULL != fpGetClassObject)
+	  && NULL != fpGetClassObject)
        || (  NULL == g_pModule
-          && NULL == fpGetClassObject))
+	  && NULL == fpGetClassObject))
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     // Verify that the requested class ids are not already registered.
@@ -759,11 +759,11 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RegisterClassObjects(int nci, MUX_C
     int i;
     for (i = 0; i < nci; i++)
     {
-        pModule = ModuleFindFromCID(aci[i].cid);
-        if (NULL != pModule)
-        {
-            return MUX_E_INVALIDARG;
-        }
+	pModule = ModuleFindFromCID(aci[i].cid);
+	if (NULL != pModule)
+	{
+	    return MUX_E_INVALIDARG;
+	}
     }
 
     // Find corresponding MUX_MODULE_INFO_PRIVATE. Since we're the one that requested the module to register its classes, we know
@@ -772,16 +772,16 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RegisterClassObjects(int nci, MUX_C
     pModule = g_pModule;
     if (NULL == pModule)
     {
-        // These classes are implemented in the main program (netmux or
-        // stubslave).
-        //
-        pModule = &g_MainModule;
-        if (NULL != pModule->fpGetClassObject)
-        {
-            // The main program is attempting to register another handler.
-            //
-            return MUX_E_FAIL;
-        }
+	// These classes are implemented in the main program (netmux or
+	// stubslave).
+	//
+	pModule = &g_MainModule;
+	if (NULL != pModule->fpGetClassObject)
+	{
+	    // The main program is attempting to register another handler.
+	    //
+	    return MUX_E_FAIL;
+	}
     }
 
     // Make sure there is enough room in the class table for additional class
@@ -789,37 +789,37 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RegisterClassObjects(int nci, MUX_C
     //
     if (g_nClassesAllocated < g_nClasses + nci)
     {
-        UINT32 nAllocate = GrowByFactor(g_nClasses + nci);
+	UINT32 nAllocate = GrowByFactor(g_nClasses + nci);
 
-        MUX_CLASS_INFO_PRIVATE *pNewClasses = NULL;
-        try
-        {
-            pNewClasses = new MUX_CLASS_INFO_PRIVATE[nAllocate];
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	MUX_CLASS_INFO_PRIVATE *pNewClasses = NULL;
+	try
+	{
+	    pNewClasses = new MUX_CLASS_INFO_PRIVATE[nAllocate];
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pNewClasses)
-        {
-            return MUX_E_OUTOFMEMORY;
-        }
+	if (NULL == pNewClasses)
+	{
+	    return MUX_E_OUTOFMEMORY;
+	}
 
-        if (NULL != g_pClasses)
-        {
-            int j;
-            for (j = 0; j < g_nClasses; j++)
-            {
-                pNewClasses[j] = g_pClasses[j];
-            }
+	if (NULL != g_pClasses)
+	{
+	    int j;
+	    for (j = 0; j < g_nClasses; j++)
+	    {
+		pNewClasses[j] = g_pClasses[j];
+	    }
 
-            delete [] g_pClasses;
-            g_pClasses = NULL;
-        }
+	    delete [] g_pClasses;
+	    g_pClasses = NULL;
+	}
 
-        g_pClasses = pNewClasses;
-        g_nClassesAllocated = nAllocate;
+	g_pClasses = pNewClasses;
+	g_nClassesAllocated = nAllocate;
     }
 
     // If these classes are implemented in the main program (netmux or
@@ -827,12 +827,12 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RegisterClassObjects(int nci, MUX_C
     //
     if (&g_MainModule == pModule)
     {
-        pModule->fpGetClassObject = fpGetClassObject;
+	pModule->fpGetClassObject = fpGetClassObject;
     }
 
     for (i = 0; i < nci; i++)
     {
-        ClassAdd(&(aci[i]), pModule);
+	ClassAdd(&(aci[i]), pModule);
     }
     return MUX_S_OK;
 }
@@ -849,13 +849,13 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RevokeClassObjects(int nci, MUX_CLA
 {
     if (eLibraryDown == g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     if (  nci <= 0
        || NULL == aci)
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     // Verify that all class ids in this request are handled by the same module.
@@ -864,23 +864,23 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RevokeClassObjects(int nci, MUX_CLA
     int i;
     for (i = 0; i < nci; i++)
     {
-        MUX_MODULE_INFO_PRIVATE *q = ModuleFindFromCID(aci[i].cid);
-        if (NULL == q)
-        {
-            // Attempt to revoke a class ids which were never registered.
-            //
-            return MUX_E_INVALIDARG;
-        }
-        else if (NULL == pModule)
-        {
-            pModule = q;
-        }
-        else if (q != pModule)
-        {
-            // Attempt to revoke class ids from more than one module.
-            //
-            return MUX_E_INVALIDARG;
-        }
+	MUX_MODULE_INFO_PRIVATE *q = ModuleFindFromCID(aci[i].cid);
+	if (NULL == q)
+	{
+	    // Attempt to revoke a class ids which were never registered.
+	    //
+	    return MUX_E_INVALIDARG;
+	}
+	else if (NULL == pModule)
+	{
+	    pModule = q;
+	}
+	else if (q != pModule)
+	{
+	    // Attempt to revoke class ids from more than one module.
+	    //
+	    return MUX_E_INVALIDARG;
+	}
     }
 
     // If these classes are implemented by the main program (netmux or
@@ -888,14 +888,14 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RevokeClassObjects(int nci, MUX_CLA
     //
     if (pModule == &g_MainModule)
     {
-        pModule->fpGetClassObject = NULL;
+	pModule->fpGetClassObject = NULL;
     }
 
     // Remove the requested class ids.
     //
     for (i = 0; i < nci; i++)
     {
-        ClassRemove(aci[i].cid);
+	ClassRemove(aci[i].cid);
     }
     return MUX_S_OK;
 }
@@ -904,55 +904,55 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RegisterInterfaces(int nii, MUX_INT
 {
     if (eLibraryInitialized != g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     if (  nii <= 0
        || NULL == aii)
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     // Make sure there is enough room in the interface table.
     //
     if (g_nInterfacesAllocated < g_nInterfaces + nii)
     {
-        int nAllocate = GrowByFactor(g_nInterfaces + nii);
+	int nAllocate = GrowByFactor(g_nInterfaces + nii);
 
-        MUX_INTERFACE_INFO *pNewInterfaces = NULL;
-        try
-        {
-            pNewInterfaces = new MUX_INTERFACE_INFO[nAllocate];
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	MUX_INTERFACE_INFO *pNewInterfaces = NULL;
+	try
+	{
+	    pNewInterfaces = new MUX_INTERFACE_INFO[nAllocate];
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pNewInterfaces)
-        {
-            return MUX_E_OUTOFMEMORY;
-        }
+	if (NULL == pNewInterfaces)
+	{
+	    return MUX_E_OUTOFMEMORY;
+	}
 
-        if (NULL != g_pInterfaces)
-        {
-            int j;
-            for (j = 0; j < g_nInterfaces; j++)
-            {
-                pNewInterfaces[j] = g_pInterfaces[j];
-            }
+	if (NULL != g_pInterfaces)
+	{
+	    int j;
+	    for (j = 0; j < g_nInterfaces; j++)
+	    {
+		pNewInterfaces[j] = g_pInterfaces[j];
+	    }
 
-            delete [] g_pInterfaces;
-            g_pInterfaces = NULL;
-        }
+	    delete [] g_pInterfaces;
+	    g_pInterfaces = NULL;
+	}
 
-        g_pInterfaces = pNewInterfaces;
-        g_nInterfacesAllocated = nAllocate;
+	g_pInterfaces = pNewInterfaces;
+	g_nInterfacesAllocated = nAllocate;
     }
 
     for (int i = 0; i < nii; i++)
     {
-        InterfaceAdd(&aii[i]);
+	InterfaceAdd(&aii[i]);
     }
     return MUX_S_OK;
 }
@@ -961,18 +961,18 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RevokeInterfaces(int nii, MUX_INTER
 {
     if (eLibraryDown == g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     if (  nii <= 0
        || NULL == aii)
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     for (int i = 0; i < nii; i++)
     {
-        InterfaceRemove(aii[i].iid);
+	InterfaceRemove(aii[i].iid);
     }
     return MUX_S_OK;
 }
@@ -994,41 +994,41 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_AddModule(const UTF8 aModuleName[],
 {
     if (eLibraryInitialized != g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     MUX_RESULT mr = MUX_S_OK;
     if (NULL == g_pModule)
     {
-        // Create new MUX_MODULE_INFO_PRIVATE.
-        //
-        MUX_MODULE_INFO_PRIVATE *pModule = ModuleAdd(aModuleName, aFileName);
-        if (NULL != pModule)
-        {
-            // Ask module to register its classes.
-            //
-            ModuleLoad(pModule);
-            if (pModule->bLoaded)
-            {
-                pModule->eState = eModuleRegistering;
-                g_pModule = pModule;
-                mr = pModule->fpRegister();
-                g_pModule = NULL;
-                pModule->eState = eModuleRegistered;
-            }
-            else
-            {
-                mr = MUX_E_FAIL;
-            }
-        }
-        else
-        {
-            mr = MUX_E_OUTOFMEMORY;
-        }
+	// Create new MUX_MODULE_INFO_PRIVATE.
+	//
+	MUX_MODULE_INFO_PRIVATE *pModule = ModuleAdd(aModuleName, aFileName);
+	if (NULL != pModule)
+	{
+	    // Ask module to register its classes.
+	    //
+	    ModuleLoad(pModule);
+	    if (pModule->bLoaded)
+	    {
+		pModule->eState = eModuleRegistering;
+		g_pModule = pModule;
+		mr = pModule->fpRegister();
+		g_pModule = NULL;
+		pModule->eState = eModuleRegistered;
+	    }
+	    else
+	    {
+		mr = MUX_E_FAIL;
+	    }
+	}
+	else
+	{
+	    mr = MUX_E_OUTOFMEMORY;
+	}
     }
     else
     {
-        mr = MUX_E_NOTREADY;
+	mr = MUX_E_NOTREADY;
     }
     return mr;
 }
@@ -1039,56 +1039,56 @@ static MUX_RESULT RemoveModule(MUX_MODULE_INFO_PRIVATE *pModule)
 
     if (NULL != pModule)
     {
-        // First, aim for an unregistered state.
-        //
-        if (eModuleRegistered == pModule->eState)
-        {
-            // It is possible for a module to be registered without it
-            // necessarily being loaded, but we can't ask it to revoke its
-            // class registrations without loading it.
-            //
-            if (!pModule->bLoaded)
-            {
-                ModuleLoad(pModule);
-            }
+	// First, aim for an unregistered state.
+	//
+	if (eModuleRegistered == pModule->eState)
+	{
+	    // It is possible for a module to be registered without it
+	    // necessarily being loaded, but we can't ask it to revoke its
+	    // class registrations without loading it.
+	    //
+	    if (!pModule->bLoaded)
+	    {
+		ModuleLoad(pModule);
+	    }
 
-            if (pModule->bLoaded)
-            {
-                // Ask module to revoke its classes.
-                //
-                pModule->eState = eModuleUnregistering;
-                g_pModule = pModule;
-                mr = pModule->fpUnregister();
-                g_pModule = NULL;
-                pModule->eState = eModuleInitialized;
-            }
-            else
-            {
-                // Without being able to load the module, we're stuck.
-                //
-                pModule->eState = eModuleUnloadable;
-            }
-        }
+	    if (pModule->bLoaded)
+	    {
+		// Ask module to revoke its classes.
+		//
+		pModule->eState = eModuleUnregistering;
+		g_pModule = pModule;
+		mr = pModule->fpUnregister();
+		g_pModule = NULL;
+		pModule->eState = eModuleInitialized;
+	    }
+	    else
+	    {
+		// Without being able to load the module, we're stuck.
+		//
+		pModule->eState = eModuleUnloadable;
+	    }
+	}
 
-        // Next, aim for an unloaded state.
-        //
-        if (pModule->bLoaded)
-        {
-            // Attempt to unload module.
-            //
-            mr = pModule->fpCanUnloadNow();
-            if (  MUX_SUCCEEDED(mr)
-               && MUX_S_FALSE != mr)
-            {
-                ModuleUnload(pModule);
-                ModuleRemove(pModule);
-                mr = MUX_S_OK;
-            }
-        }
+	// Next, aim for an unloaded state.
+	//
+	if (pModule->bLoaded)
+	{
+	    // Attempt to unload module.
+	    //
+	    mr = pModule->fpCanUnloadNow();
+	    if (  MUX_SUCCEEDED(mr)
+	       && MUX_S_FALSE != mr)
+	    {
+		ModuleUnload(pModule);
+		ModuleRemove(pModule);
+		mr = MUX_S_OK;
+	    }
+	}
     }
     else
     {
-        mr = MUX_E_INVALIDARG;
+	mr = MUX_E_INVALIDARG;
     }
     return mr;
 }
@@ -1105,21 +1105,21 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_RemoveModule(const UTF8 aModuleName
 {
     if (eLibraryDown == g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     MUX_RESULT mr MUX_S_OK;
     if (NULL == g_pModule)
     {
-        MUX_MODULE_INFO_PRIVATE *pModule = ModuleFindFromName(aModuleName);
-        if (NULL != pModule)
-        {
-            mr = RemoveModule(pModule);
-        }
+	MUX_MODULE_INFO_PRIVATE *pModule = ModuleFindFromName(aModuleName);
+	if (NULL != pModule)
+	{
+	    mr = RemoveModule(pModule);
+	}
     }
     else
     {
-        mr = MUX_E_NOTREADY;
+	mr = MUX_E_NOTREADY;
     }
     return mr;
 }
@@ -1139,25 +1139,25 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_ModuleInfo(int iModule, MUX_MODULE_
 {
     if (eLibraryDown == g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     if (iModule < 0)
     {
-        return MUX_E_INVALIDARG;
+	return MUX_E_INVALIDARG;
     }
 
     MUX_MODULE_INFO_PRIVATE *pModule = g_pModuleList;
     while (NULL != pModule)
     {
-        if (0 == iModule)
-        {
-            pModuleInfo->bLoaded = pModule->bLoaded;
-            pModuleInfo->pName   = pModule->pModuleName;
-            return MUX_S_OK;
-        }
-        iModule--;
-        pModule = pModule->pNext;
+	if (0 == iModule)
+	{
+	    pModuleInfo->bLoaded = pModule->bLoaded;
+	    pModuleInfo->pName   = pModule->pModuleName;
+	    return MUX_S_OK;
+	}
+	iModule--;
+	pModule = pModule->pNext;
     }
     return MUX_S_FALSE;
 }
@@ -1174,7 +1174,7 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_ModuleMaintenance(void)
 {
     if (eLibraryInitialized != g_LibraryState)
     {
-        return MUX_E_NOTREADY;
+	return MUX_E_NOTREADY;
     }
 
     // We can query each loaded module and unload the ones that are unloadable.
@@ -1182,16 +1182,16 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_ModuleMaintenance(void)
     MUX_MODULE_INFO_PRIVATE *pModule = g_pModuleList;
     while (NULL != pModule)
     {
-        if (pModule->bLoaded)
-        {
-            MUX_RESULT mr = pModule->fpCanUnloadNow();
-            if (  MUX_SUCCEEDED(mr)
-               && MUX_S_FALSE != mr)
-            {
-                ModuleUnload(pModule);
-            }
-        }
-        pModule = pModule->pNext;
+	if (pModule->bLoaded)
+	{
+	    MUX_RESULT mr = pModule->fpCanUnloadNow();
+	    if (  MUX_SUCCEEDED(mr)
+	       && MUX_S_FALSE != mr)
+	    {
+		ModuleUnload(pModule);
+	    }
+	}
+	pModule = pModule->pNext;
     }
     return MUX_S_OK;
 }
@@ -1202,36 +1202,36 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_InitModuleLibrary(process_context c
 {
     if (eLibraryDown == g_LibraryState)
     {
-        g_ProcessContext = ctx;
-        g_LibraryState = eLibraryInitialized;
+	g_ProcessContext = ctx;
+	g_LibraryState = eLibraryInitialized;
 
-        if (  NULL != fpPipePump
-           && NULL != pQueue_In
-           && NULL != pQueue_Out
-           && GrowChannels())
-        {
-            // Save pipepump callback and two queues.  Hosting process should
-            // service queues when pipepump is called.
-            //
-            // The module library should deal with packets, call levels, and
-            // clean disconnections.  The main program (stubslave or netmux)
-            // can handle file descriptors, process spawning, and errors.
-            //
-            g_fpPipePump = fpPipePump;
-            g_pQueue_In  = pQueue_In;
-            g_pQueue_Out = pQueue_Out;
-        }
-        else
-        {
-            g_fpPipePump = NULL;
-            g_pQueue_In  = NULL;
-            g_pQueue_Out = NULL;
-        }
-        return MUX_S_OK;
+	if (  NULL != fpPipePump
+	   && NULL != pQueue_In
+	   && NULL != pQueue_Out
+	   && GrowChannels())
+	{
+	    // Save pipepump callback and two queues.  Hosting process should
+	    // service queues when pipepump is called.
+	    //
+	    // The module library should deal with packets, call levels, and
+	    // clean disconnections.  The main program (stubslave or netmux)
+	    // can handle file descriptors, process spawning, and errors.
+	    //
+	    g_fpPipePump = fpPipePump;
+	    g_pQueue_In  = pQueue_In;
+	    g_pQueue_Out = pQueue_Out;
+	}
+	else
+	{
+	    g_fpPipePump = NULL;
+	    g_pQueue_In  = NULL;
+	    g_pQueue_Out = NULL;
+	}
+	return MUX_S_OK;
     }
     else
     {
-        return MUX_E_FAIL;
+	return MUX_E_FAIL;
     }
 }
 
@@ -1241,64 +1241,64 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_FinalizeModuleLibrary(void)
 
     if (eLibraryInitialized == g_LibraryState)
     {
-        g_LibraryState   = eLibraryGoingDown;
+	g_LibraryState   = eLibraryGoingDown;
 
-        // Give each module a chance to unregister.
-        //
-        MUX_MODULE_INFO_PRIVATE *pModule = NULL;
-        bool bFound = false;
-        do
-        {
-            // Find a module in the eModuleRegistered state.  The list we use
-            // is only valid until we call RemoveModule().
-            //
-            bFound = false;
-            pModule = g_pModuleList;
-            while (NULL != pModule)
-            {
-                if (eModuleRegistered == pModule->eState)
-                {
-                    bFound = true;
-                    mr = RemoveModule(pModule);
-                    break;
-                }
-                pModule = pModule->pNext;
-            }
-        } while (bFound);
+	// Give each module a chance to unregister.
+	//
+	MUX_MODULE_INFO_PRIVATE *pModule = NULL;
+	bool bFound = false;
+	do
+	{
+	    // Find a module in the eModuleRegistered state.  The list we use
+	    // is only valid until we call RemoveModule().
+	    //
+	    bFound = false;
+	    pModule = g_pModuleList;
+	    while (NULL != pModule)
+	    {
+		if (eModuleRegistered == pModule->eState)
+		{
+		    bFound = true;
+		    mr = RemoveModule(pModule);
+		    break;
+		}
+		pModule = pModule->pNext;
+	    }
+	} while (bFound);
 
-        // Attempt to unload the remaining modules politely.
-        //
-        pModule = g_pModuleList;
-        while (NULL != pModule)
-        {
-            if (pModule->bLoaded)
-            {
-                mr = pModule->fpCanUnloadNow();
-                if (  MUX_SUCCEEDED(mr)
-                   && MUX_S_FALSE != mr)
-                {
-                    ModuleUnload(pModule);
-                }
-            }
-            pModule = pModule->pNext;
-        }
+	// Attempt to unload the remaining modules politely.
+	//
+	pModule = g_pModuleList;
+	while (NULL != pModule)
+	{
+	    if (pModule->bLoaded)
+	    {
+		mr = pModule->fpCanUnloadNow();
+		if (  MUX_SUCCEEDED(mr)
+		   && MUX_S_FALSE != mr)
+		{
+		    ModuleUnload(pModule);
+		}
+	    }
+	    pModule = pModule->pNext;
+	}
 
-        // If anything is left on the list, there is a bug in someone's code.
-        // The server will shortly either shutdown or restart.  To avoid
-        // leaking a handle, we will unload the module impolitely.
-        //
-        pModule = g_pModuleList;
-        while (NULL != pModule)
-        {
-            if (pModule->bLoaded)
-            {
-                ModuleUnload(pModule);
-            }
-            pModule = pModule->pNext;
-        }
+	// If anything is left on the list, there is a bug in someone's code.
+	// The server will shortly either shutdown or restart.  To avoid
+	// leaking a handle, we will unload the module impolitely.
+	//
+	pModule = g_pModuleList;
+	while (NULL != pModule)
+	{
+	    if (pModule->bLoaded)
+	    {
+		ModuleUnload(pModule);
+	    }
+	    pModule = pModule->pNext;
+	}
 
-        g_LibraryState   = eLibraryDown;
-        g_ProcessContext = IsUninitialized;
+	g_LibraryState   = eLibraryDown;
+	g_ProcessContext = IsUninitialized;
     }
     return MUX_S_OK;
 }
@@ -1334,29 +1334,29 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_GetStandardMarshal(MUX_IID riid, mu
     MUX_RESULT mr = MUX_S_OK;
     if (NULL == pIUnknown)
     {
-        mr = MUX_E_NOTIMPLEMENTED;
+	mr = MUX_E_NOTIMPLEMENTED;
     }
     else
     {
-        CStandardMarshaler *pMarshaler = NULL;
-        try
-        {
-            pMarshaler = new CStandardMarshaler(riid, ctx);
-        }
-        catch (...)
-        {
-            ; // Nothing.
-        }
+	CStandardMarshaler *pMarshaler = NULL;
+	try
+	{
+	    pMarshaler = new CStandardMarshaler(riid, ctx);
+	}
+	catch (...)
+	{
+	    ; // Nothing.
+	}
 
-        if (NULL == pMarshaler)
-        {
-            mr = MUX_E_OUTOFMEMORY;
-        }
-        else
-        {
-            mr = pMarshaler->QueryInterface(mux_IID_IMarshal, (void **)ppMarshal);
-            pMarshaler->Release();
-        }
+	if (NULL == pMarshaler)
+	{
+	    mr = MUX_E_OUTOFMEMORY;
+	}
+	else
+	{
+	    mr = pMarshaler->QueryInterface(mux_IID_IMarshal, (void **)ppMarshal);
+	    pMarshaler->Release();
+	}
     }
     return mr;
 }
@@ -1369,23 +1369,23 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_MarshalInterface(QUEUE_INFO *pqi, M
     mr = pIUnknown->QueryInterface(mux_IID_IMarshal, (void **)&pIMarshal);
     if (MUX_FAILED(mr))
     {
-        mr = mux_GetStandardMarshal(riid, pIUnknown, ctx, &pIMarshal);
+	mr = mux_GetStandardMarshal(riid, pIUnknown, ctx, &pIMarshal);
     }
 
     if (MUX_SUCCEEDED(mr))
     {
-        MUX_CID cidProxy = 0;
-        mr = pIMarshal->GetUnmarshalClass(riid, ctx, &cidProxy);
-        if (MUX_SUCCEEDED(mr))
-        {
-            Pipe_AppendBytes(pqi, sizeof(cidProxy), &cidProxy);
-            mr = pIMarshal->MarshalInterface(pqi, riid, pIUnknown, ctx);
-        }
-        pIMarshal->Release();
+	MUX_CID cidProxy = 0;
+	mr = pIMarshal->GetUnmarshalClass(riid, ctx, &cidProxy);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    Pipe_AppendBytes(pqi, sizeof(cidProxy), &cidProxy);
+	    mr = pIMarshal->MarshalInterface(pqi, riid, pIUnknown, ctx);
+	}
+	pIMarshal->Release();
     }
     else
     {
-        Pipe_EmptyQueue(pqi);
+	Pipe_EmptyQueue(pqi);
     }
     return mr;
 }
@@ -1399,19 +1399,19 @@ extern "C" MUX_RESULT DCL_EXPORT DCL_API mux_UnmarshalInterface(QUEUE_INFO *pqi,
     if (  Pipe_GetBytes(pqi, &nWanted, &cidProxy)
        && sizeof(cidProxy) == nWanted)
     {
-        // Open an IMarshal interface on the given proxy and pass it the marshal packet.
-        //
-        mux_IMarshal *pIMarshal = NULL;
-        mr = mux_CreateInstance(cidProxy, NULL, UseSameProcess, mux_IID_IMarshal, (void **)&pIMarshal);
-        if (MUX_SUCCEEDED(mr))
-        {
-            mr = pIMarshal->UnmarshalInterface(pqi, riid, ppv);
-            pIMarshal->Release();
-        }
+	// Open an IMarshal interface on the given proxy and pass it the marshal packet.
+	//
+	mux_IMarshal *pIMarshal = NULL;
+	mr = mux_CreateInstance(cidProxy, NULL, UseSameProcess, mux_IID_IMarshal, (void **)&pIMarshal);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    mr = pIMarshal->UnmarshalInterface(pqi, riid, ppv);
+	    pIMarshal->Release();
+	}
     }
     else
     {
-        mr = MUX_E_CLASSNOTAVAILABLE;
+	mr = MUX_E_CLASSNOTAVAILABLE;
     }
     return mr;
 }
@@ -1422,8 +1422,8 @@ static MUX_RESULT Channel0_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
 
     struct CF
     {
-        MUX_CID cid;
-        MUX_IID iid;
+	MUX_CID cid;
+	MUX_IID iid;
     } CallFrame;
 
     MUX_RESULT mr = MUX_S_OK;
@@ -1432,17 +1432,17 @@ static MUX_RESULT Channel0_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     if (  Pipe_GetBytes(pqi, &nWanted, &CallFrame)
        && nWanted == sizeof(CallFrame))
     {
-        // First, we create the requested component and obtain the requested interface.
-        //
-        mux_IUnknown *pIUnknown = NULL;
-        mr = mux_CreateInstance(CallFrame.cid, NULL, UseSameProcess, mux_IID_IUnknown, (void **)&pIUnknown);
-        if (MUX_SUCCEEDED(mr))
-        {
-            // Now that we have an interface pointer, we need to Marshal it into a packet and return it on pqi.
-            //
-            mr = mux_MarshalInterface(pqi, CallFrame.iid, pIUnknown, CrossProcess);
-            pIUnknown->Release();
-        }
+	// First, we create the requested component and obtain the requested interface.
+	//
+	mux_IUnknown *pIUnknown = NULL;
+	mr = mux_CreateInstance(CallFrame.cid, NULL, UseSameProcess, mux_IID_IUnknown, (void **)&pIUnknown);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    // Now that we have an interface pointer, we need to Marshal it into a packet and return it on pqi.
+	    //
+	    mr = mux_MarshalInterface(pqi, CallFrame.iid, pIUnknown, CrossProcess);
+	    pIUnknown->Release();
+	}
     }
     else
     {
@@ -1479,50 +1479,50 @@ static bool GrowChannels(void)
     CHANNEL_INFO *pNew = NULL;
     try
     {
-        pNew = new CHANNEL_INFO[nNew];
+	pNew = new CHANNEL_INFO[nNew];
     }
     catch (...)
     {
-        ; // Nothing.
+	; // Nothing.
     }
 
     if (NULL != pNew)
     {
-        UINT32 i;
-        if (NULL != aChannels)
-        {
-            for (i = 0; i < nChannels; i++)
-            {
-                pNew[i] = aChannels[i];
-            }
-            delete aChannels;
-            aChannels = NULL;
-        }
-        else
-        {
-            // Initialized Channel 0 as always allocated.
-            //
-            pNew[0].bAllocated = true;
-            pNew[0].nChannel   = 0;
-            pNew[0].pfCall     = Channel0_Call;
-            pNew[0].pfMsg      = NULL;
-            pNew[0].pfDisc     = NULL;
-            pNew[0].pInterface = NULL;
-            nChannels = 1;
-        }
+	UINT32 i;
+	if (NULL != aChannels)
+	{
+	    for (i = 0; i < nChannels; i++)
+	    {
+		pNew[i] = aChannels[i];
+	    }
+	    delete aChannels;
+	    aChannels = NULL;
+	}
+	else
+	{
+	    // Initialized Channel 0 as always allocated.
+	    //
+	    pNew[0].bAllocated = true;
+	    pNew[0].nChannel   = 0;
+	    pNew[0].pfCall     = Channel0_Call;
+	    pNew[0].pfMsg      = NULL;
+	    pNew[0].pfDisc     = NULL;
+	    pNew[0].pInterface = NULL;
+	    nChannels = 1;
+	}
 
-        aChannels = pNew;
-        pNew = NULL;
-        for (i = nChannels; i < nNew; i++)
-        {
-            FreeChannel(i);
-        }
-        nChannels = nNew;
-        return true;
+	aChannels = pNew;
+	pNew = NULL;
+	for (i = nChannels; i < nNew; i++)
+	{
+	    FreeChannel(i);
+	}
+	nChannels = nNew;
+	return true;
     }
     else
     {
-        return false;
+	return false;
     }
 }
 
@@ -1531,24 +1531,24 @@ static UINT32 AllocateChannel(void)
     if (  NULL == aChannels
        && !GrowChannels())
     {
-        return CHANNEL_INVALID;
+	return CHANNEL_INVALID;
     }
 
     for (;;)
     {
-        for (UINT32 i = 0; i < nChannels; i++)
-        {
-            if (!aChannels[i].bAllocated)
-            {
-                aChannels[i].bAllocated = true;
-                return i;
-            }
-        }
+	for (UINT32 i = 0; i < nChannels; i++)
+	{
+	    if (!aChannels[i].bAllocated)
+	    {
+		aChannels[i].bAllocated = true;
+		return i;
+	    }
+	}
 
-        if (!GrowChannels())
-        {
-            return CHANNEL_INVALID;
-        }
+	if (!GrowChannels())
+	{
+	    return CHANNEL_INVALID;
+	}
     }
 }
 
@@ -1572,7 +1572,7 @@ extern "C" void DCL_EXPORT DCL_API Pipe_FreeChannel(CHANNEL_INFO *pci)
        && n != 0
        && aChannels[n].bAllocated)
     {
-        FreeChannel(n);
+	FreeChannel(n);
     }
 }
 
@@ -1582,11 +1582,11 @@ extern "C" PCHANNEL_INFO DCL_EXPORT DCL_API Pipe_FindChannel(UINT32 nChannel)
     if (  nChannel < nChannels
        && (pChannel = &aChannels[nChannel])->bAllocated)
     {
-        return pChannel;
+	return pChannel;
     }
     else
     {
-        return NULL;
+	return NULL;
     }
 }
 
@@ -1595,75 +1595,75 @@ extern "C" void DCL_EXPORT DCL_API Pipe_AppendBytes(QUEUE_INFO *pqi, size_t n, c
     if (  0 != n
        && NULL != p)
     {
-        // Continue copying data to the end of the queue until it is all consumed.
-        //
-        QUEUE_BLOCK *pBlock = NULL;
-        while (0 < n)
-        {
-            // We need an empty or partially filled QUEUE_BLOCK.
-            //
-            if (  NULL == pqi->pTail
-               || pqi->pTail->aBuffer + QUEUE_BLOCK_SIZE <= pqi->pTail->pBuffer + pqi->pTail->nBuffer)
-            {
-                // The last block is full or not there, so allocate a new QUEUE_BLOCK.
-                //
-                try
-                {
-                    pBlock = new QUEUE_BLOCK;
-                }
-                catch (...)
-                {
-                    ; // Nothing.
-                }
+	// Continue copying data to the end of the queue until it is all consumed.
+	//
+	QUEUE_BLOCK *pBlock = NULL;
+	while (0 < n)
+	{
+	    // We need an empty or partially filled QUEUE_BLOCK.
+	    //
+	    if (  NULL == pqi->pTail
+	       || pqi->pTail->aBuffer + QUEUE_BLOCK_SIZE <= pqi->pTail->pBuffer + pqi->pTail->nBuffer)
+	    {
+		// The last block is full or not there, so allocate a new QUEUE_BLOCK.
+		//
+		try
+		{
+		    pBlock = new QUEUE_BLOCK;
+		}
+		catch (...)
+		{
+		    ; // Nothing.
+		}
 
-                if (NULL != pBlock)
-                {
-                    pBlock->pNext   = NULL;
-                    pBlock->pPrev   = NULL;
-                    pBlock->pBuffer = pBlock->aBuffer;
-                    pBlock->nBuffer = 0;
-                }
-                else
-                {
-                    // TODO: Out of memory.
-                    //
-                    return;
-                }
+		if (NULL != pBlock)
+		{
+		    pBlock->pNext   = NULL;
+		    pBlock->pPrev   = NULL;
+		    pBlock->pBuffer = pBlock->aBuffer;
+		    pBlock->nBuffer = 0;
+		}
+		else
+		{
+		    // TODO: Out of memory.
+		    //
+		    return;
+		}
 
-                // Append the newly allocated block to the end of the queue.
-                //
-                if (NULL == pqi->pTail)
-                {
-                    pqi->pHead = pBlock;
-                    pqi->pTail = pBlock;
-                }
-                else
-                {
-                    pBlock->pPrev = pqi->pTail;
-                    pqi->pTail->pNext = pBlock;
-                    pqi->pTail = pBlock;
-                }
-            }
-            else
-            {
-                pBlock = pqi->pTail;
-            }
+		// Append the newly allocated block to the end of the queue.
+		//
+		if (NULL == pqi->pTail)
+		{
+		    pqi->pHead = pBlock;
+		    pqi->pTail = pBlock;
+		}
+		else
+		{
+		    pBlock->pPrev = pqi->pTail;
+		    pqi->pTail->pNext = pBlock;
+		    pqi->pTail = pBlock;
+		}
+	    }
+	    else
+	    {
+		pBlock = pqi->pTail;
+	    }
 
-            // Allocate space out of last QUEUE_BLOCK
-            //
-            char  *pFree = pBlock->pBuffer + pBlock->nBuffer;
-            size_t nFree = QUEUE_BLOCK_SIZE - pBlock->nBuffer - (pBlock->pBuffer - pBlock->aBuffer);
-            size_t nCopy = nFree;
-            if (n < nCopy)
-            {
-                nCopy = n;
-            }
+	    // Allocate space out of last QUEUE_BLOCK
+	    //
+	    char  *pFree = pBlock->pBuffer + pBlock->nBuffer;
+	    size_t nFree = QUEUE_BLOCK_SIZE - pBlock->nBuffer - (pBlock->pBuffer - pBlock->aBuffer);
+	    size_t nCopy = nFree;
+	    if (n < nCopy)
+	    {
+		nCopy = n;
+	    }
 
-            memcpy(pFree, p, nCopy);
-            n -= nCopy;
-            pBlock->nBuffer += nCopy;
-            pqi->nBytes += nCopy;
-        }
+	    memcpy(pFree, p, nCopy);
+	    n -= nCopy;
+	    pBlock->nBuffer += nCopy;
+	    pqi->nBytes += nCopy;
+	}
     }
 }
 
@@ -1672,19 +1672,19 @@ extern "C" void DCL_EXPORT DCL_API Pipe_AppendQueue(QUEUE_INFO *pqiOut, QUEUE_IN
     if (  NULL != pqiOut
        && NULL != pqiIn)
     {
-        QUEUE_BLOCK *pBlock = pqiIn->pHead;
-        while (NULL != pBlock)
-        {
-            Pipe_AppendBytes(pqiOut, pBlock->nBuffer, pBlock->pBuffer);
+	QUEUE_BLOCK *pBlock = pqiIn->pHead;
+	while (NULL != pBlock)
+	{
+	    Pipe_AppendBytes(pqiOut, pBlock->nBuffer, pBlock->pBuffer);
 
-            QUEUE_BLOCK *qBlock = pBlock->pNext;
-            delete pBlock;
-            pBlock = qBlock;
-        }
+	    QUEUE_BLOCK *qBlock = pBlock->pNext;
+	    delete pBlock;
+	    pBlock = qBlock;
+	}
 
-        pqiIn->pHead = NULL;
-        pqiIn->pTail = NULL;
-        pqiIn->nBytes = 0;
+	pqiIn->pHead = NULL;
+	pqiIn->pTail = NULL;
+	pqiIn->nBytes = 0;
     }
 }
 
@@ -1692,20 +1692,20 @@ extern "C" void DCL_EXPORT DCL_API Pipe_EmptyQueue(QUEUE_INFO *pqi)
 {
     if (NULL != pqi)
     {
-        QUEUE_BLOCK *pBlock = pqi->pHead;
+	QUEUE_BLOCK *pBlock = pqi->pHead;
 
-        // Free all the QUEUE_BLOCKs finally the owning QUEUE_INFO structure.
-        //
-        while (NULL != pBlock)
-        {
-            QUEUE_BLOCK *qBlock = pBlock->pNext;
-            delete pBlock;
-            pBlock = qBlock;
-        }
+	// Free all the QUEUE_BLOCKs finally the owning QUEUE_INFO structure.
+	//
+	while (NULL != pBlock)
+	{
+	    QUEUE_BLOCK *qBlock = pBlock->pNext;
+	    delete pBlock;
+	    pBlock = qBlock;
+	}
 
-        pqi->pHead = NULL;
-        pqi->pTail = NULL;
-        pqi->nBytes = 0;
+	pqi->pHead = NULL;
+	pqi->pTail = NULL;
+	pqi->nBytes = 0;
     }
 }
 
@@ -1716,31 +1716,31 @@ extern "C" bool DCL_EXPORT DCL_API Pipe_GetByte(QUEUE_INFO *pqi, UINT8 ach[1])
     if (  NULL != pqi
        && NULL != (pBlock = pqi->pHead))
     {
-        // Advance over empty blocks.
-        //
-        while (  NULL != pBlock
-              && 0 == pBlock->nBuffer)
-        {
-            pqi->pHead = pBlock->pNext;
-            if (NULL == pqi->pHead)
-            {
-                pqi->pTail = NULL;
-            }
-            delete pBlock;
-            pBlock = pqi->pHead;
-        }
+	// Advance over empty blocks.
+	//
+	while (  NULL != pBlock
+	      && 0 == pBlock->nBuffer)
+	{
+	    pqi->pHead = pBlock->pNext;
+	    if (NULL == pqi->pHead)
+	    {
+		pqi->pTail = NULL;
+	    }
+	    delete pBlock;
+	    pBlock = pqi->pHead;
+	}
 
-        // If there is a block left on the list, it will have something.
-        //
-        if (NULL != pBlock)
-        {
-            ach[0] = pBlock->pBuffer[0];
-            pBlock->pBuffer++;
-            pBlock->nBuffer--;
-            pqi->nBytes--;
+	// If there is a block left on the list, it will have something.
+	//
+	if (NULL != pBlock)
+	{
+	    ach[0] = pBlock->pBuffer[0];
+	    pBlock->pBuffer++;
+	    pBlock->nBuffer--;
+	    pqi->nBytes--;
 
-            return true;
-        }
+	    return true;
+	}
     }
     return false;
 }
@@ -1755,47 +1755,47 @@ extern "C" bool DCL_EXPORT DCL_API Pipe_GetBytes(QUEUE_INFO *pqi, size_t *pn, vo
     if (  NULL != pqi
        && NULL != pn)
     {
-        size_t nWantedBytes = *pn;
-        pBlock = pqi->pHead;
-        while (  NULL != pBlock
-              && 0 < nWantedBytes)
-        {
-            // Advance over empty blocks.
-            //
-            while (  NULL != pBlock
-                  && 0 == pBlock->nBuffer)
-            {
-                pqi->pHead = pBlock->pNext;
-                if (NULL == pqi->pHead)
-                {
-                    pqi->pTail = NULL;
-                }
-                delete pBlock;
-                pBlock = pqi->pHead;
-            }
+	size_t nWantedBytes = *pn;
+	pBlock = pqi->pHead;
+	while (  NULL != pBlock
+	      && 0 < nWantedBytes)
+	{
+	    // Advance over empty blocks.
+	    //
+	    while (  NULL != pBlock
+		  && 0 == pBlock->nBuffer)
+	    {
+		pqi->pHead = pBlock->pNext;
+		if (NULL == pqi->pHead)
+		{
+		    pqi->pTail = NULL;
+		}
+		delete pBlock;
+		pBlock = pqi->pHead;
+	    }
 
-            // If there is a block left on the list, it will have something.
-            //
-            if (NULL != pBlock)
-            {
-                size_t nCopy = pBlock->nBuffer;
-                if (nWantedBytes < nCopy)
-                {
-                    nCopy = nWantedBytes;
-                }
-                memcpy(pch, pBlock->pBuffer, nCopy);
+	    // If there is a block left on the list, it will have something.
+	    //
+	    if (NULL != pBlock)
+	    {
+		size_t nCopy = pBlock->nBuffer;
+		if (nWantedBytes < nCopy)
+		{
+		    nCopy = nWantedBytes;
+		}
+		memcpy(pch, pBlock->pBuffer, nCopy);
 
-                pBlock->pBuffer += nCopy;
-                pBlock->nBuffer -= nCopy;
-                pqi->nBytes -= nCopy;
-                nWantedBytes -= nCopy;
-                pch += nCopy;
-                nCopied += nCopy;
-            }
-        }
+		pBlock->pBuffer += nCopy;
+		pBlock->nBuffer -= nCopy;
+		pqi->nBytes -= nCopy;
+		nWantedBytes -= nCopy;
+		pch += nCopy;
+		nCopied += nCopy;
+	    }
+	}
 
-        *pn = nCopied;
-        return true;
+	*pn = nCopied;
+	return true;
     }
     return false;
 }
@@ -1805,7 +1805,7 @@ extern "C" size_t DCL_EXPORT DCL_API Pipe_QueueLength(QUEUE_INFO *pqi)
     size_t n = 0;
     if (NULL != pqi)
     {
-        n = pqi->nBytes;
+	n = pqi->nBytes;
     }
     return n;
 }
@@ -1899,178 +1899,178 @@ extern "C" bool DCL_EXPORT DCL_API Pipe_DecodeFrames(UINT32 iReturnChannel, QUEU
 
     if (8 == g_iState)
     {
-        // We must remain in the Length3 state until we have consumed all of the expected data.
-        //
-        while (0 < g_nLengthRemaining)
-        {
-            size_t nWanted = g_nLengthRemaining;
-            if (sizeof(buffer) < nWanted)
-            {
-                nWanted = sizeof(buffer);
-            }
+	// We must remain in the Length3 state until we have consumed all of the expected data.
+	//
+	while (0 < g_nLengthRemaining)
+	{
+	    size_t nWanted = g_nLengthRemaining;
+	    if (sizeof(buffer) < nWanted)
+	    {
+		nWanted = sizeof(buffer);
+	    }
 
-            if (  !Pipe_GetBytes(g_pQueue_In, &nWanted, buffer)
-               || 0 == nWanted)
-            {
-                return false;
-            }
-            Pipe_AppendBytes(pqiFrame, nWanted, buffer);
-            g_nLengthRemaining -= nWanted;
-        }
+	    if (  !Pipe_GetBytes(g_pQueue_In, &nWanted, buffer)
+	       || 0 == nWanted)
+	    {
+		return false;
+	    }
+	    Pipe_AppendBytes(pqiFrame, nWanted, buffer);
+	    g_nLengthRemaining -= nWanted;
+	}
     }
 
     UINT8 ch;
     while (Pipe_GetByte(g_pQueue_In, &ch))
     {
-        g_iState = decoder_stt[g_iState][decoder_itt[ch]];
-        switch (g_iState)
-        {
-        case 3: // Call2
-            g_eType = eCall;
-            break;
+	g_iState = decoder_stt[g_iState][decoder_itt[ch]];
+	switch (g_iState)
+	{
+	case 3: // Call2
+	    g_eType = eCall;
+	    break;
 
-        case 16: // Return2
-            g_eType = eReturn;
-            break;
+	case 16: // Return2
+	    g_eType = eReturn;
+	    break;
 
-        case 19: // Msg2
-            g_eType = eMessage;
-            break;
+	case 19: // Msg2
+	    g_eType = eMessage;
+	    break;
 
-        case 22: // Disc2
-            g_eType = eDisconnect;
-            break;
+	case 22: // Disc2
+	    g_eType = eDisconnect;
+	    break;
 
-        case 5: // Length0
-            Length.ch[0] = ch;
-            break;
+	case 5: // Length0
+	    Length.ch[0] = ch;
+	    break;
 
-        case 6: // Length1
-            Length.ch[1] = ch;
-            break;
+	case 6: // Length1
+	    Length.ch[1] = ch;
+	    break;
 
-        case 7: // Length2
-            Length.ch[2] = ch;
-            break;
+	case 7: // Length2
+	    Length.ch[2] = ch;
+	    break;
 
-        case 8: // Length3
-            Length.ch[3] = ch;
-            g_nLengthRemaining = Length.n;
+	case 8: // Length3
+	    Length.ch[3] = ch;
+	    g_nLengthRemaining = Length.n;
 
-            // We've been told how long to expect the packet to be.
-            //
-            while (0 < g_nLengthRemaining)
-            {
-                size_t nWanted = g_nLengthRemaining;
-                if (sizeof(buffer) < nWanted)
-                {
-                    nWanted = sizeof(buffer);
-                }
+	    // We've been told how long to expect the packet to be.
+	    //
+	    while (0 < g_nLengthRemaining)
+	    {
+		size_t nWanted = g_nLengthRemaining;
+		if (sizeof(buffer) < nWanted)
+		{
+		    nWanted = sizeof(buffer);
+		}
 
-                if (  !Pipe_GetBytes(g_pQueue_In, &nWanted, buffer)
-                   || 0 == nWanted)
-                {
-                    // We'll leave the state machine and try to pick up again at the same place later.
-                    //
-                    return false;
-                }
-                Pipe_AppendBytes(pqiFrame, nWanted, buffer);
-                g_nLengthRemaining -= nWanted;
-            }
-            break;
+		if (  !Pipe_GetBytes(g_pQueue_In, &nWanted, buffer)
+		   || 0 == nWanted)
+		{
+		    // We'll leave the state machine and try to pick up again at the same place later.
+		    //
+		    return false;
+		}
+		Pipe_AppendBytes(pqiFrame, nWanted, buffer);
+		g_nLengthRemaining -= nWanted;
+	    }
+	    break;
 
-        case 12: // Cleanup
+	case 12: // Cleanup
 
-            // Something went wrong. Re-initialize all the decoding variables.
-            //
-            g_eType   = eUnknown;
-            Length.n = 0;
-            g_nChannel = 0;
-            Pipe_EmptyQueue(pqiFrame);
-            break;
+	    // Something went wrong. Re-initialize all the decoding variables.
+	    //
+	    g_eType   = eUnknown;
+	    Length.n = 0;
+	    g_nChannel = 0;
+	    Pipe_EmptyQueue(pqiFrame);
+	    break;
 
-        case 13: // Accept
-            if (4 <= Length.n)
-            {
-                size_t nWanted = sizeof(g_nChannel);
-                if (  Pipe_GetBytes(pqiFrame, &nWanted, &g_nChannel)
-                   && nWanted == sizeof(g_nChannel))
-                {
-                    if (eReturn == g_eType)
-                    {
-                        if (g_nChannel == iReturnChannel)
-                        {
-                            g_eType    = eUnknown;
-                            Length.n   = 0;
-                            g_nChannel = 0;
-                            return true;
-                        }
-                        else
-                        {
-                            // TODO: Bad.
-                            //
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (  g_nChannel < nChannels
-                           && aChannels[g_nChannel].bAllocated)
-                        {
-                            switch (g_eType)
-                            {
-                            case eCall:
-                                if (NULL != aChannels[g_nChannel].pfCall)
-                                {
-                                    MUX_RESULT mr = aChannels[g_nChannel].pfCall(&aChannels[g_nChannel], pqiFrame);
-                                    if (MUX_FAILED(mr))
-                                    {
-                                        Pipe_EmptyQueue(pqiFrame);
-                                    }
+	case 13: // Accept
+	    if (4 <= Length.n)
+	    {
+		size_t nWanted = sizeof(g_nChannel);
+		if (  Pipe_GetBytes(pqiFrame, &nWanted, &g_nChannel)
+		   && nWanted == sizeof(g_nChannel))
+		{
+		    if (eReturn == g_eType)
+		    {
+			if (g_nChannel == iReturnChannel)
+			{
+			    g_eType    = eUnknown;
+			    Length.n   = 0;
+			    g_nChannel = 0;
+			    return true;
+			}
+			else
+			{
+			    // TODO: Bad.
+			    //
+			    break;
+			}
+		    }
+		    else
+		    {
+			if (  g_nChannel < nChannels
+			   && aChannels[g_nChannel].bAllocated)
+			{
+			    switch (g_eType)
+			    {
+			    case eCall:
+				if (NULL != aChannels[g_nChannel].pfCall)
+				{
+				    MUX_RESULT mr = aChannels[g_nChannel].pfCall(&aChannels[g_nChannel], pqiFrame);
+				    if (MUX_FAILED(mr))
+				    {
+					Pipe_EmptyQueue(pqiFrame);
+				    }
 
-                                    // Send Queue_Frame back to sender.
-                                    //
-                                    UINT32 nReturn = (UINT32)(sizeof(g_nChannel) + Pipe_QueueLength(pqiFrame));
+				    // Send Queue_Frame back to sender.
+				    //
+				    UINT32 nReturn = (UINT32)(sizeof(g_nChannel) + Pipe_QueueLength(pqiFrame));
 
-                                    Pipe_AppendBytes(g_pQueue_Out, sizeof(ReturnMagic), ReturnMagic);
-                                    Pipe_AppendBytes(g_pQueue_Out, sizeof(nReturn), &nReturn);
-                                    Pipe_AppendBytes(g_pQueue_Out, sizeof(g_nChannel), &g_nChannel);
-                                    Pipe_AppendQueue(g_pQueue_Out, pqiFrame);
-                                    Pipe_AppendBytes(g_pQueue_Out, sizeof(EndMagic), EndMagic);
-                                }
-                                break;
+				    Pipe_AppendBytes(g_pQueue_Out, sizeof(ReturnMagic), ReturnMagic);
+				    Pipe_AppendBytes(g_pQueue_Out, sizeof(nReturn), &nReturn);
+				    Pipe_AppendBytes(g_pQueue_Out, sizeof(g_nChannel), &g_nChannel);
+				    Pipe_AppendQueue(g_pQueue_Out, pqiFrame);
+				    Pipe_AppendBytes(g_pQueue_Out, sizeof(EndMagic), EndMagic);
+				}
+				break;
 
-                            case eMessage:
-                                if (NULL != aChannels[g_nChannel].pfMsg)
-                                {
-                                    aChannels[g_nChannel].pfMsg(&aChannels[g_nChannel], pqiFrame);
-                                }
-                                break;
+			    case eMessage:
+				if (NULL != aChannels[g_nChannel].pfMsg)
+				{
+				    aChannels[g_nChannel].pfMsg(&aChannels[g_nChannel], pqiFrame);
+				}
+				break;
 
-                            case eDisconnect:
-                                if (NULL != aChannels[g_nChannel].pfDisc)
-                                {
-                                    aChannels[g_nChannel].pfDisc(&aChannels[g_nChannel], pqiFrame);
-                                }
-                                break;
+			    case eDisconnect:
+				if (NULL != aChannels[g_nChannel].pfDisc)
+				{
+				    aChannels[g_nChannel].pfDisc(&aChannels[g_nChannel], pqiFrame);
+				}
+				break;
 
-                            default:
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+			    default:
+				break;
+			    }
+			}
+		    }
+		}
+	    }
 
-            // The packet was too short to contain a channel number, the
-            // channel did not exist, or the call completed successfully.
-            //
-            g_eType    = eUnknown;
-            Length.n   = 0;
-            g_nChannel = 0;
-            Pipe_EmptyQueue(pqiFrame);
-            break;
-        }
+	    // The packet was too short to contain a channel number, the
+	    // channel did not exist, or the call completed successfully.
+	    //
+	    g_eType    = eUnknown;
+	    Length.n   = 0;
+	    g_nChannel = 0;
+	    Pipe_EmptyQueue(pqiFrame);
+	    break;
+	}
     }
     return false;
 }
@@ -2080,12 +2080,12 @@ static MUX_RESULT Pipe_SendReceive(UINT32 iReturnChannel, QUEUE_INFO *pqi)
     MUX_RESULT mr = MUX_S_OK;
     for (;;)
     {
-        mr = g_fpPipePump();
-        if (  MUX_FAILED(mr)
-           || Pipe_DecodeFrames(iReturnChannel, pqi))
-        {
-            break;
-        }
+	mr = g_fpPipePump();
+	if (  MUX_FAILED(mr)
+	   || Pipe_DecodeFrames(iReturnChannel, pqi))
+	{
+	    break;
+	}
     }
     return mr;
 }
@@ -2139,16 +2139,16 @@ MUX_RESULT CStandardMarshaler::QueryInterface(MUX_IID iid, void **ppv)
 {
     if (mux_IID_IUnknown == iid)
     {
-        *ppv = static_cast<mux_IMarshal *>(this);
+	*ppv = static_cast<mux_IMarshal *>(this);
     }
     else if (mux_IID_IMarshal == iid)
     {
-        *ppv = static_cast<mux_IMarshal *>(this);
+	*ppv = static_cast<mux_IMarshal *>(this);
     }
     else
     {
-        *ppv = NULL;
-        return MUX_E_NOINTERFACE;
+	*ppv = NULL;
+	return MUX_E_NOINTERFACE;
     }
     reinterpret_cast<mux_IUnknown *>(*ppv)->AddRef();
     return MUX_S_OK;
@@ -2165,8 +2165,8 @@ UINT32 CStandardMarshaler::Release(void)
     m_cRef--;
     if (0 == m_cRef)
     {
-        delete this;
-        return 0;
+	delete this;
+	return 0;
     }
     return m_cRef;
 }
@@ -2182,7 +2182,7 @@ static MUX_RESULT CStd_Call(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     mux_IRpcStubBuffer *pIRpcStubBuffer = static_cast<mux_IRpcStubBuffer *>(pci->pInterface);
     if (NULL == pIRpcStubBuffer)
     {
-        return MUX_E_NOINTERFACE;
+	return MUX_E_NOINTERFACE;
     }
     return pIRpcStubBuffer->Invoke(pqi);
 }
@@ -2192,7 +2192,7 @@ static MUX_RESULT CStd_Disconnect(CHANNEL_INFO *pci, QUEUE_INFO *pqi)
     mux_IRpcStubBuffer *pIRpcStubBuffer = static_cast<mux_IRpcStubBuffer *>(pci->pInterface);
     if (NULL == pIRpcStubBuffer)
     {
-        return MUX_E_NOINTERFACE;
+	return MUX_E_NOINTERFACE;
     }
 
     pIRpcStubBuffer->Disconnect();
@@ -2211,53 +2211,53 @@ MUX_RESULT CStandardMarshaler::MarshalInterface(QUEUE_INFO *pqi, MUX_IID riid, v
     if (  i < g_nInterfaces
        && g_pInterfaces[i].iid == riid)
     {
-        MUX_CID cidProxyStub = g_pInterfaces[i].cidProxyStub;
-        mux_IPSFactoryBuffer *pIPSFactoryBuffer = NULL;
-        mr = mux_CreateInstance(cidProxyStub, NULL, UseSameProcess, mux_IID_IPSFactoryBuffer, (void **)&pIPSFactoryBuffer);
-        if (MUX_SUCCEEDED(mr))
-        {
-            mux_IRpcStubBuffer *pIRpcStubBuffer = NULL;
-            mr = pIPSFactoryBuffer->CreateStub(riid, NULL, &pIRpcStubBuffer);
-            pIPSFactoryBuffer->Release();
-            if (MUX_SUCCEEDED(mr))
-            {
-                mr = pIRpcStubBuffer->Connect(pIUnknown);
-                if (MUX_SUCCEEDED(mr))
-                {
-                    CHANNEL_INFO *pChannel = Pipe_AllocateChannel(CStd_Call, NULL, CStd_Disconnect);
-                    if (NULL != pChannel)
-                    {
-                        pChannel->pInterface = pIRpcStubBuffer;
+	MUX_CID cidProxyStub = g_pInterfaces[i].cidProxyStub;
+	mux_IPSFactoryBuffer *pIPSFactoryBuffer = NULL;
+	mr = mux_CreateInstance(cidProxyStub, NULL, UseSameProcess, mux_IID_IPSFactoryBuffer, (void **)&pIPSFactoryBuffer);
+	if (MUX_SUCCEEDED(mr))
+	{
+	    mux_IRpcStubBuffer *pIRpcStubBuffer = NULL;
+	    mr = pIPSFactoryBuffer->CreateStub(riid, NULL, &pIRpcStubBuffer);
+	    pIPSFactoryBuffer->Release();
+	    if (MUX_SUCCEEDED(mr))
+	    {
+		mr = pIRpcStubBuffer->Connect(pIUnknown);
+		if (MUX_SUCCEEDED(mr))
+		{
+		    CHANNEL_INFO *pChannel = Pipe_AllocateChannel(CStd_Call, NULL, CStd_Disconnect);
+		    if (NULL != pChannel)
+		    {
+			pChannel->pInterface = pIRpcStubBuffer;
 
-                        Pipe_AppendBytes(pqi, sizeof(riid), &riid);
-                        Pipe_AppendBytes(pqi, sizeof(pChannel->nChannel), (UTF8*)(&pChannel->nChannel));
-                    }
-                    else
-                    {
-                        pIRpcStubBuffer->Disconnect();
-                        pIRpcStubBuffer->Release();
-                        mr = MUX_E_OUTOFMEMORY;
-                    }
-                }
-                else
-                {
-                    pIRpcStubBuffer->Release();
-                    mr = MUX_E_NOINTERFACE;
-                }
-            }
-            else
-            {
-                mr = MUX_E_NOINTERFACE;
-            }
-        }
-        else
-        {
-            mr = MUX_E_NOINTERFACE;
-        }
+			Pipe_AppendBytes(pqi, sizeof(riid), &riid);
+			Pipe_AppendBytes(pqi, sizeof(pChannel->nChannel), (UTF8*)(&pChannel->nChannel));
+		    }
+		    else
+		    {
+			pIRpcStubBuffer->Disconnect();
+			pIRpcStubBuffer->Release();
+			mr = MUX_E_OUTOFMEMORY;
+		    }
+		}
+		else
+		{
+		    pIRpcStubBuffer->Release();
+		    mr = MUX_E_NOINTERFACE;
+		}
+	    }
+	    else
+	    {
+		mr = MUX_E_NOINTERFACE;
+	    }
+	}
+	else
+	{
+	    mr = MUX_E_NOINTERFACE;
+	}
     }
     else
     {
-        mr = MUX_E_NOINTERFACE;
+	mr = MUX_E_NOINTERFACE;
     }
     return mr;
 }
@@ -2274,17 +2274,17 @@ MUX_RESULT CStandardMarshaler::ReleaseMarshalData(QUEUE_INFO *pqi)
     if (  Pipe_GetBytes(pqi, &nWanted, &riid)
        && sizeof(riid) == nWanted)
     {
-        UINT32 nChannel;
-        nWanted = sizeof(nChannel);
-        if (  Pipe_GetBytes(pqi, &nWanted, &nChannel)
-           && sizeof(nChannel) == nWanted)
-        {
-            CHANNEL_INFO *pChannel = Pipe_FindChannel(nChannel);
-            if (NULL != pChannel)
-            {
-                CStd_Disconnect(pChannel, pqi);
-            }
-        }
+	UINT32 nChannel;
+	nWanted = sizeof(nChannel);
+	if (  Pipe_GetBytes(pqi, &nWanted, &nChannel)
+	   && sizeof(nChannel) == nWanted)
+	{
+	    CHANNEL_INFO *pChannel = Pipe_FindChannel(nChannel);
+	    if (NULL != pChannel)
+	    {
+		CStd_Disconnect(pChannel, pqi);
+	    }
+	}
     }
     return MUX_S_OK;
 }

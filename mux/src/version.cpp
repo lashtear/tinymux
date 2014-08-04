@@ -32,23 +32,23 @@ void do_version(dbref executor, dbref caller, dbref enactor, int eval, int key)
 
     notify(executor, mudstate.version);
     notify(executor, tprintf(T("%s\r\n"
-                               "Builder: %s\r\n"
-                               "Build time: %s\r\n"
-                               "Compiler: %s\r\n"
-                               "System: %s"),
-                             stringify(MUX_BUILD_VER_ID),
-                             stringify(MUX_BUILD_BUILDER),
-                             stringify(MUX_BUILD_TIME),
-                             stringify(MUX_BUILD_CXXVER),
-                             stringify(MUX_BUILD_UNAME)));
+			       "Builder: %s\r\n"
+			       "Build time: %s\r\n"
+			       "Compiler: %s\r\n"
+			       "System: %s"),
+			     stringify(MUX_BUILD_VER_ID),
+			     stringify(MUX_BUILD_BUILDER),
+			     stringify(MUX_BUILD_TIME),
+			     stringify(MUX_BUILD_CXXVER),
+			     stringify(MUX_BUILD_UNAME)));
 }
 
 void build_version(void)
 {
-        mux_sprintf(mudstate.version, sizeof(mudstate.version),
-                    T("MUX %s"), stringify(MUX_BUILD_VER_ID));
-        mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
-                    T("MUX %s"), stringify(MUX_BUILD_VER_ID));
+	mux_sprintf(mudstate.version, sizeof(mudstate.version),
+		    T("MUX %s"), stringify(MUX_BUILD_VER_ID));
+	mux_sprintf(mudstate.short_ver, sizeof(mudstate.short_ver),
+		    T("MUX %s"), stringify(MUX_BUILD_VER_ID));
 }
 
 void init_version(void)

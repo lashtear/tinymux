@@ -52,8 +52,8 @@ char *mux_stpcpy(char *dest, const char *src)
 {
     while ((*dest = *src))
     {
-        ++dest;
-        ++src;
+	++dest;
+	++src;
     }
     return (dest);
 }
@@ -82,15 +82,15 @@ int query(char *ip)
     char host[MAX_STRING];
     if (0 == getaddrinfo(ip, NULL, &hints, &servinfo))
     {
-        for (struct addrinfo *p = servinfo; NULL != p; p = p->ai_next)
-        {
-            if (0 == getnameinfo(p->ai_addr, p->ai_addrlen, host, sizeof(host), NULL, 0, NI_NUMERICSERV))
-            {
-                pHName = host;
-                break;
-            }
-        }
-        freeaddrinfo(servinfo);
+	for (struct addrinfo *p = servinfo; NULL != p; p = p->ai_next)
+	{
+	    if (0 == getnameinfo(p->ai_addr, p->ai_addrlen, host, sizeof(host), NULL, 0, NI_NUMERICSERV))
+	    {
+		pHName = host;
+		break;
+	    }
+	}
+	freeaddrinfo(servinfo);
     }
 
 #else
@@ -102,7 +102,7 @@ int query(char *ip)
     in_addr_t addr = inet_addr(ip);
     if (INADDR_NONE == addr)
     {
-        return -1;
+	return -1;
     }
 
 #if defined(HAVE_GETHOSTBYADDR)
@@ -110,7 +110,7 @@ int query(char *ip)
     if (  NULL != hp
        && strlen(hp->h_name) < MAX_STRING)
     {
-        pHName = hp->h_name;
+	pHName = hp->h_name;
     }
 #endif
 #endif
@@ -127,7 +127,7 @@ int query(char *ip)
     if (  written < 0
        || len != (size_t)written)
     {
-        return (-1);
+	return (-1);
     }
     return 0;
 }
@@ -139,7 +139,7 @@ void alarm_signal(int iSig)
 
     if (getppid() != parent_pid)
     {
-        exit(1);
+	exit(1);
     }
 
     signal(SIGALRM, CAST_SIGNAL_FUNC alarm_signal);
@@ -161,12 +161,12 @@ void child_signal(int iSig)
     //
     while (waitpid(0, NULL, WNOHANG) > 0)
     {
-        int nChildren = nChildrenStarted - nChildrenEndedSIGCHLD
-            - nChildrenEndedMain;
-        if (0 < nChildren)
-        {
-            nChildrenEndedSIGCHLD++;
-        }
+	int nChildren = nChildrenStarted - nChildrenEndedSIGCHLD
+	    - nChildrenEndedMain;
+	if (0 < nChildren)
+	{
+	    nChildrenEndedSIGCHLD++;
+	}
     }
 
     signal(SIGCHLD, CAST_SIGNAL_FUNC child_signal);
@@ -181,10 +181,10 @@ int main(int argc, char *argv[])
     parent_pid = getppid();
     if (parent_pid == 1)
     {
-        // Our real parent process is gone, and we have been inherited by the
-        // init process.
-        //
-        exit(1);
+	// Our real parent process is gone, and we have been inherited by the
+	// init process.
+	//
+	exit(1);
     }
 
     alarm_signal(SIGALRM);
@@ -193,65 +193,65 @@ int main(int argc, char *argv[])
 
     for (;;)
     {
-        len = read(0, arg, MAX_STRING - 1);
-        if (len == 0)
-        {
-            break;
-        }
+	len = read(0, arg, MAX_STRING - 1);
+	if (len == 0)
+	{
+	    break;
+	}
 
-        if (len < 0)
-        {
-            if (errno == EINTR)
-            {
-                errno = 0;
-                continue;
-            }
-            break;
-        }
-        arg[len] = '\0';
+	if (len < 0)
+	{
+	    if (errno == EINTR)
+	    {
+		errno = 0;
+		continue;
+	    }
+	    break;
+	}
+	arg[len] = '\0';
 
-        child = fork();
-        switch (child)
-        {
-        case -1:
-            exit(1);
-            break;
+	child = fork();
+	switch (child)
+	{
+	case -1:
+	    exit(1);
+	    break;
 
-        case 0: // child.
-            {
-                // We don't want to try this for more than 5 minutes.
-                //
-                struct itimerval itime;
-                struct timeval interval;
+	case 0: // child.
+	    {
+		// We don't want to try this for more than 5 minutes.
+		//
+		struct itimerval itime;
+		struct timeval interval;
 
-                interval.tv_sec = 300;  // 5 minutes.
-                interval.tv_usec = 0;
-                itime.it_interval = interval;
-                itime.it_value = interval;
-                signal(SIGALRM, CAST_SIGNAL_FUNC child_timeout_signal);
-                setitimer(ITIMER_REAL, &itime, 0);
-            }
-            exit(query(arg) != 0);
-            break;
-        }
+		interval.tv_sec = 300;  // 5 minutes.
+		interval.tv_usec = 0;
+		itime.it_interval = interval;
+		itime.it_value = interval;
+		signal(SIGALRM, CAST_SIGNAL_FUNC child_timeout_signal);
+		setitimer(ITIMER_REAL, &itime, 0);
+	    }
+	    exit(query(arg) != 0);
+	    break;
+	}
 
-        if (child > 0)
-        {
-            nChildrenStarted++;
-        }
+	if (child > 0)
+	{
+	    nChildrenStarted++;
+	}
 
-        int nChildren = nChildrenStarted - nChildrenEndedSIGCHLD
-            - nChildrenEndedMain;
+	int nChildren = nChildrenStarted - nChildrenEndedSIGCHLD
+	    - nChildrenEndedMain;
 
-        // Collect the children.
-        //
-        while (waitpid(0, NULL, (nChildren < MAX_CHILDREN) ? WNOHANG : 0) > 0)
-        {
-            if (0 < nChildren)
-            {
-                nChildrenEndedMain++;
-            }
-        }
+	// Collect the children.
+	//
+	while (waitpid(0, NULL, (nChildren < MAX_CHILDREN) ? WNOHANG : 0) > 0)
+	{
+	    if (0 < nChildren)
+	    {
+		nChildrenEndedMain++;
+	    }
+	}
     }
     exit(0);
 }

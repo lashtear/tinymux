@@ -41,7 +41,7 @@ II. Design Increments.
 
     interface mux_IBootstrap : public mux_IUknown
     {
-        (MUX_CID cidProxy, Custom Marshal Data) RemoteCreateInstance(MUX_CID cid, MUX_IID iid);
+	(MUX_CID cidProxy, Custom Marshal Data) RemoteCreateInstance(MUX_CID cid, MUX_IID iid);
     };
 
  B. A priori setup.

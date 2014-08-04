@@ -21,9 +21,9 @@
 #include "timeutil.h"
 
 #define ITER_PARENTS(t,p,l) for ((l)=0, (p)=(t); \
-                     (Good_obj(p) && \
-                      ((l) < mudconf.parent_nest_lim)); \
-                     (p)=Parent(p), (l)++)
+		     (Good_obj(p) && \
+		      ((l) < mudconf.parent_nest_lim)); \
+		     (p)=Parent(p), (l)++)
 
 int get_atr(const UTF8 *name);
 
@@ -131,20 +131,20 @@ typedef struct object OBJ;
 struct object
 {
     dbref   location;   /* PLAYER, THING: where it is */
-                        /* ROOM: dropto: */
-                        /* EXIT: where it goes to */
+			/* ROOM: dropto: */
+			/* EXIT: where it goes to */
     dbref   contents;   /* PLAYER, THING, ROOM: head of contentslist */
-                        /* EXIT: unused */
+			/* EXIT: unused */
     dbref   exits;      /* PLAYER, THING, ROOM: head of exitslist */
-                        /* EXIT: where it is */
+			/* EXIT: where it is */
     dbref   next;       /* PLAYER, THING: next in contentslist */
-                        /* EXIT: next in exitslist */
-                        /* ROOM: unused */
+			/* EXIT: next in exitslist */
+			/* ROOM: unused */
     dbref   link;       /* PLAYER, THING: home location */
-                        /* ROOM, EXIT: unused */
+			/* ROOM, EXIT: unused */
     dbref   parent;     /* ALL: defaults for attrs, exits, $cmds, */
     dbref   owner;      /* PLAYER: domain number + class + moreflags */
-                        /* THING, ROOM, EXIT: owning player number */
+			/* THING, ROOM, EXIT: owning player number */
 
     dbref   zone;       /* Whatever the object is zoned to.*/
 
@@ -250,12 +250,12 @@ int GrowFiftyPercent(int x, int low, int high);
 
 #define DOLIST(thing,list) \
     for ((thing)=(list); \
-         ((thing)!=NOTHING) && (Next(thing)!=(thing)); \
-         (thing)=Next(thing))
+	 ((thing)!=NOTHING) && (Next(thing)!=(thing)); \
+	 (thing)=Next(thing))
 #define SAFE_DOLIST(thing,next,list) \
     for ((thing)=(list),(next)=((thing)==NOTHING ? NOTHING: Next(thing)); \
-         (thing)!=NOTHING && (Next(thing)!=(thing)); \
-         (thing)=(next), (next)=Next(next))
+	 (thing)!=NOTHING && (Next(thing)!=(thing)); \
+	 (thing)=(next), (next)=Next(next))
 #define DO_WHOLE_DB(thing) \
     for ((thing)=0; (thing)<mudstate.db_top; (thing)++)
 #define DO_WHOLE_DB_BACKWARDS(thing) \

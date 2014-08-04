@@ -35,11 +35,11 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[
     AC_DEFINE([HAVE_DLOPEN], [], [Define if dlopen exists.])
     case "$host" in
     *darwin*) MODULE_EXT="so"
-              MODULE_CPPFLAGS="-bundle -O -g"
-              ;;
+	      MODULE_CPPFLAGS="-bundle -O -g"
+	      ;;
     *)        MODULE_EXT="so"
-              MODULE_CPPFLAGS="-shared -fPIC -O -g"
-              ;;
+	      MODULE_CPPFLAGS="-shared -fPIC -O -g"
+	      ;;
     esac
     MUX_LIBS="-lmux"
     ],[])

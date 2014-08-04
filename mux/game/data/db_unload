@@ -27,8 +27,8 @@ echo NOTE: Make sure the MUX is NOT running before you make a flatfile.
 case $# in
 	3)	../bin/netmux -d$1 -u -i$2 -o$3 ;;
 	*)	echo Usage: $0 'basename structfile flatfile';
-                echo i.e., $0 netmux netmux.db.new netmux.flat;
-                exit 1 ;;
+		echo i.e., $0 netmux netmux.db.new netmux.flat;
+		exit 1 ;;
 esac
 
 exit 0

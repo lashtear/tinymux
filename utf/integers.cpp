@@ -36,8 +36,8 @@ UTF32 ReadCodePointAndValue(FILE *fp, int &Value)
     char *p = ReadLine(fp, buffer, sizeof(buffer));
     if (NULL == p)
     {
-        Value = -1;
-        return UNI_EOF;
+	Value = -1;
+	return UNI_EOF;
     }
 
     int nFields;
@@ -45,7 +45,7 @@ UTF32 ReadCodePointAndValue(FILE *fp, int &Value)
     ParseFields(p, 2, nFields, aFields);
     if (nFields < 2)
     {
-        return UNI_EOF;
+	return UNI_EOF;
     }
 
     // Field #0 - Code Point (base 16)
@@ -57,16 +57,16 @@ UTF32 ReadCodePointAndValue(FILE *fp, int &Value)
     p = aFields[1];
     if (!isdigit(*p))
     {
-        Value = -1;
+	Value = -1;
     }
     else
     {
-        Value = 0;
-        do
-        {
-            Value = Value * 10 + (*p - '0');
-            p++;
-        } while (isdigit(*p));
+	Value = 0;
+	do
+	{
+	    Value = Value * 10 + (*p - '0');
+	    p++;
+	} while (isdigit(*p));
     }
 
     return codepoint;
@@ -104,42 +104,42 @@ void VerifyTables(FILE *fp)
     //
     while (UNI_EOF != nextcode)
     {
-        UTF32 Source[2];
-        Source[0] = nextcode;
-        Source[1] = L'\0';
-        const UTF32 *pSource = Source;
+	UTF32 Source[2];
+	Source[0] = nextcode;
+	Source[1] = L'\0';
+	const UTF32 *pSource = Source;
 
-        UTF8 Target[5];
-        UTF8 *pTarget = Target;
+	UTF8 Target[5];
+	UTF8 *pTarget = Target;
 
-        ConversionResult cr;
-        cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
+	ConversionResult cr;
+	cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
 
-        if (conversionOK == cr)
-        {
-            int iState = DIGIT_START_STATE;
-            UTF8 *p = Target;
-            while (  p < pTarget
-                  && iState < DIGIT_ACCEPTING_STATES_START)
-            {
-                iState = digit_stt[iState][digit_itt[(unsigned char)*p]];
-                p++;
-            }
+	if (conversionOK == cr)
+	{
+	    int iState = DIGIT_START_STATE;
+	    UTF8 *p = Target;
+	    while (  p < pTarget
+		  && iState < DIGIT_ACCEPTING_STATES_START)
+	    {
+		iState = digit_stt[iState][digit_itt[(unsigned char)*p]];
+		p++;
+	    }
 
-            int j = iState - DIGIT_ACCEPTING_STATES_START;
-            if (j != Value)
-            {
-                fprintf(stderr, "Input Translation Table and State Transition Table do not work.\n");
-                exit(0);
-            }
-        }
-        UTF32 nextcode2 = ReadCodePointAndValue(fp, Value);
-        if (nextcode2 < nextcode)
-        {
-            fprintf(stderr, "Codes in file are not in order.\n");
-            exit(0);
-        }
-        nextcode = nextcode2;
+	    int j = iState - DIGIT_ACCEPTING_STATES_START;
+	    if (j != Value)
+	    {
+		fprintf(stderr, "Input Translation Table and State Transition Table do not work.\n");
+		exit(0);
+	    }
+	}
+	UTF32 nextcode2 = ReadCodePointAndValue(fp, Value);
+	if (nextcode2 < nextcode)
+	{
+	    fprintf(stderr, "Codes in file are not in order.\n");
+	    exit(0);
+	}
+	nextcode = nextcode2;
     }
 }
 #endif
@@ -155,29 +155,29 @@ void TestTable(FILE *fp)
 
     while (UNI_EOF != nextcode)
     {
-        UTF32 Source[2];
-        Source[0] = nextcode;
-        Source[1] = L'\0';
-        const UTF32 *pSource = Source;
+	UTF32 Source[2];
+	Source[0] = nextcode;
+	Source[1] = L'\0';
+	const UTF32 *pSource = Source;
 
-        UTF8 Target[5];
-        UTF8 *pTarget = Target;
+	UTF8 Target[5];
+	UTF8 *pTarget = Target;
 
-        ConversionResult cr;
-        cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
+	ConversionResult cr;
+	cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
 
-        if (conversionOK == cr)
-        {
-            sm.TestString(Target, pTarget, Value);
-        }
+	if (conversionOK == cr)
+	{
+	    sm.TestString(Target, pTarget, Value);
+	}
 
-        UTF32 nextcode2 = ReadCodePointAndValue(fp, Value);
-        if (nextcode2 < nextcode)
-        {
-            fprintf(stderr, "Codes in file are not in order.\n");
-            exit(0);
-        }
-        nextcode = nextcode2;
+	UTF32 nextcode2 = ReadCodePointAndValue(fp, Value);
+	if (nextcode2 < nextcode)
+	{
+	    fprintf(stderr, "Codes in file are not in order.\n");
+	    exit(0);
+	}
+	nextcode = nextcode2;
     }
 }
 
@@ -190,42 +190,42 @@ void LoadStrings(FILE *fp, FILE *fpBody, FILE *fpInclude)
     UTF32 nextcode = ReadCodePointAndValue(fp, Value);
     if (Value < 0)
     {
-        fprintf(stderr, "Value missing from code U-%06X\n", static_cast<unsigned int>(nextcode));
-        exit(0);
+	fprintf(stderr, "Value missing from code U-%06X\n", static_cast<unsigned int>(nextcode));
+	exit(0);
     }
 
     while (UNI_EOF != nextcode)
     {
-        UTF32 Source[2];
-        Source[0] = nextcode;
-        Source[1] = L'\0';
-        const UTF32 *pSource = Source;
+	UTF32 Source[2];
+	Source[0] = nextcode;
+	Source[1] = L'\0';
+	const UTF32 *pSource = Source;
 
-        UTF8 Target[5];
-        UTF8 *pTarget = Target;
+	UTF8 Target[5];
+	UTF8 *pTarget = Target;
 
-        ConversionResult cr;
-        cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
+	ConversionResult cr;
+	cr = ConvertUTF32toUTF8(&pSource, pSource+1, &pTarget, pTarget+sizeof(Target)-1, lenientConversion);
 
-        if (conversionOK == cr)
-        {
-            cIncluded++;
-            sm.RecordString(Target, pTarget, Value);
-        }
+	if (conversionOK == cr)
+	{
+	    cIncluded++;
+	    sm.RecordString(Target, pTarget, Value);
+	}
 
-        UTF32 nextcode2 = ReadCodePointAndValue(fp, Value);
-        if (nextcode2 < nextcode)
-        {
-            fprintf(stderr, "Codes in file are not in order.\n");
-            exit(0);
-        }
-        else if (  UNI_EOF != nextcode2
-                && Value < 0)
-        {
-            fprintf(stderr, "Value missing from code U-%06X\n", static_cast<unsigned int>(nextcode2));
-            exit(0);
-        }
-        nextcode = nextcode2;
+	UTF32 nextcode2 = ReadCodePointAndValue(fp, Value);
+	if (nextcode2 < nextcode)
+	{
+	    fprintf(stderr, "Codes in file are not in order.\n");
+	    exit(0);
+	}
+	else if (  UNI_EOF != nextcode2
+		&& Value < 0)
+	{
+	    fprintf(stderr, "Value missing from code U-%06X\n", static_cast<unsigned int>(nextcode2));
+	    exit(0);
+	}
+	nextcode = nextcode2;
     }
     fprintf(fpBody, "// %d code points.\n", cIncluded);
     fprintf(fpInclude, "// %d code points.\n", cIncluded);
@@ -255,8 +255,8 @@ void BuildAndOutputTable(FILE *fp, FILE *fpBody, FILE *fpInclude, char *UpperPre
     //
     if (g_bDefault)
     {
-        sm.SetUndefinedStates(g_iDefaultState);
-        TestTable(fp);
+	sm.SetUndefinedStates(g_iDefaultState);
+	TestTable(fp);
     }
 
     // Optimize State Transition Table.
@@ -294,45 +294,45 @@ int main(int argc, char *argv[])
     if (argc < 3)
     {
 #if 0
-        fprintf(stderr, "Usage: %s [-d ch] prefix unicodedata.txt\n", argv[0]);
-        exit(0);
+	fprintf(stderr, "Usage: %s [-d ch] prefix unicodedata.txt\n", argv[0]);
+	exit(0);
 #else
-        pFilename = "NumericDecimal.txt";
-        pPrefix   = "digit";
-        g_bDefault = false;
-        g_iDefaultState = '?';
+	pFilename = "NumericDecimal.txt";
+	pPrefix   = "digit";
+	g_bDefault = false;
+	g_iDefaultState = '?';
 #endif
     }
     else
     {
-        int j;
-        for (j = 1; j < argc; j++)
-        {
-            if (0 == strcmp(argv[j], "-d"))
-            {
-                g_bDefault = true;
-                if (j+1 < argc)
-                {
-                    j++;
-                    g_iDefaultState = atoi(argv[j]);
-                }
-                else
-                {
-                    g_iDefaultState = '?';
-                }
-            }
-            else
-            {
-                if (NULL == pPrefix)
-                {
-                    pPrefix = argv[j];
-                }
-                else if (NULL == pFilename)
-                {
-                    pFilename = argv[j];
-                }
-            }
-        }
+	int j;
+	for (j = 1; j < argc; j++)
+	{
+	    if (0 == strcmp(argv[j], "-d"))
+	    {
+		g_bDefault = true;
+		if (j+1 < argc)
+		{
+		    j++;
+		    g_iDefaultState = atoi(argv[j]);
+		}
+		else
+		{
+		    g_iDefaultState = '?';
+		}
+	    }
+	    else
+	    {
+		if (NULL == pPrefix)
+		{
+		    pPrefix = argv[j];
+		}
+		else if (NULL == pFilename)
+		{
+		    pFilename = argv[j];
+		}
+	    }
+	}
     }
 
     FILE *fp = fopen(pFilename, "rb");
@@ -342,8 +342,8 @@ int main(int argc, char *argv[])
        || NULL == fpBody
        || NULL == fpInclude)
     {
-        fprintf(stderr, "Cannot open %s, utf8tables.cpp.txt, or utf8tables.h.txt\n", pFilename);
-        exit(0);
+	fprintf(stderr, "Cannot open %s, utf8tables.cpp.txt, or utf8tables.h.txt\n", pFilename);
+	exit(0);
     }
 
     fprintf(fpBody, "// utf/%s\n//\n", pFilename);
@@ -358,15 +358,15 @@ int main(int argc, char *argv[])
     size_t i;
     for (i = 0; i < nPrefix; i++)
     {
-        if (isupper(pPrefixLower[i]))
-        {
-            pPrefixLower[i] = static_cast<char>(tolower(pPrefixLower[i]));
-        }
+	if (isupper(pPrefixLower[i]))
+	{
+	    pPrefixLower[i] = static_cast<char>(tolower(pPrefixLower[i]));
+	}
 
-        if (islower(pPrefixUpper[i]))
-        {
-            pPrefixUpper[i] = static_cast<char>(toupper(pPrefixUpper[i]));
-        }
+	if (islower(pPrefixUpper[i]))
+	{
+	    pPrefixUpper[i] = static_cast<char>(toupper(pPrefixUpper[i]));
+	}
     }
 
     BuildAndOutputTable(fp, fpBody, fpInclude, pPrefixUpper, pPrefixLower);

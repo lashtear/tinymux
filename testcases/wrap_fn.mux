@@ -20,12 +20,12 @@
 #
 &tr.tc001 test_wrap_fn=
   @if strmatch(
-        setr(0,sha1(
-            [wrap(Hi there. How are you?, 10, right, |%b, %b|)]
-            [wrap(You see before you a stranger., 10, left,,,6)]
-          )
-        ),
-        C50CE42A68B71A06A8D1C4E4BD8245A670E1234E
+	setr(0,sha1(
+	    [wrap(Hi there. How are you?, 10, right, |%b, %b|)]
+	    [wrap(You see before you a stranger., 10, left,,,6)]
+	  )
+	),
+	C50CE42A68B71A06A8D1C4E4BD8245A670E1234E
       )=
   {
     @log smoke=TC001: wrap examples. Succeeded.
@@ -39,14 +39,14 @@
 #
 &tr.tc002 test_wrap_fn=
   @if strmatch(
-        setr(0,sha1(
-            [wrap(Test%rTest,10,c,>,<)]
-            [wrap(Test1%r%rTest2,11,c)]
-            [wrap(This is some test text to demonstrate the leading space issue that is occurring,69)]
-            [wrap(%rth,10,left,|,|,2)]
-          )
-        ),
-        859B45C2E5BBDE3E6F35F4564F1EA9ABA55F7BDA
+	setr(0,sha1(
+	    [wrap(Test%rTest,10,c,>,<)]
+	    [wrap(Test1%r%rTest2,11,c)]
+	    [wrap(This is some test text to demonstrate the leading space issue that is occurring,69)]
+	    [wrap(%rth,10,left,|,|,2)]
+	  )
+	),
+	859B45C2E5BBDE3E6F35F4564F1EA9ABA55F7BDA
       )=
   {
     @log smoke=TC002: Regressions. Succeeded.;

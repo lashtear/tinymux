@@ -17,11 +17,11 @@
 #
 &tr.tc001 test_shl_fn=
   @if strmatch(
-        setr(0,sha1(
-            [shl(2,10)]
-          )
-        ),
-        27285271B352ADB77C2CA213D92C21EF680FB133
+	setr(0,sha1(
+	    [shl(2,10)]
+	  )
+	),
+	27285271B352ADB77C2CA213D92C21EF680FB133
       )=
   {
     @log smoke=TC001: shl examples. Succeeded.
@@ -35,12 +35,12 @@
 #
 &tr.tc002 test_shl_fn=
   @if strmatch(
-        setr(0,sha1(
-            [iter(lnum(0,61),shl(3,itext(0)))]
-            [iter(lnum(0,61),shl(-3,itext(0)))]
-          )
-        ),
-        DEA892890B30F0536B2BA311BD02E276220A2D1E
+	setr(0,sha1(
+	    [iter(lnum(0,61),shl(3,itext(0)))]
+	    [iter(lnum(0,61),shl(-3,itext(0)))]
+	  )
+	),
+	DEA892890B30F0536B2BA311BD02E276220A2D1E
       )=
   {
     @log smoke=TC002: shl vary shifts. Succeeded.

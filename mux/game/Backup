@@ -31,16 +31,16 @@ if [ -r $DATA/$NEW_DB ]; then
     RECENT_DB=$DATA/$NEW_DB
 else
     if [ -r $DATA/$INPUT_DB ]; then
-        echo "No recent checkpoint db. Using older db."
-        RECENT_DB=$DATA/$INPUT_DB
+	echo "No recent checkpoint db. Using older db."
+	RECENT_DB=$DATA/$INPUT_DB
     else
-        if [ -r $DATA/$SAVE_DB ]; then
-            echo "No input db. Using backup db."
-            RECENT_DB=$DATA/$SAVE_DB
-        else
-            echo "No dbs. Backup attempt failed."
+	if [ -r $DATA/$SAVE_DB ]; then
+	    echo "No input db. Using backup db."
+	    RECENT_DB=$DATA/$SAVE_DB
+	else
+	    echo "No dbs. Backup attempt failed."
 	    exit
-        fi
+	fi
     fi
 fi
 
@@ -49,15 +49,15 @@ if [ $VERSION_LINE = "+X996100" ]; then
     cp $RECENT_DB $GAME_DB
 else
     if [ $VERSION_LINE = "+X1031940" ]; then
-        LD_LIBRARY_PATH=$BIN; export LD_LIBRARY_PATH
-        DYLD_LIBRARY_PATH=$BIN; export DYLD_LIBRARY_PATH
-        LIBPATH=$BIN; export LIBPATH
-        SHLIB_PATH=$BIN; export SHLIB_PATH
+	LD_LIBRARY_PATH=$BIN; export LD_LIBRARY_PATH
+	DYLD_LIBRARY_PATH=$BIN; export DYLD_LIBRARY_PATH
+	LIBPATH=$BIN; export LIBPATH
+	SHLIB_PATH=$BIN; export SHLIB_PATH
 
-        $BIN/dbconvert -d$DATA/$GDBM_DB -u -i$RECENT_DB -o$GAME_DB
+	$BIN/dbconvert -d$DATA/$GDBM_DB -u -i$RECENT_DB -o$GAME_DB
     else
-        echo "Unrecognized header in $RECENT_DB."
-        exit
+	echo "Unrecognized header in $RECENT_DB."
+	exit
     fi
 fi
 
