@@ -134,11 +134,17 @@ TAGS: $(ALLCODE)
 tags: $(ALLCODE)
 	ctags $(ALLCODE)
 
+# don't make a ruckus if we're only cleaning house
 ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(MAKECMDGOALS),realclean)
+  ifneq ($(MAKECMDGOALS),realclean)
+    # enable autoconf regeneration only if they have changed from checked-in copies
+    ifneq ($(strip,$(shell git status --porcelain configure autoconf.h.in configure.ac)),)
+
 configure autoconf.h.in: configure.ac
-	autoconf -f
-	autoheader -f
+	autoreconf -fiv
+
+    endif
+
 Makefile autoconf.h: Makefile.in configure autoconf.h.in
 	./configure && touch autoconf.h Makefile
 $(wildcard *.o): Makefile
@@ -146,8 +152,9 @@ $(wildcard *.o): Makefile
 depend: Makefile $(ALLSRC)
 	@echo Regenerating dependencies
 	@$(CXX) -MM $(VER_FLG) $(ALLSRC) > depend || rm depend
--include depend
-endif
+
+    -include depend
+  endif
 endif
 
 # end

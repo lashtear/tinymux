@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.68])
+AC_PREREQ([2.69])
 AC_INIT([TinyMUX],[2.12],[lashtear@gmail.com])
 AC_CONFIG_SRCDIR([game.cpp])
 AC_CONFIG_HEADER([autoconf.h])
@@ -209,6 +209,7 @@ if test $ac_cv_header_malloc_h = no && test $querymalloc = yes; then
 else
     AC_EGREP_HEADER(realloc,malloc.h, ,AC_DEFINE(NEED_MALLOC_DCL))
 fi
+
 AS_MESSAGE([checking for vsprintf dcl...])
 AC_EGREP_HEADER(vsprintf,stdio.h, ,AC_DEFINE([NEED_VSPRINTF_DCL], [], [Define if you need to declare vsprintf yourself.]))
 AS_MESSAGE([checking for sprintf dcl...])
@@ -229,13 +230,25 @@ fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 #
+AC_CHECK_HEADER_STDBOOL
+AC_C_INLINE
 AC_TYPE_OFF_T
 AC_TYPE_PID_T
+AC_C_RESTRICT
 AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
+
+AC_CHECK_DECLS([sys_siglist],[],[],[#include <signal.h>
+/* NetBSD declares sys_siglist in unistd.h.  */
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+])
+
 AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_C_CONST
-AC_C_INLINE
+
 AC_CHECK_SIZEOF([short])
 AC_CHECK_SIZEOF([unsigned short])
 AC_CHECK_SIZEOF([int])
@@ -245,14 +258,9 @@ AC_CHECK_SIZEOF([unsigned long])
 AC_CHECK_SIZEOF([long long])
 AC_CHECK_SIZEOF([unsigned long long])
 AC_CHECK_SIZEOF([void *])
+
 AS_MESSAGE([checking for socklen_t dcls...])
 AC_EGREP_HEADER(socklen_t,sys/socket.h,AC_DEFINE([SOCKLEN_T_DCL], [], [Define if socklen_t is defined.]))
-AC_CHECK_DECLS([sys_siglist],[],[],[#include <signal.h>
-/* NetBSD declares sys_siglist in unistd.h.  */
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-])
 AC_MSG_CHECKING(for sys_signame decl)
 AC_EGREP_HEADER(sys_signame,signal.h,AC_DEFINE([HAVE_SYS_SIGNAME], [], [Define if sys_signame[] exists.]) AC_MSG_RESULT(yes),AC_MSG_RESULT(no))
 AS_MESSAGE([checking for getrusage dcl...])
@@ -260,6 +268,7 @@ AC_EGREP_HEADER(getrusage,sys/resource.h, ,AC_DEFINE([NEED_GETRUSAGE_DCL], [], [
 AS_MESSAGE([checking for getrlimit dcl...])
 AC_EGREP_HEADER(getrlimit,sys/resource.h, ,AC_DEFINE([NEED_GETRLIMIT_DCL], [], [Define if you need to declare getrlimit yourself.]))
 AC_C_BIGENDIAN(AC_DEFINE([WORDS_BIGENDIAN], [], [Define if Big Endian.]),AC_DEFINE([WORDS_LITTLEENDIAN], [], [Define if Little Endian.]),AC_DEFINE([WORDS_UNKNOWN], [], [Define if Unknown Endian.]))
+
 AC_MSG_CHECKING([for in_addr_t])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
 #if STDC_HEADERS
@@ -324,10 +333,13 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
 # Checks for library functions.
 #
 AC_FUNC_VPRINTF
+AC_FUNC_ERROR_AT_LINE
 AC_FUNC_FORK
-AC_CHECK_FUNCS(crypt getdtablesize gethostbyaddr gethostbyname getnameinfo getaddrinfo inet_ntop inet_pton getpagesize getrusage gettimeofday)
-AC_CHECK_FUNCS(localtime_r nanosleep select setitimer setrlimit socket srandom tzset usleep log2)
-AC_CHECK_FUNCS(epoll_create epoll_ctl epoll_wait kqueue kevent)
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+
+AC_CHECK_FUNCS([alarm crypt dup2 floor getaddrinfo getdtablesize gethostbyaddr gethostbyname getnameinfo getpagesize getrusage gettimeofday inet_ntoa localtime_r log2 memchr memmove memset modf nanosleep pow select setitimer setrlimit socket sqrt strcasecmp strchr strerror strrchr strstr tzset usleep ])
+
 AS_MESSAGE([checking for pread and pwrite...])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <sys/types.h>
@@ -477,6 +489,7 @@ int main(int argc, char *argv[])
 
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
 #include <sys/socket.h>]],[[struct linger ling; ling.l_onoff = 1;]])],[AC_DEFINE([HAVE_LINGER], [], [Define if struct linger is defined.])],[])
+
 AS_MESSAGE([checking for /dev/urandom...])
 if test -c /dev/urandom; then
   AC_DEFINE([HAVE_DEV_URANDOM], [], [Define if the character special file /dev/urandom is present.])

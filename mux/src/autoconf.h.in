@@ -21,6 +21,9 @@
 /* Define if stdio.h defines lots of extra functions. */
 #undef EXTENDED_STDIO_DCLS
 
+/* Define to 1 if you have the `alarm' function. */
+#undef HAVE_ALARM
+
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
@@ -48,14 +51,8 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
-/* Define to 1 if you have the `epoll_create' function. */
-#undef HAVE_EPOLL_CREATE
-
-/* Define to 1 if you have the `epoll_ctl' function. */
-#undef HAVE_EPOLL_CTL
-
-/* Define to 1 if you have the `epoll_wait' function. */
-#undef HAVE_EPOLL_WAIT
+/* Define to 1 if you have the `dup2' function. */
+#undef HAVE_DUP2
 
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
@@ -74,6 +71,9 @@
 
 /* Define to 1 if you have the <float.h> header file. */
 #undef HAVE_FLOAT_H
+
+/* Define to 1 if you have the `floor' function. */
+#undef HAVE_FLOOR
 
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
@@ -117,11 +117,8 @@
 /* Define if your system has the in6_addr type. */
 #undef HAVE_IN6_ADDR
 
-/* Define to 1 if you have the `inet_ntop' function. */
-#undef HAVE_INET_NTOP
-
-/* Define to 1 if you have the `inet_pton' function. */
-#undef HAVE_INET_PTON
+/* Define to 1 if you have the `inet_ntoa' function. */
+#undef HAVE_INET_NTOA
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -131,12 +128,6 @@
 
 /* Define if your system has the in_addr_t type. */
 #undef HAVE_IN_ADDR_T
-
-/* Define to 1 if you have the `kevent' function. */
-#undef HAVE_KEVENT
-
-/* Define to 1 if you have the `kqueue' function. */
-#undef HAVE_KQUEUE
 
 /* Define to 1 if you have the `tcmalloc' library (-ltcmalloc). */
 #undef HAVE_LIBTCMALLOC
@@ -153,14 +144,30 @@
 /* Define to 1 if you have the `log2' function. */
 #undef HAVE_LOG2
 
+/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
+   to 0 otherwise. */
+#undef HAVE_MALLOC
+
 /* Define to 1 if you have the <malloc.h> header file. */
 #undef HAVE_MALLOC_H
+
+/* Define to 1 if you have the `memchr' function. */
+#undef HAVE_MEMCHR
+
+/* Define to 1 if you have the `memmove' function. */
+#undef HAVE_MEMMOVE
 
 /* Define to enable memory-based database */
 #undef HAVE_MEMORY_BASED
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the `memset' function. */
+#undef HAVE_MEMSET
+
+/* Define to 1 if you have the `modf' function. */
+#undef HAVE_MODF
 
 /* Define to 1 if you have the <mysql/mysql.h> header file. */
 #undef HAVE_MYSQL_MYSQL_H
@@ -183,6 +190,9 @@
 /* Define to 1 if you have the <openssl/ssl.h> header file. */
 #undef HAVE_OPENSSL_SSL_H
 
+/* Define to 1 if you have the `pow' function. */
+#undef HAVE_POW
+
 /* Define if pread exists. */
 #undef HAVE_PREAD
 
@@ -191,6 +201,10 @@
 
 /* Define to enable reality levels */
 #undef HAVE_REALITY_LVLS
+
+/* Define to 1 if your system has a GNU libc compatible `realloc' function,
+   and to 0 otherwise. */
+#undef HAVE_REALLOC
 
 /* Define to 1 if you have the `select' function. */
 #undef HAVE_SELECT
@@ -216,8 +230,8 @@
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
 
-/* Define to 1 if you have the `srandom' function. */
-#undef HAVE_SRANDOM
+/* Define to 1 if you have the `sqrt' function. */
+#undef HAVE_SQRT
 
 /* Define to 1 if you have the <stddef.h> header file. */
 #undef HAVE_STDDEF_H
@@ -228,11 +242,26 @@
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
+/* Define to 1 if you have the `strcasecmp' function. */
+#undef HAVE_STRCASECMP
+
+/* Define to 1 if you have the `strchr' function. */
+#undef HAVE_STRCHR
+
+/* Define to 1 if you have the `strerror' function. */
+#undef HAVE_STRERROR
+
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strrchr' function. */
+#undef HAVE_STRRCHR
+
+/* Define to 1 if you have the `strstr' function. */
+#undef HAVE_STRSTR
 
 /* Define if signal handlers have a struct sigcontext as their third arg. */
 #undef HAVE_STRUCT_SIGCONTEXT
@@ -327,6 +356,9 @@
 
 /* Define to 1 if you have the <zlib.h> header file. */
 #undef HAVE_ZLIB_H
+
+/* Define to 1 if the system has the type `_Bool'. */
+#undef HAVE__BOOL
 
 /* Define is ieeefp.h is useable. */
 #undef IEEEFP_H_USEABLE
@@ -495,14 +527,37 @@
 #undef inline
 #endif
 
+/* Define to rpl_malloc if the replacement function should be used. */
+#undef malloc
+
 /* Define to `long int' if <sys/types.h> does not define. */
 #undef off_t
 
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
 
+/* Define to rpl_realloc if the replacement function should be used. */
+#undef realloc
+
+/* Define to the equivalent of the C99 'restrict' keyword, or to
+   nothing if this is not supported.  Do not define if restrict is
+   supported directly.  */
+#undef restrict
+/* Work around a bug in Sun C++: it does not support _Restrict or
+   __restrict__, even though the corresponding Sun C compiler ends up with
+   "#define restrict _Restrict" or "#define restrict __restrict__" in the
+   previous line.  Perhaps some future version of Sun C++ will work with
+   restrict; if so, hopefully it defines __RESTRICT like Sun C does.  */
+#if defined __SUNPRO_CC && !defined __RESTRICT
+# define _Restrict
+# define __restrict__
+#endif
+
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef ssize_t
 
 /* Define as `fork' if `vfork' does not work. */
 #undef vfork

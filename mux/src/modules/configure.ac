@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.68])
+AC_PREREQ([2.69])
 AC_INIT([TinyMUX],[2.12],[lashtear@gmail.com])
 AC_CONFIG_SRCDIR([sample.cpp])
 AC_CONFIG_HEADER([autoconf.h])
@@ -55,6 +55,13 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_TIME
 AC_CHECK_HEADERS([mysql/mysql.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_CHECK_HEADER_STDBOOL
+AC_TYPE_SIZE_T
+
+# Checks for library functions.
+AC_FUNC_FORK
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
