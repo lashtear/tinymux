@@ -24,7 +24,7 @@
 #include "mathutil.h"
 #include "slave.h"
 
-#if defined(HAVE_DLOPEN) && defined(HAVE_STUB_SLAVE)
+#if defined(HAVE_STUB_SLAVE)
 extern QUEUE_INFO Queue_In;
 extern QUEUE_INFO Queue_Out;
 #endif

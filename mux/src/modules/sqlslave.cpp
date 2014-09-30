@@ -15,6 +15,11 @@
 #endif // HAVE_MYSQL_H
 #include "sql.h"
 
+#define mux_CanUnloadNow	sqlslave_LTX_mux_CanUnloadNow
+#define mux_GetClassObject	sqlslave_LTX_mux_GetClassObject
+#define mux_Register		sqlslave_LTX_mux_Register
+#define mux_Unregister		sqlslave_LTX_mux_Unregister
+
 class CQueryServer : public mux_IQueryControl, public mux_IMarshal
 {
 public:

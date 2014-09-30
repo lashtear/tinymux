@@ -9,9 +9,7 @@
 #include "autoconf.h"
 #include "config.h"
 
-#ifdef HAVE_DLOPEN
-#include <dlfcn.h>
-#endif // HAVE_DLOPEN
+#include <ltdl.h>
 
 #include "libmux.h"
 
@@ -22,6 +20,12 @@ extern "C"
     typedef MUX_RESULT FPUNREGISTER(void);
 };
 
+typedef lt_dlhandle MODULE_HANDLE;
+#define MOD_OPEN(m) lt_dlopenext ((char *) (m))
+#define MOD_SYM(h,s) lt_dlsym ((h),(s))
+#define MOD_CLOSE(h) lt_dlclose ((h))
+
+#if 0
 #if defined(WINDOWS_DYNALIB)
 typedef HINSTANCE MODULE_HANDLE;
 #define MOD_OPEN(m)  LoadLibrary(m)
@@ -32,6 +36,7 @@ typedef void     *MODULE_HANDLE;
 #define MOD_OPEN(m)  dlopen((char *)m, RTLD_LAZY)
 #define MOD_SYM(h,s) dlsym(h,s)
 #define MOD_CLOSE(h) dlclose(h)
+#endif
 #endif
 
 typedef enum LIBRARYSTATE

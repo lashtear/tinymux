@@ -11,6 +11,11 @@
 #include "../modules.h"
 #include "sample.h"
 
+#define mux_CanUnloadNow	sample_LTX_mux_CanUnloadNow
+#define mux_GetClassObject	sample_LTX_mux_GetClassObject
+#define mux_Register		sample_LTX_mux_Register
+#define mux_Unregister		sample_LTX_mux_Unregister
+
 static INT32 g_cComponents  = 0;
 static INT32 g_cServerLocks = 0;
 
@@ -150,7 +155,7 @@ MUX_RESULT CSample::FinalConstruct(void)
     if (MUX_SUCCEEDED(mr))
     {
 	bool fStarted;
-	mr = m_pILog->start_log(&fStarted, LOG_ALWAYS, T("INI"), T("INFO")); 
+	mr = m_pILog->start_log(&fStarted, LOG_ALWAYS, T("INI"), T("INFO"));
 	if (MUX_SUCCEEDED(mr) && fStarted)
 	{
 	    mr = m_pILog->log_text(T("CSample::CSample()." ENDLINE));

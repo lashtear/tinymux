@@ -9,6 +9,7 @@
 **/.deps/*
 **/.libs/*
 stamp-h1
+*.log
 
 Makefile
 config.status
@@ -21,12 +22,12 @@ libtool
 
 netmux
 slave
+stubslave
 
 TAGS
 tags
 
 # legacy crap
-*.log
 mux/game/bin/dbconvert
 mux/game/bin/libmux.*
 mux/game/bin/netmux

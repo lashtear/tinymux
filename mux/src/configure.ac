@@ -2,14 +2,15 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
 AC_INIT([TinyMUX],[2.12],[lashtear@gmail.com])
-AM_INIT_AUTOMAKE([-Wall foreign])
-LT_INIT
 AC_USE_SYSTEM_EXTENSIONS
+AC_CONFIG_AUX_DIR([config])
+AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AM_PROG_AR
 LT_PREREQ([2.4.2])
-LT_INIT(dlopen win32-dll disable-static)
+LT_CONFIG_LTDL_DIR([libltdl])
+LT_INIT([dlopen win32-dll disable-static disable-fast-install])
+LTDL_INIT([installable])
 AC_CONFIG_MACRO_DIR([m4])
-
 
 AC_CONFIG_SRCDIR([game.cpp])
 AC_CONFIG_HEADER([autoconf.h])
@@ -71,16 +72,17 @@ AC_ARG_ENABLE(
   [
     if test "x$enableval" = "xno"; then
       AC_MSG_RESULT(no)
+      stubslave=false
     else
       AC_MSG_RESULT(yes)
       AC_DEFINE([HAVE_STUB_SLAVE],[1],[Define to enable the stub slave])
-      STUBSLAVE_TARGET="stubslave"
+      stubslave=true
     fi
   ],
   [
     AC_MSG_RESULT(no)
   ])
-AC_SUBST(STUBSLAVE_TARGET)
+AM_CONDITIONAL([HAVE_STUB_SLAVE], [test x$stubslave = xtrue])
 
 AC_MSG_CHECKING(whether to perform expensive self-checking)
 AC_ARG_ENABLE(
@@ -125,45 +127,6 @@ AC_SEARCH_LIBS([SSL_library_init],[ssl])
 AC_SEARCH_LIBS([EVP_DigestInit],[crypto])
 AC_SEARCH_LIBS([deflate],[z])
 AC_SEARCH_LIBS([mysql_init],[mysqlclient])
-
-AC_MSG_CHECKING(for dlopen)
-LIBS_SAVE=$LIBS
-AC_SEARCH_LIBS([dlopen],[dl],[
-    if test "$ac_cv_search_dlopen" != "none required"; then
-      DL_LIB="$ac_cv_search_dlopen"
-    fi
-])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-    #include <dlfcn.h>
-    ]],[[
-    void *mh = dlopen("foo", RTLD_LAZY);
-    void *fp = dlsym(mh, "bar");
-    void *pe = dlerror();
-    int   cc = dlclose(mh);
-    ]])],[
-    AC_DEFINE([HAVE_DLOPEN], [], [Define if dlopen exists.])
-    case "$host" in
-    *darwin*) DYNAMICLIB_EXT="dylib"
-	      DYNAMICLIB_TARGET="libmux.dylib"
-	      DYNAMICLIB_CPPFLAGS="-dynamiclib"
-	      ;;
-    *cygwin*) DYNAMICLIB_EXT="dll"
-	      DYNAMICLIB_TARGET="libmux.dll"
-	      DYNAMICLIB_CPPFLAGS="-shared -fPIC"
-	      ;;
-    *)        DYNAMICLIB_EXT="so"
-	      DYNAMICLIB_TARGET="libmux.so"
-	      DYNAMICLIB_CPPFLAGS="-shared -fPIC"
-	      ;;
-    esac
-    MUX_LIBS="-lmux"
-    ],[])
-LIBS=$LIBS_SAVE
-AC_SUBST(DYNAMICLIB_EXT)
-AC_SUBST(DYNAMICLIB_CPPFLAGS)
-AC_SUBST(DYNAMICLIB_TARGET)
-AC_SUBST(MUX_LIBS)
-AC_SUBST(DL_LIB)
 
 # Checks for header files.
 #

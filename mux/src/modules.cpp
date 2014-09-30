@@ -13,6 +13,7 @@
 #include "config.h"
 #include "externs.h"
 #include "interface.h"
+#include <ltdl.h>
 
 #if defined(TINYMUX_MODULES)
 
@@ -142,6 +143,9 @@ QUEUE_INFO Queue_Out;
 
 void init_modules(void)
 {
+    int ltrc = lt_dlinit();
+    mux_assert (ltrc==0);
+
 #ifdef HAVE_STUB_SLAVE
     Pipe_InitializeQueueInfo(&Queue_In);
     Pipe_InitializeQueueInfo(&Queue_Out);
@@ -224,6 +228,9 @@ void final_modules(void)
 	ENDLOG;
     }
     mux_FinalizeModuleLibrary();
+
+    int ltrc = lt_dlexit();
+    mux_assert (ltrc==0);
 }
 
 // CServerEventsSource component which is not directly accessible.

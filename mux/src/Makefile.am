@@ -1,5 +1,9 @@
+AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
 libexec_PROGRAMS = netmux slave
+if HAVE_STUB_SLAVE
+libexec_PROGRAMS += stubslave
+endif
 
 netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
@@ -20,18 +24,26 @@ netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     stringutil.h svdhash.h svdrand.h timeutil.h ucp.h utf8tables.h	\
     vattr.h
 
-slave_SOURCES = slave.cpp
+slave_SOURCES = slave.cpp slave.h
 
 lib_LTLIBRARIES = libmux.la
 libmux_la_SOURCES = libmux.cpp
+libmux_la_LDFLAGS = -export-dynamic -avoid-version
+libmux_la_LIBADD = $(LIBLTDL)
+libmux_la_DEPENDENCIES = $(LTDLDEPS)
 
 lib_LIBRARIES = libversion.a
 libversion_a_SOURCES = version.cpp
-libversion_a_CPPFLAGS = $(VER_FLG)
+libversion_a_CPPFLAGS = $(VER_FLG) -DTINYMUX_MODULES
 
-netmux_LDADD = libmux.la libversion.a
+netmux_LDADD = libmux.la libversion.a $(LIBLTDL)
+stubslave_SOURCES = stubslave.cpp stubslave.h
+stubslave_LDADD = libmux.la $(LIBLTDL)
 
 SUBDIRS = . modules
+AM_CPPFLAGS = $(LTDLINCL)
+# this really needs to be refactored out
+AM_CPPFLAGS += -DTINYMUX_MODULES
 
 VER_ID_SRC=$(notdir $(firstword $(strip $(wildcard ../../.git) $(wildcard release.txt))))
 VER_ID=$(if $(filter .git,$(VER_ID_SRC)),$(GITDESC),\

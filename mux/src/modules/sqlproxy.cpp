@@ -11,6 +11,11 @@
 #include "../modules.h"
 #include "sql.h"
 
+#define mux_CanUnloadNow	sqlproxy_LTX_mux_CanUnloadNow
+#define mux_GetClassObject	sqlproxy_LTX_mux_GetClassObject
+#define mux_Register		sqlproxy_LTX_mux_Register
+#define mux_Unregister		sqlproxy_LTX_mux_Unregister
+
 static INT32 g_cComponents  = 0;
 static INT32 g_cServerLocks = 0;
 

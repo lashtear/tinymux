@@ -1,0 +1,4 @@
+remove gnu-isms for dist
+doxygen
+pdflatex
+fix re-configures by moving to non-recursive global make

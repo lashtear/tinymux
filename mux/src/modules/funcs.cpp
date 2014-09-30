@@ -9,7 +9,13 @@
 #include "../config.h"
 #include "../libmux.h"
 #include "../modules.h"
+#include "../alloc.h"
 #include "funcs.h"
+
+#define mux_CanUnloadNow	funcs_LTX_mux_CanUnloadNow
+#define mux_GetClassObject	funcs_LTX_mux_GetClassObject
+#define mux_Register		funcs_LTX_mux_Register
+#define mux_Unregister		funcs_LTX_mux_Unregister
 
 static INT32 g_cComponents  = 0;
 static INT32 g_cServerLocks = 0;
@@ -221,7 +227,9 @@ UINT32 CFuncs::Release(void)
     return m_cRef;
 }
 
-#define LBUF_SIZE   8000    // Large
+#ifndef LBUF_SIZE
+#  error LBUF_SIZE not defined
+#endif
 
 void CFuncs::Unregistering(void)
 {

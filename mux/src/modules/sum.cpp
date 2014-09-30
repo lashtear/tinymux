@@ -11,6 +11,11 @@
 #include "../modules.h"
 #include "sum.h"
 
+#define mux_CanUnloadNow	sum_LTX_mux_CanUnloadNow
+#define mux_GetClassObject	sum_LTX_mux_GetClassObject
+#define mux_Register		sum_LTX_mux_Register
+#define mux_Unregister		sum_LTX_mux_Unregister
+
 static INT32 g_cComponents  = 0;
 static INT32 g_cServerLocks = 0;
 
