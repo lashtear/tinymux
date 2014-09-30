@@ -2,8 +2,13 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
 AC_INIT([TinyMUX],[2.12],[lashtear@gmail.com])
+AM_INIT_AUTOMAKE([-Wall foreign])
+LT_INIT
+AC_USE_SYSTEM_EXTENSIONS
+AM_PROG_AR
 AC_CONFIG_SRCDIR([sample.cpp])
 AC_CONFIG_HEADER([autoconf.h])
+AC_CONFIG_MACRO_DIR([../m4])
 
 # Checks for programs.
 #
