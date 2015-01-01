@@ -1,16 +1,18 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
 AC_INIT([TinyMUX],[2.12],[lashtear@gmail.com])
-AC_USE_SYSTEM_EXTENSIONS
+AC_PREREQ([2.69])
 AC_CONFIG_AUX_DIR([config])
+AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
+AC_USE_SYSTEM_EXTENSIONS
+
 AM_PROG_AR
+
 LT_PREREQ([2.4.2])
 LT_CONFIG_LTDL_DIR([libltdl])
 LT_INIT([dlopen win32-dll disable-static disable-fast-install])
 LTDL_INIT([installable])
-AC_CONFIG_MACRO_DIR([m4])
 
 AC_CONFIG_SRCDIR([game.cpp])
 AC_CONFIG_HEADER([autoconf.h])
