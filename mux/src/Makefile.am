@@ -45,6 +45,9 @@ AM_CPPFLAGS = $(LTDLINCL)
 # this really needs to be refactored out
 AM_CPPFLAGS += -DTINYMUX_MODULES
 
+
+# These version-id features require GNUMake, which may be problematic
+# in some platforms.
 VER_ID_SRC=$(notdir $(firstword $(strip $(wildcard ../../.git) $(wildcard release.txt))))
 VER_ID=$(if $(filter .git,$(VER_ID_SRC)),$(GITDESC),\
 	  $(if $(filter release.txt,$(VER_ID_SRC)),$(shell cat release.txt),\
