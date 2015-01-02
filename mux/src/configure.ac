@@ -14,7 +14,7 @@ AM_PROG_AR
 LT_PREREQ([2.4.2])
 LT_CONFIG_LTDL_DIR([libltdl])
 LT_INIT([dlopen win32-dll disable-static disable-fast-install])
-LTDL_INIT([installable])
+LTDL_INIT([convenience nonrecursive])
 
 AC_CONFIG_SRCDIR([game.cpp])
 AC_CONFIG_HEADER([autoconf.h])
@@ -472,5 +472,4 @@ if test -c /dev/urandom; then
 fi
 
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_SUBDIRS([modules])
 AC_OUTPUT

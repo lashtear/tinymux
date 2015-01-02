@@ -1,10 +1,17 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS = $(LTDLINCL)
+# this really needs to be refactored out
+AM_CPPFLAGS += -DTINYMUX_MODULES
 
 libexec_PROGRAMS = netmux slave
 if HAVE_STUB_SLAVE
 libexec_PROGRAMS += stubslave
 endif
+
+lib_LTLIBRARIES = libmux.la
+lib_LIBRARIES = libversion.a
+
 
 netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
@@ -39,14 +46,6 @@ libversion_a_CPPFLAGS = $(VER_FLG) -DTINYMUX_MODULES
 stubslave_SOURCES = stubslave.cpp stubslave.h
 stubslave_LDADD = libmux.la $(LIBLTDL)
 
-lib_LTLIBRARIES = libmux.la
-lib_LIBRARIES = libversion.a
-
-#SUBDIRS = . modules
-AM_CPPFLAGS = $(LTDLINCL)
-# this really needs to be refactored out
-AM_CPPFLAGS += -DTINYMUX_MODULES
-
 pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
 
 funcs_la_SOURCES = funcs.cpp
@@ -68,10 +67,6 @@ sqlproxy_la_LIBADD = libmux.la
 sqlslave_la_SOURCES = sqlslave.cpp
 sqlslave_la_LDFLAGS = -module -avoid-version
 sqlslave_la_LIBADD = libmux.la
-
-
-
-
 
 # These version-id features require GNUMake, which may be problematic
 # in some platforms.
@@ -95,12 +90,12 @@ VER_FLG = -DMUX_BUILD_VER_ID="$(VER_ID)" \
 ## so we set them here before including it:
 BUILT_SOURCES   =
 
-AM_CPPFLAGS        =
+#AM_CPPFLAGS        =
 AM_LDFLAGS         =
 
 include_HEADERS    =
 noinst_LTLIBRARIES =
-lib_LTLIBRARIES   =
+#lib_LTLIBRARIES   =
 EXTRA_LTLIBRARIES  =
 
 EXTRA_DIST   =
@@ -108,4 +103,4 @@ EXTRA_DIST   =
 CLEANFILES   =
 MOSTLYCLEANFILES   =
 
-include libltdl/ltdl.mk
+include libltdl/Makefile.inc
