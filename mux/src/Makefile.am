@@ -12,7 +12,6 @@ endif
 lib_LTLIBRARIES = libmux.la
 lib_LIBRARIES = libversion.a
 
-
 netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
     db.cpp db_rw.cpp eval.cpp file_c.cpp flags.cpp funceval.cpp	\

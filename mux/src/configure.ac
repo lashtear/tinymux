@@ -13,7 +13,7 @@ AM_PROG_AR
 
 LT_PREREQ([2.4.2])
 LT_CONFIG_LTDL_DIR([libltdl])
-LT_INIT([dlopen win32-dll disable-static disable-fast-install])
+LT_INIT([dlopen win32-dll disable-static])
 LTDL_INIT([convenience nonrecursive])
 
 AC_CONFIG_SRCDIR([game.cpp])
