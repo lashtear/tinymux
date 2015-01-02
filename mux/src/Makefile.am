@@ -1,5 +1,6 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
+
 libexec_PROGRAMS = netmux slave
 if HAVE_STUB_SLAVE
 libexec_PROGRAMS += stubslave
@@ -23,27 +24,53 @@ netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     modules.h mudconf.h muxcli.h pcre.h powers.h sha1.h slave.h	\
     stringutil.h svdhash.h svdrand.h timeutil.h ucp.h utf8tables.h	\
     vattr.h
+netmux_LDADD = libmux.la libversion.a $(LIBLTDL)
 
 slave_SOURCES = slave.cpp slave.h
 
-lib_LTLIBRARIES = libmux.la
 libmux_la_SOURCES = libmux.cpp
 libmux_la_LDFLAGS = -export-dynamic -avoid-version
 libmux_la_LIBADD = $(LIBLTDL)
 libmux_la_DEPENDENCIES = $(LTDLDEPS)
 
-lib_LIBRARIES = libversion.a
 libversion_a_SOURCES = version.cpp
 libversion_a_CPPFLAGS = $(VER_FLG) -DTINYMUX_MODULES
 
-netmux_LDADD = libmux.la libversion.a $(LIBLTDL)
 stubslave_SOURCES = stubslave.cpp stubslave.h
 stubslave_LDADD = libmux.la $(LIBLTDL)
 
-SUBDIRS = . modules
+lib_LTLIBRARIES = libmux.la
+lib_LIBRARIES = libversion.a
+
+#SUBDIRS = . modules
 AM_CPPFLAGS = $(LTDLINCL)
 # this really needs to be refactored out
 AM_CPPFLAGS += -DTINYMUX_MODULES
+
+pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
+
+funcs_la_SOURCES = funcs.cpp
+funcs_la_LDFLAGS = -module -avoid-version
+funcs_la_LIBADD = libmux.la
+
+sample_la_SOURCES = sample.cpp
+sample_la_LDFLAGS = -module -avoid-version
+sample_la_LIBADD = libmux.la
+
+sum_la_SOURCES = sum.cpp
+sum_la_LDFLAGS = -module -avoid-version
+sum_la_LIBADD = libmux.la
+
+sqlproxy_la_SOURCES = sqlproxy.cpp
+sqlproxy_la_LDFLAGS = -module -avoid-version
+sqlproxy_la_LIBADD = libmux.la
+
+sqlslave_la_SOURCES = sqlslave.cpp
+sqlslave_la_LDFLAGS = -module -avoid-version
+sqlslave_la_LIBADD = libmux.la
+
+
+
 
 
 # These version-id features require GNUMake, which may be problematic
@@ -63,3 +90,22 @@ VER_FLG = -DMUX_BUILD_VER_ID="$(VER_ID)" \
 	  -DMUX_BUILD_TIME="$(BUILDTIME)" \
 	  -DMUX_BUILD_CXXVER="$(CXXVER)" \
 	  -DMUX_BUILD_UNAME="$(UNAME)"
+
+## libltdl/ltdl.mk appends to the following variables
+## so we set them here before including it:
+BUILT_SOURCES   =
+
+AM_CPPFLAGS        =
+AM_LDFLAGS         =
+
+include_HEADERS    =
+noinst_LTLIBRARIES =
+lib_LTLIBRARIES   =
+EXTRA_LTLIBRARIES  =
+
+EXTRA_DIST   =
+
+CLEANFILES   =
+MOSTLYCLEANFILES   =
+
+include libltdl/ltdl.mk

@@ -5,10 +5,10 @@
  *
  */
 
-#include "../autoconf.h"
-#include "../config.h"
-#include "../libmux.h"
-#include "../modules.h"
+#include "autoconf.h"
+#include "config.h"
+#include "libmux.h"
+#include "modules.h"
 #include "sample.h"
 
 #define mux_CanUnloadNow	sample_LTX_mux_CanUnloadNow
