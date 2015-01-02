@@ -11,9 +11,9 @@ It is not appropriate for all games or environments and is currently in a very r
   * Use Automake+Libtool+libltdl to address multiplatform DSO issues.
   * Building no longer directly installs into `../game/bin`; automake respects configure's `--prefix`.
 * Code differences
-  * Include the previous Mechanipus patches as deployed on [The Reach](http://thereachmux.org/), [Dark Spires](http://darkspires.org/), et al.  See the `mechanipus-rebased-vs-git_brazil` branch for more portable versions of these.
+  * Include the previous Mechanipus patches as deployed on [The Reach](http://thereachmux.org/), [Dark Spires](http://darkspires.org/), et al.  See the `mechanipus-rebased-vs-git_dev` branch for more portable versions of these.
 	* `BLIND` rooms for truly quiet quietrooms.
-	* 64000 byte LBUFs, including tweaks to the Boyer-Moore-Horspool code to make this work.
+	* 64000 byte LBUFs, including tweaks to the [Boyer-Moore-Horspool](http://en.wikipedia.org/wiki/Boyer%E2%80%93Moore%E2%80%93Horspool_algorithm) code to make this work.
 	* Command lookups on master room objects consider object-parents.
 	* Bare `think` will not adjust idle time; many clients use this as a client-to-server activity tool, rather than telnet no-ops.  Unfortunate, but harmless.
   * Use .gitignore and friends as we're not futzing with SVN and none of this is interesting to the SVN half of TinyMUX development.
@@ -37,7 +37,7 @@ It is not appropriate for all games or environments and is currently in a very r
   * Gradually move to VBUFs (variable-size buffers) for most softcode support.
 * Network
   * Move to libevent.
-  * Move SSL/TLS support into a stubslave so we can carry clients across a restart. (Penn style).
+  * Use TLS session serialization on `@restart` so that we can carry clients across and not need an auxiliary process like Penn uses.
   * Implement telnet-level MSSP.
   * Add a native websocket server in support of modern javascript clients.
   * LDAP - in support of SSO with common mush-community web services like wikis and forums.
@@ -60,7 +60,7 @@ It is not appropriate for all games or environments and is currently in a very r
   * Various fun feeps
 	* Support more calendars, including detailed Julian support.
 	* Functions for precise (and *accurate*) calculations of lunar/planetary/celestial positions at arbitrary date/time.
-	* Similar functions that can use programmable data in support of fictional solar systems.
+	* Similar functions that can use programmable data in support of fictional solar systems, and at least patched-conics style predictive orbital mechanics calculations.  KerbalMUX, anyone?
 * Build/Packaging
   * Will re-Debianize the package using the new automake/libtool work.
   * Migration tools to somewhat-safely move existing mushes into the new style separated game/binary setup.
