@@ -11,6 +11,22 @@ lib_LTLIBRARIES = libmux.la
 noinst_LIBRARIES = libversion.a
 
 pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
+dist_bin_SCRIPTS = scripts/Backup scripts/_backupflat.sh	\
+    scripts/db_load scripts/db_unload scripts/Startmux
+dist_sysconf_DATA = etc/alias.conf etc/compat.conf etc/netmux.conf	\
+    etc/script.conf
+
+textdir = $(sysconfdir)/text
+dist_text_DATA = etc/text/badsite.txt etc/text/connect.txt		\
+    etc/text/create_reg.txt etc/text/down.txt etc/text/full.txt	\
+    etc/text/guest.txt etc/text/help.txt etc/text/motd.txt		\
+    etc/text/news.txt etc/text/newuser.txt etc/text/plushelp.txt	\
+    etc/text/quit.txt etc/text/register.txt etc/text/staffhelp.txt	\
+    etc/text/wizhelp.txt etc/text/wizmotd.txt etc/text/wiznews.txt
+
+dist_localstate_DATA = data/sgp.flat
+
+dist_doc_DATA = doc/ATTACK doc/BACKUPS doc/CHANGES doc/CONFIGURATION doc/CONVERSION doc/CREDITS doc/DISTRIBUTIONS doc/GUESTS doc/INSTALL doc/LIMITS doc/LOCAL doc/MEMORY doc/MODULES doc/NOTES doc/README doc/readme.txt doc/REALITY doc/REALITY.SETUP doc/REALMS doc/SGP doc/SQL doc/SSL
 
 netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
