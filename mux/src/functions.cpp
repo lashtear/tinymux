@@ -11574,8 +11574,6 @@ CF_HAND(cf_func_access)
     return -1;
 }
 
-#if defined(TINYMUX_MODULES)
-
 // CFunctions component which is not directly accessible.
 //
 
@@ -11737,7 +11735,7 @@ MUX_RESULT CFunctions::Add(unsigned int nKey, const UTF8 *name, mux_IFunction *p
     m_pHead = pfn;
 
     function_add(&pfn->fun);
-    
+
     return MUX_S_OK;
 }
 
@@ -11821,5 +11819,3 @@ MUX_RESULT CFunctionsFactory::LockServer(bool bLock)
     UNUSED_PARAMETER(bLock);
     return MUX_S_OK;
 }
-
-#endif

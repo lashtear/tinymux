@@ -1615,7 +1615,6 @@ void do_restart(dbref executor, dbref caller, dbref enactor, int eval, int key)
 #endif
 
     local_presync_database();
-#if defined(TINYMUX_MODULES)
     ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
     while (NULL != p)
     {
@@ -1623,7 +1622,6 @@ void do_restart(dbref executor, dbref caller, dbref enactor, int eval, int key)
 	p = p->pNext;
     }
     final_modules();
-#endif // TINYMUX_MODULES
 
 #ifndef HAVE_MEMORY_BASED
     al_store();
@@ -1647,13 +1645,8 @@ void do_restart(dbref executor, dbref caller, dbref enactor, int eval, int key)
 
     Log.StopLogging();
 
-#ifdef GAME_DOOFERMUX
-    execl("bin/netmux", mudconf.mud_name, "-c", mudconf.config_file, "-p",
-	mudconf.pid_file, "-e", mudconf.log_dir, (char *)NULL);
-#else
     execl("bin/netmux", "netmux", "-c", mudconf.config_file, "-p",
 	mudconf.pid_file, "-e", mudconf.log_dir, (char *)NULL);
-#endif // GAME_DOOFERMUX
     mux_assert(false);
 #endif // UNIX_PROCESSES
 }

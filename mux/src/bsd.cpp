@@ -4669,14 +4669,12 @@ static void DCL_CDECL sighandler(int sig)
 		    }
 		    mudstate.dumping = false;
 		    local_dump_complete_signal();
-#if defined(TINYMUX_MODULES)
 		    ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
 		    while (NULL != p)
 		    {
 			p->pSink->dump_complete_signal();
 			p = p->pNext;
 		    }
-#endif // TINYMUX_MODULES
 		    continue;
 		}
 	    }
@@ -4775,7 +4773,6 @@ static void DCL_CDECL sighandler(int sig)
 	report();
 
 	local_presync_database_sigsegv();
-#if defined(TINYMUX_MODULES)
 	{
 	    ServerEventsSinkNode *p = g_pServerEventsSinkListHead;
 	    while (NULL != p)
@@ -4785,7 +4782,6 @@ static void DCL_CDECL sighandler(int sig)
 	    }
 	}
 	final_modules();
-#endif // TINYMUX_MODULES
 
 #ifndef HAVE_MEMORY_BASED
 	al_store();
@@ -4840,11 +4836,7 @@ static void DCL_CDECL sighandler(int sig)
 	    dump_restart_db();
 #endif // HAVE_WORKING_FORK
 
-#ifdef GAME_DOOFERMUX
-	    execl("bin/netmux", mudconf.mud_name, "-c", mudconf.config_file, "-p", mudconf.pid_file, "-e", mudconf.log_dir, (char *)NULL);
-#else // GAME_DOOFERMUX
 	    execl("bin/netmux", "netmux", "-c", mudconf.config_file, "-p", mudconf.pid_file, "-e", mudconf.log_dir, (char *)NULL);
-#endif // GAME_DOOFERMUX
 	    mux_assert(false);
 	    break;
 #endif // UNIX_PROCESSES

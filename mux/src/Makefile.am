@@ -1,8 +1,6 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = $(LTDLINCL)
-# this really needs to be refactored out
-AM_CPPFLAGS += -DTINYMUX_MODULES
 
 libexec_PROGRAMS = netmux slave
 if HAVE_STUB_SLAVE
@@ -42,7 +40,7 @@ libmux_la_LIBADD = $(LIBLTDL)
 libmux_la_DEPENDENCIES = $(LTDLDEPS)
 
 libversion_a_SOURCES = version.cpp
-libversion_a_CPPFLAGS = $(VER_FLG) -DTINYMUX_MODULES
+libversion_a_CPPFLAGS = $(VER_FLG)
 
 stubslave_SOURCES = stubslave.cpp stubslave.h
 stubslave_LDADD = libmux.la $(LIBLTDL)

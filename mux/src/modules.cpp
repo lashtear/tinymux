@@ -15,8 +15,6 @@
 #include "interface.h"
 #include <ltdl.h>
 
-#if defined(TINYMUX_MODULES)
-
 static MUX_CLASS_INFO netmux_classes[] =
 {
     { CID_Log                },
@@ -1520,5 +1518,3 @@ UINT32 CResultsSet::AddRef(void)
     m_cRef++;
     return m_cRef;
 }
-
-#endif

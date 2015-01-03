@@ -206,9 +206,7 @@
 // Added by D.Piper (del@doofer.org) 2000-APR
 //
 #define A_REASON    222 // Disconnect reason
-#ifdef GAME_DOOFERMUX
-#define A_REGINFO   223 // Registration Information
-#endif // GAME_DOOFERMUX
+// 223 was DOOFERMUX RegInfo
 #define A_CONNINFO  224 // Connection info: (total connected time,
 			// longest connection last connection, total
 			// connections, time of logout.

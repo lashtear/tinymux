@@ -223,9 +223,6 @@ ATTR AttrTable[] =
     {T("VRML_URL"),    A_VRML_URL, AF_ODARK | AF_NOPROG},
     {T("HTDesc"),      A_HTDESC,   AF_NOPROG},
     {T("Reason"),      A_REASON,   AF_PRIVATE | AF_MDARK | AF_NOPROG | AF_NOCMD | AF_GOD | AF_NODECOMP},
-#ifdef GAME_DOOFERMUX
-    {T("RegInfo"),     A_REGINFO,  AF_PRIVATE | AF_MDARK | AF_NOPROG | AF_NOCMD | AF_WIZARD | AF_NODECOMP},
-#endif // GAME_DOOFERMUX
     {T("ConnInfo"),    A_CONNINFO, AF_PRIVATE | AF_MDARK | AF_NOPROG | AF_NOCMD | AF_GOD | AF_NODECOMP},
 #ifdef HAVE_REALITY_LVLS
     {T("Rlevel"),      A_RLEVEL,   AF_DARK | AF_NOPROG | AF_NOCMD | AF_INTERNAL},
@@ -4062,4 +4059,3 @@ void RemoveFile(UTF8 *name)
     unlink((char *)name);
 }
 #endif // UNIX_FILES
-
