@@ -21421,96 +21421,17 @@ _ACEOF
 fi
 done
 
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for pread and pwrite..." >&5
-$as_echo "$as_me: checking for pread and pwrite..." >&6;}
-if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <unistd.h>
-main() { pwrite(0, "abc", 3, 0); exit(0); }
+for ac_func in pread pwrite
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
 _ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-  pwrite_works=yes
-else
-  pwrite_works=no
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-
-if test $pwrite_works = yes; then
-
-$as_echo "#define HAVE_PREAD /**/" >>confdefs.h
-
-
-$as_echo "#define HAVE_PWRITE /**/" >>confdefs.h
 
 fi
-
-# Platform behaviors
-#
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for signal SIGCHLD braindamage..." >&5
-$as_echo "$as_me: checking for signal SIGCHLD braindamage..." >&6;}
-if test "$cross_compiling" = yes; then :
-  $as_echo "#define SIGNAL_SIGCHLD_BRAINDAMAGE 1" >>confdefs.h
-
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <signal.h>
-
-#ifndef SIGCHLD
-#define SIGCHLD SIGCLD
-#endif
-
-int rlev;
-
-RETSIGTYPE sighand(int sig, int code)
-{
-  int stat;
-
-  if (rlev++ > 2)
-    exit(1);
-  signal(SIGCHLD, sighand);
-  wait(&stat);
-  return;
-}
-
-int main(int argc, char *argv[])
-{
-  rlev = 0;
-  signal(SIGCHLD, sighand);
-  if (fork()) {
-    sleep(10);
-  } else {
-    sleep(2);
-    exit(1);
-  }
-  exit(0);
-}
-
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-
-else
-
-$as_echo "#define SIGNAL_SIGCHLD_BRAINDAMAGE /**/" >>confdefs.h
-
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
+done
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for IEEE floating-point format..." >&5
@@ -21636,10 +21557,7 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether unaligned 'short' access is permitted..." >&5
 $as_echo "$as_me: checking whether unaligned 'short' access is permitted..." >&6;}
 if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
+  false
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -21657,6 +21575,8 @@ if ac_fn_c_try_run "$LINENO"; then :
 
 $as_echo "#define CAN_UNALIGN_SHORT /**/" >>confdefs.h
 
+else
+  false
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -21665,10 +21585,7 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether unaligned 'int' access is permitted..." >&5
 $as_echo "$as_me: checking whether unaligned 'int' access is permitted..." >&6;}
 if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
+  false
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -21686,6 +21603,8 @@ if ac_fn_c_try_run "$LINENO"; then :
 
 $as_echo "#define CAN_UNALIGN_INT /**/" >>confdefs.h
 
+else
+  false
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -21694,10 +21613,7 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether unaligned 'long' access is permitted..." >&5
 $as_echo "$as_me: checking whether unaligned 'long' access is permitted..." >&6;}
 if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
+  false
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -21715,6 +21631,8 @@ if ac_fn_c_try_run "$LINENO"; then :
 
 $as_echo "#define CAN_UNALIGN_LONG /**/" >>confdefs.h
 
+else
+  false
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -21723,10 +21641,7 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether unaligned 'long long' access is permitted..." >&5
 $as_echo "$as_me: checking whether unaligned 'long long' access is permitted..." >&6;}
 if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
+  false
 else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -21744,6 +21659,8 @@ if ac_fn_c_try_run "$LINENO"; then :
 
 $as_echo "#define CAN_UNALIGN_LONGLONG /**/" >>confdefs.h
 
+else
+  false
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -21768,14 +21685,6 @@ $as_echo "#define HAVE_LINGER /**/" >>confdefs.h
 
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for /dev/urandom..." >&5
-$as_echo "$as_me: checking for /dev/urandom..." >&6;}
-if test -c /dev/urandom; then
-
-$as_echo "#define HAVE_DEV_URANDOM /**/" >>confdefs.h
-
-fi
 
 ac_config_files="$ac_config_files Makefile"
 

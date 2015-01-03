@@ -4619,9 +4619,7 @@ static void DCL_CDECL sighandler(int sig)
 
 	// Change in child status.
 	//
-#ifndef SIGNAL_SIGCHLD_BRAINDAMAGE
 	signal(SIGCHLD, CAST_SIGNAL_FUNC sighandler);
-#endif // !SIGNAL_SIGCHLD_BRAINDAMAGE
 
 	while ((child = waitpid(0, &stat_buf, WNOHANG)) > 0)
 	{

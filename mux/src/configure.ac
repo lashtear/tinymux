@@ -315,55 +315,7 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 
 AC_CHECK_FUNCS([alarm crypt dup2 floor getaddrinfo getdtablesize gethostbyaddr gethostbyname getnameinfo getpagesize getrusage gettimeofday inet_ntoa localtime_r log2 memchr memmove memset modf nanosleep pow select setitimer setrlimit socket sqrt strcasecmp strchr strerror strrchr strstr tzset usleep ])
-
-AS_MESSAGE([checking for pread and pwrite...])
-AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <unistd.h>
-main() { pwrite(0, "abc", 3, 0); exit(0); }]])],[pwrite_works=yes],[pwrite_works=no],[])
-
-if test $pwrite_works = yes; then
-  AC_DEFINE([HAVE_PREAD], [], [Define if pread exists.])
-  AC_DEFINE([HAVE_PWRITE], [], [Define if pwrite exists.])
-fi
-
-# Platform behaviors
-#
-AS_MESSAGE([checking for signal SIGCHLD braindamage...])
-AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <signal.h>
-
-#ifndef SIGCHLD
-#define SIGCHLD SIGCLD
-#endif
-
-int rlev;
-
-RETSIGTYPE sighand(int sig, int code)
-{
-  int stat;
-
-  if (rlev++ > 2)
-    exit(1);
-  signal(SIGCHLD, sighand);
-  wait(&stat);
-  return;
-}
-
-int main(int argc, char *argv[])
-{
-  rlev = 0;
-  signal(SIGCHLD, sighand);
-  if (fork()) {
-    sleep(10);
-  } else {
-    sleep(2);
-    exit(1);
-  }
-  exit(0);
-}
-]])],[],[AC_DEFINE([SIGNAL_SIGCHLD_BRAINDAMAGE], [], [Define if calling signal with SIGCHLD when handling SIGCHLD blows chow.])],[AC_DEFINE(SIGNAL_SIGCHLD_BRAINDAMAGE)])
+AC_CHECK_FUNCS([pread pwrite])
 
 AS_MESSAGE([checking for IEEE floating-point format...])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
@@ -431,7 +383,7 @@ int main(int argc, char *argv[])
    *ps = 0;
    return 0;
 }
-]])],[AC_DEFINE([CAN_UNALIGN_SHORT], [], [Define if unaligned short access is allowed.])],[],[])
+]])],[AC_DEFINE([CAN_UNALIGN_SHORT], [], [Define if unaligned short access is allowed.])],[false],[false])
 AS_MESSAGE([checking whether unaligned 'int' access is permitted...])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 int main(int argc, char *argv[])
@@ -441,7 +393,7 @@ int main(int argc, char *argv[])
    *pi = 0;
    return 0;
 }
-]])],[AC_DEFINE([CAN_UNALIGN_INT], [], [Define if unaligned int access is allowed.])],[],[])
+]])],[AC_DEFINE([CAN_UNALIGN_INT], [], [Define if unaligned int access is allowed.])],[false],[false])
 AS_MESSAGE([checking whether unaligned 'long' access is permitted...])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 int main(int argc, char *argv[])
@@ -451,7 +403,7 @@ int main(int argc, char *argv[])
    *pl = 0;
    return 0;
 }
-]])],[AC_DEFINE([CAN_UNALIGN_LONG], [], [Define if unaligned long access is allowed.])],[],[])
+]])],[AC_DEFINE([CAN_UNALIGN_LONG], [], [Define if unaligned long access is allowed.])],[false],[false])
 AS_MESSAGE([checking whether unaligned 'long long' access is permitted...])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 int main(int argc, char *argv[])
@@ -461,15 +413,10 @@ int main(int argc, char *argv[])
    *pll = 0;
    return 0;
 }
-]])],[AC_DEFINE([CAN_UNALIGN_LONGLONG], [], [Define if unaligned long long access is allowed.])],[],[])
+]])],[AC_DEFINE([CAN_UNALIGN_LONGLONG], [], [Define if unaligned long long access is allowed.])],[false],[false])
 
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
 #include <sys/socket.h>]],[[struct linger ling; ling.l_onoff = 1;]])],[AC_DEFINE([HAVE_LINGER], [], [Define if struct linger is defined.])],[])
-
-AS_MESSAGE([checking for /dev/urandom...])
-if test -c /dev/urandom; then
-  AC_DEFINE([HAVE_DEV_URANDOM], [], [Define if the character special file /dev/urandom is present.])
-fi
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

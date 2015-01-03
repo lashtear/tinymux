@@ -69,9 +69,6 @@
    */
 #undef HAVE_DECL_TZNAME
 
-/* Define if the character special file /dev/urandom is present. */
-#undef HAVE_DEV_URANDOM
-
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 #undef HAVE_DIRENT_H
@@ -257,13 +254,13 @@
 /* Define to 1 if you have the `pow' function. */
 #undef HAVE_POW
 
-/* Define if pread exists. */
+/* Define to 1 if you have the `pread' function. */
 #undef HAVE_PREAD
 
 /* Define if libtool can extract symbol lists from object files. */
 #undef HAVE_PRELOADED_SYMBOLS
 
-/* Define if pwrite exists. */
+/* Define to 1 if you have the `pwrite' function. */
 #undef HAVE_PWRITE
 
 /* Define to 1 if you have the `readdir' function. */
@@ -538,9 +535,6 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
-
-/* Define if calling signal with SIGCHLD when handling SIGCHLD blows chow. */
-#undef SIGNAL_SIGCHLD_BRAINDAMAGE
 
 /* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT

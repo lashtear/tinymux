@@ -35,7 +35,6 @@ void SeedRandomNumberGenerator(void)
     UINT32 aRandomSystemBytes[NUM_RANDOM_UINT32];
     unsigned int nRandomSystemBytes = 0;
 
-#ifdef HAVE_DEV_URANDOM
     // Try to seed the PRNG from /dev/urandom
     // If it doesn't work, just seed the normal way
     //
@@ -49,7 +48,6 @@ void SeedRandomNumberGenerator(void)
 	    nRandomSystemBytes = len/sizeof(UINT32);
 	}
     }
-#endif // HAVE_DEV_URANDOM
 #if defined(WINDOWS_CRYPT)
     HCRYPTPROV hProv;
     if (  CryptAcquireContext(&hProv, NULL, NULL, PROV_DSS, 0)
