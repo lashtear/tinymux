@@ -69,7 +69,7 @@ sqlslave_la_LIBADD = libmux.la
 
 # These version-id features require GNUMake, which may be problematic
 # in some platforms.
-VER_ID_SRC=$(notdir $(firstword $(strip $(wildcard ../../.git) $(wildcard release.txt))))
+VER_ID_SRC=$(notdir $(firstword $(strip $(wildcard $(srcdir)/../../.git) $(wildcard release.txt))))
 VER_ID=$(if $(filter .git,$(VER_ID_SRC)),$(GITDESC),\
 	  $(if $(filter release.txt,$(VER_ID_SRC)),$(shell cat release.txt),\
 	  $(error Unable to determine source version. VER_ID_SRC is $(VER_ID_SRC))))
