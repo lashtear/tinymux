@@ -4,20 +4,18 @@
 #
 PATH=/bin:/usr/bin:/usr/local/bin:.; export PATH
 #
-. mux.config
+. etc/script.conf
 #
 # You'll want to use gzip if you have it. If you want really good
 # compression, try 'gzip --best'. If you don't have gzip, use 'compress'.
 ZIP=gzip
 #
-DBDATE=`date +%m%d-%H%M`
-#
 # files to tar up
 TEXT_FILES="$TEXT/badsite.txt $TEXT/connect.txt $TEXT/create_reg.txt $TEXT/down.txt $TEXT/full.txt $TEXT/guest.txt $TEXT/motd.txt $TEXT/news.txt $TEXT/newuser.txt $TEXT/plushelp.txt $TEXT/quit.txt $TEXT/register.txt $TEXT/wizmotd.txt $TEXT/wiznews.txt $TEXT/staffhelp.txt"
 
-CONFIG_FILES="mux.config $GAMENAME.conf"
+CONFIG_FILES="script.conf netmux.conf"
 
-GAME_DB=$DATA/$GAMENAME.FLAT
+GAME_DB=$DATA/netmux.flat
 
 if [ -r $DATA/comsys.db ]; then
     COMM_DB=$DATA/comsys.db
@@ -61,5 +59,5 @@ else
     fi
 fi
 
-tar cf - $GAME_DB $COMM_DB $MAIL_DB $CONFIG_FILES $TEXT_FILES | $ZIP -c > $GAMENAME.$DBDATE.tar.gz
+tar cf - $GAME_DB $COMM_DB $MAIL_DB $CONFIG_FILES $TEXT_FILES | $ZIP -c > netmux.$DBDATE.tar.gz
 rm $GAME_DB

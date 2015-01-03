@@ -1,34 +1,19 @@
 #!/bin/sh
-#
 
-BIN=../bin
-
-# Linux/Solaris
-LD_LIBRARY_PATH=$BIN
-export LD_LIBRARY_PATH
-
-# Mac OS X / NeXTStep / Mach
-DYLD_LIBRARY_PATH=$BIN
-export DYLD_LIBRARY_PATH
-
-# AIX
-LIBPATH=$BIN
-export LIBPATH
-
-# HP-UX
-SHLIB_PATH=$BIN
-export SHLIB_PATH
-
-PATH=/bin:/usr/bin:
-#
-#	Unload a MUX V3 flatfile from MUX V3 database.
-#
-echo NOTE: Make sure the MUX is NOT running before you make a flatfile. 
 case $# in
-	3)	../bin/netmux -d$1 -u -i$2 -o$3 ;;
-	*)	echo Usage: $0 'basename structfile flatfile';
-		echo i.e., $0 netmux netmux.db.new netmux.flat;
-		exit 1 ;;
+    1)
+	if [ -r $DATA/$NEW_DB ]; then
+	    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$NEW_DB -o$1 -u
+	elif [ -r $DATA/$INPUT_DB ]; then
+	    echo "No recent checkpoint db. Using older db."
+	    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$INPUT_DB -o$1 -u
+	elif [ -r $DATA/$SAVE_DB ]; then
+	    echo "No input db. Using backup db."
+	    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$SAVE_DB -o$1 -u
+	else
+	    echo "No dbs. db unload failed."
+	    exit 1
+	fi
+	;;
+    *) echo use as db_unload mygame.flat; exit 1 ;;
 esac
-
-exit 0

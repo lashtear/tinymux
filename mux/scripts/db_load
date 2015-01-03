@@ -1,33 +1,6 @@
 #!/bin/sh
 #
-
-BIN=../bin
-
-# Linux/Solaris
-LD_LIBRARY_PATH=$BIN
-export LD_LIBRARY_PATH
-
-# Mac OS X / NeXTStep / Mach
-DYLD_LIBRARY_PATH=$BIN
-export DYLD_LIBRARY_PATH
-
-# AIX
-LIBPATH=$BIN
-export LIBPATH
-
-# HP-UX
-SHLIB_PATH=$BIN
-export SHLIB_PATH
-
-PATH=/bin:/usr/bin:
-#
-#	Load MUX V2 or V3 flatfile into MUX V3 database.
-#
 case $# in
-	3)	../bin/netmux -d$1 -l -i$2 -o$3 ;;
-	*)	echo Usage: $0 'basename flatfile structfile';
-		echo i.e., $0 netmux netmux.flat netmux.db;
-		exit 1 ;;
+    1) netmux -dnetmux -l -i"$1" -ovar/netmux.db;;
+    *) echo use as db_load mygame.flat; exit 1 ;;
 esac
-
-exit 0

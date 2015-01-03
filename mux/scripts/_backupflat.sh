@@ -1,26 +1,16 @@
 #!/bin/sh
-#
 PATH=/bin:/usr/bin:/usr/local/bin:.; export PATH
-#
-. mux.config
-#
-# You'll want to use gzip if you have it. If you want really good
-# compression, try 'gzip --best'. If you don't have gzip, use 'compress'.
-# ZIP=gzip
-#
-DBDATE=`date +%m%d-%H%M`
-#
 if [ "$1" -a -r "$1" ]; then
-    echo "Using flatfile from $1, renaming to $DATA/$GAMENAME.$DBDATE"
-    mv $1 $DATA/$GAMENAME.$DBDATE
+    echo "Using flatfile from $1, renaming to $DATA/netmux.$DBDATE.flat"
+    mv $1 $DATA/netmux.$DBDATE.flat
 elif [ -r $DATA/$NEW_DB ]; then
-    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$NEW_DB -o$DATA/$GAMENAME.$DBDATE -u
+    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$NEW_DB -o$DATA/netmux.$DBDATE.flat -u
 elif [ -r $DATA/$INPUT_DB ]; then
     echo "No recent checkpoint db. Using older db."
-    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$INPUT_DB -o$DATA/$GAMENAME.$DBDATE -u
+    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$INPUT_DB -o$DATA/netmux.$DBDATE.flat -u
 elif [ -r $DATA/$SAVE_DB ]; then
     echo "No input db. Using backup db."
-    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$SAVE_DB -o$DATA/$GAMENAME.$DBDATE -u
+    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$SAVE_DB -o$DATA/netmux.$DBDATE.flat -u
 else
     echo "No dbs. Backup attempt failed."
 fi
@@ -28,29 +18,25 @@ fi
 
 cd $DATA
 
-if [ -r $GAMENAME.$DBDATE ]; then
-    FILES=$GAMENAME.$DBDATE
+if [ -r netmux.$DBDATE.flat ]; then
+    FILES=netmux.$DBDATE.flat
 else
     echo "No flatfile found. Aborting."
     exit
 fi
 
 if [ -r comsys.db ]; then
-    cp comsys.db comsys.db.$DBDATE
-    FILES="$FILES comsys.db.$DBDATE"
+    cp comsys.db comsys.$DBDATE.db
+    FILES="$FILES comsys.$DBDATE.db"
 else
     echo "Warning: no comsys.db found."
 fi
 
 if [ -r mail.db ]; then
-    cp mail.db mail.db.$DBDATE
-    FILES="$FILES mail.db.$DBDATE"
+    cp mail.db mail.$DBDATE.db
+    FILES="$FILES mail.$DBDATE.db"
 else
     echo "Warning: no mail.db found."
 fi
 
-# FILES=$GAMENAME.$DBDATE comsys.db.$DBDATE mail.db.$DBDATE
-
-echo "Compressing and removing files: $FILES"
-
-tar czf dump.$DBDATE.tgz $FILES && rm -f $FILES &
+tar czvf flat-backup-$DBDATE.tar.gz $FILES && rm -f $FILES
