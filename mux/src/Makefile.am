@@ -10,7 +10,9 @@ libexec_PROGRAMS += stubslave
 endif
 
 lib_LTLIBRARIES = libmux.la
-lib_LIBRARIES = libversion.a
+noinst_LIBRARIES = libversion.a
+
+pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
 
 netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
@@ -44,8 +46,6 @@ libversion_a_CPPFLAGS = $(VER_FLG) -DTINYMUX_MODULES
 
 stubslave_SOURCES = stubslave.cpp stubslave.h
 stubslave_LDADD = libmux.la $(LIBLTDL)
-
-pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
 
 funcs_la_SOURCES = funcs.cpp
 funcs_la_LDFLAGS = -module -avoid-version
