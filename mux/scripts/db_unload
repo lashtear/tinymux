@@ -1,15 +1,17 @@
 #!/bin/sh
 
+. @sysconfdir@/script.conf
+
 case $# in
     1)
-	if [ -r $DATA/$NEW_DB ]; then
-	    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$NEW_DB -o$1 -u
-	elif [ -r $DATA/$INPUT_DB ]; then
+	if [ -r $NEW_DB ]; then
+	    $BIN/netmux -d$GDBM_DB -i$NEW_DB -o$1 -u
+	elif [ -r $INPUT_DB ]; then
 	    echo "No recent checkpoint db. Using older db."
-	    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$INPUT_DB -o$1 -u
-	elif [ -r $DATA/$SAVE_DB ]; then
+	    $BIN/netmux -d$GDBM_DB -i$INPUT_DB -o$1 -u
+	elif [ -r $SAVE_DB ]; then
 	    echo "No input db. Using backup db."
-	    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$SAVE_DB -o$1 -u
+	    $BIN/netmux -d$GDBM_DB -i$SAVE_DB -o$1 -u
 	else
 	    echo "No dbs. db unload failed."
 	    exit 1

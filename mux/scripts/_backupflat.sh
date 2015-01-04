@@ -1,20 +1,21 @@
 #!/bin/sh
-PATH=/bin:/usr/bin:/usr/local/bin:.; export PATH
+
+. @sysconfdir@/script.conf
+
 if [ "$1" -a -r "$1" ]; then
     echo "Using flatfile from $1, renaming to $DATA/netmux.$DBDATE.flat"
     mv $1 $DATA/netmux.$DBDATE.flat
-elif [ -r $DATA/$NEW_DB ]; then
-    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$NEW_DB -o$DATA/netmux.$DBDATE.flat -u
-elif [ -r $DATA/$INPUT_DB ]; then
+elif [ -r $NEW_DB ]; then
+    @libexecdir@/netmux -d$GDBM_DB -i$NEW_DB -o$DATA/netmux.$DBDATE.flat -u
+elif [ -r $INPUT_DB ]; then
     echo "No recent checkpoint db. Using older db."
-    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$INPUT_DB -o$DATA/netmux.$DBDATE.flat -u
-elif [ -r $DATA/$SAVE_DB ]; then
+    @libexecdir@/netmux -d$GDBM_DB -i$INPUT_DB -o$DATA/netmux.$DBDATE.flat -u
+elif [ -r $SAVE_DB ]; then
     echo "No input db. Using backup db."
-    $BIN/netmux -d$DATA/$GDBM_DB -i$DATA/$SAVE_DB -o$DATA/netmux.$DBDATE.flat -u
+    @libexecdir@/netmux -d$GDBM_DB -i$SAVE_DB -o$DATA/netmux.$DBDATE.flat -u
 else
     echo "No dbs. Backup attempt failed."
 fi
-
 
 cd $DATA
 
@@ -22,7 +23,7 @@ if [ -r netmux.$DBDATE.flat ]; then
     FILES=netmux.$DBDATE.flat
 else
     echo "No flatfile found. Aborting."
-    exit
+    exit 1
 fi
 
 if [ -r comsys.db ]; then

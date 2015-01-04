@@ -2,34 +2,35 @@
 #
 #	Startmux - Kick off the netmux process.
 #
-. script.conf
+. @sysconfdir@/script.conf
 #
 #	Make sure there isn't already a MUX running.
 #
 if [ -r "$PIDFILE" ]; then
-    oldpid=$(cat $PIDFILE)
-    if [ "$oldpid" -gt 1 ]; then
-	nmux=`ps | grep $oldpid | grep netmux | wc -l`
-	if [ "$nmux" -gt 0 ]; then
-	    echo "The MUX already seems to be running."
+    oldpid=$(cat "$PIDFILE")
+    if [ ! -z "$oldpid" ]; then
+	if kill -0 "$oldpid" 2>/dev/null; then
+	    echo "The mux seems to be running on pid $oldpid."
 	    exit 0
 	fi
+    else
+	rm -f "$PIDFILE"
     fi
 fi
 #
 #	Save a copy of the previous input database.
 #
-if [ -r $DATA/$INPUT_DB ]; then
-	mv -f $DATA/$INPUT_DB $DATA/$SAVE_DB
+if [ -r $INPUT_DB ]; then
+	mv -f $INPUT_DB $SAVE_DB
 fi
 #
 #	If we have a good checkpoint database, make it the input database.
 #	If not, use the backup of the input database.
 #
-if [ -r $DATA/$NEW_DB ]; then
-	mv $DATA/$NEW_DB $DATA/$INPUT_DB
-elif [ -r $DATA/$SAVE_DB ]; then
-	cp $DATA/$SAVE_DB $DATA/$INPUT_DB
+if [ -r $NEW_DB ]; then
+	mv $NEW_DB $INPUT_DB
+elif [ -r $SAVE_DB ]; then
+	cp $SAVE_DB $INPUT_DB
 fi
 #
 #	Remove the restart db if there is one.
@@ -41,7 +42,7 @@ fi
 #
 #	Refuse to start if CRASH databases are present.
 #
-if [ -r $DATA/$INPUT_DB.CRASH ]; then
+if [ -r $CRASH_DB ]; then
 	echo "There is a CRASH database present."
 	echo "You should salvage what you can before continuing."
 	exit 1
@@ -63,4 +64,4 @@ fi
 #	Kick off MUX
 #
 
-(nohup libexec/netmux -c etc/netmux.conf -p $PIDFILE -e $LOGDIR >/dev/null 2>&1 &)
+(nohup @libexecdir@/netmux -c @sysconfdir@/netmux.conf -p $PIDFILE -e $LOGDIR >/dev/null 2>&1 &)

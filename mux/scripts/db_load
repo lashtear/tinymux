@@ -1,6 +1,19 @@
 #!/bin/sh
 #
+. @sysconfdir@/script.conf
+
 case $# in
-    1) netmux -dnetmux -l -i"$1" -ovar/netmux.db;;
+    1) VLINE=$(head -n1 "$1")
+       if [ $VLINE = "+X996100" ]; then
+	   @libexecdir@/netmux -d$GDBM_DB -l -i"$1" -o$INPUT_DB
+       elif [ $VLINE = "+x1031940" ]; then
+	   echo "db $1 is a structure-only database."
+	   echo "You need a flatfile backup."
+	   exit 1
+       else
+	   echo "db is in an unknown format."
+	   exit 1
+       fi;;
+
     *) echo use as db_load mygame.flat; exit 1 ;;
 esac
