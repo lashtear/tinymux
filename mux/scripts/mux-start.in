@@ -6,6 +6,9 @@
 #
 #	Make sure there isn't already a MUX running.
 #
+if [ ! -d "$RUN" ]; then
+    mkdir -f "$RUN"
+fi
 if [ -r "$PIDFILE" ]; then
     oldpid=$(cat "$PIDFILE")
     if [ ! -z "$oldpid" ]; then
