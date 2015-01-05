@@ -13743,6 +13743,7 @@ else
 
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+    stubslave=true
 
 fi
 

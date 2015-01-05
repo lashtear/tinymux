@@ -500,7 +500,7 @@ void boot_stubslave(dbref executor, dbref caller, dbref enactor, int)
 	{
 	    mux_close(i);
 	}
-	execlp(mudconf.stubslave_path, "stubslave", (char *)NULL);
+	execlp((const char *)mudconf.stubslave_path, "stubslave", (char *)NULL);
 	_exit(1);
     }
     mux_close(sv[1]);

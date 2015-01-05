@@ -85,6 +85,7 @@ AC_ARG_ENABLE(
   ],
   [
     AC_MSG_RESULT(yes)
+    stubslave=true
   ])
 AM_CONDITIONAL([HAVE_STUB_SLAVE], [test x$stubslave = xtrue])
 
