@@ -99,6 +99,7 @@ void cf_init(void)
     mudconf.site_file      = StringClone(T("etc/text/badsite.txt"));
     mudconf.crea_file      = StringClone(T("etc/text/newuser.txt"));
     mudconf.backup_script  = StringClone(T("bin/mux-backup-flat"));
+    mudconf.stubslave_path = StringClone(T("libexec/stubslave"));
     mudconf.crash_msg[0] = '\0';
     mudconf.motd_msg[0] = '\0';
     mudconf.wizmotd_msg[0] = '\0';
@@ -1881,6 +1882,7 @@ static CONFPARM conftable[] =
     {T("mud_name"),                  cf_string,      CA_GOD,    CA_PUBLIC,   (int *)mudconf.mud_name,         NULL,              32},
     {T("newuser_file"),              cf_string_dyn,  CA_STATIC, CA_GOD,      (int *)&mudconf.crea_file,       NULL, SIZEOF_PATHNAME},
     {T("backup_script"),             cf_string_dyn,  CA_STATIC, CA_GOD,      (int *)&mudconf.backup_script,   NULL, SIZEOF_PATHNAME},
+    {T("stubslave_path"),            cf_string_dyn,  CA_STATIC, CA_GOD,      (int *)&mudconf.stubslave_path,  NULL, SIZEOF_PATHNAME},
     {T("noguest_site"),              cf_site,        CA_GOD,    CA_DISABLED, (int *)&mudstate.access_list,    NULL,      HC_NOGUEST},
     {T("nositemon_site"),            cf_site,        CA_GOD,    CA_DISABLED, (int *)&mudstate.access_list,    NULL,    HC_NOSITEMON},
     {T("notify_recursion_limit"),    cf_int,         CA_GOD,    CA_PUBLIC,   &mudconf.ntfy_nest_lim,          NULL,               0},

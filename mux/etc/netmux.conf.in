@@ -39,14 +39,17 @@ status_file          @localstatedir@/shutdown.status
 # backup script location
 backup_script        @bindir@/mux-backup-flat
 #
+# location of stubslave (safe to use even without)
+stubslave_path       @libexecdir@/stubslave
+#
 # Helpfile
 raw_helpfile help    @sysconfdir@/text/help
 raw_helpfile wizhelp @sysconfdir@/text/wizhelp
 access wizhelp wizard
 #
-include alias.conf
-include art.conf
-include compat.conf
+include              @sysconfdir@/alias.conf
+include              @sysconfdir@/art.conf
+include              @sysconfdir@/compat.conf
 #
 # Configuration options needed for SGP
 master_room #2
