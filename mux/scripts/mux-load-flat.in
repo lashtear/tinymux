@@ -4,16 +4,17 @@
 
 case $# in
     1) VLINE=$(head -n1 "$1")
-       if [ $VLINE = "+X996100" ]; then
-	   @libexecdir@/netmux -d$GDBM_DB -l -i"$1" -o$INPUT_DB
-       elif [ $VLINE = "+x1031940" ]; then
-	   echo "db $1 is a structure-only database."
-	   echo "You need a flatfile backup."
-	   exit 1
-       else
-	   echo "db is in an unknown format."
-	   exit 1
-       fi;;
+       case $VLINE in
+	   +X996099|+X996100)
+	       @libexecdir@/netmux -d$GDBM_DB -l -i"$1" -o$INPUT_DB;;
+	   +X1031940|+X1031939)
+	       echo "db $1 is a structure-only database."
+	       echo "You need a flatfile backup."
+	       exit 1;;
+	   *)
+	       echo "db is in an unknown format."
+	       exit 1;;
+       esac;;
 
     *) echo use as db_load mygame.flat; exit 1 ;;
 esac
