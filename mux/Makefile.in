@@ -579,8 +579,8 @@ pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
 dist_bin_SCRIPTS = scripts/mux-backup scripts/mux-backup-flat		\
     scripts/mux-load-flat scripts/mux-unload-flat scripts/mux-start
 
-dist_sysconf_DATA = etc/alias.conf etc/compat.conf etc/netmux.conf	\
-    etc/script.conf
+dist_sysconf_DATA = etc/alias.conf etc/art.conf etc/compat.conf	\
+    etc/netmux.conf etc/script.conf
 
 textdir = $(sysconfdir)/text
 dist_text_DATA = etc/text/badsite.txt etc/text/connect.txt		\
