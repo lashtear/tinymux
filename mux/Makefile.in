@@ -90,13 +90,19 @@ libexec_PROGRAMS = netmux$(EXEEXT) slave$(EXEEXT) $(am__EXEEXT_1)
 DIST_COMMON = $(srcdir)/libltdl/Makefile.inc $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/configure \
 	$(am__configure_deps) $(srcdir)/autoconf.h.in \
-	$(dist_bin_SCRIPTS) $(top_srcdir)/config/depcomp \
-	$(dist_doc_DATA) $(dist_localstate_DATA) $(dist_sysconf_DATA) \
-	$(dist_text_DATA) $(am__include_HEADERS_DIST) \
-	$(am__ltdlinclude_HEADERS_DIST) TODO config/ar-lib \
-	config/compile config/config.guess config/config.sub \
-	config/depcomp config/install-sh config/missing \
-	config/ltmain.sh $(top_srcdir)/config/ar-lib \
+	$(top_srcdir)/scripts/mux-unload-flat.in \
+	$(top_srcdir)/scripts/mux-load-flat.in \
+	$(top_srcdir)/scripts/mux-backup-flat.in \
+	$(top_srcdir)/scripts/mux-backup.in \
+	$(top_srcdir)/scripts/mux-start.in \
+	$(top_srcdir)/etc/netmux.conf.in \
+	$(top_srcdir)/etc/script.conf.in $(dist_bin_SCRIPTS) \
+	$(top_srcdir)/config/depcomp $(dist_doc_DATA) \
+	$(dist_localstate_DATA) $(dist_sysconf_DATA) $(dist_text_DATA) \
+	$(am__include_HEADERS_DIST) $(am__ltdlinclude_HEADERS_DIST) \
+	TODO config/ar-lib config/compile config/config.guess \
+	config/config.sub config/depcomp config/install-sh \
+	config/missing config/ltmain.sh $(top_srcdir)/config/ar-lib \
 	$(top_srcdir)/config/compile $(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/ltmain.sh \
@@ -117,7 +123,9 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = autoconf.h
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = scripts/mux-unload-flat scripts/mux-load-flat \
+	scripts/mux-backup-flat scripts/mux-backup scripts/mux-start \
+	etc/netmux.conf etc/script.conf
 CONFIG_CLEAN_VPATH_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
@@ -773,6 +781,20 @@ $(srcdir)/autoconf.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f autoconf.h stamp-h1
+scripts/mux-unload-flat: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-unload-flat.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+scripts/mux-load-flat: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-load-flat.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+scripts/mux-backup-flat: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-backup-flat.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+scripts/mux-backup: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-backup.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+scripts/mux-start: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-start.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+etc/netmux.conf: $(top_builddir)/config.status $(top_srcdir)/etc/netmux.conf.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+etc/script.conf: $(top_builddir)/config.status $(top_srcdir)/etc/script.conf.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)

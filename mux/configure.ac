@@ -419,5 +419,6 @@ int main(int argc, char *argv[])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
 #include <sys/socket.h>]],[[struct linger ling; ling.l_onoff = 1;]])],[AC_DEFINE([HAVE_LINGER], [], [Define if struct linger is defined.])],[])
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile scripts/mux-unload-flat scripts/mux-load-flat scripts/mux-backup-flat scripts/mux-backup scripts/mux-start etc/netmux.conf etc/script.conf])
+
 AC_OUTPUT
