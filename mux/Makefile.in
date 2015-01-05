@@ -1738,7 +1738,8 @@ install-dvi-am:
 install-exec-am: install-dist_binSCRIPTS install-dist_localstateDATA \
 	install-dist_sysconfDATA install-libLTLIBRARIES \
 	install-libexecPROGRAMS install-pkglibLTLIBRARIES
-
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
 install-html: install-html-am
 
 install-html-am:
@@ -1785,7 +1786,7 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_docDATA \
 	uninstall-libLTLIBRARIES uninstall-libexecPROGRAMS \
 	uninstall-ltdlincludeHEADERS uninstall-pkglibLTLIBRARIES
 
-.MAKE: all check install install-am install-strip
+.MAKE: all check install install-am install-exec-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am am--refresh check check-am clean \
 	clean-cscope clean-generic clean-libLTLIBRARIES \
@@ -1800,7 +1801,7 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_docDATA \
 	install-dist_binSCRIPTS install-dist_docDATA \
 	install-dist_localstateDATA install-dist_sysconfDATA \
 	install-dist_textDATA install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am \
+	install-exec-am install-exec-hook install-html install-html-am \
 	install-includeHEADERS install-info install-info-am \
 	install-libLTLIBRARIES install-libexecPROGRAMS \
 	install-ltdlincludeHEADERS install-man install-pdf \
@@ -1815,6 +1816,10 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_docDATA \
 	uninstall-libLTLIBRARIES uninstall-libexecPROGRAMS \
 	uninstall-ltdlincludeHEADERS uninstall-pkglibLTLIBRARIES
 
+
+install-exec-hook:
+	cd $(DESTDIR)$(bindir) && \
+	    $(LN_S) netmux dbconvert
 
 # We need the following in order to create an <argz.h> when the system
 # doesn't have one that works with the given compiler.
