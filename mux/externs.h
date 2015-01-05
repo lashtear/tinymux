@@ -269,8 +269,8 @@ bool html_escape(const UTF8 *src, UTF8 *dest, UTF8 **destp);
 #define DUMP_I_NORMAL    0  // OUTPUT to the outdb through a temporary file.
 #define DUMP_I_PANIC     1  // UNLOAD to a crashdb
 #define DUMP_I_RESTART   2  // OUTPUT to the inputdb
-#define DUMP_I_FLAT      3  // UNLOAD to a .FLAT file
-#define DUMP_I_SIGNAL    4  // UNLOAD to a .FLAT file from signal.
+#define DUMP_I_FLAT      3  // UNLOAD to a .flat file
+#define DUMP_I_SIGNAL    4  // UNLOAD to a .flat file from signal.
 #define NUM_DUMP_TYPES   5
 void dump_database_internal(int);
 void fork_and_dump(int key);
@@ -615,7 +615,7 @@ extern int anum_alc_top;
 #define DROP_QUIET      1   /* Don't do odrop/adrop if control */
 #define DUMP_STRUCT     1   /* Dump flat structure file */
 #define DUMP_TEXT       2   /* Dump to external attribute database. */
-#define DUMP_FLATFILE   4   /* Dump .FLAT file */
+#define DUMP_FLATFILE   4   /* Dump .flat file */
 #define EDIT_CHANNEL_CCHOWN   0  /* @cchown */
 #define EDIT_CHANNEL_CCHARGE  1  /* @ccharge */
 #define EDIT_CHANNEL_CPFLAGS  2  /* @cpflags */

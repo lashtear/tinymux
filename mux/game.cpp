@@ -1361,8 +1361,8 @@ static DUMP_PROCEDURE DumpProcedures[NUM_DUMP_TYPES] =
     { NULL,             T(""),     false, 0,                             T("") }, // 0 -- Handled specially.
     { &mudconf.crashdb, T(""),     false, UNLOAD_VERSION | UNLOAD_FLAGS, T("Opening crash file") }, // 1
     { &mudconf.indb,    T(""),     true,  OUTPUT_VERSION | OUTPUT_FLAGS, T("Opening input file") }, // 2
-    { &mudconf.indb,   T(".FLAT"), false, UNLOAD_VERSION | UNLOAD_FLAGS, T("Opening flatfile")   }, // 3
-    { &mudconf.indb,   T(".SIG"),  false, UNLOAD_VERSION | UNLOAD_FLAGS, T("Opening signalled flatfile")}  // 4
+    { &mudconf.indb,   T(".flat"), false, UNLOAD_VERSION | UNLOAD_FLAGS, T("Opening flatfile")   }, // 3
+    { &mudconf.indb,   T(".sig"),  false, UNLOAD_VERSION | UNLOAD_FLAGS, T("Opening signalled flatfile")}  // 4
 };
 
 #if defined(WINDOWS_FILES)
@@ -1676,7 +1676,7 @@ void fork_and_dump(int key)
     {
 	STARTLOG(LOG_DBSAVES, "DMP", "FLAT");
 	log_text(T("Creating flatfile: "));
-	mux_sprintf(buff, LBUF_SIZE, T("%s.FLAT"), mudconf.outdb);
+	mux_sprintf(buff, LBUF_SIZE, T("%s.flat"), mudconf.outdb);
 	log_text(buff);
 	ENDLOG;
     }
