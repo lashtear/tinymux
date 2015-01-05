@@ -9,7 +9,7 @@ endif
 
 install-exec-hook:
 	cd $(DESTDIR)$(bindir) && \
-	    $(LN_S) netmux dbconvert
+	    $(LN_S) $(DESTDIR)/$(libexecdir)/netmux dbconvert
 
 lib_LTLIBRARIES = libmux.la
 noinst_LIBRARIES = libversion.a

@@ -1846,7 +1846,7 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_docDATA \
 
 install-exec-hook:
 	cd $(DESTDIR)$(bindir) && \
-	    $(LN_S) netmux dbconvert
+	    $(LN_S) $(DESTDIR)/$(libexecdir)/netmux dbconvert
 
 $(subst_files): Makefile
 	rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
