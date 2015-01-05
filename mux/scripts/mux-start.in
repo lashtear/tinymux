@@ -6,9 +6,14 @@
 #
 #	Make sure there isn't already a MUX running.
 #
-if [ ! -d "$RUN" ]; then
-    mkdir -f "$RUN"
+if [ -z "$LOGDIR" ]; then
+    LOGDIR=.
 fi
+for d in "$RUN" "$LOGDIR"; do
+    if [ ! -d "$d" ]; then
+	mkdir -p "$d" 2>/dev/null
+    fi
+done
 if [ -r "$PIDFILE" ]; then
     oldpid=$(cat "$PIDFILE")
     if [ ! -z "$oldpid" ]; then
@@ -51,18 +56,6 @@ if [ -r $CRASH_DB ]; then
 	exit 1
 fi
 
-#
-#       Check if the log directory is defined and is valid. If not, use
-#       the current directory.
-#
-if [ -z "$LOGDIR" ]; then
-    LOGDIR=.
-elif [ ! -d "$LOGDIR" -o ! -x "$LOGDIR" ]; then
-    mkdir -f "$LOGDIR" 2>/dev/null
-elif [ ! -d "$LOGDIR" -o ! -x "$LOGDIR" ]; then
-    echo "Log directory '$LOGDIR' is invalid, using game directory."
-    LOGDIR=.
-fi
 #
 #	Kick off MUX
 #
