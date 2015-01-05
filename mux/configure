@@ -21697,7 +21697,7 @@ $as_echo "#define HAVE_LINGER /**/" >>confdefs.h
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
-ac_config_files="$ac_config_files Makefile scripts/mux-unload-flat scripts/mux-load-flat scripts/mux-backup-flat scripts/mux-backup scripts/mux-start etc/netmux.conf etc/script.conf"
+ac_config_files="$ac_config_files Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -22848,13 +22848,6 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "autoconf.h") CONFIG_HEADERS="$CONFIG_HEADERS autoconf.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "scripts/mux-unload-flat") CONFIG_FILES="$CONFIG_FILES scripts/mux-unload-flat" ;;
-    "scripts/mux-load-flat") CONFIG_FILES="$CONFIG_FILES scripts/mux-load-flat" ;;
-    "scripts/mux-backup-flat") CONFIG_FILES="$CONFIG_FILES scripts/mux-backup-flat" ;;
-    "scripts/mux-backup") CONFIG_FILES="$CONFIG_FILES scripts/mux-backup" ;;
-    "scripts/mux-start") CONFIG_FILES="$CONFIG_FILES scripts/mux-start" ;;
-    "etc/netmux.conf") CONFIG_FILES="$CONFIG_FILES etc/netmux.conf" ;;
-    "etc/script.conf") CONFIG_FILES="$CONFIG_FILES etc/script.conf" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

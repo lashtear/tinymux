@@ -90,19 +90,13 @@ libexec_PROGRAMS = netmux$(EXEEXT) slave$(EXEEXT) $(am__EXEEXT_1)
 DIST_COMMON = $(srcdir)/libltdl/Makefile.inc $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/configure \
 	$(am__configure_deps) $(srcdir)/autoconf.h.in \
-	$(top_srcdir)/scripts/mux-unload-flat.in \
-	$(top_srcdir)/scripts/mux-load-flat.in \
-	$(top_srcdir)/scripts/mux-backup-flat.in \
-	$(top_srcdir)/scripts/mux-backup.in \
-	$(top_srcdir)/scripts/mux-start.in \
-	$(top_srcdir)/etc/netmux.conf.in \
-	$(top_srcdir)/etc/script.conf.in $(dist_bin_SCRIPTS) \
-	$(top_srcdir)/config/depcomp $(dist_doc_DATA) \
-	$(dist_localstate_DATA) $(dist_sysconf_DATA) $(dist_text_DATA) \
-	$(am__include_HEADERS_DIST) $(am__ltdlinclude_HEADERS_DIST) \
-	TODO config/ar-lib config/compile config/config.guess \
-	config/config.sub config/depcomp config/install-sh \
-	config/missing config/ltmain.sh $(top_srcdir)/config/ar-lib \
+	$(dist_bin_SCRIPTS) $(top_srcdir)/config/depcomp \
+	$(dist_doc_DATA) $(dist_localstate_DATA) $(dist_sysconf_DATA) \
+	$(dist_text_DATA) $(am__include_HEADERS_DIST) \
+	$(am__ltdlinclude_HEADERS_DIST) TODO config/ar-lib \
+	config/compile config/config.guess config/config.sub \
+	config/depcomp config/install-sh config/missing \
+	config/ltmain.sh $(top_srcdir)/config/ar-lib \
 	$(top_srcdir)/config/compile $(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/ltmain.sh \
@@ -123,9 +117,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = autoconf.h
-CONFIG_CLEAN_FILES = scripts/mux-unload-flat scripts/mux-load-flat \
-	scripts/mux-backup-flat scripts/mux-backup scripts/mux-start \
-	etc/netmux.conf etc/script.conf
+CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
@@ -599,7 +591,35 @@ dist_text_DATA = etc/text/badsite.txt etc/text/connect.txt		\
     etc/text/wizhelp.txt etc/text/wizmotd.txt etc/text/wiznews.txt
 
 dist_localstate_DATA = data/sgp.flat
-dist_doc_DATA = doc/ATTACK doc/BACKUPS doc/CHANGES doc/CONFIGURATION doc/CONVERSION doc/CREDITS doc/DISTRIBUTIONS doc/GUESTS doc/INSTALL doc/LIMITS doc/LOCAL doc/MEMORY doc/MODULES doc/NOTES doc/README doc/readme.txt doc/REALITY doc/REALITY.SETUP doc/REALMS doc/SGP doc/SQL doc/SSL
+dist_doc_DATA = doc/ATTACK doc/BACKUPS doc/CHANGES doc/CONFIGURATION	\
+    doc/CONVERSION doc/CREDITS doc/DISTRIBUTIONS doc/GUESTS		\
+    doc/INSTALL doc/LIMITS doc/LOCAL doc/MEMORY doc/MODULES doc/NOTES	\
+    doc/README doc/readme.txt doc/REALITY doc/REALITY.SETUP		\
+    doc/REALMS doc/SGP doc/SQL doc/SSL
+
+
+# See
+# https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/Installation-Directory-Variables.html#Installation-Directory-Variables
+# for why we subst in make rather than using AC_CONFIG_FILES
+do_edit = sed \
+	-e 's|@bindir[@]|$(bindir)|g' \
+	-e 's|@libexecdir[@]|$(libexecdir)|g' \
+	-e 's|@localstatedir[@]|$(localstatedir)|g' \
+	-e 's|@sysconfdir[@]|$(sysconfdir)|g'
+
+subst_files = scripts/mux-unload-flat scripts/mux-load-flat		\
+    scripts/mux-backup-flat scripts/mux-backup scripts/mux-start	\
+    etc/netmux.conf etc/script.conf
+
+subst_files_in = scripts/mux-unload-flat.in scripts/mux-load-flat.in	\
+    scripts/mux-backup-flat.in scripts/mux-backup.in			\
+    scripts/mux-start.in etc/netmux.conf.in etc/script.conf.in
+
+EXTRA_DIST = $(subst_files_in) libltdl/lt__dirent.c libltdl/lt__strl.c \
+	libltdl/COPYING.LIB libltdl/README libltdl/argz_.h \
+	libltdl/argz.c
+CLEANFILES = $(subst_files) libltdl/libltdl.la libltdl/libltdlc.la \
+	libltdl/libdlloader.la $(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
 netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
     db.cpp db_rw.cpp eval.cpp file_c.cpp flags.cpp funceval.cpp	\
@@ -673,11 +693,10 @@ noinst_LTLIBRARIES = $(LT_DLLOADERS) $(am__append_4)
 EXTRA_LTLIBRARIES = libltdl/dlopen.la libltdl/dld_link.la \
 	libltdl/dyld.la libltdl/load_add_on.la libltdl/loadlibrary.la \
 	libltdl/shl_load.la
-EXTRA_DIST = libltdl/lt__dirent.c libltdl/lt__strl.c \
-	libltdl/COPYING.LIB libltdl/README libltdl/argz_.h \
-	libltdl/argz.c
-CLEANFILES = libltdl/libltdl.la libltdl/libltdlc.la \
-	libltdl/libdlloader.la $(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
+
+#EXTRA_DIST   =
+
+#CLEANFILES   =
 MOSTLYCLEANFILES = libltdl/argz.h libltdl/argz.h-t
 LTDL_VERSION_INFO = -version-info 10:0:3
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
@@ -781,20 +800,6 @@ $(srcdir)/autoconf.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f autoconf.h stamp-h1
-scripts/mux-unload-flat: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-unload-flat.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-scripts/mux-load-flat: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-load-flat.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-scripts/mux-backup-flat: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-backup-flat.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-scripts/mux-backup: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-backup.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-scripts/mux-start: $(top_builddir)/config.status $(top_srcdir)/scripts/mux-start.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-etc/netmux.conf: $(top_builddir)/config.status $(top_srcdir)/etc/netmux.conf.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-etc/script.conf: $(top_builddir)/config.status $(top_srcdir)/etc/script.conf.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
@@ -1842,6 +1847,10 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_docDATA \
 install-exec-hook:
 	cd $(DESTDIR)$(bindir) && \
 	    $(LN_S) netmux dbconvert
+
+$(subst_files): Makefile
+	rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
+$(subst_files): $(subst_files_in)
 
 # We need the following in order to create an <argz.h> when the system
 # doesn't have one that works with the given compiler.

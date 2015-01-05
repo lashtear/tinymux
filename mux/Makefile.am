@@ -30,7 +30,35 @@ dist_text_DATA = etc/text/badsite.txt etc/text/connect.txt		\
 
 dist_localstate_DATA = data/sgp.flat
 
-dist_doc_DATA = doc/ATTACK doc/BACKUPS doc/CHANGES doc/CONFIGURATION doc/CONVERSION doc/CREDITS doc/DISTRIBUTIONS doc/GUESTS doc/INSTALL doc/LIMITS doc/LOCAL doc/MEMORY doc/MODULES doc/NOTES doc/README doc/readme.txt doc/REALITY doc/REALITY.SETUP doc/REALMS doc/SGP doc/SQL doc/SSL
+dist_doc_DATA = doc/ATTACK doc/BACKUPS doc/CHANGES doc/CONFIGURATION	\
+    doc/CONVERSION doc/CREDITS doc/DISTRIBUTIONS doc/GUESTS		\
+    doc/INSTALL doc/LIMITS doc/LOCAL doc/MEMORY doc/MODULES doc/NOTES	\
+    doc/README doc/readme.txt doc/REALITY doc/REALITY.SETUP		\
+    doc/REALMS doc/SGP doc/SQL doc/SSL
+
+# See
+# https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/Installation-Directory-Variables.html#Installation-Directory-Variables
+# for why we subst in make rather than using AC_CONFIG_FILES
+
+do_edit = sed \
+	-e 's|@bindir[@]|$(bindir)|g' \
+	-e 's|@libexecdir[@]|$(libexecdir)|g' \
+	-e 's|@localstatedir[@]|$(localstatedir)|g' \
+	-e 's|@sysconfdir[@]|$(sysconfdir)|g'
+
+subst_files = scripts/mux-unload-flat scripts/mux-load-flat		\
+    scripts/mux-backup-flat scripts/mux-backup scripts/mux-start	\
+    etc/netmux.conf etc/script.conf
+
+subst_files_in = scripts/mux-unload-flat.in scripts/mux-load-flat.in	\
+    scripts/mux-backup-flat.in scripts/mux-backup.in			\
+    scripts/mux-start.in etc/netmux.conf.in etc/script.conf.in
+
+$(subst_files): Makefile
+	rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
+$(subst_files): $(subst_files_in)
+EXTRA_DIST = $(subst_files_in)
+CLEANFILES = $(subst_files)
 
 netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
@@ -115,9 +143,9 @@ noinst_LTLIBRARIES =
 #lib_LTLIBRARIES   =
 EXTRA_LTLIBRARIES  =
 
-EXTRA_DIST   =
+#EXTRA_DIST   =
 
-CLEANFILES   =
+#CLEANFILES   =
 MOSTLYCLEANFILES   =
 
 include libltdl/Makefile.inc
