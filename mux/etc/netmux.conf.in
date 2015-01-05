@@ -6,22 +6,41 @@
 #
 # Default filenames for the database
 #
-input_database  @localstatedir@/netmux.db
-output_database @localstatedir@/netmux.db.new
-crash_database  @localstatedir@/netmux.db.CRASH
-game_dir_file   @localstatedir@/netmux.dir
-game_pag_file   @localstatedir@/netmux.pag
+input_database       @localstatedir@/netmux.db
+output_database      @localstatedir@/netmux.db.new
+crash_database       @localstatedir@/netmux.db.CRASH
+game_dir_file        @localstatedir@/netmux.dir
+game_pag_file        @localstatedir@/netmux.pag
 #
 # Mail, comsystem, and macro databases.
 #
-mail_database   @localstatedir@/mail.db
-comsys_database @localstatedir@/comsys.db
+mail_database        @localstatedir@/mail.db
+comsys_database      @localstatedir@/comsys.db
 #
 port 2860
 mud_name AnonymousMUX
 #
+# Text paths - location of banner files, motd, etc.
+guest_file           @sysconfdir@/text/guest.txt
+connect_file         @sysconfdir@/text/connect.txt
+connect_reg_file     @sysconfdir@/text/register.txt
+register_create_file @sysconfdir@/text/create_reg.txt
+motd_file            @sysconfdir@/text/motd.txt
+wizard_motd_file     @sysconfdir@/text/wizmotd.txt
+quit_file            @sysconfdir@/text/quit.txt
+down_file            @sysconfdir@/text/down.txt
+full_file            @sysconfdir@/text/full.txt
+badsite_file         @sysconfdir@/text/badsite.txt
+newuser_file         @sysconfdir@/text/newuser.txt
+#
+# @shutdown arg output
+status_file          @localstatedir@/shutdown.status
+#
+# backup script location
+backup_script        @bindir@/mux-backup-flat
+#
 # Helpfile
-raw_helpfile help @sysconfdir@/text/help
+raw_helpfile help    @sysconfdir@/text/help
 raw_helpfile wizhelp @sysconfdir@/text/wizhelp
 access wizhelp wizard
 #
@@ -33,8 +52,8 @@ include compat.conf
 master_room #2
 access @function wizard
 access @function/privileged wizard
-helpfile +help @sysconfdir@/text/plushelp
-helpfile +shelp @sysconfdir@/text/staffhelp
+helpfile +help       @sysconfdir@/text/plushelp
+helpfile +shelp      @sysconfdir@/text/staffhelp
 access +shelp staff
 #
 # Define local aliases/parameters/whatnot here.

@@ -236,6 +236,7 @@ struct confdata
     UTF8    *conn_file;         /* display on connect if no registration */
     UTF8    *crashdb;           /* write database here on crash */
     UTF8    *crea_file;         /* display this on login for new users */
+    UTF8    *backup_script;     /* path to backup script */
     UTF8    *creg_file;         /* display on connect if registration */
     UTF8    *down_file;         /* display this file if no logins */
     UTF8    *full_file;         /* display when max users exceeded */

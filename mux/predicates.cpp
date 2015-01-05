@@ -1691,22 +1691,21 @@ void do_backup(dbref executor, dbref caller, dbref enactor, int eval, int key)
     log_name(executor);
     ENDLOG;
 
-    // FIXME
-    // These should be rewritten to respect full autoconf paths-- or
-    // better, just do the logic of the script here.
-
 #ifdef HAVE_MEMORY_BASED
-    // Invoking _backupflat.sh with an argument prompts the backup script
-    // to use it as the flatfile.
+    // Invoking mux-backup-flat with an argument prompts the backup
+    // script to use it as the flatfile.
     //
     dump_database_internal(DUMP_I_FLAT);
-    system((char *)tprintf(T("bin/mux-backup-flat %s.flat 1>&2"), mudconf.indb));
+    system((char *)tprintf(T("%s %s.flat 1>&2"),
+			   mudconf.backup_script,
+			   mudconf.indb));
 #else // HAVE_MEMORY_BASED
-    // Invoking _backupflat.sh without an argument prompts the backup script
-    // to use dbconvert itself.
+    // Invoking mux-backup-flat without an argument prompts the backup
+    // script to use dbconvert itself.
     //
     dump_database_internal(DUMP_I_NORMAL);
-    system((char *)tprintf(T("bin/mux-backup-flat 1>&2")));
+    system((char *)tprintf(T("%s 1>&2"),
+			   mudconf.backup_script));
 #endif // HAVE_MEMORY_BASED
     raw_broadcast(0, T("GAME: Backup finished."));
 }

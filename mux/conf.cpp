@@ -58,7 +58,7 @@ void cf_init(void)
     mudconf.compress_db = false;
     mudconf.compress = StringClone(T("gzip"));
     mudconf.uncompress = StringClone(T("gzip -d"));
-    mudconf.status_file = StringClone(T("shutdown.status"));
+    mudconf.status_file = StringClone(T("var/shutdown.status"));
     mudconf.max_cache_size = 1*1024*1024;
 
     mudconf.ip_address = NULL;
@@ -87,17 +87,18 @@ void cf_init(void)
     mudconf.number_guests = 30;
     mudconf.min_guests = 1;
     mux_strncpy(mudconf.guest_prefix, T("Guest"), sizeof(mudconf.guest_prefix)-1);
-    mudconf.guest_file     = StringClone(T("text/guest.txt"));
-    mudconf.conn_file      = StringClone(T("text/connect.txt"));
-    mudconf.creg_file      = StringClone(T("text/register.txt"));
-    mudconf.regf_file      = StringClone(T("text/create_reg.txt"));
-    mudconf.motd_file      = StringClone(T("text/motd.txt"));
-    mudconf.wizmotd_file   = StringClone(T("text/wizmotd.txt"));
-    mudconf.quit_file      = StringClone(T("text/quit.txt"));
-    mudconf.down_file      = StringClone(T("text/down.txt"));
-    mudconf.full_file      = StringClone(T("text/full.txt"));
-    mudconf.site_file      = StringClone(T("text/badsite.txt"));
-    mudconf.crea_file      = StringClone(T("text/newuser.txt"));
+    mudconf.guest_file     = StringClone(T("etc/text/guest.txt"));
+    mudconf.conn_file      = StringClone(T("etc/text/connect.txt"));
+    mudconf.creg_file      = StringClone(T("etc/text/register.txt"));
+    mudconf.regf_file      = StringClone(T("etc/text/create_reg.txt"));
+    mudconf.motd_file      = StringClone(T("etc/text/motd.txt"));
+    mudconf.wizmotd_file   = StringClone(T("etc/text/wizmotd.txt"));
+    mudconf.quit_file      = StringClone(T("etc/text/quit.txt"));
+    mudconf.down_file      = StringClone(T("etc/text/down.txt"));
+    mudconf.full_file      = StringClone(T("etc/text/full.txt"));
+    mudconf.site_file      = StringClone(T("etc/text/badsite.txt"));
+    mudconf.crea_file      = StringClone(T("etc/text/newuser.txt"));
+    mudconf.backup_script  = StringClone(T("bin/mux-backup-flat"));
     mudconf.crash_msg[0] = '\0';
     mudconf.motd_msg[0] = '\0';
     mudconf.wizmotd_msg[0] = '\0';
@@ -1879,6 +1880,7 @@ static CONFPARM conftable[] =
     {T("module"),                    cf_module,      CA_GOD,    CA_WIZARD,   (int *)NULL,                     NULL,               0},
     {T("mud_name"),                  cf_string,      CA_GOD,    CA_PUBLIC,   (int *)mudconf.mud_name,         NULL,              32},
     {T("newuser_file"),              cf_string_dyn,  CA_STATIC, CA_GOD,      (int *)&mudconf.crea_file,       NULL, SIZEOF_PATHNAME},
+    {T("backup_script"),             cf_string_dyn,  CA_STATIC, CA_GOD,      (int *)&mudconf.backup_script,   NULL, SIZEOF_PATHNAME},
     {T("noguest_site"),              cf_site,        CA_GOD,    CA_DISABLED, (int *)&mudstate.access_list,    NULL,      HC_NOGUEST},
     {T("nositemon_site"),            cf_site,        CA_GOD,    CA_DISABLED, (int *)&mudstate.access_list,    NULL,    HC_NOSITEMON},
     {T("notify_recursion_limit"),    cf_int,         CA_GOD,    CA_PUBLIC,   &mudconf.ntfy_nest_lim,          NULL,               0},
