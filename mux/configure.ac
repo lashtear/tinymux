@@ -72,7 +72,7 @@ AC_ARG_ENABLE(
 AC_MSG_CHECKING(whether to enable Stub Slave)
 AC_ARG_ENABLE(
   [stubslave],
-  AS_HELP_STRING([--enable-stubslave],[enable Stub Slave (default is NO)]),
+  AS_HELP_STRING([--enable-stubslave],[enable Stub Slave (default is YES)]),
   [
     if test "x$enableval" = "xno"; then
       AC_MSG_RESULT(no)
@@ -84,7 +84,7 @@ AC_ARG_ENABLE(
     fi
   ],
   [
-    AC_MSG_RESULT(no)
+    AC_MSG_RESULT(yes)
   ])
 AM_CONDITIONAL([HAVE_STUB_SLAVE], [test x$stubslave = xtrue])
 

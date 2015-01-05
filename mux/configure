@@ -1459,7 +1459,7 @@ Optional Features:
   --enable-realitylvls    enable Reality Levels (default is YES)
   --enable-wodrealms      enable WOD Realms (default is NO)
   --enable-memorybased    enable Memory-Based Database (default is NO)
-  --enable-stubslave      enable Stub Slave (default is NO)
+  --enable-stubslave      enable Stub Slave (default is YES)
   --enable-selfcheck      enable expensive self-checking (default is NO)
 
 Optional Packages:
@@ -13741,8 +13741,8 @@ $as_echo "#define HAVE_STUB_SLAVE 1" >>confdefs.h
 
 else
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
 
 fi
 
