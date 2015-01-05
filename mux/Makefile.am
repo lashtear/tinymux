@@ -15,8 +15,8 @@ lib_LTLIBRARIES = libmux.la
 noinst_LIBRARIES = libversion.a
 
 pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
-dist_bin_SCRIPTS = scripts/Backup scripts/_backupflat.sh	\
-    scripts/db_load scripts/db_unload scripts/Startmux
+dist_bin_SCRIPTS = scripts/mux-backup scripts/mux-backup-flat		\
+    scripts/mux-load-flat scripts/mux-unload-flat scripts/mux-start
 dist_sysconf_DATA = etc/alias.conf etc/compat.conf etc/netmux.conf	\
     etc/script.conf
 
