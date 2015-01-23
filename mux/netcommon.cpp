@@ -1587,15 +1587,6 @@ void check_idle(void)
 
     DESC_SAFEITER_ALL(d, dnext)
     {
-	if (  (d->flags & DS_CONNECTED)
-	   && KeepAlive(d->player))
-	{
-	    // Send a Telnet NOP code - creates traffic to keep NAT routers
-	    // happy.  Hopefully this only runs once a minute.
-	    //
-	    const unsigned char aNOP[2] = { NVT_IAC, NVT_NOP };
-	    queue_write_LEN(d, aNOP, sizeof(aNOP));
-	}
 	if (d->flags & DS_AUTODARK)
 	{
 	    continue;

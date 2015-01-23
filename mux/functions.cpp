@@ -5482,6 +5482,16 @@ FUNCTION(fun_fdepth)
 }
 
 // ---------------------------------------------------------------------------
+// fun_trace: Return the current function nesting depth.
+// ---------------------------------------------------------------------------
+
+FUNCTION(fun_trace)
+{
+    mux_exec(fargs[0], LBUF_SIZE-1, buff, bufc, executor, caller, enactor,
+        eval|EV_FCHECK|EV_STRIP_CURLY|EV_EVAL|EV_TRACE, cargs, ncargs);
+}
+
+// ---------------------------------------------------------------------------
 // fun_ctime: Return the value of an object's CREATED attribute.
 // ---------------------------------------------------------------------------
 
@@ -11036,6 +11046,8 @@ static FUN builtin_function_list[] =
     {T("LIST"),        fun_list,       MAX_ARG, 2,       3, FN_NOEVAL, CA_PUBLIC},
     {T("LIT"),         fun_lit,              1, 1,       1, FN_NOEVAL, CA_PUBLIC},
     {T("LJUST"),       fun_ljust,      MAX_ARG, 2,       3,         0, CA_PUBLIC},
+    {T("LMAX"),        fun_lmax,       MAX_ARG, 0,       2,         0, CA_PUBLIC},
+    {T("LMIN"),        fun_lmin,       MAX_ARG, 0,       2,         0, CA_PUBLIC},
     {T("LN"),          fun_ln,         MAX_ARG, 1,       1,         0, CA_PUBLIC},
     {T("LNUM"),        fun_lnum,       MAX_ARG, 0,       4,         0, CA_PUBLIC},
     {T("LOC"),         fun_loc,        MAX_ARG, 1,       1,         0, CA_PUBLIC},
@@ -11198,6 +11210,7 @@ static FUN builtin_function_list[] =
     {T("TIME"),        fun_time,       MAX_ARG, 0,       2,         0, CA_PUBLIC},
     {T("TIMEFMT"),     fun_timefmt,    MAX_ARG, 1,       2,         0, CA_PUBLIC},
     {T("TR"),          fun_tr,         MAX_ARG, 1,       3,         0, CA_PUBLIC},
+    {T("TRACE"),       fun_trace,      MAX_ARG, 1,       1, FN_NOEVAL, CA_PUBLIC},
     {T("TRANSLATE"),   fun_translate,  MAX_ARG, 2,       2,         0, CA_PUBLIC},
     {T("TRIGGER"),     fun_trigger,    MAX_ARG, 1, MAX_ARG,         0, CA_PUBLIC},
     {T("TRIM"),        fun_trim,       MAX_ARG, 1,       3,         0, CA_PUBLIC},

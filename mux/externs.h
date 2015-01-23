@@ -1044,6 +1044,7 @@ void dispatch_DatabaseDump(void *pUnused, int iUnused);
 void dispatch_FreeListReconstruction(void *pUnused, int iUnused);
 void dispatch_IdleCheck(void *pUnused, int iUnused);
 void dispatch_CheckEvents(void *pUnused, int iUnused);
+void dispatch_KeepAlive(void *pUnused, int iUnused);
 #ifndef HAVE_MEMORY_BASED
 void dispatch_CacheTick(void *pUnused, int iUnused);
 #endif

@@ -1,6 +1,6 @@
 TinyMUX 2.12: CHANGES
-Last Update: December 2014
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Last Update: January 2015
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Major changes that may affect performance and require softcode tweaks:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,6 +23,7 @@ Feature Additions:
     Latin-2.
  -- Update to Unicode 6.0.
  -- Update to PCRE 7.1.
+ -- Added LMAX(), LMIN(), TRACE().
 
 
 Bug Fixes:
@@ -33,6 +34,8 @@ Bug Fixes:
  -- Fix compiler warnings for freeing (const char*)
  -- Stop building jar32 archives of source and binaries. The jar32
     utility is not supported on 64-bit platforms.
+ -- Separated KeepAlive out from Idle-checking.
+ -- Update link to Pueblo Enhancer's Guide.
 
 
 Performance Enhancements:
@@ -49,3 +52,4 @@ Miscellaneous:
 ~~~~~~~~~~~~~
  -- Consume v5.2 of EastAsianWidth.txt to develop ConsoleWidth() helper
     function.
+ -- Bump minimum Visual Studio version to VS 2008.
