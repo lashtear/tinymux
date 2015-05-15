@@ -31,6 +31,7 @@ stubslave
 /mux/scripts/mux-backup-flat
 /mux/scripts/mux-load-flat
 /mux/scripts/mux-start
+/mux/scripts/mux-stop
 /mux/scripts/mux-unload-flat
 
 TAGS

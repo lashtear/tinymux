@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+#	mux-stop - Halt the mux, if it is running.
+#
+. @sysconfdir@/script.conf
+#
+#	Make sure there isn't already a MUX running.
+#
+if [ ! -d "$RUN" ]; then
+    /bin/echo "The mux run directory ($RUN) is not valid."
+    exit 1
+fi
+if [ ! -r "$PIDFILE" ]; then
+    /bin/echo "There is no readable PIDFILE in the run directory."
+    ps acux |grep netmux
+    exit 0
+else
+    pid=$(cat "$PIDFILE")
+    if [ ! -z "$pid" ]; then
+	/bin/echo -ne "Sending SIGTERM to $pid: "
+	if kill "$pid"; then
+	    while kill -0 "$pid" 2>/dev/null; do
+		/bin/echo -ne "."
+		sleep 1
+	    done
+	    /bin/echo "done."
+	    rm "$PIDFILE"
+	    exit 0
+	else
+	    /bin/echo "Unable to halt process."
+	    ps acux |grep netmux
+	    exit 1
+	fi
+    else
+	/bin/echo "The PIDFILE is empty."
+	ps acux |grep netmux
+	exit 0
+    fi
+fi

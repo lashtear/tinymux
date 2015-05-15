@@ -17,7 +17,8 @@ noinst_LIBRARIES = libversion.a
 
 pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
 dist_bin_SCRIPTS = scripts/mux-backup scripts/mux-backup-flat		\
-    scripts/mux-load-flat scripts/mux-unload-flat scripts/mux-start
+    scripts/mux-load-flat scripts/mux-unload-flat scripts/mux-start	\
+    scripts/mux-stop
 dist_sysconf_DATA = etc/alias.conf etc/art.conf etc/compat.conf	\
     etc/netmux.conf etc/script.conf
 
@@ -49,11 +50,12 @@ do_edit = sed \
 
 subst_files = scripts/mux-unload-flat scripts/mux-load-flat		\
     scripts/mux-backup-flat scripts/mux-backup scripts/mux-start	\
-    etc/netmux.conf etc/script.conf
+    scripts/mux-stop etc/netmux.conf etc/script.conf
 
 subst_files_in = scripts/mux-unload-flat.in scripts/mux-load-flat.in	\
     scripts/mux-backup-flat.in scripts/mux-backup.in			\
-    scripts/mux-start.in etc/netmux.conf.in etc/script.conf.in
+    scripts/mux-start.in scripts/mux-stop.in etc/netmux.conf.in		\
+    etc/script.conf.in
 
 $(subst_files): Makefile
 	rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
