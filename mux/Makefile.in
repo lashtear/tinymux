@@ -100,7 +100,8 @@ DIST_COMMON = $(srcdir)/libltdl/Makefile.inc $(srcdir)/Makefile.in \
 	$(top_srcdir)/config/compile $(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/ltmain.sh \
-	$(top_srcdir)/config/missing
+	$(top_srcdir)/config/missing \
+	$(top_srcdir)/config/tap-driver.sh
 @INSTALL_LTDL_TRUE@am__append_2 = libltdl/ltdl.h
 @INSTALL_LTDL_TRUE@am__append_3 = libltdl/libltdl.la
 @CONVENIENCE_LTDL_TRUE@am__append_4 = libltdl/libltdlc.la
@@ -573,6 +574,9 @@ ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = $(LTDLINCL) -DLT_CONFIG_H='<$(LT_CONFIG_H)>' -DLTDL -I. \
 	-I$(srcdir) -Ilibltdl -I$(srcdir)/libltdl \
 	-I$(srcdir)/libltdl/libltdl
+TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+                  $(top_srcdir)/build-aux/tap-driver.sh
+
 lib_LTLIBRARIES = libmux.la $(am__append_3)
 noinst_LIBRARIES = libversion.a
 pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la

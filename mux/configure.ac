@@ -8,6 +8,7 @@ AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 AC_USE_SYSTEM_EXTENSIONS
 AM_MAINTAINER_MODE([disable])
 AM_SILENT_RULES([yes])
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
 
 AM_PROG_AR
 

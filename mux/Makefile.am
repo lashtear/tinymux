@@ -2,6 +2,11 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = $(LTDLINCL)
 
+TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+                  $(top_srcdir)/build-aux/tap-driver.sh
+#TESTS = foo.test bar.test baz.test
+#EXTRA_DIST = $(TESTS)
+
 libexec_PROGRAMS = netmux slave
 if HAVE_STUB_SLAVE
 libexec_PROGRAMS += stubslave
