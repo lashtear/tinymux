@@ -1,11 +1,12 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = $(LTDLINCL)
+ARFLAGS = cr
+AR_FLAGS = cr
 
 TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
-                  $(top_srcdir)/build-aux/tap-driver.sh
-#TESTS = foo.test bar.test baz.test
-#EXTRA_DIST = $(TESTS)
+                  $(top_srcdir)/config/tap-driver.sh
+TESTS = test/netmux.test
 
 libexec_PROGRAMS = netmux slave
 if HAVE_STUB_SLAVE
@@ -62,10 +63,24 @@ subst_files_in = scripts/mux-unload-flat.in scripts/mux-load-flat.in	\
     scripts/mux-start.in scripts/mux-stop.in etc/netmux.conf.in		\
     etc/script.conf.in
 
-$(subst_files): Makefile
-	rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
+.PHONY: scripts-dir etc-dir
+V_MD = $(v_md_$(V))
+v_md_ = $(v_md_$(AM_DEFAULT_VERBOSITY))
+v_md_0 = @echo "  MKDIRP  " $@;
+scripts-dir:
+	$(V_MD)mkdir -p scripts; touch $@
+etc-dir:
+	$(V_MD)mkdir -p etc; touch $@
+
+V_SUBST = $(v_subst_$(V))
+v_subst_ = $(v_subst_$(AM_DEFAULT_VERBOSITY))
+v_subst_0 = @echo "  SUBST   " $@;
+
+$(subst_files): Makefile scripts-dir etc-dir
+	$(V_SUBST)rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
+
 $(subst_files): $(subst_files_in)
-EXTRA_DIST = $(subst_files_in)
+EXTRA_DIST = $(subst_files_in) $(TESTS)
 CLEANFILES = $(subst_files)
 
 netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
@@ -128,7 +143,7 @@ VER_ID=$(if $(filter .git,$(VER_ID_SRC)),$(GITDESC),\
 	  $(if $(filter release.txt,$(VER_ID_SRC)),$(shell cat release.txt),\
 	  $(error Unable to determine source version. VER_ID_SRC is $(VER_ID_SRC))))
 
-GITDESC = $(shell git describe --tags --long --dirty)
+GITDESC = $(shell cd $(srcdir); git describe --tags --long --dirty)
 BUILDER = $(LOGNAME)@$(shell hostname)
 BUILDTIME = $(shell date)
 CXXVER = $(shell $(CXX) --version | head -n1)

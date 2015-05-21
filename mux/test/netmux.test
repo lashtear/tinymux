@@ -1,0 +1,105 @@
+#! /bin/bash
+
+BUILDTOP=$(pwd)
+cd "$srcdir"
+srcdir=$(pwd)
+cd "$BUILDTOP"
+
+killall lt-netmux 2>/dev/null
+
+echo 1..10
+
+echo '# setting up operating "game" directory'
+umask 077
+GAME=$(mktemp -d)
+if [ ! -d "$GAME" ]; then
+    echo 'Bail out! - mktemp not operational'
+    exit 1
+fi
+echo '# test-local gamedir is '$GAME
+
+cat > "$GAME/netmux.conf" <<EOF
+input_database       $GAME/netmux.db
+output_database      $GAME/netmux.db.new
+crash_database       $GAME/netmux.db.CRASH
+game_dir_file        $GAME/netmux.dir
+game_pag_file        $GAME/netmux.pag
+mail_database        $GAME/mail.db
+comsys_database      $GAME/comsys.db
+port 2860
+mud_name testcase
+guest_file           $GAME/text/guest.txt
+connect_file         $GAME/text/connect.txt
+connect_reg_file     $GAME/text/register.txt
+register_create_file $GAME/text/create_reg.txt
+motd_file            $GAME/text/motd.txt
+wizard_motd_file     $GAME/text/wizmotd.txt
+quit_file            $GAME/text/quit.txt
+down_file            $GAME/text/down.txt
+full_file            $GAME/text/full.txt
+badsite_file         $GAME/text/badsite.txt
+newuser_file         $GAME/text/newuser.txt
+status_file          $GAME/shutdown.status
+# backup_script        $GAME/mux-backup-flat
+# stubslave_path       $GAME/stubslave
+EOF
+
+echo '# setting up text files'
+TFILES="guest connect register create_reg motd wizmotd quit down full badsite newuser"
+mkdir "$GAME/text"
+for t in $TFILES; do
+    echo "This is $t.txt" > "$GAME/text/$t.txt"
+done
+
+./netmux -v 2> "$GAME/ver-output"
+if [ $? -eq 1 ]; then
+    case $(< $GAME/ver-output) in
+	"Version: MUX "*)
+	    echo 'ok - netmux version output'
+	    ;;
+
+	*)
+	    echo 'not ok - unrecognized version output'
+    esac
+else
+    echo 'not ok - netmux did not return 1 to -v'
+    echo 'Bail out!'
+    exit 1
+fi
+
+cd "$GAME"
+
+"$BUILDTOP/netmux" -c "$GAME/netmux.conf" -e - -p "$GAME/netmux.pid" -s \
+	 2> "$GAME/stderr-log" &
+netmuxpid=$!
+echo '# waiting for netmux to make a pidfile'
+n=0
+while [ $n -lt 5 ]; do
+    if [ -f "$GAME/netmux.pid" ]; then
+	echo 'ok - dropped a pidfile'
+	break
+    fi
+    sleep 1
+    n=$(( $n + 1 ))
+done
+if [ $n -gt 5 ]; then
+    echo 'not ok - netmux did not drop a pidfile'
+    echo 'Bail out!'
+    exit 1
+fi
+
+"$srcdir/test/check_mush.pl" localhost 2860
+
+#echo 'ok - exiting early with mux still running'
+#exit 0
+
+kill $(<"$GAME/netmux.pid")
+
+if wait $netmuxpid; then
+    echo 'ok - shell child exited cleanly'
+else
+    echo 'not ok - shell child exited with '$?
+fi
+
+exit 0
+

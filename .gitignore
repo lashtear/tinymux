@@ -34,5 +34,9 @@ stubslave
 /mux/scripts/mux-stop
 /mux/scripts/mux-unload-flat
 
+/mux/etc-dir
+/mux/scripts-dir
+/mux/test/*.trs
+
 TAGS
 tags
