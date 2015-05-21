@@ -2193,6 +2193,9 @@ uninstall-am: uninstall-dist_binSCRIPTS uninstall-dist_docDATA \
 	uninstall-pkglibLTLIBRARIES
 
 
+test: check
+.PHONY: test
+
 install-exec-hook:
 	cd $(DESTDIR)$(bindir) && \
 	    rm -f dbconvert && \

@@ -8,6 +8,9 @@ TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
                   $(top_srcdir)/config/tap-driver.sh
 TESTS = test/netmux.test
 
+test: check
+.PHONY: test
+
 libexec_PROGRAMS = netmux slave
 if HAVE_STUB_SLAVE
 libexec_PROGRAMS += stubslave
