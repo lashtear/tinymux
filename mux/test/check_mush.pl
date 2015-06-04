@@ -46,9 +46,14 @@ $exp->spawn('telnet', $host, $port);
 
 waitfor ($exp, qr/This is connect\.txt/, "connect banner");
 
-print "# sending INFO command\n";
-$exp->send ("INFO\r\n");
-waitfor ($exp, qr/### Begin INFO( [0-9.]+)?\r\n/, "INFO header");
+sub bt {
+    my ($out, $in, $comment) = @_;
+    print "# $comment\n";
+    $exp->send ("$out\r\n") if defined $out;
+    waitfor ($exp, $in, $comment);
+}
+
+bt ("INFO", qr/### Begin INFO( [0-9.]+)?\r\n/, "INFO header");
 
 my ($conn, $size, $ver);
 my $in_info = 1;
@@ -73,16 +78,18 @@ if (defined $conn
     notok ('received mangled info');
 }
 
-print "# trying to log in\n";
-$exp->send ("connect Wizard potrzebie\r\n");
-waitfor ($exp, qr/This is motd\.txt\r\n/, "motd");
-waitfor ($exp, qr/This is wizmotd\.txt\r\n/, "wizmotd");
+bt ("connect Wizard potrzebie", qr/This is motd\.txt\r\n/, "motd");
+bt (undef, qr/This is wizmotd\.txt\r\n/, "wizmotd");
+bt ("think add(1,1)", qr/2\r\n/, "think/add");
+bt ("think add(1000000000,3000000000)", qr/4000000000\r\n/, "slow addition");
+bt ("think iadd(281474976710656,7625597484987)", qr/289100574195643\r\n/, "long int addition");
+bt ("think add(1.3,2.4)", qr/3\.7\r\n/, "slow float addition");
+bt ("think ladd(1 -2 3 -4 5 6.3)", qr/9\.3\r\n/, "list add");
+bt ("think sub(5,4)", qr/1\r\n/, "subtraction");
+bt ("think sub(4000000000,1000000000)", qr/3000000000\r\n/, "slow subtraction");
+bt ("think isub(289100574195643,7625597484987)", qr/281474976710656\r\n/, "long int subtraction");
+bt ("think sub(9.9,3.3)", qr/6.6\r\n/, "slow float subtraction");
 
-print "# testing think/add\n";
-$exp->send ("think add(1,1)\r\n");
-waitfor ($exp, qr/2\r\n/, "addition");
-
-$exp->send ("QUIT\r\n");
-waitfor ($exp, qr/This is quit\.txt\r\n/, "quit");
+bt ("QUIT", qr/This is quit\.txt\r\n/, "quit");
 
 exit $rc;
