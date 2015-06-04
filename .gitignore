@@ -38,5 +38,10 @@ stubslave
 /mux/scripts-dir
 /mux/test/*.trs
 
+/mux/coverage-test-*
+*.gcno
+*.gcda
+coverage.info
+
 TAGS
 tags
