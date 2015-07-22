@@ -10,8 +10,10 @@ libtoolize --nonrecursive --copy --quiet
 echo ACLOCAL
 aclocal -I m4
 
-echo AUTOHEADER
-autoheader
+if grep -q AC_CONFIG_HEADERS configure.ac; then
+    echo AUTOHEADER
+    autoheader
+fi
 
 echo AUTOMAKE
 automake --add-missing --copy 2>&1 \
