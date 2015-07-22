@@ -116,7 +116,7 @@ libmux_la_DEPENDENCIES = $(LTDLDEPS)
 libversion_a_SOURCES = version.cpp
 libversion_a_CPPFLAGS = $(VER_FLG)
 
-stubslave_SOURCES = stubslave.cpp stubslave.h
+stubslave_SOURCES = stubslave.cpp
 stubslave_LDADD = libmux.la $(LIBLTDL)
 
 funcs_la_SOURCES = funcs.cpp
