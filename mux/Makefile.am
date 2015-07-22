@@ -90,12 +90,11 @@ netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
     attrs.h command.h comsys.h config.h copyright.h db.h externs.h	\
     file_c.h flags.h functions.h funmath.h help.h htab.h interface.h	\
     levels.h libmux.h mail.h match.h mathutil.h mguests.h misc.h	\
-    modules.h mudconf.h muxcli.h pcre.h powers.h sha1.h slave.h	\
-    stringutil.h svdhash.h svdrand.h timeutil.h ucp.h utf8tables.h	\
-    vattr.h
+    modules.h mudconf.h muxcli.h pcre.h powers.h sha1.h stringutil.h	\
+    svdhash.h svdrand.h timeutil.h ucp.h utf8tables.h vattr.h
 netmux_LDADD = libmux.la libversion.a $(LIBLTDL)
 
-slave_SOURCES = slave.cpp slave.h
+slave_SOURCES = slave.cpp
 
 libmux_la_SOURCES = libmux.cpp
 libmux_la_LDFLAGS = -export-dynamic -avoid-version

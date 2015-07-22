@@ -22,7 +22,6 @@
 #include "command.h"
 #include "file_c.h"
 #include "mathutil.h"
-#include "slave.h"
 
 #if defined(HAVE_STUB_SLAVE)
 extern QUEUE_INFO Queue_In;
