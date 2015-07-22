@@ -120,11 +120,8 @@ AC_CHECK_PROG([HAVE_PDFLATEX],[pdflatex],[1],[0])
 
 # Checks for libraries.
 #
-# The following may be removeable:
-#   -lcposix: ISC is obsolete as of 2006-07-23.
 AC_MSG_CHECKING(for gperftools TCMalloc)
 AC_CHECK_LIB([tcmalloc],[malloc])
-AC_SEARCH_LIBS([strerror],[cposix])
 AC_SEARCH_LIBS([crypt],[crypt])
 AC_SEARCH_LIBS([socket],[socket inet])
 AC_SEARCH_LIBS([gethostbyname],[socket nsl bind])
@@ -132,7 +129,6 @@ AC_SEARCH_LIBS([inet_addr],[nsl])
 AC_SEARCH_LIBS([sqrt],[m])
 AC_SEARCH_LIBS([SSL_library_init],[ssl])
 AC_SEARCH_LIBS([EVP_DigestInit],[crypto])
-AC_SEARCH_LIBS([deflate],[z])
 AC_SEARCH_LIBS([mysql_init],[mysqlclient])
 
 # Checks for header files.
