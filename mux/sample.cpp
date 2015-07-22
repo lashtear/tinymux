@@ -515,7 +515,7 @@ void CSample::data_free(dbref object)
 
 // SumProxy component which is not directly accessible.
 //
-CSumProxy::CSumProxy(void) : m_cRef(1), m_nChannel(CHANNEL_INVALID)
+CSumProxy::CSumProxy(void) : m_nChannel(CHANNEL_INVALID), m_cRef(1)
 {
     g_cComponents++;
 }
