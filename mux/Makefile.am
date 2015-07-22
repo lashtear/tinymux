@@ -61,25 +61,14 @@ subst_files = scripts/mux-unload-flat scripts/mux-load-flat		\
     scripts/mux-backup-flat scripts/mux-backup scripts/mux-start	\
     scripts/mux-stop etc/netmux.conf etc/script.conf
 
-subst_files_in = scripts/mux-unload-flat.in scripts/mux-load-flat.in	\
-    scripts/mux-backup-flat.in scripts/mux-backup.in			\
-    scripts/mux-start.in scripts/mux-stop.in etc/netmux.conf.in		\
-    etc/script.conf.in
-
-.PHONY: scripts-dir etc-dir
-V_MD = $(v_md_$(V))
-v_md_ = $(v_md_$(AM_DEFAULT_VERBOSITY))
-v_md_0 = @echo "  MKDIRP  " $@;
-scripts-dir:
-	$(V_MD)mkdir -p scripts; touch $@
-etc-dir:
-	$(V_MD)mkdir -p etc; touch $@
+subst_files_in = $(addsuffix .in,$(subst_files))
 
 V_SUBST = $(v_subst_$(V))
 v_subst_ = $(v_subst_$(AM_DEFAULT_VERBOSITY))
 v_subst_0 = @echo "  SUBST   " $@;
 
-$(subst_files): Makefile scripts-dir etc-dir
+$(subst_files): Makefile
+	@mkdir -p etc scripts
 	$(V_SUBST)rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
 
 $(subst_files): $(subst_files_in)

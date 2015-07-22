@@ -22,3 +22,5 @@ automake --add-missing --copy 2>&1 \
 
 echo AUTOCONF
 autoconf
+
+perl -i -pe 's/AR_FLAGS=cru/AR_FLAGS=cr/g' configure m4/libtool.m4

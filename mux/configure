@@ -6635,7 +6635,7 @@ esac
 fi
 
 : ${AR=ar}
-: ${AR_FLAGS=cru}
+: ${AR_FLAGS=cr}
 
 
 
