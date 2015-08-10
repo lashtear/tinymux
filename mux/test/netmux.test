@@ -69,7 +69,7 @@ fi
 
 cd "$GAME"
 
-"$BUILDTOP/netmux" -c "$GAME/netmux.conf" -e - -p "$GAME/netmux.pid" -s \
+PATH="$BUILDTOP:$PATH" "$BUILDTOP/netmux" -c "$GAME/netmux.conf" -e - -p "$GAME/netmux.pid" -s \
 	 2> "$GAME/stderr-log" &
 netmuxpid=$!
 echo '# waiting for netmux to make a pidfile'

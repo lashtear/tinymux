@@ -18,6 +18,7 @@ DBDATE=$(date +%Y%m%d-%H%M%S)
 # LOGDIR=var/log
 # RUN=var/run
 #
+PATH=@bindir@:@libexecdir@:$PATH
 BIN=@bindir@
 TEXT=@sysconfdir@/text
 DATA=@localstatedir@
