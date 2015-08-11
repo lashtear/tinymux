@@ -10,7 +10,7 @@ libtoolize --nonrecursive --copy --quiet
 echo ACLOCAL
 aclocal -I m4
 
-if grep -q AC_CONFIG_HEADERS configure.ac; then
+if grep -q AC_CONFIG_HEADER configure.ac; then
     echo AUTOHEADER
     autoheader
 fi
