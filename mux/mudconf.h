@@ -239,6 +239,8 @@ struct confdata
     UTF8    *crea_file;         /* display this on login for new users */
     UTF8    *backup_script;     /* path to backup script */
     UTF8    *stubslave_path;    /* path to stubslave */
+    UTF8    *slave_path;        /* path to slave */
+    UTF8    *netmux_path;       /* path to netmux */
     UTF8    *creg_file;         /* display on connect if registration */
     UTF8    *down_file;         /* display this file if no logins */
     UTF8    *full_file;         /* display when max users exceeded */

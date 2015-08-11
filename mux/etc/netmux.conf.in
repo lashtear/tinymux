@@ -39,7 +39,9 @@ status_file          @localstatedir@/shutdown.status
 # backup script location
 backup_script        @bindir@/mux-backup-flat
 #
-# location of stubslave (safe to use even without)
+# location of libexecs
+netmux_path          @libexecdir@/netmux
+slave_path           @libexecdir@/slave
 stubslave_path       @libexecdir@/stubslave
 #
 # Helpfile

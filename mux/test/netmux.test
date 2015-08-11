@@ -5,9 +5,9 @@ cd "$srcdir"
 srcdir=$(pwd)
 cd "$BUILDTOP"
 
-killall lt-netmux 2>/dev/null
+killall netmux lt-netmux 2>/dev/null
 
-echo 1..18
+echo 1..22
 
 echo '# setting up operating "game" directory'
 umask 077
@@ -40,8 +40,10 @@ full_file            $GAME/text/full.txt
 badsite_file         $GAME/text/badsite.txt
 newuser_file         $GAME/text/newuser.txt
 status_file          $GAME/shutdown.status
-# backup_script        $GAME/mux-backup-flat
-# stubslave_path       $GAME/stubslave
+backup_script        $GAME/mux-backup-flat
+netmux_path          $BUILDTOP/netmux
+slave_path           $BUILDTOP/slave
+stubslave_path       $BUILDTOP/stubslave
 EOF
 
 echo '# setting up text files'

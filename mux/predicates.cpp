@@ -1645,8 +1645,8 @@ void do_restart(dbref executor, dbref caller, dbref enactor, int eval, int key)
 
     Log.StopLogging();
 
-    execl("libexec/netmux", "netmux", "-c", mudconf.config_file, "-p",
-	mudconf.pid_file, "-e", mudconf.log_dir, (char *)NULL);
+    execl((const char *)mudconf.netmux_path, "netmux", "-c", mudconf.config_file, "-p",
+	  mudconf.pid_file, "-e", mudconf.log_dir, (char *)NULL);
     mux_assert(false);
 #endif // UNIX_PROCESSES
 }

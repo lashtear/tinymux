@@ -8,9 +8,8 @@ DBDATE=$(date +%Y%m%d-%H%M%S)
 ### Change things below here ONLY if running multiple games ###
 ### in the same install                                     ###
 #
-# NOTE: DATA, and TEXT here -must- agree with the settings in
-# your netmux.conf file.  The ./Startmux, ./Backup, and _backupflat.sh
-# scripts depend on this assumption.
+# These settings control the scripts that start and stop netmux, as
+# well as the backups and flatfile load/unload.
 #
 # BIN=bin
 # TEXT=etc/text

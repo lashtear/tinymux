@@ -499,7 +499,7 @@ void boot_stubslave(dbref executor, dbref caller, dbref enactor, int)
 	{
 	    mux_close(i);
 	}
-	execlp((const char *)mudconf.stubslave_path, "stubslave", (char *)NULL);
+	execl((const char *)mudconf.stubslave_path, "stubslave", (char *)NULL);
 	_exit(1);
     }
     mux_close(sv[1]);
@@ -713,7 +713,7 @@ void boot_slave(dbref executor, dbref caller, dbref enactor, int eval, int key)
 	{
 	    mux_close(i);
 	}
-	execlp("slave", "slave", (char *)NULL);
+	execl((const char *)mudconf.slave_path, "slave", (char *)NULL);
 	_exit(1);
     }
     close(sv[1]);
@@ -4835,7 +4835,7 @@ static void DCL_CDECL sighandler(int sig)
 	    dump_restart_db();
 #endif // HAVE_WORKING_FORK
 
-	    execl("netmux", "netmux", "-c", mudconf.config_file, "-p", mudconf.pid_file, "-e", mudconf.log_dir, (char *)NULL);
+	    execl((const char *)mudconf.netmux_path, "netmux", "-c", mudconf.config_file, "-p", mudconf.pid_file, "-e", mudconf.log_dir, (char *)NULL);
 	    mux_assert(false);
 	    break;
 #endif // UNIX_PROCESSES

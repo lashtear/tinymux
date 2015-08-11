@@ -277,7 +277,7 @@ void init_timer(void)
 
     // Setup one-shot task to enable restarting 10 seconds after startmux.
     //
-    scheduler.DeferTask(ltaNow+time_15s, PRIORITY_OBJECT, dispatch_CanRestart, 0, 0);
+    scheduler.DeferTask(ltaNow+time_5s, PRIORITY_OBJECT, dispatch_CanRestart, 0, 0);
 }
 
 /*

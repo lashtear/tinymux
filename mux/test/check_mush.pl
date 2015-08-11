@@ -4,9 +4,8 @@ use strict;
 use warnings;
 
 use Expect;
-use Net::Telnet ();
 
-my $timeout=1;
+my $timeout=1.5;
 
 my ($host, $port) = @ARGV;
 $host ||= 'localhost';
@@ -41,10 +40,8 @@ my $exp = Expect->new();
 $exp->raw_pty(1);
 $exp->slave->stty(qw(raw -echo));
 $exp->log_user(0);
-
-$exp->spawn('telnet', $host, $port);
-
-waitfor ($exp, qr/This is connect\.txt/, "connect banner");
+$exp->spawn('telnet', $host, $port) or die "not ok - unable to launch telnet";
+$exp->exp_internal(1);
 
 sub bt {
     my ($out, $in, $comment) = @_;
@@ -53,6 +50,7 @@ sub bt {
     waitfor ($exp, $in, $comment);
 }
 
+bt (undef, qr/This is connect\.txt/, "connect banner");
 bt ("INFO", qr/### Begin INFO( [0-9.]+)?\r\n/, "INFO header");
 
 my ($conn, $size, $ver);
@@ -80,6 +78,7 @@ if (defined $conn
 
 bt ("connect Wizard potrzebie", qr/This is motd\.txt\r\n/, "motd");
 bt (undef, qr/This is wizmotd\.txt\r\n/, "wizmotd");
+bt ("\@restart", qr/Server just started\. Please try again in a few seconds.\r\n/, "restart-blocked");
 bt ("think add(1,1)", qr/2\r\n/, "think/add");
 bt ("think add(1000000000,3000000000)", qr/4000000000\r\n/, "slow addition");
 bt ("think iadd(281474976710656,7625597484987)", qr/289100574195643\r\n/, "long int addition");
@@ -89,6 +88,11 @@ bt ("think sub(5,4)", qr/1\r\n/, "subtraction");
 bt ("think sub(4000000000,1000000000)", qr/3000000000\r\n/, "slow subtraction");
 bt ("think isub(289100574195643,7625597484987)", qr/281474976710656\r\n/, "long int subtraction");
 bt ("think sub(9.9,3.3)", qr/6.6\r\n/, "slow float subtraction");
+bt ("\@pemit %#=at-pemit works", qr/at-pemit works\r\n/, "\@pemit");
+print "#   waiting for restart enablement task\n";
+sleep 6;
+bt ("\@restart", qr/GAME: Restart by Wizard, please wait\./, "restart-allowed");
+bt (undef, qr/GAME: Restart finished.\r\n/, "restart-success");
 
 bt ("QUIT", qr/This is quit\.txt\r\n/, "quit");
 
