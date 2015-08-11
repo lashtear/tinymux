@@ -3940,14 +3940,12 @@ static void list_rlevels(dbref player)
 #define LIST_FLAGS      4
 #define LIST_FUNCTIONS  5
 #define LIST_GLOBALS    6
-#define LIST_ALLOCATOR  7
 #define LIST_LOGGING    8
 #define LIST_DF_FLAGS   9
 #define LIST_PERMS      10
 #define LIST_ATTRPERMS  11
 #define LIST_OPTIONS    12
 #define LIST_HASHSTATS  13
-#define LIST_BUFTRACE   14
 #define LIST_CONF_PERMS 15
 #define LIST_SITEINFO   16
 #define LIST_POWERS     17
@@ -3965,11 +3963,9 @@ static void list_rlevels(dbref player)
 
 NAMETAB list_names[] =
 {
-    {T("allocations"),        2,  CA_WIZARD,  LIST_ALLOCATOR},
     {T("attr_permissions"),   5,  CA_WIZARD,  LIST_ATTRPERMS},
     {T("attributes"),         2,  CA_PUBLIC,  LIST_ATTRIBUTES},
     {T("bad_names"),          2,  CA_WIZARD,  LIST_BADNAMES},
-    {T("buffers"),            2,  CA_WIZARD,  LIST_BUFTRACE},
     {T("commands"),           3,  CA_PUBLIC,  LIST_COMMANDS},
     {T("config_permissions"), 3,  CA_GOD,     LIST_CONF_PERMS},
     {T("costs"),              3,  CA_PUBLIC,  LIST_COSTS},
@@ -4027,12 +4023,6 @@ void do_list(dbref executor, dbref caller, dbref enactor, int eval, int key,
 
     switch (flagvalue)
     {
-    case LIST_ALLOCATOR:
-	list_bufstats(executor);
-	break;
-    case LIST_BUFTRACE:
-	list_buftrace(executor);
-	break;
     case LIST_ATTRIBUTES:
 	list_attrtable(executor);
 	break;

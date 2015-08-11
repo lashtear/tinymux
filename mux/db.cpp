@@ -2460,7 +2460,7 @@ UTF8 *atr_get_real(const UTF8 *tag, dbref thing, int atr, dbref *owner, int *fla
     const UTF8 *file, const int line)
 {
     size_t nLen;
-    UTF8 *buff = pool_alloc_lbuf(tag, file, line);
+    UTF8 *buff = alloc_lbuf();
     return atr_get_str_LEN(buff, thing, atr, owner, flags, &nLen);
 }
 
@@ -2530,7 +2530,7 @@ UTF8 *atr_pget_real(dbref thing, int atr, dbref *owner, int *flags,
     const UTF8 *file, const int line)
 {
     size_t nLen;
-    UTF8 *buff = pool_alloc_lbuf(T("atr_pget"), file, line);
+    UTF8 *buff = alloc_lbuf();
     return atr_pget_str_LEN(buff, thing, atr, owner, flags, &nLen);
 }
 

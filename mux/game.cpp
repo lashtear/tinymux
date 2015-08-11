@@ -2240,12 +2240,6 @@ static void dbconvert(void)
 
     SeedRandomNumberGenerator();
 
-    pool_init(POOL_LBUF, LBUF_SIZE);
-    pool_init(POOL_MBUF, MBUF_SIZE);
-    pool_init(POOL_SBUF, SBUF_SIZE);
-    pool_init(POOL_BOOL, sizeof(struct boolexp));
-    pool_init(POOL_STRING, sizeof(mux_string));
-
     cf_init();
 
     // Decide what conversions to do and how to format the output file.
@@ -3308,16 +3302,6 @@ int DCL_CDECL main(int argc, char *argv[])
     mudstate.restart_count= 0;
 
     mudstate.cpu_count_from.GetUTC();
-    pool_init(POOL_LBUF, LBUF_SIZE);
-    pool_init(POOL_MBUF, MBUF_SIZE);
-    pool_init(POOL_SBUF, SBUF_SIZE);
-    pool_init(POOL_BOOL, sizeof(struct boolexp));
-
-    pool_init(POOL_DESC, sizeof(DESC));
-    pool_init(POOL_QENTRY, sizeof(BQUE));
-    pool_init(POOL_LBUFREF, sizeof(lbuf_ref));
-    pool_init(POOL_REGREF, sizeof(reg_ref));
-    pool_init(POOL_STRING, sizeof(mux_string));
     tcache_init();
     pcache_init();
     cf_init();

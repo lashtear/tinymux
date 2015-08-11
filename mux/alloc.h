@@ -34,48 +34,14 @@ struct reg_ref
     UTF8    *reg_ptr;
 };
 
-#if defined(HAVE_LIBTCMALLOC)
-
 // Okay, we have a high performance thread-safe allocator that can do
-// heap checking and profiling.  Skip all this baroque pool chicanery.
-
-#define pool_init(a,b) do {} while (0)
-
-typedef enum {
-    POOL_LBUF,
-    POOL_SBUF,
-    POOL_MBUF,
-    POOL_BOOL,
-    POOL_DESC,
-    POOL_QENTRY,
-    POOL_PCACHE,
-    POOL_LBUFREF,
-    POOL_REGREF,
-    POOL_STRING,
-    NUM_POOLS
-} pool_idx_t;
-
-#define pool_alloc(p,tag,file,line) abort()
-/* extern UTF8 *pool_alloc(pool_idx_t p, */
-/*                         __in const UTF8 *func, */
-/*                         __in const UTF8 *file, */
-/*                         int line); */
+// heap checking and profiling.  We link against it if it exists, and
+// if not, we don't need to worry about it. Skip all this baroque pool
+// chicanery.
 
 #define chfree(buf) do {                        \
 	mux_assert(buf != NULL);                \
 	free(buf); } while (0)
-#define pool_free(p,buf,file,line) chfree(buf)
-
-// Used only in timer.cpp
-#define pool_reset() do {} while (0)
-
-
-// Used directly only in db.cpp
-#define pool_alloc_lbuf(tag,file,line) alloc_lbuf(tag)
-
-// These are only used in command.cpp
-extern void list_bufstats(dbref);
-extern void list_buftrace(dbref);
 
 #define alloc_sbuf(s)    (UTF8 *) calloc(1, SBUF_SIZE)
 #define alloc_mbuf(s)    (UTF8 *) calloc(1, MBUF_SIZE)
@@ -98,55 +64,7 @@ extern void list_buftrace(dbref);
 #define free_string(b)   chfree(b)
 #define free_desc(b)     chfree(b)
 
-#else
-
-// Sometimes, we might need the chicanery.
-
-#define POOL_LBUF    0
-#define POOL_SBUF    1
-#define POOL_MBUF    2
-#define POOL_BOOL    3
-#define POOL_DESC    4
-#define POOL_QENTRY  5
-#define POOL_PCACHE  6
-#define POOL_LBUFREF 7
-#define POOL_REGREF  8
-#define POOL_STRING  9
-#define NUM_POOLS    10
-
-extern void pool_init(int, int);
-extern UTF8 *pool_alloc(int, __in const UTF8 *, __in const UTF8 *, int);
-extern UTF8 *pool_alloc_lbuf(__in const UTF8 *, __in const UTF8 *, int);
-extern void pool_free(int, __in UTF8 *, __in const UTF8 *, int);
-extern void pool_free_lbuf(__in_ecount(LBUF_SIZE) UTF8 *, __in const UTF8 *, int);
-extern void list_bufstats(dbref);
-extern void list_buftrace(dbref);
-extern void pool_reset(void);
-
-#define alloc_desc(s) (DESC *)pool_alloc(POOL_DESC, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_desc(b) pool_free(POOL_DESC,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_lbuf(s)    pool_alloc_lbuf((UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_lbuf(b)     pool_free_lbuf((UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_mbuf(s)    pool_alloc(POOL_MBUF, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_mbuf(b)     pool_free(POOL_MBUF,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_sbuf(s)    pool_alloc(POOL_SBUF, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_sbuf(b)     pool_free(POOL_SBUF,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_bool(s)    (struct boolexp *)pool_alloc(POOL_BOOL, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_bool(b)     pool_free(POOL_BOOL,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_qentry(s)  (BQUE *)pool_alloc(POOL_QENTRY, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_qentry(b)   pool_free(POOL_QENTRY,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_pcache(s)  (PCACHE *)pool_alloc(POOL_PCACHE, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_pcache(b)   pool_free(POOL_PCACHE,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_lbufref(s) (lbuf_ref *)pool_alloc(POOL_LBUFREF, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_lbufref(b)  pool_free(POOL_LBUFREF,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_regref(s)  (reg_ref *)pool_alloc(POOL_REGREF, (UTF8 *)s, (UTF8 *)__FILE__, __LINE__)
-#define free_regref(b)   pool_free(POOL_REGREF,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-#define alloc_string(s)  (mux_string *)pool_alloc(POOL_STRING, T(s), (UTF8 *)__FILE__, __LINE__)
-#define free_string(b)   pool_free(POOL_STRING,(UTF8 *)(b), (UTF8 *)__FILE__, __LINE__)
-
-#endif
-
-#define safe_copy_chr_ascii(src, buff, bufp, nSizeOfBuffer) \
+#define safe_copy_chr_ascii(src, buff, bufp, nSizeOfBuffer)	\
 { \
     if ((size_t)(*bufp - buff) < nSizeOfBuffer) \
     { \

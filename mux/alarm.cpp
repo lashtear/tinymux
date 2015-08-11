@@ -105,10 +105,12 @@ void CMuxAlarm::Sleep(CLinearTimeDelta ltd)
  * \return  none.
  */
 
+#if 0
 void CMuxAlarm::SurrenderSlice(void)
 {
     ::Sleep(0);
 }
+#endif // 0
 
 /*! \brief Set the Alarm Clock.
  *
@@ -235,6 +237,7 @@ void CMuxAlarm::Sleep(CLinearTimeDelta ltd)
 #endif
 }
 
+#if 0
 /*! \brief Surrenders a little time.
  *
  * One most operating system, a request to sleep for 0 is a polite way of
@@ -247,6 +250,7 @@ void CMuxAlarm::SurrenderSlice(void)
 {
     ::sleep(0);
 }
+#endif // 0
 
 /*! \brief Set the Alarm Clock.
  *

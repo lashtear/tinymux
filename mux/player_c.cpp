@@ -54,7 +54,6 @@ static PCACHE *pcache_head;
 
 void pcache_init(void)
 {
-    pool_init(POOL_PCACHE, sizeof(PCACHE));
     pcache_head = NULL;
 }
 

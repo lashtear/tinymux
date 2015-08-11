@@ -75,9 +75,9 @@ $(subst_files): $(subst_files_in)
 EXTRA_DIST = $(subst_files_in) $(TESTS)
 CLEANFILES = $(subst_files)
 
-netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
-    bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
-    db.cpp db_rw.cpp eval.cpp file_c.cpp flags.cpp funceval.cpp	\
+netmux_SOURCES = alarm.cpp attrcache.cpp boolexp.cpp bsd.cpp		\
+    command.cpp comsys.cpp conf.cpp cque.cpp create.cpp db.cpp		\
+    db_rw.cpp eval.cpp file_c.cpp flags.cpp funceval.cpp		\
     funceval2.cpp functions.cpp funmath.cpp game.cpp help.cpp		\
     htab.cpp levels.cpp local.cpp log.cpp look.cpp mail.cpp match.cpp	\
     mathutil.cpp mguests.cpp modules.cpp move.cpp muxcli.cpp		\

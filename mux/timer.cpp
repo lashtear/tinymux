@@ -32,7 +32,6 @@ void dispatch_FreeListReconstruction(void *pUnused, int iUnused)
 	do_dbck(NOTHING, NOTHING, NOTHING, 0, 0);
 	Guest.CleanUp();
 	pcache_trim();
-	pool_reset();
 	mudstate.debug_cmd = cmdsave;
     }
 

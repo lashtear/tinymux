@@ -7,7 +7,7 @@ cd "$BUILDTOP"
 
 killall netmux lt-netmux 2>/dev/null
 
-echo 1..22
+echo 1..32
 
 echo '# setting up operating "game" directory'
 umask 077
@@ -44,6 +44,7 @@ backup_script        $GAME/mux-backup-flat
 netmux_path          $BUILDTOP/netmux
 slave_path           $BUILDTOP/slave
 stubslave_path       $BUILDTOP/stubslave
+lag_limit            3
 EOF
 
 echo '# setting up text files'

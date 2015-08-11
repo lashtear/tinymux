@@ -275,26 +275,25 @@ sum_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(sum_la_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_STUB_SLAVE_TRUE@am__EXEEXT_1 = stubslave$(EXEEXT)
 PROGRAMS = $(libexec_PROGRAMS)
-am_netmux_OBJECTS = alarm.$(OBJEXT) alloc.$(OBJEXT) \
-	attrcache.$(OBJEXT) boolexp.$(OBJEXT) bsd.$(OBJEXT) \
-	command.$(OBJEXT) comsys.$(OBJEXT) conf.$(OBJEXT) \
-	cque.$(OBJEXT) create.$(OBJEXT) db.$(OBJEXT) db_rw.$(OBJEXT) \
-	eval.$(OBJEXT) file_c.$(OBJEXT) flags.$(OBJEXT) \
-	funceval.$(OBJEXT) funceval2.$(OBJEXT) functions.$(OBJEXT) \
-	funmath.$(OBJEXT) game.$(OBJEXT) help.$(OBJEXT) htab.$(OBJEXT) \
-	levels.$(OBJEXT) local.$(OBJEXT) log.$(OBJEXT) look.$(OBJEXT) \
-	mail.$(OBJEXT) match.$(OBJEXT) mathutil.$(OBJEXT) \
-	mguests.$(OBJEXT) modules.$(OBJEXT) move.$(OBJEXT) \
-	muxcli.$(OBJEXT) netcommon.$(OBJEXT) object.$(OBJEXT) \
-	pcre.$(OBJEXT) player.$(OBJEXT) player_c.$(OBJEXT) \
-	plusemail.$(OBJEXT) powers.$(OBJEXT) predicates.$(OBJEXT) \
-	quota.$(OBJEXT) rob.$(OBJEXT) set.$(OBJEXT) sha1.$(OBJEXT) \
-	speech.$(OBJEXT) stringutil.$(OBJEXT) strtod.$(OBJEXT) \
-	svdhash.$(OBJEXT) svdrand.$(OBJEXT) timeabsolute.$(OBJEXT) \
-	timedelta.$(OBJEXT) timeparser.$(OBJEXT) timer.$(OBJEXT) \
-	timeutil.$(OBJEXT) timezone.$(OBJEXT) unparse.$(OBJEXT) \
-	utf8tables.$(OBJEXT) vattr.$(OBJEXT) walkdb.$(OBJEXT) \
-	wild.$(OBJEXT) wiz.$(OBJEXT)
+am_netmux_OBJECTS = alarm.$(OBJEXT) attrcache.$(OBJEXT) \
+	boolexp.$(OBJEXT) bsd.$(OBJEXT) command.$(OBJEXT) \
+	comsys.$(OBJEXT) conf.$(OBJEXT) cque.$(OBJEXT) \
+	create.$(OBJEXT) db.$(OBJEXT) db_rw.$(OBJEXT) eval.$(OBJEXT) \
+	file_c.$(OBJEXT) flags.$(OBJEXT) funceval.$(OBJEXT) \
+	funceval2.$(OBJEXT) functions.$(OBJEXT) funmath.$(OBJEXT) \
+	game.$(OBJEXT) help.$(OBJEXT) htab.$(OBJEXT) levels.$(OBJEXT) \
+	local.$(OBJEXT) log.$(OBJEXT) look.$(OBJEXT) mail.$(OBJEXT) \
+	match.$(OBJEXT) mathutil.$(OBJEXT) mguests.$(OBJEXT) \
+	modules.$(OBJEXT) move.$(OBJEXT) muxcli.$(OBJEXT) \
+	netcommon.$(OBJEXT) object.$(OBJEXT) pcre.$(OBJEXT) \
+	player.$(OBJEXT) player_c.$(OBJEXT) plusemail.$(OBJEXT) \
+	powers.$(OBJEXT) predicates.$(OBJEXT) quota.$(OBJEXT) \
+	rob.$(OBJEXT) set.$(OBJEXT) sha1.$(OBJEXT) speech.$(OBJEXT) \
+	stringutil.$(OBJEXT) strtod.$(OBJEXT) svdhash.$(OBJEXT) \
+	svdrand.$(OBJEXT) timeabsolute.$(OBJEXT) timedelta.$(OBJEXT) \
+	timeparser.$(OBJEXT) timer.$(OBJEXT) timeutil.$(OBJEXT) \
+	timezone.$(OBJEXT) unparse.$(OBJEXT) utf8tables.$(OBJEXT) \
+	vattr.$(OBJEXT) walkdb.$(OBJEXT) wild.$(OBJEXT) wiz.$(OBJEXT)
 netmux_OBJECTS = $(am_netmux_OBJECTS)
 netmux_DEPENDENCIES = libmux.la libversion.a $(am__DEPENDENCIES_1)
 am_slave_OBJECTS = slave.$(OBJEXT)
@@ -810,9 +809,9 @@ EXTRA_DIST = $(subst_files_in) $(TESTS) libltdl/lt__dirent.c \
 	libltdl/argz_.h libltdl/argz.c
 CLEANFILES = $(subst_files) libltdl/libltdl.la libltdl/libltdlc.la \
 	libltdl/libdlloader.la $(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
-netmux_SOURCES = alarm.cpp alloc.cpp attrcache.cpp boolexp.cpp		\
-    bsd.cpp command.cpp comsys.cpp conf.cpp cque.cpp create.cpp	\
-    db.cpp db_rw.cpp eval.cpp file_c.cpp flags.cpp funceval.cpp	\
+netmux_SOURCES = alarm.cpp attrcache.cpp boolexp.cpp bsd.cpp		\
+    command.cpp comsys.cpp conf.cpp cque.cpp create.cpp db.cpp		\
+    db_rw.cpp eval.cpp file_c.cpp flags.cpp funceval.cpp		\
     funceval2.cpp functions.cpp funmath.cpp game.cpp help.cpp		\
     htab.cpp levels.cpp local.cpp log.cpp look.cpp mail.cpp match.cpp	\
     mathutil.cpp mguests.cpp modules.cpp move.cpp muxcli.cpp		\
@@ -1277,7 +1276,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alarm.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alloc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/attrcache.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boolexp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bsd.Po@am__quote@
