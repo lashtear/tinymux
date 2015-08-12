@@ -28,7 +28,7 @@ sub waitfor {
 		  ['timeout', sub { notok ("timeout before $msg")}],
 		  ['eof', sub { notok ("EOF before $msg")}],
 		  [$re]);
-    print "ok - $msg received\n";
+    print "ok - $msg\n";
 }
 
 sub match_keyword {
@@ -107,6 +107,8 @@ bt ("think iter(lnum(1,10000),iter(lnum(1,10000),.))",
     qr/GAME: Expensive activity abbreviated.\r\n/, "expensive-time-abort");
 $timeout = 1.5;
 
+bt ("think sql(select \"sql works\")",
+    qr/sql works\r\n/, "inline sql");
 
 bt ("QUIT", qr/This is quit\.txt\r\n/, "quit");
 

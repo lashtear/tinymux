@@ -74,9 +74,9 @@
 
 #endif // WIN32
 
-#if defined(HAVE_MYSQL_H)
+#if defined(HAVE_MYSQL_MYSQL_H) || defined(HAVE_MYSQL_H)
 #define INLINESQL
-#endif // HAVE_MYSQL_H
+#endif // HAVE_MYSQL_MYSQL_H || defined(HAVE_MYSQL_H)
 
 #ifndef __specstrings
 #define __deref_in

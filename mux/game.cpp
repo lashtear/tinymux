@@ -27,7 +27,7 @@
 #endif // HAVE_REALITY_LVLS
 
 #if defined(INLINESQL)
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 MYSQL *mush_database = NULL;
 #endif // INLINESQL
@@ -2410,12 +2410,10 @@ static void init_sql(void)
 
 	if (mush_database)
 	{
-#ifdef MYSQL_OPT_RECONNECT
 	    // As of MySQL 5.0.3, the default is no longer to reconnect.
 	    //
 	    my_bool reconnect = 1;
 	    mysql_options(mush_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
-#endif
 	    mysql_options(mush_database, MYSQL_SET_CHARSET_NAME, "utf8");
 
 	    if (mysql_real_connect(mush_database,
@@ -2423,12 +2421,10 @@ static void init_sql(void)
 		       (char *)mudconf.sql_password,
 		       (char *)mudconf.sql_database, 0, NULL, 0))
 	    {
-#ifdef MYSQL_OPT_RECONNECT
 		// Before MySQL 5.0.19, mysql_real_connect sets the option
 		// back to default, so we set it again.
 		//
 		mysql_options(mush_database, MYSQL_OPT_RECONNECT, (const char *)&reconnect);
-#endif
 		STARTLOG(LOG_STARTUP,"SQL","CONN");
 		log_text(T("Connected to MySQL"));
 		ENDLOG;

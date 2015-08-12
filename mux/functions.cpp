@@ -23,7 +23,7 @@
 #endif // HAVE_REALITY_LVLS
 
 #if defined(INLINESQL)
-#include <mysql.h>
+#include <mysql/mysql.h>
 
 extern MYSQL *mush_database;
 #endif // INLINESQL
