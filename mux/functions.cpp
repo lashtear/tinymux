@@ -25,6 +25,7 @@
 #if defined(INLINESQL)
 #include <mysql/mysql.h>
 
+extern void init_sql();
 extern MYSQL *mush_database;
 #endif // INLINESQL
 
@@ -7035,7 +7036,9 @@ FUNCTION(fun_distribute)
 FUNCTION(fun_sql)
 {
     UNUSED_PARAMETER(nfargs);
+    int retried = 0;
 
+retry:
     if (!mush_database)
     {
 	safe_str(T("#-1 NO DATABASE"), buff, bufc);
@@ -7072,6 +7075,7 @@ FUNCTION(fun_sql)
     if (mysql_ping(mush_database))
     {
 	free_lbuf(curr);
+	if (!retried) { init_sql(); retried=1; goto retry; }
 	safe_str(T("#-1 SQL UNAVAILABLE"), buff, bufc);
 	return;
     }
@@ -7079,6 +7083,7 @@ FUNCTION(fun_sql)
     if (mysql_real_query(mush_database, (char *)cp, strlen((char *)cp)))
     {
 	free_lbuf(curr);
+	if (!retried) { init_sql(); retried=1; goto retry; }
 	safe_str(T("#-1 QUERY ERROR"), buff, bufc);
 	return;
     }

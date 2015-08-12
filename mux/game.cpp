@@ -2393,10 +2393,18 @@ static void write_pidfile(const UTF8 *pFilename)
 }
 
 #ifdef INLINESQL
-static void init_sql(void)
+void init_sql(void)
 {
     if ('\0' != mudconf.sql_server[0])
     {
+	if (mush_database)
+	{
+	    mysql_close(mush_database);
+	    mush_database = NULL;
+	    STARTLOG(LOG_STARTUP,"SQL","DISC");
+	    log_text(T("SQL shut down for reconnect"));
+	    ENDLOG;
+	}
 	STARTLOG(LOG_STARTUP,"SQL","CONN");
 	log_text(T("Connecting: "));
 	log_text(mudconf.sql_database);
