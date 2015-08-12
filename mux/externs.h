@@ -279,6 +279,9 @@ void fork_and_dump(int key);
 bool mux_fopen(FILE **pFile, const UTF8 *filename, const UTF8 *mode);
 bool mux_open(int *pfh, const UTF8 *filename, int oflag);
 const UTF8 *mux_strerror(int errnum);
+#ifdef INLINESQL
+void init_sql();
+#endif // INLINESQL
 
 /* From htab.cpp */
 int  cf_ntab_access(int *, UTF8 *, void *, UINT32, dbref, UTF8 *);
