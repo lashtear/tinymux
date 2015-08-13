@@ -1,5 +1,7 @@
 # ![Mechanipus Logo](http://mechanipus.com/img/mechanipus-logo-outline64.png) TinyMUX
 
+![Travis build status](https://travis-ci.org/lashtear/tinymux.svg?branch=mechanipus)
+
 This is Chime's (@lashtear) experimental branch of TinyMUX.  It has significant differences from the normal TinyMUX development cycle but should include most of Brazil's (@BrazilOfMUX) work where applicable.
 
 It is not appropriate for all games or environments and is currently in a very rough development stage and not expected to work as a drop-in replacement for existing MUX games.  Primarily, it targets games using the Mechanipus hosting environment.
