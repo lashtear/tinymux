@@ -1,0 +1,9 @@
+language: c
+compiler:
+  - gcc
+  - clang
+before_install:
+	- sudo apt-get update -qq
+	- sudo apt-get install -qq libmysqlclient-dev libgoogle-perftools-dev libssl-dev telnet libexpect-perl
+script: mkdir build inst && cd build && ../mux/configure --prefix=$(pwd)/../inst && make -j2 check && make install
+
