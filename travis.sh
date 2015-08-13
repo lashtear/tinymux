@@ -2,7 +2,7 @@
 
 set -e
 
-BUILDTOP=$(PWD)
+BUILDTOP=$(pwd)
 mysql --user root < ./mux/test/user-create.sql
 mkdir build inst
 cd build
