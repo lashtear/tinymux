@@ -2,14 +2,9 @@ language: c
 compiler:
   - gcc
   - clang
-sudo: false
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libmysqlclient-dev libgoogle-perftools-dev libssl-dev telnet libexpect-perl
 script: ./travis.sh
 env:
   - CFLAGS="-Wall -g" CXXFLAGS="-Wall -g"
-addons:
-  apt:
-    packages:
-    - libmysqlclient-dev
-    - libgoogle-perftools-dev
-    - libssl-dev
-    - telnet

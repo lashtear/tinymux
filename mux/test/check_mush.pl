@@ -42,12 +42,7 @@ my $exp = Expect->new();
 $exp->raw_pty(1);
 $exp->slave->stty(qw(raw -echo));
 $exp->log_user(0);
-if ($exp->spawn('telnet', $host, $port)) {
-    print "ok - telnet launched\n";
-} else {
-    notok ("unable to launch telnet");
-}
-
+$exp->spawn('telnet', $host, $port) or die "not ok - unable to launch telnet";
 $exp->exp_internal(1);
 
 sub bt {
