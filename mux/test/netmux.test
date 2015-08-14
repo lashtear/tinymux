@@ -95,7 +95,7 @@ if [ $n -gt 5 ]; then
     exit 1
 fi
 
-"$srcdir/test/check_mush.pl" localhost 2860
+perl -I"$srcdir/test" "$srcdir/test/check_mush.pl" localhost 2860
 
 #echo 'ok - exiting early with mux still running'
 #exit 0
