@@ -7,7 +7,7 @@ cd "$BUILDTOP"
 
 killall netmux lt-netmux 2>/dev/null
 
-echo 1..33
+echo 1..35
 
 echo '# setting up operating "game" directory'
 umask 077
@@ -95,7 +95,12 @@ if [ $n -gt 5 ]; then
     exit 1
 fi
 
-perl -I"$srcdir/test" "$srcdir/test/check_mush.pl" localhost 2860
+if perl -I"$srcdir/test" "$srcdir/test/check_mush.pl" localhost 2860; then
+    echo 'ok - check_mush.pl clean exit'
+else
+    echo 'not ok - check_mush.pl failed'
+    exit 1
+fi
 
 #echo 'ok - exiting early with mux still running'
 #exit 0
