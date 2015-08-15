@@ -1927,7 +1927,7 @@ static void real_regmatch(const UTF8 *search, const UTF8 *pattern, UTF8 *registe
     const int ovecsize = 6 * MAX_GLOBAL_REGS;
     int ovec[ovecsize];
 
-    pcre *re = pcre_compile((char *)pattern, PCRE_UTF8|(cis ? PCRE_CASELESS : 0),
+    pcre *re = pcre_compile((char *)pattern, PCRE_UTF8|PCRE_NEWLINE_ANYCRLF|(cis ? PCRE_CASELESS : 0),
 	&errptr, &erroffset, NULL);
     if (!re)
     {
@@ -2043,7 +2043,7 @@ static void real_regrab(__in UTF8 *search, __in const UTF8 *pattern, __in const 
     const int ovecsize = 6 * MAX_GLOBAL_REGS;
     int ovec[ovecsize];
 
-    re = pcre_compile((char *)pattern, PCRE_UTF8|(cis ? PCRE_CASELESS : 0),
+    re = pcre_compile((char *)pattern, PCRE_UTF8|PCRE_NEWLINE_ANYCRLF|(cis ? PCRE_CASELESS : 0),
 	&errptr, &erroffset, NULL);
     if (!re)
     {

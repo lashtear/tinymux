@@ -5751,7 +5751,7 @@ CF_HAND(cf_art_rule)
 
     const char *errptr;
     int erroffset;
-    pcre* reNewRegexp = pcre_compile((char *)pCurrent, PCRE_UTF8, &errptr, &erroffset, NULL);
+    pcre* reNewRegexp = pcre_compile((char *)pCurrent, PCRE_UTF8|PCRE_NEWLINE_ANYCRLF, &errptr, &erroffset, NULL);
     if (!reNewRegexp)
     {
 	cf_log_syntax(player, cmd, T("Error processing regexp \xE2\x80\x98%s\xE2\x80\x99:."),

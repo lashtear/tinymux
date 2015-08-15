@@ -110,6 +110,12 @@ $timeout = 1.5;
 bt ("think sql(select \"sql works\")",
     qr/sql works\r\n/, "inline sql");
 
+# test pcre DOT_ALL and such
+bt ("think regmatch(ab\%r\%xhcd\%xn,^.*\$)",
+   qr/0\r\n/, "pcre no \%r in .");
+bt ("think regmatch(ab\%r\%xhcd\%xn,(?s)^.*\$)",
+   qr/1\r\n/, "pcre dot-all");
+
 bt ("QUIT", qr/This is quit\.txt\r\n/, "quit");
 
 exit $rc;

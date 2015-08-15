@@ -7,7 +7,7 @@ cd "$BUILDTOP"
 
 killall netmux lt-netmux 2>/dev/null
 
-echo 1..33
+echo 1..35
 
 echo '# setting up operating "game" directory'
 umask 077
