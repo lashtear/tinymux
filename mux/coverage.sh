@@ -27,4 +27,6 @@ export LIBS="-lgcov"
     && lcov --capture --base-directory .. --directory . --output-file coverage.info \
     && genhtml coverage.info --output-directory html
 
+echo "Test results are in $covdir/html/index.html"
+
 #    && gcov -s .. -o . -d -m $(find . -name \*.o) netmux slave stubslave libmux.lo \

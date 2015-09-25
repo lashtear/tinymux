@@ -5,6 +5,7 @@ use warnings;
 
 use Expect;
 use List::Util qw(shuffle);
+use Math::BigFloat;
 
 my $timeout=1.5;
 
@@ -78,43 +79,93 @@ if (defined $conn
     notok ('received mangled info');
 }
 
-bt ("connect Wizard potrzebie", qr/This is motd\.txt\r\n/, "motd");
-bt (undef, qr/This is wizmotd\.txt\r\n/, "wizmotd");
-bt ("\@restart", qr/Server just started\. Please try again in a few seconds.\r\n/, "restart-blocked");
+bt ("connect Wizard potrzebie", qr/^This is motd\.txt\r?$/m, "motd");
+bt (undef, qr/^This is wizmotd\.txt\r?$/m, "wizmotd");
+bt ("\@restart", qr/^Server just started\. Please try again in a few seconds.\r?$/m, "restart-blocked");
+bt ("give me=10000", qr/^You give 10000 Pennies to Wizard.\r\nWizard gives you 10000 Pennies.\r?$/mi, "give pennies");
 
-# funmath
-bt ("think add(1,1)", qr/2\r\n/, "think/add");
-bt ("think add(1000000000,3000000000)", qr/4000000000\r\n/, "slow addition");
-bt ("think iadd(281474976710656,7625597484987)", qr/289100574195643\r\n/, "long int addition");
-bt ("think add(1.3,2.4)", qr/3\.7\r\n/, "slow float addition");
-bt ("think ladd(1 -2 3 -4 5 6.3)", qr/9\.3\r\n/, "list add");
-bt ("think sub(5,4)", qr/1\r\n/, "subtraction");
-bt ("think sub(4000000000,1000000000)", qr/3000000000\r\n/, "slow subtraction");
-bt ("think isub(289100574195643,7625597484987)", qr/281474976710656\r\n/, "long int subtraction");
-bt ("think sub(9.9,3.3)", qr/6.6\r\n/, "slow float subtraction");
-
-bt ("\@pemit %#=at-pemit works", qr/at-pemit works\r\n/, "\@pemit");
-$exp->send (join "", map {"\@wait $_=\@pemit \%#=$_\r\n"} shuffle (0..8));
-foreach (0..8) {
-    bt (undef, qr/$_\r\n/, "cque wait $_");
+sub get_num {
+    my ($comment, $num) = @_;
+    $exp->expect ($timeout,
+		  ['timeout', sub { notok ("timeout while reading number for $comment")}],
+		  ['eof', sub { notok ("EOF while reading number for $comment")}],
+		  [qr/^([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\r?$/m]);
+    my $rnum = Math::BigFloat->new($exp->match());
+    warn "num is $num, rnum is $rnum\n";
+    return (Math::BigFloat->babs($num - $rnum) < 0.00001);
 }
 
-bt ("\@restart", qr/GAME: Restart by Wizard, please wait\./, "restart-allowed");
-bt (undef, qr/GAME: Restart finished.\r\n/, "restart-success");
+my %boolbinops = (gt   => sub { 0+($_[0] >  $_[1]) },
+		  gte  => sub { 0+($_[0] >= $_[1]) },
+		  lt   => sub { 0+($_[0] <  $_[1]) },
+		  lte  => sub { 0+($_[0] <= $_[1]) },
+		  eq   => sub { 0+($_[0] == $_[1]) },
+		  neq  => sub { 0+($_[0] != $_[1]) },
+		  add  => sub { $_[0] +  $_[1] },
+		  iadd => sub { int($_[0]) + int($_[1]) },
+		  sub  => sub { $_[0] - $_[1] },
+		  isub => sub { int($_[0]) - int($_[1]) },
+		  mul  => sub { $_[0] * $_[1] },
+		  imul  => sub { my ($a,$b) = @_;
+				 $a = $a->copy();
+				 $b = $b->copy();
+				 my $limit = Math::BigFloat->new(2);
+				 $limit->bpow(64);
+				 $a->bint();
+				 $b->bint();
+				 $a->bmul($b);
+				 $a->bmod($limit);
+				 return $a },
+		  fdiv  => sub { $_[0] / $_[1] },
+		  idiv  => sub { int($_[0]) / int($_[1]) },
+		  min   => sub { $_[0] <= $_[1] ? $_[0] : $_[1] },
+		  max   => sub { $_[0] >= $_[1] ? $_[0] : $_[1] },
+		 );
+my @tvals = (['int eq',1,1], ['int lt',1,2], ['int gt',2,1],
+	     ['long int lt','10000000000','10000000001'],
+	     ['long int gt','10000000001','10000000000'],
+	     ['long int eq','10000000000','10000000000'],
+	     ['float eq','1.1','1.1'],
+	     ['float lt','1.2','1.3'],
+	     ['float gt','1.3','1.2']);
+for my $opname (qw(add iadd sub isub mul imul fdiv idiv 
+		   gt gte lt lte eq neq min max)) {
+    for my $tcase (@tvals) {
+	my ($tname, $a, $b) = @$tcase;
+	$a = Math::BigFloat->new($a);
+	$b = Math::BigFloat->new($b);
+	my $expected = $boolbinops{$opname}->($a,$b);
+	$exp->send ("think $opname"."($a,$b)\r\n");
+	if (get_num ("$opname on $tname", $expected)) {
+	    print "ok - $opname on $tname\n";
+	} else {
+	    print "not ok - $opname on $tname returned wrong answer\n";
+	}
+    }
+}
+
+bt ("\@pemit %#=at-pemit works", qr/^at-pemit works\r?$/m, "\@pemit");
+$exp->send (join "", map {"\@wait $_=\@pemit \%#=$_\r\n"} shuffle (0..8));
+foreach (0..8) {
+    bt (undef, qr/^$_\r?$/m, "cque wait $_");
+}
+
+bt ("\@restart", qr/^GAME: Restart by Wizard, please wait\.(?:  \(All SSL connections will be dropped.\))?\r?$/m, "restart-allowed");
+bt (undef, qr/^GAME: Restart finished.\r?$/m, "restart-success");
 
 $timeout = 10;
 bt ("think iter(lnum(1,10000),iter(lnum(1,10000),.))",
-    qr/GAME: Expensive activity abbreviated.\r\n/, "expensive-time-abort");
+    qr/^GAME: Expensive activity abbreviated.\r?$/m, "expensive-time-abort");
 $timeout = 1.5;
 
 bt ("think sql(select \"sql works\")",
-    qr/sql works\r\n/, "inline sql");
+    qr/^sql works\r?$/m, "inline sql");
 
 # test pcre DOT_ALL and such
 bt ("think regmatch(ab\%r\%xhcd\%xn,^.*\$)",
-   qr/0\r\n/, "pcre no \%r in .");
+   qr/^0\r?$/m, "pcre no \%r in .");
 bt ("think regmatch(ab\%r\%xhcd\%xn,(?s)^.*\$)",
-   qr/1\r\n/, "pcre dot-all");
+   qr/^1\r?$/m, "pcre dot-all");
 
 bt ("QUIT", qr/This is quit\.txt\r\n/, "quit");
 

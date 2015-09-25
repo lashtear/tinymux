@@ -7,7 +7,7 @@ cd "$BUILDTOP"
 
 killall netmux lt-netmux 2>/dev/null
 
-echo 1..35
+echo 1..171
 
 echo '# setting up operating "game" directory'
 umask 077
@@ -45,6 +45,8 @@ netmux_path          $BUILDTOP/netmux
 slave_path           $BUILDTOP/slave
 stubslave_path       $BUILDTOP/stubslave
 lag_limit            3
+lag_maximum          0.5
+command_quota_max    10000
 sql_database         muxtest
 sql_user             muxtest
 sql_password         muxtest
