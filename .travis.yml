@@ -11,6 +11,7 @@ addons:
     - libssl-dev
     - telnet
     - libexpect-perl
+    - libmath-bigint-perl
 script: ./travis.sh
 env:
   - CFLAGS="-Wall -g" CXXFLAGS="-Wall -g"
