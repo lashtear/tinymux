@@ -429,11 +429,7 @@ void boot_stubslave(dbref executor, dbref caller, dbref enactor, int)
     int i;
     int maxfds;
 
-#ifdef HAVE_GETDTABLESIZE
-    maxfds = getdtablesize();
-#else // HAVE_GETDTABLESIZE
     maxfds = sysconf(_SC_OPEN_MAX);
-#endif // HAVE_GETDTABLESIZE
 
     CleanUpStubSlaveSocket();
     WaitOnStubSlaveProcess();
@@ -644,11 +640,7 @@ void boot_slave(dbref executor, dbref caller, dbref enactor, int eval, int key)
     int i;
     int maxfds;
 
-#ifdef HAVE_GETDTABLESIZE
-    maxfds = getdtablesize();
-#else // HAVE_GETDTABLESIZE
     maxfds = sysconf(_SC_OPEN_MAX);
-#endif // HAVE_GETDTABLESIZE
 
     CleanUpSlaveSocket();
     CleanUpSlaveProcess();
@@ -1430,11 +1422,7 @@ void shovechars(int nPorts, PortInfo aPorts[])
     CLinearTimeAbsolute ltaLastSlice;
     ltaLastSlice.GetUTC();
 
-#ifdef HAVE_GETDTABLESIZE
-    maxfds = getdtablesize();
-#else // HAVE_GETDTABLESIZE
     maxfds = sysconf(_SC_OPEN_MAX);
-#endif // HAVE_GETDTABLESIZE
 
     avail_descriptors = maxfds - 7;
 

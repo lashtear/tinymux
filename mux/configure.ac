@@ -170,9 +170,6 @@ if test $ac_cv_header_fenv_h = yes; then
     AC_EGREP_HEADER(fegetprec,fenv.h,AC_DEFINE([HAVE_FEGETPREC], [], [Define if fegetprec is available.]))
 fi
 
-AS_MESSAGE([checking for extended string dcls...])
-AC_EGREP_HEADER(rindex,string.h, ,AC_DEFINE([NEED_INDEX_DCL], [], [Define if we need to redefine index/bcopy et. al. to their SYSV counterparts.]))
-
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>]],[[struct sigcontext scp;]])],[AC_DEFINE([HAVE_STRUCT_SIGCONTEXT], [], [Define if signal handlers have a struct sigcontext as their third arg.])],[])
 
 AS_MESSAGE([checking for malloc dcl...])
@@ -184,10 +181,6 @@ else
     AC_EGREP_HEADER(realloc,malloc.h, ,AC_DEFINE(NEED_MALLOC_DCL))
 fi
 
-AS_MESSAGE([checking for vsprintf dcl...])
-AC_EGREP_HEADER(vsprintf,stdio.h, ,AC_DEFINE([NEED_VSPRINTF_DCL], [], [Define if you need to declare vsprintf yourself.]))
-AS_MESSAGE([checking for sprintf dcl...])
-AC_EGREP_HEADER(\<sprintf|\<*sprintf,stdio.h, ,AC_DEFINE([NEED_SPRINTF_DCL], [], [Define if you need to declare sprintf yourself.]))
 AS_MESSAGE([checking for extended stdio dcls...])
 AC_EGREP_HEADER(fread,stdio.h,AC_DEFINE([EXTENDED_STDIO_DCLS], [], [Define if stdio.h defines lots of extra functions.]))
 AS_MESSAGE([checking for extended socket dcls...])
@@ -312,7 +305,7 @@ AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 
-AC_CHECK_FUNCS([alarm crypt dup2 floor getaddrinfo getdtablesize gethostbyaddr gethostbyname getnameinfo getpagesize getrusage gettimeofday inet_ntoa localtime_r log2 memchr memmove memset modf nanosleep pow select setitimer setrlimit socket sqrt strcasecmp strchr strerror strrchr strstr tzset usleep ])
+AC_CHECK_FUNCS([alarm crypt dup2 floor getaddrinfo gethostbyaddr gethostbyname getnameinfo getpagesize getrusage gettimeofday inet_ntoa localtime_r log2 memchr memmove memset modf nanosleep pow select setitimer setrlimit socket sqrt strcasecmp strchr strerror strrchr strstr tzset usleep ])
 AC_CHECK_FUNCS([pread pwrite])
 
 AS_MESSAGE([checking for IEEE floating-point format...])

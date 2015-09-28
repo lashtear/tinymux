@@ -115,12 +115,6 @@
 
 #include <string.h>
 
-#ifdef NEED_INDEX_DCL
-#define index           strchr
-#define rindex          strrchr
-#define bcopy(s,d,n)    memmove(d,s,n)
-#endif
-
 #ifdef TIME_WITH_SYS_TIME
 #include <sys/time.h>
 #include <time.h>
@@ -155,10 +149,6 @@ extern int      setrlimit(int, struct rlimit *);
 #ifdef NEED_GETTIMEOFDAY_DCL
 extern int gettimeofday(struct timeval *, struct timezone *);
 #endif
-#endif
-
-#ifdef HAVE_GETDTABLESIZE
-extern int getdtablesize(void);
 #endif
 
 #ifdef HAVE_FCNTL_H

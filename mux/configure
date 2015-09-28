@@ -19083,24 +19083,6 @@ rm -f conftest*
 
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for extended string dcls..." >&5
-$as_echo "$as_me: checking for extended string dcls..." >&6;}
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <string.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "rindex" >/dev/null 2>&1; then :
-
-else
-
-$as_echo "#define NEED_INDEX_DCL /**/" >>confdefs.h
-
-fi
-rm -f conftest*
-
-
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <signal.h>
@@ -19157,40 +19139,6 @@ fi
 rm -f conftest*
 
 fi
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for vsprintf dcl..." >&5
-$as_echo "$as_me: checking for vsprintf dcl..." >&6;}
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdio.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "vsprintf" >/dev/null 2>&1; then :
-
-else
-
-$as_echo "#define NEED_VSPRINTF_DCL /**/" >>confdefs.h
-
-fi
-rm -f conftest*
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sprintf dcl..." >&5
-$as_echo "$as_me: checking for sprintf dcl..." >&6;}
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdio.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "\<sprintf|\<*sprintf" >/dev/null 2>&1; then :
-
-else
-
-$as_echo "#define NEED_SPRINTF_DCL /**/" >>confdefs.h
-
-fi
-rm -f conftest*
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for extended stdio dcls..." >&5
 $as_echo "$as_me: checking for extended stdio dcls..." >&6;}
@@ -20883,7 +20831,7 @@ fi
 
 
 
-for ac_func in alarm crypt dup2 floor getaddrinfo getdtablesize gethostbyaddr gethostbyname getnameinfo getpagesize getrusage gettimeofday inet_ntoa localtime_r log2 memchr memmove memset modf nanosleep pow select setitimer setrlimit socket sqrt strcasecmp strchr strerror strrchr strstr tzset usleep
+for ac_func in alarm crypt dup2 floor getaddrinfo gethostbyaddr gethostbyname getnameinfo getpagesize getrusage gettimeofday inet_ntoa localtime_r log2 memchr memmove memset modf nanosleep pow select setitimer setrlimit socket sqrt strcasecmp strchr strerror strrchr strstr tzset usleep
 do :
   as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"

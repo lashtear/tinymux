@@ -3833,11 +3833,7 @@ static void list_process(dbref player)
 #endif // HAVE_GETRUSAGE
 
 #if defined(UNIX_NETWORKING)
-#ifdef HAVE_GETDTABLESIZE
-    int maxfds = getdtablesize();
-#else // HAVE_GETDTABLESIZE
-    int maxfds = sysconf(_SC_OPEN_MAX);
-#endif // HAVE_GETDTABLESIZE
+    int maxfds = sysconf (_SC_OPEN_MAX);
     int psize = sysconf (_SC_PAGESIZE);
     raw_notify(player, tprintf(T("Process ID:  %10d        %10d bytes per page"), game_pid, psize));
 #else // UNIX_NETWORKING
