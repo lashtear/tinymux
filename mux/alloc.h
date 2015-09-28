@@ -8,10 +8,8 @@
 #ifndef M_ALLOC_H
 #define M_ALLOC_H
 
-#define LBUF_SIZE   64000    // Large
-#define GBUF_SIZE   2048    // Generic
+#define LBUF_SIZE   65536    // Large
 #define MBUF_SIZE   1280     // Medium
-#define PBUF_SIZE   128     // Pathname
 #define SBUF_SIZE   64      // Small
 
 //! \struct lbuf_ref
@@ -39,19 +37,41 @@ struct reg_ref
 // if not, we don't need to worry about it. Skip all this baroque pool
 // chicanery.
 
-#define chfree(buf) do {                        \
-	mux_assert(buf != NULL);                \
-	free(buf); } while (0)
+/** Raise hell if we're freeing a NULL. */
+inline void
+chfree (void *m)
+{
+    mux_assert (m != NULL);
+    free (m);
+}
 
-#define alloc_sbuf(s)    (UTF8 *) calloc(1, SBUF_SIZE)
-#define alloc_mbuf(s)    (UTF8 *) calloc(1, MBUF_SIZE)
-#define alloc_lbuf(s)    (UTF8 *) calloc(1, LBUF_SIZE)
+/** Provide a faster alternative to calloc that zeroes only the start */
+inline void *
+allocz (size_t s)
+{
+    void *m;
+
+    /* allocate at least one word worth */
+    mux_assert (s > 0);
+    if (s < sizeof(long int)) s = sizeof(long int);
+
+    /* howl if we didn't get it */
+    m = malloc (s);
+    ISOUTOFMEMORY(m);
+
+    /* zero the first word */
+    *((long int*) m) = 0;
+    return m;
+}
+
+#define alloc_sbuf(s)    (UTF8 *) allocz (SBUF_SIZE)
+#define alloc_mbuf(s)    (UTF8 *) allocz (MBUF_SIZE)
+#define alloc_lbuf(s)    (UTF8 *) allocz (LBUF_SIZE)
 #define alloc_bool(s)    (struct boolexp *) calloc(1, sizeof(struct boolexp))
 #define alloc_qentry(s)  (BQUE *) calloc(1, sizeof(BQUE))
 #define alloc_pcache(s)  (PCACHE *) calloc(1, sizeof(PCACHE))
 #define alloc_lbufref(s) (lbuf_ref *) calloc(1, sizeof(lbuf_ref))
 #define alloc_regref(s)  (reg_ref *) calloc(1, sizeof(reg_ref))
-#define alloc_string(s)  (mux_string *) calloc(1, sizeof(mux_string))
 #define alloc_desc(s)    (DESC *) calloc(1, sizeof(DESC))
 #define free_sbuf(b)     chfree(b)
 #define free_mbuf(b)     chfree(b)
@@ -61,16 +81,18 @@ struct reg_ref
 #define free_pcache(b)   chfree(b)
 #define free_lbufref(b)  chfree(b)
 #define free_regref(b)   chfree(b)
-#define free_string(b)   chfree(b)
 #define free_desc(b)     chfree(b)
 
-#define safe_copy_chr_ascii(src, buff, bufp, nSizeOfBuffer)	\
-{ \
-    if ((size_t)(*bufp - buff) < nSizeOfBuffer) \
-    { \
-	**bufp = src; \
-	(*bufp)++; \
-    } \
+inline void
+safe_copy_chr_ascii (const char src,
+		     UTF8 *buff,
+		     UTF8 **bufp,
+		     size_t bufsize)
+{
+    if ((size_t)(*bufp - buff) < bufsize) {
+	**bufp = src;
+	(*bufp)++;
+    }
 }
 
 #define safe_str(s,b,p)           safe_copy_str_lbuf(s,b,p)
@@ -88,8 +110,5 @@ struct reg_ref
 #define safe_sb_chr safe_sb_chr_ascii
 #define safe_mb_chr safe_mb_chr_ascii
 #define safe_chr safe_chr_ascii
-
-
-
 
 #endif // M_ALLOC_H

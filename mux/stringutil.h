@@ -2055,20 +2055,6 @@ public:
     void trim(const UTF8 *p, size_t n, bool bLeft = true, bool bRight = true);
     void truncate(mux_cursor iEnd);
 
-    static void * operator new(size_t size)
-    {
-	mux_assert(size == sizeof(mux_string));
-	return alloc_string("new");
-    }
-
-    static void operator delete(void *p)
-    {
-	if (NULL != p)
-	{
-	    free_string(p);
-	}
-    }
-
     void UpperCase(void);
     void LowerCase(void);
     void UpperCaseFirst(void);

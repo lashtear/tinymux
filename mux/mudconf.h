@@ -225,12 +225,12 @@ struct confdata
     UTF8    mail_sendname[128];
     UTF8    mail_subject[128];
 
-    UTF8    crash_msg[GBUF_SIZE];       /* Notification message on signals */
-    UTF8    downmotd_msg[GBUF_SIZE];    /* Settable 'logins disabled' message */
-    UTF8    fullmotd_msg[GBUF_SIZE];    /* Settable 'Too many players' message */
-    UTF8    motd_msg[GBUF_SIZE];    /* Wizard-settable login message */
-    UTF8    pueblo_msg[GBUF_SIZE];  /* Message displayed to Pueblo clients */
-    UTF8    wizmotd_msg[GBUF_SIZE]; /* Login message for wizards only */
+    UTF8    crash_msg[LBUF_SIZE];       /* Notification message on signals */
+    UTF8    downmotd_msg[LBUF_SIZE];    /* Settable 'logins disabled' message */
+    UTF8    fullmotd_msg[LBUF_SIZE];    /* Settable 'Too many players' message */
+    UTF8    motd_msg[LBUF_SIZE];    /* Wizard-settable login message */
+    UTF8    pueblo_msg[LBUF_SIZE];  /* Message displayed to Pueblo clients */
+    UTF8    wizmotd_msg[LBUF_SIZE]; /* Login message for wizards only */
     UTF8    *compress;          /* program to run to compress */
     UTF8    *comsys_db;         /* name of the comsys db */
     UTF8    *config_file;       /* name of config file, used by @restart */
