@@ -493,9 +493,6 @@
 /* Define if malloc/realloc/free are defined in stdlib.h. */
 #undef MALLOC_IN_STDLIB_H
 
-/* Define if you need to declare getpagesize yourself. */
-#undef NEED_GETPAGESIZE_DCL
-
 /* Define if you need to declare getrlimit yourself. */
 #undef NEED_GETRLIMIT_DCL
 
@@ -514,9 +511,6 @@
 
 /* Define if you need to declare sprintf yourself. */
 #undef NEED_SPRINTF_DCL
-
-/* Define if you need to declare sys_errlist yourself. */
-#undef NEED_SYS_ERRLIST_DCL
 
 /* Define if dlsym() requires a leading underscore in symbol names. */
 #undef NEED_USCORE

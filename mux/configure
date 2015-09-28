@@ -19024,55 +19024,6 @@ fi
 
 done
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sys_errlist decl..." >&5
-$as_echo "$as_me: checking for sys_errlist decl..." >&6;}
-if test $ac_cv_header_errno_h = no; then
-
-$as_echo "#define NEED_SYS_ERRLIST_DCL /**/" >>confdefs.h
-
-else
-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <errno.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "sys_errlist" >/dev/null 2>&1; then :
-
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdio.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "sys_errlist" >/dev/null 2>&1; then :
-
-else
-  $as_echo "#define NEED_SYS_ERRLIST_DCL 1" >>confdefs.h
-
-fi
-rm -f conftest*
-
-fi
-rm -f conftest*
-
-fi
-
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <unistd.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "getpagesize" >/dev/null 2>&1; then :
-
-else
-
-$as_echo "#define NEED_GETPAGESIZE_DCL /**/" >>confdefs.h
-
-fi
-rm -f conftest*
 
 if test $ac_cv_header_ieeefp_h = yes; then
     cat confdefs.h - <<_ACEOF >conftest.$ac_ext

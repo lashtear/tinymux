@@ -151,14 +151,7 @@ AC_CHECK_HEADERS([gperftools/profiler.h])
 AC_CHECK_HEADERS([gperftools/heap-profiler.h])
 AC_CHECK_HEADERS([gperftools/heap-checker.h])
 AC_CHECK_HEADERS([gperftools/malloc_extension.h])
-AS_MESSAGE([checking for sys_errlist decl...])
-if test $ac_cv_header_errno_h = no; then
-    AC_DEFINE([NEED_SYS_ERRLIST_DCL], [], [Define if you need to declare sys_errlist yourself.])
-else
-    AC_EGREP_HEADER(sys_errlist,errno.h, ,AC_EGREP_HEADER(sys_errlist,stdio.h,,AC_DEFINE(NEED_SYS_ERRLIST_DCL)))
-fi
 
-AC_EGREP_HEADER(getpagesize,unistd.h,,AC_DEFINE([NEED_GETPAGESIZE_DCL], [], [Define if you need to declare getpagesize yourself.]))
 if test $ac_cv_header_ieeefp_h = yes; then
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
     #include <ieeefp.h>
