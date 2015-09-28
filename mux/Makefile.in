@@ -738,6 +738,7 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -794,6 +795,7 @@ do_edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@libexecdir[@]|$(libexecdir)|g' \
 	-e 's|@localstatedir[@]|$(localstatedir)|g' \
+	-e 's|@runstatedir[@]|$(runstatedir)|g' \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g'
 
 subst_files = scripts/mux-unload-flat scripts/mux-load-flat		\
@@ -2203,7 +2205,7 @@ install-exec-hook:
 	    $(LN_S) $(libexecdir)/netmux dbconvert
 
 $(subst_files): Makefile
-	@mkdir -p etc scripts
+	@$(MKDIR_P) etc scripts
 	$(V_SUBST)rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
 
 $(subst_files): $(subst_files_in)

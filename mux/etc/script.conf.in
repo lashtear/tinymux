@@ -1,4 +1,4 @@
-# script.conf - constants for mux shell scripts
+# script.conf - constants for mux shell scripts -*- sh -*-
 #
 # Change these variables as appropriate
 #
@@ -22,7 +22,7 @@ BIN=@bindir@
 TEXT=@sysconfdir@/text
 DATA=@localstatedir@
 LOGDIR=@localstatedir@/log
-RUN=@localstatedir@/run
+RUN=@runstatedir@
 #
 NEW_DB=$DATA/netmux.db.new
 INPUT_DB=$DATA/netmux.db

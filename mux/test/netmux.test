@@ -1,5 +1,6 @@
 #! /bin/bash
 
+ulimit -c unlimited
 BUILDTOP=$(pwd)
 cd "$srcdir"
 srcdir=$(pwd)
@@ -62,7 +63,7 @@ done
 
 ./netmux -v 2> "$GAME/ver-output"
 if [ $? -eq 1 ]; then
-    case $(< $GAME/ver-output) in
+    case $(grep -v '^WARNING: Perftools '< $GAME/ver-output) in
 	"Version: MUX "*)
 	    echo 'ok - netmux version output'
 	    ;;

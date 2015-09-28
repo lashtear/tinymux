@@ -55,6 +55,7 @@ do_edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@libexecdir[@]|$(libexecdir)|g' \
 	-e 's|@localstatedir[@]|$(localstatedir)|g' \
+	-e 's|@runstatedir[@]|$(runstatedir)|g' \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g'
 
 subst_files = scripts/mux-unload-flat scripts/mux-load-flat		\
@@ -68,7 +69,7 @@ v_subst_ = $(v_subst_$(AM_DEFAULT_VERBOSITY))
 v_subst_0 = @echo "  SUBST   " $@;
 
 $(subst_files): Makefile
-	@mkdir -p etc scripts
+	@$(MKDIR_P) etc scripts
 	$(V_SUBST)rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
 
 $(subst_files): $(subst_files_in)
