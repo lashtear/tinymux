@@ -17989,8 +17989,6 @@ fi
 
 # Checks for libraries.
 #
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for gperftools TCMalloc" >&5
-$as_echo_n "checking for gperftools TCMalloc... " >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for malloc in -ltcmalloc" >&5
 $as_echo_n "checking for malloc in -ltcmalloc... " >&6; }
 if ${ac_cv_lib_tcmalloc_malloc+:} false; then :
@@ -18033,6 +18031,51 @@ if test "x$ac_cv_lib_tcmalloc_malloc" = xyes; then :
 _ACEOF
 
   LIBS="-ltcmalloc $LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for profiler in -lProfilerStart" >&5
+$as_echo_n "checking for profiler in -lProfilerStart... " >&6; }
+if ${ac_cv_lib_ProfilerStart_profiler+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lProfilerStart  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char profiler ();
+int
+main ()
+{
+return profiler ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_ProfilerStart_profiler=yes
+else
+  ac_cv_lib_ProfilerStart_profiler=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ProfilerStart_profiler" >&5
+$as_echo "$ac_cv_lib_ProfilerStart_profiler" >&6; }
+if test "x$ac_cv_lib_ProfilerStart_profiler" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPROFILERSTART 1
+_ACEOF
+
+  LIBS="-lProfilerStart $LIBS"
 
 fi
 
@@ -18927,6 +18970,54 @@ do :
 if test "x$ac_cv_header_zlib_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_ZLIB_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in gperftools/profiler.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "gperftools/profiler.h" "ac_cv_header_gperftools_profiler_h" "$ac_includes_default"
+if test "x$ac_cv_header_gperftools_profiler_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GPERFTOOLS_PROFILER_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in gperftools/heap-profiler.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "gperftools/heap-profiler.h" "ac_cv_header_gperftools_heap_profiler_h" "$ac_includes_default"
+if test "x$ac_cv_header_gperftools_heap_profiler_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GPERFTOOLS_HEAP_PROFILER_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in gperftools/heap-checker.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "gperftools/heap-checker.h" "ac_cv_header_gperftools_heap_checker_h" "$ac_includes_default"
+if test "x$ac_cv_header_gperftools_heap_checker_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GPERFTOOLS_HEAP_CHECKER_H 1
+_ACEOF
+
+fi
+
+done
+
+for ac_header in gperftools/malloc_extension.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "gperftools/malloc_extension.h" "ac_cv_header_gperftools_malloc_extension_h" "$ac_includes_default"
+if test "x$ac_cv_header_gperftools_malloc_extension_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GPERFTOOLS_MALLOC_EXTENSION_H 1
 _ACEOF
 
 fi

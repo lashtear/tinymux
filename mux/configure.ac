@@ -122,8 +122,8 @@ AC_CHECK_PROG([HAVE_PDFLATEX],[pdflatex],[1],[0])
 
 # Checks for libraries.
 #
-AC_MSG_CHECKING(for gperftools TCMalloc)
 AC_CHECK_LIB([tcmalloc],[malloc])
+AC_CHECK_LIB([ProfilerStart],[profiler])
 AC_SEARCH_LIBS([crypt],[crypt])
 AC_SEARCH_LIBS([socket],[socket inet])
 AC_SEARCH_LIBS([gethostbyname],[socket nsl bind])
@@ -147,6 +147,10 @@ AC_CHECK_HEADERS([openssl/ssl.h])
 AC_CHECK_HEADERS([openssl/evp.h])
 AC_CHECK_HEADERS([mysql/mysql.h])
 AC_CHECK_HEADERS([zlib.h])
+AC_CHECK_HEADERS([gperftools/profiler.h])
+AC_CHECK_HEADERS([gperftools/heap-profiler.h])
+AC_CHECK_HEADERS([gperftools/heap-checker.h])
+AC_CHECK_HEADERS([gperftools/malloc_extension.h])
 AS_MESSAGE([checking for sys_errlist decl...])
 if test $ac_cv_header_errno_h = no; then
     AC_DEFINE([NEED_SYS_ERRLIST_DCL], [], [Define if you need to declare sys_errlist yourself.])
