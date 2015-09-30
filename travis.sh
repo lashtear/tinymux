@@ -9,8 +9,8 @@ mkdir build inst tmp
 cd build
 
 common="-g -O3 -Wall -pthread"
-export CFLAGS="$common -std=c11"
-export CXXFLAGS="$common -std=c++11"
+export CFLAGS="$common"
+export CXXFLAGS="$common"
 export LDFLAGS="-g"
 export PPROF_PATH=/usr/bin/google-pprof
 
