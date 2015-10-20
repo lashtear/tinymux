@@ -158,8 +158,12 @@ bt ("think iter(lnum(1,10000),iter(lnum(1,10000),.))",
     qr/^GAME: Expensive activity abbreviated.\r?$/m, "expensive-time-abort");
 $timeout = 1.5;
 
-bt ("think sql(select \"sql works\")",
-    qr/^sql works\r?$/m, "inline sql");
+$exp->send ("think sql(select \"sql works\")\r\n");
+$exp->expect ($timeout,
+	      ['timeout', sub { notok ("timeout for inline sql")}],
+	      ['eof', sub { notok ("EOF for inline sql")}],
+	      [qr/^sql works\r?$/m, sub { print "ok - inline sql\n" }],
+	      [qr/^sql\(select \"sql works\"\)\r?$/m, sub { print "ok - inline sql # SKIP no inline sql support\n" }]);
 
 # test pcre DOT_ALL and such
 bt ("think regmatch(ab\%r\%xhcd\%xn,^.*\$)",
