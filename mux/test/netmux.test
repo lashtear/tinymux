@@ -12,11 +12,14 @@ echo 1..171
 
 echo '# setting up operating "game" directory'
 umask 077
-GAME=$(mktemp -d)
+GAME=$(mktemp -d mux.XXXXX)
 if [ ! -d "$GAME" ]; then
     echo 'Bail out! - mktemp not operational'
     exit 1
 fi
+cd "$GAME"
+GAME=$(pwd)
+cd "$BUILDTOP"
 echo '# test-local gamedir is '$GAME
 
 cat > "$GAME/netmux.conf" <<EOF
