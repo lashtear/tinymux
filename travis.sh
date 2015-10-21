@@ -2,8 +2,8 @@
 
 set -e
 
-BUILDTOP=$(pwd)
-TMPDIR=$BUILDTOP/tmp
+TOP=$(pwd)
+TMPDIR=$TOP/tmp
 mysql --user root < ./mux/test/user-create.sql
 mkdir build inst tmp
 cd build
@@ -15,8 +15,9 @@ export LDFLAGS="-g"
 export PPROF_PATH=/usr/bin/google-pprof
 
 set +e
+set -x
 
-../mux/configure --enable-selfcheck --prefix=$BUILDTOP/inst
+../mux/configure --enable-selfcheck --prefix=$TOP/inst
 if [ $? -ne 0 ]; then
     echo configure failure
     echo config.log:
@@ -28,6 +29,7 @@ if [ $? -ne 0 ]; then
     echo build failure
     exit 1
 fi
+make install
 make check HEAPCHECK=normal
 if [ $? -ne 0 ]; then
     echo check failure
@@ -43,4 +45,3 @@ if [ $? -ne 0 ]; then
     done
     exit 1
 fi
-make install
