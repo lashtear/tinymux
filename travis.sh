@@ -30,7 +30,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 make install
-make check HEAPCHECK=normal
+make -d check HEAPCHECK=normal
 if [ $? -ne 0 ]; then
     echo check failure
     echo test-suite.log:
