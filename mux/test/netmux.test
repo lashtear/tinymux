@@ -101,14 +101,17 @@ if [ $n -gt 5 ]; then
     exit 1
 fi
 
-"$srcdir/test/check_mush.pl" localhost 2860
-
-#echo 'ok - exiting early with mux still running'
-#exit 0
+"$srcdir/test/check_mush.pl" localhost 2860 &
+checkerpid=$!
+( sleep 60; echo 'not ok - timeabort of check_mush'; kill $checkerpid ) &
+checker_fence_pid=$!
+wait $checkerpid
+kill $checker_fence_pid
+killall sleep
 
 kill $(<"$GAME/netmux.pid")
 
-if wait $netmuxpid; then
+if wait $(<"$GAME/netmux.pid"); then
     echo 'ok - shell child exited cleanly'
 else
     echo 'not ok - shell child exited with '$?
