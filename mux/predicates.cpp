@@ -1696,7 +1696,7 @@ void do_backup(dbref executor, dbref caller, dbref enactor, int eval, int key)
     // script to use it as the flatfile.
     //
     dump_database_internal(DUMP_I_FLAT);
-    system((char *)tprintf(T("%s %s.flat 1>&2"),
+    (void) system((char *)tprintf(T("%s %s.flat 1>&2"),
 			   mudconf.backup_script,
 			   mudconf.indb));
 #else // HAVE_MEMORY_BASED

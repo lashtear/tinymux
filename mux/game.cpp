@@ -1275,8 +1275,8 @@ void do_shutdown
     int fd;
     if (mux_open(&fd, mudconf.status_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY))
     {
-	mux_write(fd, message, static_cast<unsigned int>(strlen((char *)message)));
-	mux_write(fd, ENDLINE, sizeof(ENDLINE)-1);
+	(void) mux_write(fd, message, static_cast<unsigned int>(strlen((char *)message)));
+	(void) mux_write(fd, ENDLINE, sizeof(ENDLINE)-1);
 	DebugTotalFiles++;
 	if (mux_close(fd) == 0)
 	{

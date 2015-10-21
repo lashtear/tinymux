@@ -3672,7 +3672,7 @@ void load_restart_db(void)
     mudstate.restarting = true;
 
     char buf[8];
-    fgets(buf, 3, f);
+    (void) fgets(buf, 3, f);
     mux_assert(strncmp(buf, "+V", 2) == 0);
     int version = getref(f);
     if (  1 == version

@@ -1391,7 +1391,7 @@ void CHashFile::WriteDirectory(void)
     }
 
 #ifdef HAVE_PWRITE
-    pwrite(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, 0);
+    (void) pwrite(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, 0);
 #else
     mux_lseek(m_hDirFile, 0, SEEK_SET);
     mux_write(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir);
@@ -1637,7 +1637,7 @@ bool CHashFile::ReadDirectory(void)
     }
 #elif defined(UNIX_FILES)
 #ifdef HAVE_PREAD
-    pread(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, 0);
+    (void) pread(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, 0);
 #else
     mux_lseek(m_hDirFile, 0, SEEK_SET);
     mux_read(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir);
@@ -2067,7 +2067,7 @@ bool CHashFile::Insert(HP_HEAPLENGTH nRecord, UINT32 nHash, void *pRecord)
 	WriteFile(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, &nWritten, 0);
 #elif defined(UNIX_FILES)
 #ifdef HAVE_PWRITE
-	pwrite(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, 0);
+	(void) pwrite(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir, 0);
 #else
 	mux_lseek(m_hDirFile, 0, SEEK_SET);
 	mux_write(m_hDirFile, m_pDir, sizeof(HF_FILEOFFSET)*m_nDir);
