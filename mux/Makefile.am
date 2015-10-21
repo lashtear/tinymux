@@ -82,17 +82,17 @@ netmux_SOURCES = alarm.cpp attrcache.cpp boolexp.cpp bsd.cpp		\
     funceval2.cpp functions.cpp funmath.cpp game.cpp help.cpp		\
     htab.cpp levels.cpp local.cpp log.cpp look.cpp mail.cpp match.cpp	\
     mathutil.cpp mguests.cpp modules.cpp move.cpp muxcli.cpp		\
-    netcommon.cpp object.cpp pcre.cpp player.cpp player_c.cpp		\
-    plusemail.cpp powers.cpp predicates.cpp quota.cpp rob.cpp set.cpp	\
-    sha1.cpp speech.cpp stringutil.cpp strtod.cpp svdhash.cpp		\
-    svdrand.cpp timeabsolute.cpp timedelta.cpp timeparser.cpp		\
-    timer.cpp timeutil.cpp timezone.cpp unparse.cpp utf8tables.cpp	\
-    vattr.cpp walkdb.cpp wild.cpp wiz.cpp alloc.h ansi.h attrcache.h	\
-    attrs.h command.h comsys.h config.h copyright.h db.h externs.h	\
-    file_c.h flags.h functions.h funmath.h help.h htab.h interface.h	\
-    levels.h libmux.h mail.h match.h mathutil.h mguests.h misc.h	\
-    modules.h mudconf.h muxcli.h pcre.h powers.h sha1.h stringutil.h	\
-    svdhash.h svdrand.h timeutil.h ucp.h utf8tables.h vattr.h
+    netcommon.cpp object.cpp player.cpp player_c.cpp plusemail.cpp	\
+    powers.cpp predicates.cpp quota.cpp rob.cpp set.cpp sha1.cpp	\
+    speech.cpp stringutil.cpp strtod.cpp svdhash.cpp svdrand.cpp	\
+    timeabsolute.cpp timedelta.cpp timeparser.cpp timer.cpp		\
+    timeutil.cpp timezone.cpp unparse.cpp utf8tables.cpp vattr.cpp	\
+    walkdb.cpp wild.cpp wiz.cpp alloc.h ansi.h attrcache.h attrs.h	\
+    command.h comsys.h config.h copyright.h db.h externs.h file_c.h	\
+    flags.h functions.h funmath.h help.h htab.h interface.h levels.h	\
+    libmux.h mail.h match.h mathutil.h mguests.h misc.h modules.h	\
+    mudconf.h muxcli.h powers.h sha1.h stringutil.h svdhash.h		\
+    svdrand.h timeutil.h ucp.h utf8tables.h vattr.h
 netmux_LDADD = libmux.la libversion.a $(LIBLTDL)
 
 slave_SOURCES = slave.cpp

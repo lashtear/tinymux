@@ -12,6 +12,7 @@ addons:
     - telnet
     - libexpect-perl
     - libmath-bigint-perl
+    - libpcre3-dev
 script: ./travis.sh
 env:
   - CFLAGS="-Wall -g" CXXFLAGS="-Wall -g"

@@ -132,6 +132,7 @@ AC_SEARCH_LIBS([sqrt],[m])
 AC_SEARCH_LIBS([SSL_library_init],[ssl])
 AC_SEARCH_LIBS([EVP_DigestInit],[crypto])
 AC_SEARCH_LIBS([mysql_init],[mysqlclient])
+AC_SEARCH_LIBS([pcre_compile],[pcre])
 
 # Checks for header files.
 #
@@ -151,6 +152,7 @@ AC_CHECK_HEADERS([gperftools/profiler.h])
 AC_CHECK_HEADERS([gperftools/heap-profiler.h])
 AC_CHECK_HEADERS([gperftools/heap-checker.h])
 AC_CHECK_HEADERS([gperftools/malloc_extension.h])
+AC_CHECK_HEADERS([pcre.h])
 
 if test $ac_cv_header_ieeefp_h = yes; then
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
