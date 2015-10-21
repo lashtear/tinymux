@@ -8642,7 +8642,7 @@ static void centerjustcombo
 	return;
     }
 
-    if (LBUF_SIZE <= nWidth)
+    if (LBUF_SIZE <= (int) nWidth)
     {
 	safe_range(buff, bufc);
 	return;
