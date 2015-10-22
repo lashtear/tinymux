@@ -2207,7 +2207,7 @@ void atr_add_raw_LEN(dbref thing, int atr, const UTF8 *szValue, size_t nValue)
 	    //
 	    db[thing].nALAlloc = GrowFiftyPercent(db[thing].nALAlloc,
 		INITIAL_ATRLIST_SIZE, INT_MAX);
-	    list = (ATRLIST *)MEMALLOC(db[thing].nALAlloc
+	    list = (ATRLIST *)MEMREALLOC(list, db[thing].nALAlloc
 		 * sizeof(ATRLIST));
 	    ISOUTOFMEMORY(list);
 
