@@ -102,8 +102,8 @@ libexec_PROGRAMS = netmux$(EXEEXT) slave$(EXEEXT) $(am__EXEEXT_1)
 @CONVENIENCE_LTDL_TRUE@am__append_4 = libltdl/libltdlc.la
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/argz.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltdl.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltargz.m4 $(top_srcdir)/m4/ltdl.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/configure.ac
@@ -612,7 +612,6 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
-ARGZ_H = @ARGZ_H@
 AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
@@ -664,9 +663,11 @@ LTDLDEPS = @LTDLDEPS@
 LTDLINCL = @LTDLINCL@
 LTDLOPEN = @LTDLOPEN@
 LTLIBOBJS = @LTLIBOBJS@
+LT_ARGZ_H = @LT_ARGZ_H@
 LT_CONFIG_H = @LT_CONFIG_H@
 LT_DLLOADERS = @LT_DLLOADERS@
 LT_DLPREOPEN = @LT_DLPREOPEN@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -754,7 +755,7 @@ ACLOCAL_AMFLAGS = -I m4
 # -I$(srcdir) is needed for user that built libltdl with a sub-Automake
 # (not as a sub-package!) using 'nostdinc':
 AM_CPPFLAGS = $(LTDLINCL) -DLT_CONFIG_H='<$(LT_CONFIG_H)>' -DLTDL -I. \
-	-I$(srcdir) -Ilibltdl -I$(srcdir)/libltdl \
+	-I$(srcdir) -Ilibltdl -I$(srcdir)/libltdl -Ilibltdl/libltdl \
 	-I$(srcdir)/libltdl/libltdl
 ARFLAGS = cr
 AR_FLAGS = cr
@@ -808,7 +809,7 @@ v_subst_ = $(v_subst_$(AM_DEFAULT_VERBOSITY))
 v_subst_0 = @echo "  SUBST   " $@;
 EXTRA_DIST = $(subst_files_in) $(TESTS) libltdl/lt__dirent.c \
 	libltdl/lt__strl.c libltdl/COPYING.LIB libltdl/README \
-	libltdl/argz_.h libltdl/argz.c
+	libltdl/libltdl/lt__argz_.h libltdl/lt__argz.c
 CLEANFILES = $(subst_files) libltdl/libltdl.la libltdl/libltdlc.la \
 	libltdl/libdlloader.la $(ltdl_LIBOBJS) $(ltdl_LTLIBOBJS)
 netmux_SOURCES = alarm.cpp attrcache.cpp boolexp.cpp bsd.cpp		\
@@ -873,7 +874,7 @@ VER_FLG = -DMUX_BUILD_VER_ID="$(VER_ID)" \
 	  -DMUX_BUILD_CXXVER="$(CXXVER)" \
 	  -DMUX_BUILD_UNAME="$(UNAME)"
 
-BUILT_SOURCES = libltdl/$(ARGZ_H)
+BUILT_SOURCES = libltdl/libltdl/$(LT_ARGZ_H)
 
 #AM_CPPFLAGS        =
 AM_LDFLAGS = -no-undefined
@@ -887,8 +888,9 @@ EXTRA_LTLIBRARIES = libltdl/dlopen.la libltdl/dld_link.la \
 #EXTRA_DIST   =
 
 #CLEANFILES   =
-MOSTLYCLEANFILES = libltdl/argz.h libltdl/argz.h-t
-LTDL_VERSION_INFO = -version-info 10:0:3
+MOSTLYCLEANFILES = libltdl/libltdl/lt__argz.h \
+	libltdl/libltdl/lt__argz.h-t
+LTDL_VERSION_INFO = -version-info 10:1:3
 @INSTALL_LTDL_TRUE@ltdlincludedir = $(includedir)/libltdl
 @INSTALL_LTDL_TRUE@ltdlinclude_HEADERS = libltdl/libltdl/lt_system.h \
 @INSTALL_LTDL_TRUE@			  libltdl/libltdl/lt_error.h \
@@ -901,7 +903,7 @@ libltdl_libltdl_la_SOURCES = libltdl/libltdl/lt__alloc.h \
 			  libltdl/libltdl/lt__strl.h \
 			  libltdl/libltdl/lt_dlloader.h \
 			  libltdl/libltdl/lt_error.h \
-	                  libltdl/libltdl/lt_system.h \
+			  libltdl/libltdl/lt_system.h \
 			  libltdl/libltdl/slist.h \
 			  libltdl/loaders/preopen.c \
 			  libltdl/lt__alloc.c \
@@ -2211,11 +2213,11 @@ $(subst_files): $(subst_files_in)
 
 # We need the following in order to create an <argz.h> when the system
 # doesn't have one that works with the given compiler.
-all-local $(lib_OBJECTS): libltdl/$(ARGZ_H)
-libltdl/argz.h: libltdl/argz_.h
-	$(mkinstalldirs) . libltdl/
-	cp $(srcdir)/libltdl/argz_.h $@-t
-	mv $@-t $@
+all-local $(lib_OBJECTS): libltdl/libltdl/$(LT_ARGZ_H)
+libltdl/libltdl/lt__argz.h: libltdl/libltdl/lt__argz_.h
+	$(AM_V_at)$(mkinstalldirs) . libltdl/libltdl
+	$(AM_V_GEN)cp $(srcdir)/libltdl/libltdl/lt__argz_.h $@-t
+	$(AM_V_at)mv $@-t $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
