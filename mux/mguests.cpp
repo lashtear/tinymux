@@ -203,24 +203,30 @@ void CGuests::CleanUp(void)
     // see if there are any guests beyond that minimum number that we can
     // trim out of the pool.
 
-    // Gather the connected guests
-    vector<dbref> connected;
+    // Gather the non-connected guests into a separate vector
     vector<dbref> not_connected;
-
-    for_each (Guests.begin(), Guests.end(),
-	     [&] (dbref g) {
+    {
+	vector<dbref> connected;
+	for_each (Guests.begin(), Guests.end(),
+		  [&] (dbref g) {
 		      if (Connected (g)) connected.push_back (g);
 		      else not_connected.push_back (g); });
 
-    // Destroy unneeded unconnected guests.
-    if (connected.size() > 0) {
-	while ( (int) not_connected.size()
-		> max ( 0, mudconf.min_guests - (int) connected.size() )) {
-	    dbref g = not_connected.back();
-	    DestroyGuestChar (g);
-	    not_connected.pop_back();
-	}
+	Guests = connected;
     }
+
+    // Destroy unneeded unconnected guests.
+    while ( (int) not_connected.size()
+	    > max ( 0, mudconf.min_guests - (int) Guests.size() )) {
+	dbref g = not_connected.back();
+	DestroyGuestChar (g);
+	not_connected.pop_back();
+    }
+
+    // Move things back into the main vector
+    for_each (not_connected.begin(), not_connected.end(),
+	      [&] (dbref g) {
+		  Guests.push_back (g); });
 }
 
 dbref CGuests::MakeGuestChar(void)
