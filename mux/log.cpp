@@ -682,6 +682,11 @@ CLogFile::~CLogFile(void)
 #if defined(WINDOWS_THREADS)
     DeleteCriticalSection(&csLog);
 #endif // WINDOWS_THREADS
+    if (m_pBasename)
+    {
+	MEMFREE(m_pBasename);
+	m_pBasename = NULL;
+    }
 }
 
 // CLog component which is not directly accessible.
