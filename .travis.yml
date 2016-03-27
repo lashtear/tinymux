@@ -6,6 +6,9 @@ sudo: false
 addons:
   apt:
     packages:
+    - g++-5
+    - clang-3.7
+    - libstdc++-5-dev
     - libmysqlclient-dev
     - libgoogle-perftools-dev
     - libssl-dev
