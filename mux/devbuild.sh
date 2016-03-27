@@ -13,5 +13,5 @@ export CFLAGS="$common -std=c11"
 export CXXFLAGS="$common -std=c++11"
 export LDFLAGS="-g"
 export PPROF_PATH=/usr/bin/google-pprof
-./configure --enable-selfcheck && make -j8 && make check HEAPCHECK=normal
+./configure --prefix=$HOME/mux --enable-selfcheck && make -j8 && make check "HEAPCHECK=normal"
 
