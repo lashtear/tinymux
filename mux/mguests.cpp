@@ -9,6 +9,10 @@
  *
  */
 
+#include <vector>
+#include <utility>
+#include <algorithm>
+
 #include "copyright.h"
 #include "autoconf.h"
 #include "config.h"
@@ -21,27 +25,9 @@
 #include "mguests.h"
 #include "powers.h"
 
-#define GUEST_HYSTERESIS 20
-
 CGuests Guest;
 
-CGuests::CGuests(void)
-{
-    Guests = NULL;
-    nGuests = 0;
-    nMaxGuests = 0;
-}
-
-CGuests::~CGuests(void)
-{
-    if (Guests)
-    {
-	MEMFREE(Guests);
-	Guests = NULL;
-	nGuests = 0;
-	nMaxGuests = 0;
-    }
-}
+using namespace std;
 
 void CGuests::StartUp(void)
 {
@@ -53,9 +39,6 @@ void CGuests::StartUp(void)
 	return;
     }
 
-
-    // SizeGuests(mudconf.min_guests);
-
     // Search the Database for Guest chars and snag em.
     //
     dbref thing;
@@ -64,64 +47,33 @@ void CGuests::StartUp(void)
 	if (  Guest(thing)
 	   && isPlayer(thing))
 	{
-	    SizeGuests(nGuests+1);
-	    Guests[nGuests] = thing;
-	    nGuests++;
+	    Guests.push_back (thing);
 	}
     }
 
     // Create the Minimum # of guests.
     //
-    for (; nGuests < mudconf.min_guests; nGuests++)
-    {
-	SizeGuests(nGuests+1);
-	Guests[nGuests] = MakeGuestChar();
-
-	// If we couldn't create guest character, break out and let later
-	// functions handle it.
-	//
-	if (Guests[nGuests] == NOTHING)
-	{
+    while ((int) Guests.size() < mudconf.min_guests) {
+	dbref new_guest = MakeGuestChar();
+	if (new_guest != NOTHING) {
+	    Guests.push_back (new_guest);
+	} else {
 	    break;
 	}
     }
-}
-
-void CGuests::SizeGuests(int nMin)
-{
-    // We must have at least nMin, but if nMin is sufficiently below
-    // nMaxGuests, we can also shrink.
-    //
-    if (nMin < nGuests)
-    {
-	nMin = nGuests;
-    }
-    if (  nMaxGuests <= nMin + GUEST_HYSTERESIS
-       && nMin <= nMaxGuests)
-    {
-	return;
-    }
-
-    dbref *newGuests = (dbref *)MEMALLOC(nMin * sizeof(dbref));
-    ISOUTOFMEMORY(newGuests);
-    if (Guests)
-    {
-	memcpy(newGuests, Guests, nGuests * sizeof(dbref));
-	MEMFREE(Guests);
-	Guests = NULL;
-    }
-    Guests = newGuests;
-    nMaxGuests = nMin;
 }
 
 const UTF8 *CGuests::Create(DESC *d)
 {
     // If we have a guest character, let's use it
     //
-    int i;
-    for (i = 0; i < nGuests; i++)
-    {
-	dbref guest_player = Guests[i];
+    static UTF8 name[SBUF_SIZE];
+
+    for (vector<dbref>::iterator i = Guests.begin();
+	 i != Guests.end();
+	 ++i) {
+
+	dbref guest_player = *i;
 
 	// If we have something in the list that isn't a guest, lets
 	// just drop it and make a new one.
@@ -130,7 +82,7 @@ const UTF8 *CGuests::Create(DESC *d)
 	   || !isPlayer(guest_player)
 	   || !Guest(guest_player))
 	{
-	    guest_player = Guests[i] = MakeGuestChar();
+	    guest_player = *i = MakeGuestChar();
 	    if (NOTHING == guest_player)
 	    {
 		queue_string(d, T("Error creating guest, please try again later.\n"));
@@ -204,7 +156,7 @@ const UTF8 *CGuests::Create(DESC *d)
 	}
     }
 
-    if (nGuests >= mudconf.number_guests)
+    if ((int) Guests.size() >= mudconf.number_guests)
     {
 	queue_string(d, T("All guests are currently busy, please try again later.\n"));
 	return NULL;
@@ -215,9 +167,7 @@ const UTF8 *CGuests::Create(DESC *d)
 	queue_string(d, T("Error creating guest, please try again later.\n"));
 	return NULL;
     }
-    SizeGuests(nGuests+1);
-    Guests[nGuests] = newGuest;
-    nGuests++;
+    Guests.push_back (newGuest);
     return Name(newGuest);
 }
 
@@ -226,23 +176,25 @@ void CGuests::CleanUp(void)
     // Verify that our existing pool of guests are reasonable. Replace any
     // unreasonable dbrefs.
     //
-    int nPool = nGuests;
-    if (mudconf.min_guests < nGuests)
-    {
-	nPool = mudconf.min_guests;
-    }
-    int i;
-    for (i = 0; i < nPool; i++)
-    {
-	if (  !Good_obj(Guests[i])
-	   || !isPlayer(Guests[i])
-	   || !Guest(Guests[i]))
-	{
-	    Guests[i] = MakeGuestChar();
+    for( vector<dbref>::iterator i = Guests.begin();
+	 i != Guests.end();
+	 ++i) {
+
+	if (!Good_obj (*i) || !isPlayer (*i) || !Guest (*i) ) {
+	    if (*i == Guests.back()) {
+		// We're at the end, just drop it and scoot
+		Guests.pop_back();
+		break;
+	    } else {
+		swap (*i, Guests.back());
+		Guests.pop_back();
+		--i;
+		continue;
+	    }
 	}
     }
 
-    if (nGuests <= mudconf.min_guests)
+    if ((int)Guests.size() <= mudconf.min_guests)
     {
 	return;
     }
@@ -251,39 +203,24 @@ void CGuests::CleanUp(void)
     // see if there are any guests beyond that minimum number that we can
     // trim out of the pool.
 
-    // PASS 1: Move connected guests to the beginning of the list.
-    //
-    int itmp;
-    int currGuest = mudconf.min_guests;
-    for (i = mudconf.min_guests; i < nGuests; i++)
-    {
-	if (Connected(Guests[i]))
-	{
-	    if (i > currGuest)
-	    {
-		itmp = Guests[currGuest];
-		Guests[currGuest] = Guests[i];
-		Guests[i] = itmp;
-	    }
-	    currGuest++;
-	}
-    }
+    // Gather the connected guests
+    vector<dbref> connected;
+    vector<dbref> not_connected;
 
-    // PASS 2: Destroy unconnected guests.
-    //
-    itmp = nGuests;
-    for (i = mudconf.min_guests; i < itmp;i++)
-    {
-	if (!Connected(Guests[i]))
-	{
-	    if (Good_obj(Guests[i]))
-	    {
-		DestroyGuestChar(Guests[i]);
-	    }
-	    nGuests--;
+    for_each (Guests.begin(), Guests.end(),
+	     [&] (dbref g) {
+		      if (Connected (g)) connected.push_back (g);
+		      else not_connected.push_back (g); });
+
+    // Destroy unneeded unconnected guests.
+    if (connected.size() > 0) {
+	while ( (int) not_connected.size()
+		> max ( 0, mudconf.min_guests - (int) connected.size() )) {
+	    dbref g = not_connected.back();
+	    DestroyGuestChar (g);
+	    not_connected.pop_back();
 	}
     }
-    SizeGuests(nGuests);
 }
 
 dbref CGuests::MakeGuestChar(void)
@@ -293,6 +230,8 @@ dbref CGuests::MakeGuestChar(void)
     int i;
     dbref player;
     bool bFound = false;
+    static UTF8 name[SBUF_SIZE];
+
     for (i = 0; i < mudconf.number_guests;i++)
     {
 	bool bAlias = false;
@@ -410,15 +349,7 @@ void CGuests::WipeAttrs(dbref guest)
 
 bool CGuests::CheckGuest(dbref player)
 {
-    int i;
-    for (i = 0; i < nGuests; i++)
-    {
-	if (Guests[i] == player)
-	{
-	    return true;
-	}
-    }
-    return false;
+    return find (Guests.begin(), Guests.end(), player) != Guests.end();
 }
 
 // @list guests, thanks Rhost for the idea!
@@ -429,28 +360,25 @@ void CGuests::ListAll(dbref player)
     notify(player, T("*Guest #  : Name            dbref  Status     Last Site"));
     notify(player, T("------------------------------------------------------------------------------"));\
     UTF8 *buff = alloc_lbuf("CGuests-ListAll");
-    int i;
     UTF8 *LastSite=alloc_lbuf("CGuests-LastSite");
-    for (i = 0; i < nGuests; i++)
-    {
-	dbref aowner;
-	int aflags;
-	atr_get_str(LastSite, Guests[i], A_LASTSITE, &aowner, &aflags);
-	mux_sprintf(buff, LBUF_SIZE, T("%sGuest %-3d: %-15s #%-5d %-10s %s"),
-		(i<mudconf.min_guests ? "*" : " "),
-		i, Name(Guests[i]), Guests[i],
-		(Connected(Guests[i]) ? "Online" : "NotOnline"),
-		LastSite);
-	notify(player, buff);
-	if (!Good_obj(Guests[i]))
-	{
-	    notify(player, tprintf(T("*** Guest %d (#%d) is an invalid object!"),
-				   i, Guests[i]));
-	}
-    }
+    int c=0;
+    for_each (Guests.begin(), Guests.end(),
+	      [&] (dbref g) {
+		  dbref aowner;
+		  int aflags;
+		  atr_get_str (LastSite, g, A_LASTSITE, &aowner, &aflags);
+		  mux_sprintf(buff, LBUF_SIZE, T("%sGuest %-3d: %-15s #%-5d %-10s %s"),
+			      (c<mudconf.min_guests ? "*" : " "),
+			      c, Name(g), g,
+			      (Connected(g) ? "Online" : "NotOnline"),
+			      LastSite);
+		  notify(player, buff);
+		  if (!Good_obj(g))
+		      notify(player, tprintf(T("*** Guest %d (#%d) is an invalid object!"),
+					     c, g)); });
     free_lbuf(LastSite);
-    notify(player, tprintf(T("-----------------------------  Total Guests: %-3d -----------------------------"), nGuests));
     free_lbuf(buff);
+    notify(player, tprintf(T("-----------------------------  Total Guests: %-3d -----------------------------"), Guests.size()));
 }
 
 void CGuests::AddToGuestChannel(dbref player)
@@ -462,5 +390,3 @@ void CGuests::AddToGuestChannel(dbref player)
 	    mudconf.guests_channel_alias, mudconf.guests_channel, NULL, 0);
     }
 }
-
-UTF8 CGuests::name[50];

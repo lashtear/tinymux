@@ -11,15 +11,14 @@
 #include "copyright.h"
 #include "interface.h"
 
-// Zenty does OOP.
-//
+#include <vector>
+
 class CGuests
 {
 private:
-    static UTF8 name[50];
-    dbref *Guests;
-    int   nMaxGuests;              // Size of Guests[].
-    int   nGuests;                 // Number of guests stored in Guests[].
+//    static UTF8 name[50];
+//    dbref *Guests;
+    std::vector<dbref> Guests;
     void  SizeGuests(int);
     int   MakeGuestChar(void);     // Make the guest character
     void  DestroyGuestChar(dbref); // Destroy the guest character
@@ -27,14 +26,14 @@ private:
     void  AddToGuestChannel(dbref player);
 
 public:
-    CGuests(void);
-    ~CGuests(void);
+    CGuests(void) {};
+    ~CGuests(void) {};
 
     bool  CheckGuest(dbref);
     void  ListAll(dbref);          // @list guests
     void  StartUp();
     const UTF8  *Create(DESC *d);
-    void  CleanUp(void);
+    void  CleanUp();
 };
 
 extern CGuests Guest;
