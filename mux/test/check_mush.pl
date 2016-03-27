@@ -7,6 +7,7 @@ use Expect;
 use List::Util qw(shuffle);
 use Math::BigFloat;
 
+$| = 1;
 my $timeout=1.5;
 
 my ($host, $port) = @ARGV;
@@ -24,7 +25,7 @@ sub notok {
 
 sub waitfor {
     my ($exp, $re, $msg) = @_;
-    print "#   waiting for $msg\n";
+    warn "#   waiting for $msg\n";
     $exp->expect ($timeout,
 		  ['timeout', sub { notok ("timeout before $msg")}],
 		  ['eof', sub { notok ("EOF before $msg")}],
@@ -35,7 +36,7 @@ sub waitfor {
 sub match_keyword {
     my ($exp, $vref, $name) = @_;
     $$vref = ($exp->matchlist)[0];
-    print "#   received $name\n";
+    warn "#   received $name\n";
     exp_continue;
 }
 
@@ -48,7 +49,7 @@ $exp->exp_internal(1);
 
 sub bt {
     my ($out, $in, $comment) = @_;
-    print "# $comment\n";
+    warn "# bt $comment\n";
     $exp->send ("$out\r\n") if defined $out;
     waitfor ($exp, $in, $comment);
 }
@@ -83,6 +84,15 @@ bt ("connect Wizard potrzebie", qr/^This is motd\.txt\r?$/m, "motd");
 bt (undef, qr/^This is wizmotd\.txt\r?$/m, "wizmotd");
 bt ("\@restart", qr/^Server just started\. Please try again in a few seconds.\r?$/m, "restart-blocked");
 bt ("give me=10000", qr/^You give 10000 Pennies to Wizard.\r\nWizard gives you 10000 Pennies.\r?$/mi, "give pennies");
+
+bt ("\@set \%#=!halted", qr/^Cleared\.\r?$/m, "clear-halt-before-abort-test");
+$timeout = 10;
+bt ("\@set %#=!halted\r\nthink iter(lnum(1,10000),iter(lnum(1,10000),.))",
+    qr/^GAME: Expensive activity abbreviated.\r?$/m, "expensive-time-abort");
+$timeout = 1.5;
+
+bt ("think orflags(\%#,h)", qr/^1\r?$/m, "self-halted-after-abort");
+bt ("\@set \%#=!halted", qr/^Cleared\.\r?$/m, "halt-cleared");
 
 sub get_num {
     my ($comment, $num) = @_;
@@ -150,20 +160,21 @@ foreach (0..8) {
     bt (undef, qr/^$_\r?$/m, "cque wait $_");
 }
 
-bt ("\@restart", qr/^GAME: Restart by Wizard, please wait\.(?:  \(All SSL connections will be dropped.\))?\r?$/m, "restart-allowed");
+bt ("\@restart",
+    qr/^GAME: Restart by Wizard, please wait\.(?:  \(All SSL connections will be dropped.\))?\r?$/m,
+    "restart-allowed");
 bt (undef, qr/^GAME: Restart finished.\r?$/m, "restart-success");
 
-$timeout = 10;
-bt ("think iter(lnum(1,10000),iter(lnum(1,10000),.))",
-    qr/^GAME: Expensive activity abbreviated.\r?$/m, "expensive-time-abort");
-$timeout = 1.5;
+#warn "# sleeping...\n";
+#sleep 2;
 
 $exp->send ("think sql(select \"sql works\")\r\n");
 $exp->expect ($timeout,
 	      ['timeout', sub { notok ("timeout for inline sql")}],
 	      ['eof', sub { notok ("EOF for inline sql")}],
 	      [qr/^sql works\r?$/m, sub { print "ok - inline sql\n" }],
-	      [qr/^sql\(select \"sql works\"\)\r?$/m, sub { print "ok - inline sql # SKIP no inline sql support\n" }]);
+	      [qr/^sql\(select \"sql works\"\)\r?$/m,
+	       sub { print "ok - inline sql # SKIP no inline sql support\n" }]);
 
 # test pcre DOT_ALL and such
 bt ("think regmatch(ab\%r\%xhcd\%xn,^.*\$)",
