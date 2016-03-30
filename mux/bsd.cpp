@@ -2939,7 +2939,7 @@ static void SetHimState(DESC *d, unsigned char chOption, int iHimState)
 	    unsigned char aEnvReq[2] = { TELNETSB_VAR, TELNETSB_USERVAR };
 	    SendSb(d, chOption, TELNETSB_SEND, aEnvReq, 2);
 	}
-	else if (TELNET_STARTTLS == chOption)
+	else if ((TELNET_STARTTLS == chOption) && (tls_ctx != NULL))
 	{
 	    SendSb(d, TELNET_STARTTLS, TELNETSB_FOLLOWS);
 	}
@@ -3009,20 +3009,22 @@ static bool DesiredHimOption(DESC *d, unsigned char chOption)
 {
     UNUSED_PARAMETER(d);
 
-    if (  TELNET_NAWS    == chOption
-       || TELNET_EOR     == chOption
-       || TELNET_SGA     == chOption
-       || TELNET_ENV     == chOption
-       || TELNET_BINARY  == chOption
+    switch (chOption) {
 #ifdef UNIX_SSL
-       || TELNET_STARTTLS== chOption
+    case TELNET_STARTTLS:
+	return tls_ctx != NULL;
 #endif
-       || TELNET_ATCP    == chOption
-       || TELNET_CHARSET == chOption)
-    {
+    case TELNET_NAWS:
+    case TELNET_EOR:
+    case TELNET_SGA:
+    case TELNET_ENV:
+    case TELNET_BINARY:
+    case TELNET_ATCP:
+    case TELNET_CHARSET:
 	return true;
+    default:
+	return false;
     }
-    return false;
 }
 
 /*! \brief Determine whether we want a particular option on our side of the
@@ -3205,11 +3207,10 @@ void TelnetSetup(DESC *d)
     EnableHim(d, TELNET_NAWS);
     EnableHim(d, TELNET_ENV);
     EnableHim(d, TELNET_ATCP);
-//    EnableHim(d, TELNET_OLDENV);
     EnableUs(d, TELNET_CHARSET);
     EnableHim(d, TELNET_CHARSET);
 #ifdef UNIX_SSL
-    if (!d->ssl_session)
+    if (d->ssl_session != NULL && tls_ctx != NULL)
     {
 	EnableHim(d, TELNET_STARTTLS);
     }
@@ -3720,7 +3721,8 @@ static void process_input_helper(DESC *d, char *pBytes, int nBytes)
 #ifdef UNIX_SSL
 		case TELNET_STARTTLS:
 		    if (  2 == m
-		       && TELNETSB_FOLLOWS == d->aOption[1])
+		       && TELNETSB_FOLLOWS == d->aOption[1]
+		       && tls_ctx != NULL )
 		    {
 		       d->ssl_session = SSL_new(tls_ctx);
 		       SSL_set_fd(d->ssl_session, d->descriptor);
