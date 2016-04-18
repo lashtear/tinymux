@@ -207,11 +207,12 @@ void CGuests::CleanUp(void)
     vector<dbref> not_connected;
     {
 	vector<dbref> connected;
-	for_each (Guests.begin(), Guests.end(),
-		  [&] (dbref g) {
-		      if (Connected (g)) connected.push_back (g);
-		      else not_connected.push_back (g); });
-
+	for (vector<dbref>::iterator i = Guests.begin();
+	     i != Guests.end();
+	     ++i) {
+	    if (Connected (*i)) connected.push_back (*i);
+	    else not_connected.push_back (*i);
+	}
 	Guests = connected;
     }
 
@@ -224,9 +225,11 @@ void CGuests::CleanUp(void)
     }
 
     // Move things back into the main vector
-    for_each (not_connected.begin(), not_connected.end(),
-	      [&] (dbref g) {
-		  Guests.push_back (g); });
+    for (vector<dbref>::iterator i = not_connected.begin();
+	 i != not_connected.end();
+	 ++i) {
+	Guests.push_back (*i);
+    }
 }
 
 dbref CGuests::MakeGuestChar(void)
@@ -368,20 +371,22 @@ void CGuests::ListAll(dbref player)
     UTF8 *buff = alloc_lbuf("CGuests-ListAll");
     UTF8 *LastSite=alloc_lbuf("CGuests-LastSite");
     int c=0;
-    for_each (Guests.begin(), Guests.end(),
-	      [&] (dbref g) {
-		  dbref aowner;
-		  int aflags;
-		  atr_get_str (LastSite, g, A_LASTSITE, &aowner, &aflags);
-		  mux_sprintf(buff, LBUF_SIZE, T("%sGuest %-3d: %-15s #%-5d %-10s %s"),
-			      (c<mudconf.min_guests ? "*" : " "),
-			      c, Name(g), g,
-			      (Connected(g) ? "Online" : "NotOnline"),
-			      LastSite);
-		  notify(player, buff);
-		  if (!Good_obj(g))
-		      notify(player, tprintf(T("*** Guest %d (#%d) is an invalid object!"),
-					     c, g)); });
+    for( vector<dbref>::iterator i = Guests.begin();
+	 i != Guests.end();
+	 ++i ) {
+	dbref aowner;
+	int aflags;
+	atr_get_str (LastSite, *i, A_LASTSITE, &aowner, &aflags);
+	mux_sprintf(buff, LBUF_SIZE, T("%sGuest %-3d: %-15s #%-5d %-10s %s"),
+		    (c<mudconf.min_guests ? "*" : " "),
+		    c, Name(*i), *i,
+		    (Connected(*i) ? "Online" : "NotOnline"),
+		    LastSite);
+	notify(player, buff);
+	if (!Good_obj(*i))
+	    notify(player, tprintf(T("*** Guest %d (#%d) is an invalid object!"),
+				   c, *i));
+    }
     free_lbuf(LastSite);
     free_lbuf(buff);
     notify(player, tprintf(T("-----------------------------  Total Guests: %-3d -----------------------------"), Guests.size()));
