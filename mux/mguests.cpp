@@ -99,7 +99,7 @@ const UTF8 *CGuests::Create(DESC *d)
 	    // Lets try to grab our own name, if we don't have it.
 	    //
 	    bool bAlias = false;
-	    mux_sprintf(name, sizeof(name), T("%s%d"), mudconf.guest_prefix, i+1);
+	    mux_sprintf(name, sizeof(name), T("%s%d"), mudconf.guest_prefix, *i+1);
 	    dbref j = lookup_player_name(name, bAlias);
 	    if (NOTHING == j)
 	    {
