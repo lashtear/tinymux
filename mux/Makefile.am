@@ -18,26 +18,42 @@ endif
 
 install-exec-hook:
 	cd $(DESTDIR)$(bindir) && \
-	    rm -f dbconvert && \
-	    $(LN_S) $(libexecdir)/netmux dbconvert
+	rm -f dbconvert && \
+	$(LN_S) $(libexecdir)/netmux dbconvert
+
+INSTCONF = @echo "  CHKCONF " $(1);cd $(DESTDIR)$(1) && \
+	for default in $(basename $(notdir $(2))); do \
+		if [ ! -f $$default ]; then \
+			echo "    CP    " $$default;\
+			cp $$default.default $$default; \
+		else \
+			echo "    SKIP  " $$default;\
+		fi; \
+	done
+
+install-data-hook:
+	$(call INSTCONF,$(bindir),$(dist_bin_SCRIPTS))
+	$(call INSTCONF,$(sysconfdir),$(dist_sysconf_DATA))
+	$(call INSTCONF,$(textdir),$(dist_text_DATA))
 
 lib_LTLIBRARIES = libmux.la
 noinst_LIBRARIES = libversion.a
 
 pkglib_LTLIBRARIES = funcs.la sample.la sum.la sqlproxy.la sqlslave.la
-dist_bin_SCRIPTS = scripts/mux-backup scripts/mux-backup-flat		\
-    scripts/mux-load-flat scripts/mux-unload-flat scripts/mux-start	\
-    scripts/mux-stop
-dist_sysconf_DATA = etc/alias.conf etc/art.conf etc/compat.conf	\
-    etc/netmux.conf etc/script.conf
+dist_bin_SCRIPTS = $(addsuffix .default,scripts/mux-backup	\
+    scripts/mux-backup-flat scripts/mux-load-flat		\
+    scripts/mux-unload-flat scripts/mux-start scripts/mux-stop)
+dist_sysconf_DATA = $(addsuffix .default,etc/alias.conf etc/art.conf	\
+    etc/compat.conf etc/netmux.conf etc/script.conf)
 
 textdir = $(sysconfdir)/text
-dist_text_DATA = etc/text/badsite.txt etc/text/connect.txt		\
-    etc/text/create_reg.txt etc/text/down.txt etc/text/full.txt	\
-    etc/text/guest.txt etc/text/help.txt etc/text/motd.txt		\
-    etc/text/news.txt etc/text/newuser.txt etc/text/plushelp.txt	\
-    etc/text/quit.txt etc/text/register.txt etc/text/staffhelp.txt	\
-    etc/text/wizhelp.txt etc/text/wizmotd.txt etc/text/wiznews.txt
+dist_text_DATA = $(addsuffix .default,etc/text/badsite.txt		\
+    etc/text/connect.txt etc/text/create_reg.txt etc/text/down.txt	\
+    etc/text/full.txt etc/text/guest.txt etc/text/help.txt		\
+    etc/text/motd.txt etc/text/news.txt etc/text/newuser.txt		\
+    etc/text/plushelp.txt etc/text/quit.txt etc/text/register.txt	\
+    etc/text/staffhelp.txt etc/text/wizhelp.txt etc/text/wizmotd.txt	\
+    etc/text/wiznews.txt)
 
 dist_localstate_DATA = data/sgp.flat
 
@@ -63,18 +79,27 @@ subst_files = scripts/mux-unload-flat scripts/mux-load-flat		\
     scripts/mux-stop etc/netmux.conf etc/script.conf
 
 subst_files_in = $(addsuffix .in,$(subst_files))
+subst_files_default = $(addsuffix .default,$(subst_files))
 
 V_SUBST = $(v_subst_$(V))
 v_subst_ = $(v_subst_$(AM_DEFAULT_VERBOSITY))
 v_subst_0 = @echo "  SUBST   " $@;
 
-$(subst_files): Makefile
-	@$(MKDIR_P) etc scripts
-	$(V_SUBST)rm -f $@ && $(do_edit) $(srcdir)/$@.in > $@
+V_CP = $(v_cp_$(V))
+v_cp_ = $(v_cp_$(AM_DEFAULT_VERBOSITY))
+v_cp_0 = @echo "  CP      " $@;
 
-$(subst_files): $(subst_files_in)
+$(subst_files_default):
+	@$(MKDIR_P) etc scripts
+	$(V_SUBST)rm -f $@ && $(do_edit) $(basename $(srcdir)/$@).in > $@
+
+# handle non-substed files to .default
+etc/%.default: $(srcdir)/etc/%
+	$(V_CP)cp $< $@
+
+$(subst_files_default): $(subst_files_in)
 EXTRA_DIST = $(subst_files_in) $(TESTS)
-CLEANFILES = $(subst_files)
+CLEANFILES = $(subst_files_default)
 
 netmux_SOURCES = alarm.cpp attrcache.cpp boolexp.cpp bsd.cpp		\
     command.cpp comsys.cpp conf.cpp cque.cpp create.cpp db.cpp		\

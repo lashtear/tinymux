@@ -27,12 +27,16 @@ stubslave
 
 /mux/etc/netmux.conf
 /mux/etc/script.conf
+/mux/etc/*.default
+/mux/etc/text/*.default
 /mux/scripts/mux-backup
 /mux/scripts/mux-backup-flat
 /mux/scripts/mux-load-flat
 /mux/scripts/mux-start
 /mux/scripts/mux-stop
 /mux/scripts/mux-unload-flat
+/mux/scripts/*.default
+/mux/mux.?????
 
 /mux/etc-dir
 /mux/scripts-dir
