@@ -90,11 +90,12 @@ v_cp_ = $(v_cp_$(AM_DEFAULT_VERBOSITY))
 v_cp_0 = @echo "  CP      " $@;
 
 $(subst_files_default):
-	@$(MKDIR_P) etc scripts
+	@$(MKDIR_P) etc etc/text scripts
 	$(V_SUBST)rm -f $@ && $(do_edit) $(basename $(srcdir)/$@).in > $@
 
 # handle non-substed files to .default
 etc/%.default: $(srcdir)/etc/%
+	@$(MKDIR_P) etc etc/text scripts
 	$(V_CP)cp $< $@
 
 $(subst_files_default): $(subst_files_in)
