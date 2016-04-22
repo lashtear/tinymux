@@ -8,7 +8,7 @@ cd "$BUILDTOP"
 
 killall netmux lt-netmux 2>/dev/null
 
-echo 1..174
+echo 1..186
 
 echo '# setting up operating "game" directory'
 umask 077
@@ -55,6 +55,7 @@ sql_database         muxtest
 sql_user             muxtest
 sql_password         muxtest
 sql_server           localhost
+guest_char_num       2
 EOF
 
 echo '# setting up text files'

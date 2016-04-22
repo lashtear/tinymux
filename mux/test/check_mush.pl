@@ -40,35 +40,40 @@ sub match_keyword {
     exp_continue;
 }
 
-my $exp = Expect->new();
-$exp->raw_pty(1);
-$exp->slave->stty(qw(raw -echo));
-$exp->log_user(0);
-$exp->spawn('telnet', $host, $port) or die "not ok - unable to launch telnet";
-$exp->exp_internal(1);
+sub new_expector {
+    my $exp = Expect->new();
+    $exp->raw_pty(1);
+    $exp->slave->stty(qw(raw -echo));
+    $exp->log_user(0);
+    $exp->spawn('telnet', $host, $port) or die "not ok - unable to launch telnet";
+    $exp->exp_internal(1);
+    return $exp;
+}
 
 sub bt {
-    my ($out, $in, $comment) = @_;
+    my ($exp, $out, $in, $comment) = @_;
     warn "# bt $comment\n";
     $exp->send ("$out\r\n") if defined $out;
     waitfor ($exp, $in, $comment);
 }
-
-bt (undef, qr/This is connect\.txt/, "connect banner");
-bt ("INFO", qr/### Begin INFO( [0-9.]+)?\r\n/, "INFO header");
+use Carp qw(confess);
+$SIG{'__DIE__'} = \&confess;
+my $wiz = new_expector();
+bt ($wiz, undef, qr/This is connect\.txt/, "connect banner");
+bt ($wiz, "INFO", qr/### Begin INFO( [0-9.]+)?\r\n/, "INFO header");
 
 my ($conn, $size, $ver);
 my $in_info = 1;
 while ($in_info) {
-    $exp->expect ($timeout,
+    $wiz->expect ($timeout,
 		  ['timeout', sub { notok ('timeout during INFO response'); }],
 		  ['eof', sub { notok ('EOF during INFO response'); }],
 		  [qr/Connected: (\d+)\r\n/,
-		   sub {match_keyword ($exp, \$conn, "connected")}],
+		   sub {match_keyword ($wiz, \$conn, "connected")}],
 		  [qr/Size: (\d+)\r\n/,
-		   sub {match_keyword ($exp, \$size, "size")}],
+		   sub {match_keyword ($wiz, \$size, "size")}],
 		  [qr/Version: (.+)\r\n/,
-		   sub {match_keyword ($exp, \$ver, "version")}],
+		   sub {match_keyword ($wiz, \$ver, "version")}],
 		  [qr/### End INFO/,
 		   sub {$in_info = 0}]);
 }
@@ -80,27 +85,27 @@ if (defined $conn
     notok ('received mangled info');
 }
 
-bt ("connect Wizard potrzebie", qr/^This is motd\.txt\r?$/m, "motd");
-bt (undef, qr/^This is wizmotd\.txt\r?$/m, "wizmotd");
-bt ("\@restart", qr/^Server just started\. Please try again in a few seconds.\r?$/m, "restart-blocked");
-bt ("give me=10000", qr/^You give 10000 Pennies to Wizard.\r\nWizard gives you 10000 Pennies.\r?$/mi, "give pennies");
+bt ($wiz, "connect Wizard potrzebie", qr/^This is motd\.txt\r?$/m, "motd");
+bt ($wiz, undef, qr/^This is wizmotd\.txt\r?$/m, "wizmotd");
+bt ($wiz, "\@restart", qr/^Server just started\. Please try again in a few seconds.\r?$/m, "restart-blocked");
+bt ($wiz, "give me=10000", qr/^You give 10000 Pennies to Wizard.\r\nWizard gives you 10000 Pennies.\r?$/mi, "give pennies");
 
-bt ("\@set \%#=!halted", qr/^Cleared\.\r?$/m, "clear-halt-before-abort-test");
+bt ($wiz, "\@set \%#=!halted", qr/^Cleared\.\r?$/m, "clear-halt-before-abort-test");
 $timeout = 10;
-bt ("\@set %#=!halted\r\nthink iter(lnum(1,10000),iter(lnum(1,10000),.))",
+bt ($wiz, "\@set %#=!halted\r\nthink iter(lnum(1,10000),iter(lnum(1,10000),.))",
     qr/^GAME: Expensive activity abbreviated.\r?$/m, "expensive-time-abort");
 $timeout = 1.5;
 
-bt ("think orflags(\%#,h)", qr/^1\r?$/m, "self-halted-after-abort");
-bt ("\@set \%#=!halted", qr/^Cleared\.\r?$/m, "halt-cleared");
+bt ($wiz, "think orflags(\%#,h)", qr/^1\r?$/m, "self-halted-after-abort");
+bt ($wiz, "\@set \%#=!halted", qr/^Cleared\.\r?$/m, "halt-cleared");
 
 sub get_num {
-    my ($comment, $num) = @_;
+    my ($exp, $comment, $num) = @_;
     $exp->expect ($timeout,
 		  ['timeout', sub { notok ("timeout while reading number for $comment")}],
 		  ['eof', sub { notok ("EOF while reading number for $comment")}],
 		  [qr/^([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\r?$/m]);
-    my $rnum = Math::BigFloat->new($exp->match());
+    my $rnum = Math::BigFloat->new($wiz->match());
     warn "num is $num, rnum is $rnum\n";
     return (Math::BigFloat->babs($num - $rnum) < 0.00001);
 }
@@ -145,8 +150,8 @@ for my $opname (qw(add iadd sub isub mul imul fdiv idiv
 	$a = Math::BigFloat->new($a);
 	$b = Math::BigFloat->new($b);
 	my $expected = $boolbinops{$opname}->($a,$b);
-	$exp->send ("think $opname"."($a,$b)\r\n");
-	if (get_num ("$opname on $tname", $expected)) {
+	$wiz->send ("think $opname"."($a,$b)\r\n");
+	if (get_num ($wiz, "$opname on $tname", $expected)) {
 	    print "ok - $opname on $tname\n";
 	} else {
 	    print "not ok - $opname on $tname returned wrong answer\n";
@@ -154,22 +159,25 @@ for my $opname (qw(add iadd sub isub mul imul fdiv idiv
     }
 }
 
-bt ("\@pemit %#=at-pemit works", qr/^at-pemit works\r?$/m, "\@pemit");
-$exp->send (join "", map {"\@wait $_=\@pemit \%#=$_\r\n"} shuffle (0..8));
+bt ($wiz, "\@pemit %#=at-pemit works", qr/^at-pemit works\r?$/m, "\@pemit");
+$wiz->send (join "", map {"\@wait $_=\@pemit \%#=$_\r\n"} shuffle (0..8));
 foreach (0..8) {
-    bt (undef, qr/^$_\r?$/m, "cque wait $_");
+    bt ($wiz, undef, qr/^$_\r?$/m, "cque wait $_");
 }
 
-bt ("\@restart",
+# set up guest
+bt ($wiz, "\@create Guest Prototype",
+    qr/^Guest Prototype created as object #2\r?$/m, "guest prototype creation");
+bt ($wiz, "\@desc #2=A wild guestacean!",
+    qr/^Set.\r?$/m, "guest prototype attributes");
+
+bt ($wiz, "\@restart",
     qr/^GAME: Restart by Wizard, please wait\.(?:  \(All SSL connections will be dropped.\))?\r?$/m,
     "restart-allowed");
-bt (undef, qr/^GAME: Restart finished.\r?$/m, "restart-success");
+bt ($wiz, undef, qr/^GAME: Restart finished.\r?$/m, "restart-success");
 
-#warn "# sleeping...\n";
-#sleep 2;
-
-$exp->send ("think sql(select \"sql works\")\r\n");
-$exp->expect ($timeout,
+$wiz->send ("think sql(select \"sql works\")\r\n");
+$wiz->expect ($timeout,
 	      ['timeout', sub { notok ("timeout for inline sql")}],
 	      ['eof', sub { notok ("EOF for inline sql")}],
 	      [qr/^sql works\r?$/m, sub { print "ok - inline sql\n" }],
@@ -177,11 +185,22 @@ $exp->expect ($timeout,
 	       sub { print "ok - inline sql # SKIP no inline sql support\n" }]);
 
 # test pcre DOT_ALL and such
-bt ("think regmatch(ab\%r\%xhcd\%xn,^.*\$)",
+bt ($wiz, "think regmatch(ab\%r\%xhcd\%xn,^.*\$)",
    qr/^0\r?$/m, "pcre no \%r in .");
-bt ("think regmatch(ab\%r\%xhcd\%xn,(?s)^.*\$)",
-   qr/^1\r?$/m, "pcre dot-all");
+bt ($wiz, "think regmatch(ab\%r\%xhcd\%xn,(?s)^.*\$)",
+    qr/^1\r?$/m, "pcre dot-all");
 
-bt ("QUIT", qr/This is quit\.txt\r\n/, "quit");
+my $guest = new_expector();
+bt ($guest, undef, qr/^This is connect\.txt\r?$/m, "guest connect banner");
+bt ($guest, "connect guest", qr/^This is guest\.txt\r?$/m, "guest banner");
+bt ($wiz, undef, qr/^Guest1 has connected\.\r?$/m, "wizard saw guest");
+bt ($wiz, "\"hi", qr/^You say, "hi"\r?$/m, "wizard says hi");
+bt ($guest, undef, qr/^Wizard says, "hi"\r?$/m, "guest sees wizard greeting");
+bt ($guest, ":rotates cheerfully.", qr/^Guest1 rotates cheerfully\.\r?$/m, "guest rotates");
+bt ($wiz, undef, qr/^Guest1 rotates cheerfully\.\r?$/m, "wizard sees guest rotation");
+bt ($wiz, "look guest1", qr/^A wild guestacean!\r?$/m, "wizard sees guest desc");
+bt ($guest, "QUIT", qr/^This is quit\.txt\r?$/m, "guest quit");
+bt ($wiz, undef, qr/^Guest1 has disconnected\.\r$/m, "wizard sees guest quit");
+bt ($wiz, "QUIT", qr/^This is quit\.txt\r?$/m, "wizard quit");
 
 exit $rc;
