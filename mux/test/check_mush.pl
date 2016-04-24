@@ -12,8 +12,8 @@ my $timeout=1.5;
 
 my ($host, $port) = @ARGV;
 $host ||= 'localhost';
-$port ||= 2860;
-$port =~ /^\d+$/ or $port = 2860;
+$port ||= 22860;
+$port =~ /^\d+$/ or $port = 22860;
 my $rc = 0;
 
 sub notok {

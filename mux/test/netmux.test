@@ -5,8 +5,9 @@ BUILDTOP=$(pwd)
 cd "$srcdir"
 srcdir=$(pwd)
 cd "$BUILDTOP"
+TESTPORT=22860
 
-killall netmux lt-netmux 2>/dev/null
+killall lt-netmux 2>/dev/null
 
 echo 1..186
 
@@ -30,7 +31,7 @@ game_dir_file        $GAME/netmux.dir
 game_pag_file        $GAME/netmux.pag
 mail_database        $GAME/mail.db
 comsys_database      $GAME/comsys.db
-port 2860
+port $TESTPORT
 mud_name testcase
 guest_file           $GAME/text/guest.txt
 connect_file         $GAME/text/connect.txt
@@ -102,7 +103,7 @@ if [ $n -gt 5 ]; then
     exit 1
 fi
 
-"$srcdir/test/check_mush.pl" localhost 2860 &
+"$srcdir/test/check_mush.pl" localhost $TESTPORT &
 checkerpid=$!
 ( sleep 60; echo 'not ok - timeabort of check_mush'; kill $checkerpid ) &
 checker_fence_pid=$!
