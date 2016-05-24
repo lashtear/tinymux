@@ -67,12 +67,30 @@ dist_doc_DATA = doc/ATTACK doc/BACKUPS doc/CHANGES doc/CONFIGURATION	\
 # https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/Installation-Directory-Variables.html#Installation-Directory-Variables
 # for why we subst in make rather than using AC_CONFIG_FILES
 
+# We subst the prefixes out to relative paths, but not the
+# exec_prefixes so that many games can run using the same binaries but
+# different configs and data, specified via the current working
+# directory.  See https://github.com/lashtear/tinymux/issues/6
+
+# For example:
+# $ ./configure --prefix=$HOME/game/mygame1 \
+#       --exec-prefix=$HOME/shared-game-binaries
+#
+# or even
+#
+# $ ./configure --prefix=$HOME/game/instance-prototype \
+#       --exec-prefix=$HOME/shared-game-binaries \
+#
+# ...with appropriate tools to copy instance prototype and alter
+# script.conf for each new game.  Sadly, --program-transform-name et
+# al does not work yet.
+
 do_edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@libexecdir[@]|$(libexecdir)|g' \
-	-e 's|@localstatedir[@]|$(localstatedir)|g' \
-	-e 's|@runstatedir[@]|$(runstatedir)|g' \
-	-e 's|@sysconfdir[@]|$(sysconfdir)|g'
+	-e 's|@localstatedir[@]|$(localstatedir:$(prefix)/%=%)|g' \
+	-e 's|@runstatedir[@]|$(runstatedir:$(prefix)/%=%)|g' \
+	-e 's|@sysconfdir[@]|$(sysconfdir:$(prefix)/%=%)|g'
 
 subst_files = scripts/mux-unload-flat scripts/mux-load-flat		\
     scripts/mux-backup-flat scripts/mux-backup scripts/mux-start	\
@@ -100,7 +118,7 @@ etc/%.default: $(srcdir)/etc/%
 
 $(subst_files_default): $(subst_files_in)
 EXTRA_DIST = $(subst_files_in) $(TESTS)
-CLEANFILES = $(subst_files_default)
+CLEANFILES = $(subst_files_default) $(subst_files)
 
 netmux_SOURCES = alarm.cpp attrcache.cpp boolexp.cpp bsd.cpp		\
     command.cpp comsys.cpp conf.cpp cque.cpp create.cpp db.cpp		\
