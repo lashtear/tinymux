@@ -1,6 +1,7 @@
 # ![Mechanipus Logo](http://mechanipus.com/img/mechanipus-logo-outline64.png) TinyMUX
 
 ![Travis build status](https://travis-ci.org/lashtear/tinymux.svg?branch=mechanipus)
+[![Artistic](https://img.shields.io/badge/license-Artistic-43cd80.svg)](LICENSE.md)
 
 This is Chime's (@lashtear) experimental branch of TinyMUX.  It has significant differences from the normal TinyMUX development cycle but should include most of Brazil's (@BrazilOfMUX) work where applicable.
 
