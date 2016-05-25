@@ -16,5 +16,5 @@ case $# in
 	       exit 1;;
        esac;;
 
-    *) echo use as db_load mygame.flat; exit 1 ;;
+    *) echo use as mux-load-flat mygame.flat; exit 1 ;;
 esac
