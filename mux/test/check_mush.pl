@@ -132,7 +132,7 @@ my %boolbinops = (gt   => sub { 0+($_[0] >  $_[1]) },
 				 $a->bmod($limit);
 				 return $a },
 		  fdiv  => sub { $_[0] / $_[1] },
-		  idiv  => sub { int($_[0]) / int($_[1]) },
+		  idiv  => sub { int(int($_[0]) / int($_[1])) },
 		  min   => sub { $_[0] <= $_[1] ? $_[0] : $_[1] },
 		  max   => sub { $_[0] >= $_[1] ? $_[0] : $_[1] },
 		 );
