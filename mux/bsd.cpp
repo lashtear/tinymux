@@ -2939,10 +2939,12 @@ static void SetHimState(DESC *d, unsigned char chOption, int iHimState)
 	    unsigned char aEnvReq[2] = { TELNETSB_VAR, TELNETSB_USERVAR };
 	    SendSb(d, chOption, TELNETSB_SEND, aEnvReq, 2);
 	}
+#ifdef UNIX_SSL
 	else if ((TELNET_STARTTLS == chOption) && (tls_ctx != NULL))
 	{
 	    SendSb(d, TELNET_STARTTLS, TELNETSB_FOLLOWS);
 	}
+#endif
 	else if (TELNET_BINARY == chOption)
 	{
 	    EnableUs(d, TELNET_BINARY);
