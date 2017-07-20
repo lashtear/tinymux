@@ -7039,15 +7039,17 @@ FUNCTION(fun_sql)
     int retried = 0;
 
 retry:
-    if ('\0' != mudconf.sql_server[0])
+    if ('\0' == mudconf.sql_database[0])
     {
-	safe_str(T("#-1 NO DATABASE"), buff, bufc);
+	safe_str(T("#-1 NO DATABASE CONFIGURED"), buff, bufc);
 	return;
     }
-    else if (!mush_database && !retried)
+
+    if (!mush_database && !retried)
     {
-	init_sql(); retried = 1;
-	// continuing...
+	init_sql();
+	retried = 1;
+	// continuing ...
     }
 
     SEP sepRow;
