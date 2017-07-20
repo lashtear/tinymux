@@ -7039,10 +7039,15 @@ FUNCTION(fun_sql)
     int retried = 0;
 
 retry:
-    if (!mush_database)
+    if ('\0' != mudconf.sql_server[0])
     {
 	safe_str(T("#-1 NO DATABASE"), buff, bufc);
 	return;
+    }
+    else if (!mush_database && !retried)
+    {
+	sql_init(); retried = 1;
+	// continuing...
     }
 
     SEP sepRow;
@@ -7056,7 +7061,6 @@ retry:
     {
 	return;
     }
-
 
     UTF8 *curr = alloc_lbuf("fun_sql");
     UTF8 *dp = curr;
@@ -7072,7 +7076,7 @@ retry:
 	return;
     }
 
-    if (mysql_ping(mush_database))
+    if (!mush_database || mysql_ping(mush_database))
     {
 	free_lbuf(curr);
 	if (!retried) { init_sql(); retried=1; goto retry; }
