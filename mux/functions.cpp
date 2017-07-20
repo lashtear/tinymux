@@ -7046,7 +7046,7 @@ retry:
     }
     else if (!mush_database && !retried)
     {
-	sql_init(); retried = 1;
+	init_sql(); retried = 1;
 	// continuing...
     }
 
