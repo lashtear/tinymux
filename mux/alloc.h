@@ -47,13 +47,16 @@ chfree (void *m)
 
 /** Provide a faster alternative to calloc that zeroes only the start */
 inline void *
-allocz (size_t s)
+allocz (ssize_t s)
 {
     void *m;
 
     /* allocate at least one word worth */
     mux_assert (s > 0);
     if (s < sizeof(long int)) s = sizeof(long int);
+
+    /* allocate no more than 1GB at a time ever */
+    mux_assert (s < (1<<30)-1);
 
     /* howl if we didn't get it */
     m = malloc (s);

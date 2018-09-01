@@ -2924,27 +2924,33 @@ FUNCTION(fun_digest)
     UNUSED_PARAMETER(ncargs);
 
 #ifdef UNIX_DIGEST
-    EVP_MD_CTX ctx;
+    EVP_MD_CTX *ctx = EVP_MD_CTX_create();
 
     const EVP_MD *mp = EVP_get_digestbyname((const char *)fargs[0]);
     if (NULL == mp)
     {
 	safe_str(T("#-1 UNSUPPORTED DIGEST TYPE"), buff, bufc);
-	return;
+	goto digest_exit;
     }
 
-    EVP_DigestInit(&ctx, mp);
+    EVP_DigestInit(ctx, mp);
 
     int i;
     for (i = 1; i < nfargs; i++)
     {
-	EVP_DigestUpdate(&ctx, fargs[i], strlen((const char *)fargs[i]));
+	EVP_DigestUpdate(ctx, fargs[i], strlen((const char *)fargs[i]));
     }
 
-    unsigned int len = 0;
-    UINT8 md[EVP_MAX_MD_SIZE];
-    EVP_DigestFinal(&ctx, md, &len);
-    safe_hex(md, len, true, buff, bufc);
+    {
+	unsigned int len = 0;
+	UINT8 md[EVP_MAX_MD_SIZE];
+	EVP_DigestFinal(ctx, md, &len);
+	safe_hex(md, len, true, buff, bufc);
+    }
+    
+digest_exit:
+    if (ctx) EVP_MD_CTX_destroy (ctx);
+
 #else
     if (mux_stricmp(fargs[0], T("sha1")) == 0)
     {

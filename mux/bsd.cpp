@@ -34,6 +34,7 @@ extern const int _sys_nsig;
 #endif // SOLARIS
 
 #ifdef UNIX_SSL
+#include <openssl/ssl.h>
 SSL_CTX  *ssl_ctx = NULL;
 SSL_CTX  *tls_ctx = NULL;
 PortInfo aMainGamePorts[MAX_LISTEN_PORTS * 2];
@@ -842,7 +843,7 @@ bool initialize_ssl()
     OpenSSL_add_ssl_algorithms();
     OpenSSL_add_all_digests();
     ssl_ctx = SSL_CTX_new (SSLv23_server_method());
-    tls_ctx = SSL_CTX_new (TLSv1_server_method());
+    tls_ctx = SSL_CTX_new (TLS_server_method());
 
     if (!SSL_CTX_use_certificate_file (ssl_ctx, (char *)mudconf.ssl_certificate_file, SSL_FILETYPE_PEM))
     {

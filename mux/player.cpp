@@ -429,9 +429,9 @@ const UTF8 *p6h_xx_crypt(const UTF8 *szPassword)
     //
     SHA_CTX shac;
     UTF8 szHashRaw[SHA_DIGEST_LENGTH];
-    SHA_Init(&shac);
-    SHA_Update(&shac, szPassword, strlen((const char *)szPassword));
-    SHA_Final(szHashRaw, &shac);
+    SHA1_Init(&shac);
+    SHA1_Update(&shac, szPassword, strlen((const char *)szPassword));
+    SHA1_Final(szHashRaw, &shac);
 
     //          1         2
     // 1234567890123456789012345678
