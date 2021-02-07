@@ -2991,15 +2991,15 @@ void db_grow(dbref newtop)
     // just before the process terminates. We rely (quite safely) on the OS
     // to reclaim the memory.
     //
-    OBJ *newdb = (OBJ *)MEMALLOC((newsize + SIZE_HACK) * sizeof(OBJ));
-    ISOUTOFMEMORY(newdb);
+    OBJ *newdb = new OBJ[newsize + SIZE_HACK];
     if (db)
     {
 	// An old struct database exists. Copy it to the new buffer.
 	//
-	db -= SIZE_HACK;
-	memcpy(newdb, db, (mudstate.db_top + SIZE_HACK) * sizeof(OBJ));
-	MEMFREE(db);
+	db--; mux_assert (SIZE_HACK == 1);
+	for (int c = 0; c < mudstate.db_top + SIZE_HACK; c++)
+	    newdb[c] = db[c];
+	delete db;
     }
     else
     {

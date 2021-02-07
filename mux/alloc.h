@@ -47,7 +47,7 @@ chfree (void *m)
 
 /** Provide a faster alternative to calloc that zeroes only the start */
 inline void *
-allocz (ssize_t s)
+allocz (size_t s)
 {
     void *m;
 
