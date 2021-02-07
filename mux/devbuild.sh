@@ -8,7 +8,7 @@ if [ ! -f configure ]; then
     exit 1
 fi
 
-common="-g -O3 -Wall -pthread"
+common="-g -O3 -Wall -Werror -pthread"
 export CFLAGS="$common -std=c11"
 export CXXFLAGS="$common -std=c++11"
 export LDFLAGS="-g"

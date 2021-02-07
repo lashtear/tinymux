@@ -5898,7 +5898,7 @@ mux_subnet *ParseSubnet(UTF8 *str, dbref player, UTF8 *cmd)
     hints.ai_flags = AI_NUMERICHOST|AI_NUMERICSERV;
 
     int n;
-    in_addr_t ulNetBits;
+//    in_addr_t ulNetBits;
     MUX_ADDRINFO *servinfo;
 
     UTF8 *addr_txt;

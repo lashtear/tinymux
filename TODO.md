@@ -1,5 +1,15 @@
 # To-Do
 
+## Buildfixes needed for next release
+
+* Significant codebase neglect has happened!
+  * configure isn't correctly working around missing things
+  * I halfassed the pcre shift so it depends on it being installed
+  * TL;DR on Deb/Ubuntu/Pop/Mint/etc, install:
+    * libmariadb-dev-compat
+    * libpcre3-dev
+    * libssl-dev
+
 ## Before next release
 
 * More accessible documentation targetting new MUSH owners
